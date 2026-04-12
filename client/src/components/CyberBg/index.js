@@ -1,0 +1,1 @@
+export { default } from './cyber-bg.jsx'

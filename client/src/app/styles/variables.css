@@ -1,0 +1,20 @@
+:root {
+    --main-bg: radial-gradient(circle at 20% 30%, #0a0f1e, #03050b);
+    --blue: #0088ff;
+    --pink: #ff00ff;
+    --yellow: #ffff00;
+    --turquoise: #00ffff;
+    --text-color: #ccf4ff;
+    --text-active-color: white;
+    --glow-gradient: linear-gradient(90deg, var(--blue), var(--pink), var(--turquoise), var(--yellow), var(--blue));
+    --glow-gradient-lite: linear-gradient(135deg, var(--pink), var(--blue), var(--turquoise), var(--pink));
+    --shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px #00ffff33, inset 0 1px 0 #ffffff1a;
+    --hover-shadow: 0 30px 50px #00000099, 0 0 45px #00ffff66;
+    --easy-background: rgb(8 16 30 / 65%);
+    --medium-blur: blur(12px);
+    --easy-blur: blur(8px);
+    --transition: all 0.3s ease;
+    --btn-gradient-1: linear-gradient(200deg, var(--turquoise), var(--pink));
+}
+
+:root[data-theme="dark"] {}
