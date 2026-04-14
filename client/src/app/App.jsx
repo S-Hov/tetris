@@ -1,21 +1,7 @@
-import Header from "../components/Header"
-import CyberBg from "../components/CyberBg"
-
-import './styles/reset.css'
-import './styles/variables.css'
-import './styles/base.css'
-import './styles/animations.css'
-
+import AppRouter from './routing/AppRouter.jsx'
 
 const App = () => {
-  return (
-    <>
-      <CyberBg />
-      <Header />
-      <main>
-      </main>
-    </>
-  )
+  return <AppRouter />
 }
 
 export default App

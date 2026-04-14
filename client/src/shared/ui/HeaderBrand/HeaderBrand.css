@@ -1,0 +1,30 @@
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.tetris-icon {
+    font-size: 2.8rem;
+    filter: drop-shadow(0 0 10px var(turquoise)) drop-shadow(0 0 20px var(--pink));
+    animation: iconPulse 2s infinite alternate;
+    color: #000000;
+}
+
+@keyframes iconPulse {
+    0% { filter: drop-shadow(0 0 5px var(--turquoise)) drop-shadow(0 0 10px var(--pink));}
+    100% { filter: drop-shadow(0 0 15px #0ff) drop-shadow(0 0 25px #f0f);}
+}
+
+.logo-text h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+@media (max-width: 1100px) {
+    .brand {
+        justify-content: center;
+    }
+}

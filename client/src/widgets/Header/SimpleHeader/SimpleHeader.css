@@ -1,0 +1,30 @@
+/* .header-border-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: 60px;
+    padding: 2px;
+    background: linear-gradient(90deg, #00ffff, #ff00cc, #ffaa00, #00ffff);
+    background-size: 300% 300%;
+    animation: borderFlow 6s ease infinite;
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: -1;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+} */
+
+/* @keyframes borderFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+} */
