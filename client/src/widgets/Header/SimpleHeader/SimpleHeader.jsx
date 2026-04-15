@@ -2,7 +2,7 @@ import { simpleHeaderConfig } from './simpleHeader.data'
 import { Link, useLocation } from 'react-router-dom'
 
 import './SimpleHeader.css'
-import HeaderBrand from '../../../shared/ui/HeaderBrand'
+import HeaderBrand from '../../../shared/ui/Header/HeaderBrand'
 
 
 export default function SimpleHeader() {
@@ -19,10 +19,18 @@ export default function SimpleHeader() {
 
             <div className="header-content">
                 <HeaderBrand description={false} />
-
-                <Link to={currentConfig.backTo} className="back-link button btn-hover-shine">
-                    <i className="fas fa-arrow-left"></i> {currentConfig.backLabel}
-                </Link>
+                <nav className="simple-header-nav">
+                    <Link to={currentConfig.backTo} className="back-link button">
+                        <i className="fas fa-arrow-left"></i> {currentConfig.backLabel}
+                    </Link>
+                    {
+                        simpleHeaderConfig[location.pathname]
+                            ? <Link to="/" className="back-link button ">
+                                <i className="fas fa-arrow-left"></i> На главную
+                            </Link>
+                            : null
+                    }
+                </nav>
             </div>
 
             <div className="glow-line" />

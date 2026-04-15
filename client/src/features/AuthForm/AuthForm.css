@@ -1,0 +1,110 @@
+.auth-container {
+    background: transparent;
+    width: 90%;
+    max-width: 550px;
+    margin: 0 auto 3rem;
+    position: relative;
+}
+
+
+.agree-terms {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 1.5rem 0;
+    color: var(--text-color);
+    font-size: 0.85rem;
+    
+    & input {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--turquoise);
+        cursor: pointer;
+    }
+}
+
+
+.register-btn {
+    width: 100%;
+    background: var(--btn-gradient-1);
+    border: none;
+    padding: 1rem;
+    border-radius: 60px;
+    font-family: 'Orbitron';
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: var(--text-active-color);
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: var(--lite-shadow);
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    
+    & i{
+        transition: var(--transition);
+    }
+
+    &:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 25px cyan;
+        filter: brightness(1.05);
+
+        & i {
+            transform: rotate(190deg);
+        }
+    }
+}
+
+
+
+.alternative {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--turquoise);
+
+    & p {
+        color: var(--text-color);
+        margin-bottom: 1rem;
+    }
+}
+
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.social-icon {
+    background: var(--elem-bg);
+    width: 45px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--turquoise);
+    border: var(--border);
+    transition: 0.2s;
+    cursor: pointer;
+    
+    &:hover {
+        background: var(--turquoise);
+        color: black;
+        transform: translateY(-3px);
+        box-shadow: var(--hard-shadow);
+    }
+}
+
+
+.login-redirect {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+}
+

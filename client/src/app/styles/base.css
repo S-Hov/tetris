@@ -13,14 +13,26 @@ body {
     color: var(--text-color);
 }
 
+#root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+main {
+    flex: 1;
+    overflow-y: auto;
+}
+
 .section {
     padding: 50px 0;
 }
 
 .container {
-    max-width: 1700px;
+    max-width: var(--max-width);
     margin: 0 auto;
     padding: 0 40px;
+    background: var(--main-bg);
 }
 
 .section-title {
@@ -38,6 +50,17 @@ body {
     margin: 0 auto;
 }
 
+.glass-card {
+    background: rgba(8, 16, 30, 0.2);
+    backdrop-filter: var(--medium-blur);
+    border-radius: 48px;
+    border: var(--border);
+    padding: 2.5rem 2rem;
+    box-shadow: var(--lite-shadow);
+    transition: all 0.3s;
+}
+
+
 .gradient-text {
     background: var(--gradient-bg-1);
     -webkit-background-clip: text;
@@ -51,7 +74,7 @@ body {
     letter-spacing: 2px;
     text-transform: uppercase;
     font-weight: 500;
-    text-shadow: 0 0 5px cyan;
+    text-shadow: var(--text-shadow);
 }
 
 @media (max-width: 700px) {
@@ -94,5 +117,70 @@ body {
         color: var(--text-active-color);
         text-shadow: var(--text-shadow);
         transform: translateY(-2px);
+    }
+}
+
+::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+    background: transparent;
+}
+
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html,
+body {
+    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: inset 20px 20px 0px 20px #000000!important;
+    -webkit-text-fill-color: var(--text-color);
+}
+
+.link{
+    text-decoration: none;
+    color: var(--turquoise-lite);
+    transition: var(--transition);
+    position: relative;
+    
+    &::before{
+        content: '';
+        position: absolute;
+        width: 0%;
+        height: .5px;
+        background: var(--turquoise);
+        transition: var(--transition);
+        border-radius: 10px;
+        z-index: -1;
+        bottom: 0;
+        left: 50%;
+    }
+
+    &:hover{
+        text-shadow: var(--lite-shadow);
+        color: var(--turquoise);
+
+        &::before{
+            width: 100%;
+            left: 0;
+        }
     }
 }

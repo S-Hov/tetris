@@ -1,12 +1,12 @@
 .header {
     position: relative;
-    width: 100%;
-    border-radius: 60px;
+    width: calc(100% -4px);
     background: var(--easy-background);
     backdrop-filter: var(--medium-blur);
     box-shadow: var(--shadow);
     transition: var(--transition);
     overflow: hidden;
+    margin: 2px;
     
     &:hover {
         box-shadow: var(--hover-shadow);
@@ -14,7 +14,7 @@
 }
 
 .header-content {
-    padding: 1.5rem 2rem;
+    padding: .5rem 2rem;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -23,7 +23,7 @@
     position: relative;
     z-index: 200;
     width: 100%;
-    max-width: 2100px;
+    max-width: var(--max-width);
     margin: 0 auto;
 }
 

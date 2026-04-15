@@ -3,7 +3,7 @@ import './Header.css'
 import { modeItems, modeStats, navItems } from './header.data.js'
 import HeaderNavContext from '../../../shared/context/HeaderNavContext.js'
 import HeaderNav from '../../../features/HeaderNav/index.js'
-import HeaderBrand from '../../../shared/ui/HeaderBrand/index.js'
+import HeaderBrand from '../../../shared/ui/Header/HeaderBrand/index.js'
 import { parseKValue, formatNumberValue } from './header.utils.js'
 
 export default function Header() {

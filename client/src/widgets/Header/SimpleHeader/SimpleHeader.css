@@ -28,3 +28,19 @@
         background-position: 0% 50%;
     }
 } */
+
+.simple-header-nav{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.back-link{
+    & i{
+        transition: var(--transition);
+    }
+
+    &:hover i{
+        margin-right: 10px;
+    }
+}

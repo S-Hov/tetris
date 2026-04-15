@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import HeaderNavContext from '../../shared/context/HeaderNavContext'
-import HeaderLink from '../../shared/ui/HeaderLink'
+import HeaderLink from '../../shared/ui/Header/HeaderLink'
 
 import './HeaderNav.css'
 

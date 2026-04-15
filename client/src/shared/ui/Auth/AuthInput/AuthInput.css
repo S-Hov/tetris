@@ -1,0 +1,42 @@
+.input-group {
+    position: relative;
+    margin-bottom: 1.8rem;
+    
+    & i {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--turquoise);
+        font-size: 1.2rem;
+        text-shadow: var(--text-shadow);
+        transition: 0.2s;
+    }
+    
+    & input {
+        width: 100%;
+        background: var(--elem-bg);
+        border: var(--border);
+        border-radius: 60px;
+        padding: 1rem 1rem 1rem 3rem;
+        font-family: 'Inter', monospace;
+        font-size: 1rem;
+        color: var(--text-color);
+        outline: none;
+        transition: all 0.2s ease;
+        backdrop-filter: var(--easy-blur);
+        
+        &:focus {
+            border-color: var(--turquoise);
+            box-shadow: var(--lite-shadow);
+            background: rgba(0, 20, 40, 0.7);
+        }
+        
+        &::placeholder {
+            color: rgba(170, 240, 255, 0.6);
+            font-weight: 400;
+        }
+    }
+    
+}
+
