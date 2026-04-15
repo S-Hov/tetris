@@ -1,6 +1,16 @@
+.form-group{
+    margin-bottom: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: .9rem;
+
+    &:has(.form_error-msg) {
+        margin-bottom: .9rem;
+    }
+}
+
 .input-group {
     position: relative;
-    margin-bottom: 1.8rem;
     
     & i {
         position: absolute;
@@ -40,3 +50,7 @@
     
 }
 
+.form_error-msg{
+    padding: 0 15px;
+    color: var(--red);
+}

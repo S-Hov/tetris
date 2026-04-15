@@ -6,10 +6,9 @@
     position: relative;
 }
 
-
 .agree-terms {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 12px;
     margin: 1.5rem 0;
     color: var(--text-color);
@@ -20,6 +19,16 @@
         height: 18px;
         accent-color: var(--turquoise);
         cursor: pointer;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    & span{
+        color: var(--turquoise);
+    }
+
+    & .form_error-msg{
+        padding: 0;
     }
 }
 

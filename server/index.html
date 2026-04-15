@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form data-js-form>
+        <input type="text" name="name" placeholder="name" required>
+        <input type="number" name="age" placeholder="age" required>
+        <button type="submit">Add user</button>
+    </form>
+
+
+    <script>
+        // fetch('http://127.0.0.1:8880/post/78?query=samvelara&minval=908', {
+        //     method: "POST",
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         age:20,
+        //         glux: "glo glo"
+        //     })
+        // }).then(data => {
+        //     return data.json()
+        // }).then(body => {
+        //     console.log(body)
+        // })
+
+        fetch('http://127.0.0.1:8880/products').then(data => {
+            return data.json()
+        }).then(body => {
+            console.log(body)
+        })
+        
+        // fetch('http://127.0.0.1:8880/products/1').then(data => {
+        //     return data.json()
+        // }).then(body => {
+        //     console.log(body)
+        // })
+
+
+        // fetch('http://127.0.0.1:8880/products/1', {
+        //     method: "PUT",
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         name: "logitech mx master 3s",
+        //         price: 7800
+        //     })
+        // }).then(data => {
+        //     return data.json()
+        // }).then(body => {
+        //     console.log(body)
+        // })
+
+        // const form = document.querySelector('[data-js-form]')
+        // form.addEventListener('submit', e => {
+        //     e.preventDefault()
+        //     const body = new FormData(form)
+        //     console.log(body)
+
+        //     fetch('http://127.0.0.1:3000/users', {
+        //         method: "POST",
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify(body)
+        //     }).then(data => {
+        //         return data.json()
+        //     }).then(body => {
+        //         console.log(body)
+        //     })
+        // })
+
+        // console.log('hello world')
+
+        // fetch('http://127.0.0.1:8000/post', {
+        //     method: "POST",
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         name: 'John',
+        //         age: 30
+        //     })
+        // }).then(data => {
+        //     return data.json()
+        // }).then(body => {
+        //     console.log(body)
+        // })
+
+    </script>
+</body>
+
+</html>

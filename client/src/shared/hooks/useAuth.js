@@ -1,5 +1,6 @@
-import { useContext } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import AuthContext from '../context/AuthContext.js'
+import { authenticationAPI } from '../api/auth'
 
 export const useAuth = () => {
     const authContext = useContext(AuthContext)
@@ -9,4 +10,28 @@ export const useAuth = () => {
     }
 
     return authContext
+}
+
+export const useRegister = () => {
+    const [isPending, setIsPending] = useState(false)
+    const [error, setError] = useState(null)
+
+    const mutate = useCallback(async (data) => {
+        setIsPending(true)
+        setError(null)
+
+        try {
+            const response = await authenticationAPI.register(data)
+            console.log('Регистрация успешна!', response)
+            return response
+        } catch (err) {
+            setError(err)
+            console.error('Ошибка регистрации:', err?.message ?? 'Unknown error')
+            throw err
+        } finally {
+            setIsPending(false)
+        }
+    }, [])
+
+    return { mutate, isPending, error }
 }
