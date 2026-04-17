@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form"
 import AuthInput from "../../shared/ui/Auth/AuthInput"
 import { registerInputs } from "./AuthForm.data"
 import { useRegister } from "../../shared/hooks/useAuth"
+import { notify } from '../../utils/Notifications/notifications';
 
 const RegisterForm = () => {
     const {
@@ -20,6 +21,10 @@ const RegisterForm = () => {
     };
     
     const password = watch("password")
+
+    const test = () =>{
+        notify('Вы успешно вошли в систему!', 'warning')
+    }
 
     return (
         <form id="registerForm" noValidate onSubmit={handleSubmit(onSubmit)}>
@@ -57,7 +62,7 @@ const RegisterForm = () => {
             
             {serverError && <div className="error-msg">{serverError.message}</div>}
 
-            <button type="submit" className="register-btn submit-btn" disabled={isPending}>
+            <button type="submit" className="register-btn submit-btn" disabled={isPending} onClick={test}>
                 {isPending ? "ЗАГРУЗКА..." : "СОЗДАТЬ АККАУНТ"}
             </button>
         </form>
