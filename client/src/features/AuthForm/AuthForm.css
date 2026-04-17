@@ -6,6 +6,15 @@
     position: relative;
 }
 
+.glass-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.glow-glass-card {
+    padding: 2.5rem 2rem;
+}
+
 .agree-terms {
     display: flex;
     flex-direction: column;
@@ -13,7 +22,7 @@
     margin: 1.5rem 0;
     color: var(--text-color);
     font-size: 0.85rem;
-    
+
     & input {
         width: 18px;
         height: 18px;
@@ -23,11 +32,11 @@
         margin-bottom: 10px;
     }
 
-    & span{
+    & span {
         color: var(--turquoise);
     }
 
-    & .form_error-msg{
+    & .form_error-msg {
         padding: 0;
     }
 }
@@ -51,8 +60,8 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    
-    & i{
+
+    & i {
         transition: var(--transition);
     }
 
@@ -101,7 +110,7 @@
     border: var(--border);
     transition: 0.2s;
     cursor: pointer;
-    
+
     &:hover {
         background: var(--turquoise);
         color: black;
@@ -110,7 +119,7 @@
     }
 }
 
-.submit-btn{
+.submit-btn {
     margin-bottom: 1.8rem;
 }
 
@@ -119,4 +128,3 @@
     margin-top: 1.5rem;
     font-size: 0.9rem;
 }
-
