@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { unauthorized } from '../helpers/error.helper.js'
+import { forbidden, unauthorized } from '../helpers/error.helper.js'
 
 export const checkAuth = (req, res, next) => {
     const token = req.cookies.token
@@ -15,4 +15,20 @@ export const checkAuth = (req, res, next) => {
     } catch (error) {
         return next(unauthorized("Invalid or expired token"))
     }
+}
+
+export const checkNotAuth = (req, res, next) => {
+    const token = req.cookies.token
+
+    if (token) {
+        try {
+            jwt.verify(token, process.env.JWT_SECRET)
+            
+            return next(forbidden("You are already logged in"))
+        } catch (error) {
+            return next()
+        }
+    }
+
+    next()
 }

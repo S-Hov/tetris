@@ -1,30 +1,20 @@
-import { pool } from "../db/index.js"
+import { badRequest } from "../helpers/error.helper.js"
+import { checkEmailRepo, registerUserRepo } from "../repositories/authRepository.js"
 import bcrypt from "bcryptjs"
 
-export const registerUserService = async (email, password) => {
+export const registerUserService = async (username, email, password, confirmPassword) => {
+    const validation = registerSchema.safeParse({ username, email, password, confirmPassword })
+
+    if (!validation.success) {
+        const errorMsg = validation.error.errors[0].message
+        throw badRequest(errorMsg)
+    }
+
+    if (checkEmailRepo(email)) throw badRequest("Пользователь с таким email уже существует")
+
+    if (password !== confirmPassword) throw badRequest("Пароли не совпадают")
+
     const hashedPassword = await bcrypt.hash(password, 10)
-    const result = await pool.query(
-        `INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email`,
-        [email, hashedPassword]
-    )
 
-    return result.rows[0]
-}
-
-export const loginUserService = async (email) => {
-    const result = await pool.query(
-        'SELECT * FROM users WHERE email = $1',
-        [email]
-    )
-
-    return result.rows[0]
-}
-
-export const getUserService = async (id) => {
-    const result = await pool.query(
-        'SELECT id, email FROM users WHERE id = $1',
-        [id]
-    )
-
-    return result.rows[0]
+    return await registerUserRepo(email, hashedPassword)
 }

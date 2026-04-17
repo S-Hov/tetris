@@ -1,3 +1,5 @@
+const basUrl = 'http://127.0.0.1:8880'
+
 export async function apiClient(url, options = {}) {
     const headers = new Headers(options.headers || {})
     const isFormDataBody = typeof FormData !== 'undefined' && options.body instanceof FormData
@@ -6,7 +8,7 @@ export async function apiClient(url, options = {}) {
         headers.set('Content-Type', 'application/json')
     }
 
-    const response = await fetch(url, {
+    const response = await fetch(basUrl + url, {
         credentials: 'include',
         headers,
         ...options

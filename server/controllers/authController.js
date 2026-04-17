@@ -5,16 +5,17 @@ import bcrypt from "bcryptjs"
 
 
 export const register = asyncHandler(async (req, res) => {
-    const { email, password } = req.body
+    const { username, email, password, confirmPassword } = req.body
 
-    const user = await registerUserService(email, password)
+    const user = await registerUserService(username, email, password, confirmPassword)
 
     res.status(201).json({
         data: {
             id: user.id,
-            email: user.email
+            email: user.email,
+            redirectTo: `/verify-email/${user.email}`
         },
-        message: "User registered successfully",
+        message: "Пользователь зарегистрирован",
         success: true
     })
 })

@@ -24,7 +24,7 @@ export const authenticationAPI = {
     },
 
     resendVerificationCode(data) {
-        return apiClient('/api/authentication/resend-code', {
+        return apiClient('/api/authentication/resend-verification-email', {
             method: 'POST',
             body: JSON.stringify(data)
         })

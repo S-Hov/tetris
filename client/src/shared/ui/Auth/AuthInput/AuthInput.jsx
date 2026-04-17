@@ -10,6 +10,7 @@ const AuthInput = ({ input, register = null, error = null }) => {
                     {...(register ? register(input.key) : {})}
                     type={input.type}
                     id={input.key}
+                    name={input.key}
                     placeholder={input.placeholder}
                     autoComplete='off'
                     aria-errormessage={input.ariaError}
