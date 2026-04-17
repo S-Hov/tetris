@@ -1,4 +1,4 @@
-import { forbidden } from "../helpers/error.helper"
+import { forbidden } from "../helpers/error.helper.js"
 
 export const checkRole = (roles = []) => {
     return (req, res, next) => {

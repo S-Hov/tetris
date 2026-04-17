@@ -1,9 +1,13 @@
 import { pool } from '../db/index.js'
 
-export const registerUserRepo = async (email, password) => {
+export const registerUserRepo = async (username, email, passwordHash, roleId, status = 'pending_verification') => {
     const result = await pool.query(
-        `INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email`,
-        [email, password]
+        `
+        INSERT INTO users (role_id, username, email, password_hash, status)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id, username, email, status
+        `,
+        [roleId, username, email, passwordHash, status]
     )
 
     return result.rows[0]
@@ -36,4 +40,47 @@ export const getUserService = async (id) => {
     )
 
     return result.rows[0]
+}
+
+export const registerUserWithVerificationRepo = async ({
+    username,
+    email,
+    passwordHash,
+    roleId,
+    verificationCodeHash,
+    expiresAt,
+}) => {
+    const client = await pool.connect()
+
+    try {
+        await client.query('BEGIN')
+
+        const userResult = await client.query(
+            `
+            INSERT INTO users (role_id, username, email, password_hash, status)
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING id, username, email, status
+            `,
+            [roleId, username, email, passwordHash, 'pending_verification']
+        )
+
+        const user = userResult.rows[0]
+
+        await client.query(
+            `
+            INSERT INTO email_verifications (user_id, email, code_hash, status, expires_at)
+            VALUES ($1, $2, $3, $4, $5)
+            `,
+            [user.id, email, verificationCodeHash, 'pending', expiresAt]
+        )
+
+        await client.query('COMMIT')
+
+        return user
+    } catch (error) {
+        await client.query('ROLLBACK')
+        throw error
+    } finally {
+        client.release()
+    }
 }

@@ -1,18 +1,27 @@
 import { getUserService, loginUserService, registerUserService } from "../services/authService.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 import jwt from "jsonwebtoken"
-import bcrypt from "bcryptjs"
+import bcrypt from "bcrypt"
+import { sendVerificationEmail } from "../services/emailService.js"
 
 
 export const register = asyncHandler(async (req, res) => {
-    const { username, email, password, confirmPassword } = req.body
+    console.log('запрос на регистрацию')
+    const { username, email, password } = req.body
 
-    const user = await registerUserService(username, email, password, confirmPassword)
+    const { user, verificationCode } = await registerUserService(username, email, password)
+
+    try {
+        await sendVerificationEmail(user.email, verificationCode)
+        console.log('письмо отправлено')
+    } catch (error) {
+        console.error('Email send error:', error)
+    }
 
     res.status(201).json({
         data: {
-            id: user.id,
-            email: user.email,
+            ...user,
+            verificationCode,
             redirectTo: `/verify-email/${user.email}`
         },
         message: "Пользователь зарегистрирован",

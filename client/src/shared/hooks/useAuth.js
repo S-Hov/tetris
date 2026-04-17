@@ -17,10 +17,12 @@ export const useRegister = () => {
     const [error, setError] = useState(null)
 
     const mutate = useCallback(async (data) => {
+        console.log('data :', data);
         setIsPending(true)
         setError(null)
-
+        console.log('попытка запроса')
         try {
+            console.log('начало запроса')
             const response = await authenticationAPI.register(data)
             console.log('Регистрация успешна!', response)
             return response

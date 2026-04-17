@@ -3,6 +3,7 @@ import { apiClient } from "../apiClient.js"
 export const authenticationAPI = {
 
     register(data) {
+        console.log('запрос');
         return apiClient('/api/authentication/register', {
             method: 'POST',
             body: JSON.stringify(data)
