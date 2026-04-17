@@ -1,10 +1,10 @@
-import { NavLink } from "react-router-dom"
+import AuthForm from "../../features/AuthForm/AuthForm"
 
 const LoginPage = () => {
     return (
-        <div>login
-            <NavLink to="/register"> register</NavLink>
-        </div>
+        <section className="section login-section auth-section">
+            <AuthForm type='Login'></AuthForm>
+        </section>
     )
 }
 

@@ -164,8 +164,9 @@ input:-webkit-autofill:focus {
     &::before{
         content: '';
         position: absolute;
+        z-index: -1;
         width: 0%;
-        height: .5px;
+        height: .2px;
         background: var(--turquoise);
         transition: var(--transition);
         border-radius: 10px;

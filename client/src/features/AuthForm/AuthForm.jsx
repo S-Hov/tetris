@@ -4,17 +4,19 @@ import RegisterFormHeader from "../../shared/ui/Auth/AuthHeader/RegisterHeader"
 
 import './AuthForm.css'
 import LoginFormHeader from "../../shared/ui/Auth/AuthHeader/LoginHeader"
+import AuthRedirect from './../../shared/ui/Auth/AuthRedirect';
 
 const AuthForm = (props) => {
     const {
         type = 'login'
     } = props
+    console.log('type :', type);
 
     return (
         <div className="container auth-container">
             <div className="glass-card">
 
-                {type === 'login'
+                {type === 'Login'
                     ? <>
                         <LoginFormHeader />
                         <LoginForm />
@@ -37,9 +39,7 @@ const AuthForm = (props) => {
                     </div>
                 </div>
 
-                <div className="login-redirect">
-                    Уже есть аккаунт? <a href="/login" className="link" id="loginRedirect">Войти в систему →</a>
-                </div>
+                <AuthRedirect type={type} />
             </div>
         </div>
     )

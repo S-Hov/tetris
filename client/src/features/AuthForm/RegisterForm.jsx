@@ -57,7 +57,7 @@ const RegisterForm = () => {
             
             {serverError && <div className="error-msg">{serverError.message}</div>}
 
-            <button type="submit" className="register-btn" disabled={isPending}>
+            <button type="submit" className="register-btn submit-btn" disabled={isPending}>
                 {isPending ? "ЗАГРУЗКА..." : "СОЗДАТЬ АККАУНТ"}
             </button>
         </form>

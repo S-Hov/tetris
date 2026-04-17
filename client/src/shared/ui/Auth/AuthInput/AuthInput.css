@@ -3,9 +3,14 @@
     display: flex;
     flex-direction: column;
     gap: .9rem;
+    transition: var(--transition);
 
     &:has(.form_error-msg) {
         margin-bottom: .9rem;
+    }
+
+    &:has(input:focus) {
+        transform: scale(1.02);
     }
 }
 

@@ -33,7 +33,7 @@
 }
 
 
-.register-btn {
+.submit-btn {
     width: 100%;
     background: var(--btn-gradient-1);
     border: none;
@@ -110,8 +110,11 @@
     }
 }
 
+.submit-btn{
+    margin-bottom: 1.8rem;
+}
 
-.login-redirect {
+.form-redirect {
     text-align: center;
     margin-top: 1.5rem;
     font-size: 0.9rem;

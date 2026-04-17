@@ -33,5 +33,16 @@ export const registerInputs = [
         validation: {
             required: "Подтвердите пароль",
         }
-    }
+    },
+]
+
+export const loginInputs = [
+    {
+        key: 'email', type: 'email', placeholder: 'Электронная почта',
+        icon: 'fas fa-envelope',
+    },
+    {
+        key: 'password', type: 'password', placeholder: 'Пароль',
+        icon: 'fas fa-lock',
+    },
 ]
