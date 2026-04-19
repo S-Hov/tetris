@@ -1,5 +1,7 @@
 :root {
     --main-bg: radial-gradient(circle at 20% 30%, #0a0f1e, #03050b);
+    --font-1: 'Orbitron', monospace;
+    --box-bg: rgba(8, 16, 30, 0.092);
     --blue: #0088ff;
     --pink: #ff00ff;
     --yellow: #ffff00;
@@ -11,6 +13,7 @@
     --glow-gradient: linear-gradient(90deg, var(--blue), var(--pink), var(--turquoise), var(--yellow), var(--blue));
     --glow-gradient-lite: linear-gradient(135deg, var(--pink), var(--blue), var(--turquoise), var(--pink));
     --shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px #00ffff33, inset 0 1px 0 #ffffff1a;
+    --revers-shadow: inset 0 0 18px rgba(0, 255, 255, 0.3);
     --hover-shadow: 0 30px 50px #00000099, 0 0 45px #00ffff66;
     --easy-background: rgb(8 16 30 / 65%);
     --hard-blur: blur(20px);

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 
 import { getTypeStyles, toastAnimation, starAnimation, getProgressBarAnimation, glowBorderAnimation } from './toastStyles.js'
 
-const TOAST_DURATION = 4000
+const TOAST_DURATION = 3500
 
 const getIcon = (type) => {
     switch (type) {
@@ -13,6 +13,8 @@ const getIcon = (type) => {
             return SkullIcon
         case 'warning':
             return WarningIcon
+        case 'info':
+            return InfoIcon
         default:
             return CheckIcon
     }
@@ -41,6 +43,12 @@ const SkullIcon = () => (
 const WarningIcon = () => (
     <svg viewBox="0 0 512 512" aria-hidden="true" style={iconStyle}>
         <path d="M256 48c10.9 0 20.9 5.8 26.3 15.3l216 376c5.4 9.4 5.4 21 0 30.4S482.9 485 472 485H40c-10.9 0-20.9-5.8-26.3-15.3s-5.4-21 0-30.4l216-376C235.1 53.8 245.1 48 256 48Zm0 128c-13.3 0-24 10.7-24 24v112c0 13.3 10.7 24 24 24s24-10.7 24-24V200c0-13.3-10.7-24-24-24Zm32 224a32 32 0 1 0-64 0 32 32 0 0 0 64 0Z" />
+    </svg>
+)
+
+const InfoIcon = () => (
+    <svg viewBox="0 0 512 512" aria-hidden="true" style={iconStyle}>
+        <path d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"/>
     </svg>
 )
 
@@ -276,7 +284,7 @@ const CustomToast = ({ t, message, type, duration }) => {
     )
 }
 
-export const notify = (message, type = 'success') => {
+const notify = (message, type = 'success') => {
     toast.custom(
         (t) => <CustomToast t={t} message={message} type={type} duration={TOAST_DURATION} />,
         {
@@ -286,3 +294,5 @@ export const notify = (message, type = 'success') => {
         }
     )
 }
+
+export default notify

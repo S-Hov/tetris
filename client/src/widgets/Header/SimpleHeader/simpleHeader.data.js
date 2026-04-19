@@ -7,8 +7,8 @@ export const simpleHeaderConfig = {
         backTo: '/login',
         backLabel: 'Ко входу',
     },
-    // '/profile': {
-    //     backTo: '/',
-    //     backLabel: 'На главную',
-    // },
+    '/profile': {
+        backTo: '/',
+        backLabel: 'На главную',
+    },
 }

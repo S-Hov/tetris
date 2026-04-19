@@ -1,54 +1,76 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import AuthContext from './AuthContext.js'
+import { authenticationAPI } from '../api/auth'
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
+    const authRequestIdRef = useRef(0)
 
-    const checkAuth = async () => {
+    const checkAuth = useCallback(async ({ silent = false } = {}) => {
+        const requestId = authRequestIdRef.current + 1
+        authRequestIdRef.current = requestId
+
+        if (!silent) {
+            setIsLoading(true)
+        }
+
         try {
-            const response = await fetch('http://localhost:8880/auth/me', {
-                credentials: 'include',
-            })
+            const currentUser = await authenticationAPI.me()
 
-            if (!response.ok) {
-                setUser(null)
-                return
+            if (authRequestIdRef.current === requestId) {
+                setUser(currentUser)
             }
 
-            const data = await response.json()
-            setUser(data.data)
+            return currentUser
         } catch {
-            setUser(null)
+            if (authRequestIdRef.current === requestId) {
+                setUser(null)
+            }
+
+            return null
         } finally {
-            setIsLoading(false)
+            if (authRequestIdRef.current === requestId && !silent) {
+                setIsLoading(false)
+            }
         }
-    }
+    }, [])
 
     useEffect(() => {
         checkAuth()
+    }, [checkAuth])
+
+    const login = useCallback(async (credentials) => {
+        const currentUser = await authenticationAPI.login(credentials)
+        authRequestIdRef.current += 1
+        setUser(currentUser)
+        setIsLoading(false)
+
+        return currentUser
     }, [])
 
-    const logout = async () => {
-        await fetch('http://localhost:8880/auth/logout', {
-            method: 'POST',
-            credentials: 'include',
-        })
+    const logout = useCallback(async () => {
+        try {
+            await authenticationAPI.logout()
+        } finally {
+            authRequestIdRef.current += 1
+            setUser(null)
+            setIsLoading(false)
+        }
+    }, [])
 
-        setUser(null)
-    }
+    const value = useMemo(() => ({
+        user,
+        isAuth: !!user,
+        isLoading,
+        setUser,
+        checkAuth,
+        login,
+        logout,
+    }), [checkAuth, isLoading, login, logout, user])
 
     return (
-        <AuthContext.Provider
-            value={{
-                user,
-                isAuth: !!user,
-                isLoading,
-                setUser,
-                checkAuth,
-                logout,
-            }}
-        >
+        <AuthContext.Provider value={value}>
             {children}
         </AuthContext.Provider>
     )

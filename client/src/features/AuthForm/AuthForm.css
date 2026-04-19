@@ -41,6 +41,18 @@
     }
 }
 
+.error-msg {
+    color: #ffd8d8;
+    background: rgba(219, 56, 56, 0.18);
+    border: 1px solid rgba(219, 56, 56, 0.45);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.2rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    text-align: center;
+}
+
 
 .submit-btn {
     width: 100%;

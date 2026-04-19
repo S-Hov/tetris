@@ -3,7 +3,6 @@ import { apiClient } from "../apiClient.js"
 export const authenticationAPI = {
 
     register(data) {
-        console.log('запрос');
         return apiClient('/api/authentication/register', {
             method: 'POST',
             body: JSON.stringify(data)
@@ -17,10 +16,26 @@ export const authenticationAPI = {
         })
     },
 
+    async me() {
+        const response = await apiClient('/api/authentication/me', {
+            method: 'GET'
+        })
+
+        return response.user || null
+    },
+
+    logout() {
+        return apiClient('/api/authentication/logout', {
+            method: 'POST'
+        })
+    },
+
     verifyEmail(data) {
-        return apiClient('/api/authentication/verify-email', {
+        const { email, code } = data
+
+        return apiClient(`/api/authentication/verify-email/${encodeURIComponent(email)}`, {
             method: 'POST',
-            body: JSON.stringify(data)
+            body: JSON.stringify({ code })
         })
     },
 
@@ -32,8 +47,7 @@ export const authenticationAPI = {
     },
 
     getVerificationTime(email) {
-        const params = email ? `?email=${encodeURIComponent(email)}` : '';
-        return apiClient(`/api/authentication/verification-time${params}`, {
+        return apiClient(`/api/authentication/verification-time/${encodeURIComponent(email)}`, {
             method: 'GET'
         })
     }

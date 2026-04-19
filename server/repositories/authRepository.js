@@ -24,7 +24,7 @@ export const checkEmailRepo = async (email) => {
 }
 
 
-export const loginUserService = async (email) => {
+export const loginUserRepo = async (email) => {
     const result = await pool.query(
         'SELECT * FROM users WHERE email = $1',
         [email]
@@ -33,9 +33,9 @@ export const loginUserService = async (email) => {
     return result.rows[0]
 }
 
-export const getUserService = async (id) => {
+export const getUserRepo = async (id) => {
     const result = await pool.query(
-        'SELECT id, email FROM users WHERE id = $1',
+        'SELECT id, username, email, status, role_id FROM users WHERE id = $1',
         [id]
     )
 
@@ -83,4 +83,111 @@ export const registerUserWithVerificationRepo = async ({
     } finally {
         client.release()
     }
+}
+
+export const getUserByEmailRepo = async (email) => {
+    const result = await pool.query(
+        'SELECT id, username, email, status FROM users WHERE email = $1',
+        [email]
+    )
+
+    return result.rows[0]
+}
+
+export const getLatestPendingVerificationByEmailRepo = async (email) => {
+    const result = await pool.query(
+        `
+        SELECT id, user_id, email, code_hash, status, expires_at
+        FROM email_verifications
+        WHERE email = $1 AND status = 'pending'
+        ORDER BY expires_at DESC
+        LIMIT 1
+        `,
+        [email]
+    )
+
+    return result.rows[0]
+}
+
+export const createEmailVerificationRepo = async ({
+    userId,
+    email,
+    verificationCodeHash,
+    expiresAt,
+}) => {
+    const client = await pool.connect()
+
+    try {
+        await client.query('BEGIN')
+
+        await client.query(
+            `
+            UPDATE email_verifications
+            SET status = 'expired'
+            WHERE email = $1 AND status = 'pending'
+            `,
+            [email]
+        )
+
+        const result = await client.query(
+            `
+            INSERT INTO email_verifications (user_id, email, code_hash, status, expires_at)
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING id, user_id, email, status, expires_at
+            `,
+            [userId, email, verificationCodeHash, 'pending', expiresAt]
+        )
+
+        await client.query('COMMIT')
+
+        return result.rows[0]
+    } catch (error) {
+        await client.query('ROLLBACK')
+        throw error
+    } finally {
+        client.release()
+    }
+}
+
+export const markEmailVerifiedRepo = async ({ userId, verificationId }) => {
+    const client = await pool.connect()
+
+    try {
+        await client.query('BEGIN')
+
+        await client.query(
+            `
+            UPDATE email_verifications
+            SET status = 'used', verified_at = NOW()
+            WHERE id = $1
+            `,
+            [verificationId]
+        )
+
+        const userResult = await client.query(
+            `
+            UPDATE users
+            SET status = 'active', email_verified_at = NOW()
+            WHERE id = $1
+            RETURNING id, username, email, status
+            `,
+            [userId]
+        )
+
+        await client.query('COMMIT')
+
+        return userResult.rows[0]
+    } catch (error) {
+        await client.query('ROLLBACK')
+        throw error
+    } finally {
+        client.release()
+    }
+}
+
+export const updateUserLastLoginRepo = async (id) => {
+    const result = await pool.query(
+        'UPDATE users SET last_login_at = NOW() WHERE id = $1 RETURNING id, username, email, status',
+        [id]
+    )
 }

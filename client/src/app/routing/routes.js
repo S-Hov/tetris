@@ -8,6 +8,7 @@ import InnerPageLayout from '../layouts/InnerPageLayout.jsx'
 
 import ProtectedRoute from './ProtectedRoute.jsx'
 import GuestRoute from './GuestRoute.jsx'
+import VerifyEmailPage from '../../pages/VerifyEmail/VerifyEmailPage.jsx'
 
 export const routes = [
     {
@@ -34,7 +35,14 @@ export const routes = [
         key: 'profile',
         path: '/profile',
         component: ProfilePage,
-        layout: InnerPageLayout,
+        layout: MainLayout,
         guard: ProtectedRoute,
+    },
+    {
+        key: 'Email Verification',
+        path: '/verify-email/:email',
+        component: VerifyEmailPage,
+        layout: InnerPageLayout,
+        guard: GuestRoute,
     },
 ]

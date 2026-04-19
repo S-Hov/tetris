@@ -1,4 +1,14 @@
-const basUrl = 'http://127.0.0.1:8880'
+const getBaseUrl = () => {
+    if (import.meta.env.VITE_API_URL) {
+        return import.meta.env.VITE_API_URL
+    }
+
+    if (typeof window !== 'undefined' && window.location.hostname) {
+        return `http://${window.location.hostname}:8880`
+    }
+
+    return 'http://127.0.0.1:8880'
+}
 
 export async function apiClient(url, options = {}) {
     const headers = new Headers(options.headers || {})
@@ -8,7 +18,7 @@ export async function apiClient(url, options = {}) {
         headers.set('Content-Type', 'application/json')
     }
 
-    const response = await fetch(basUrl + url, {
+    const response = await fetch(getBaseUrl() + url, {
         credentials: 'include',
         headers,
         ...options

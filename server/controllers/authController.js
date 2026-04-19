@@ -1,9 +1,23 @@
-import { getUserService, loginUserService, registerUserService } from "../services/authService.js"
+import {
+    getUserService,
+    getVerificationMetaService,
+    ensurePendingVerificationService,
+    loginUserService,
+    registerUserService,
+    resendVerificationCodeService,
+    verifyEmailService,
+    loginConfirmationService,
+} from "../services/authService.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import { sendVerificationEmail } from "../services/emailService.js"
 
+const authCookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+}
 
 export const register = asyncHandler(async (req, res) => {
     console.log('запрос на регистрацию')
@@ -21,8 +35,7 @@ export const register = asyncHandler(async (req, res) => {
     res.status(201).json({
         data: {
             ...user,
-            verificationCode,
-            redirectTo: `/verify-email/${user.email}`
+            redirectTo: `/verify-email/${encodeURIComponent(user.email)}`
         },
         message: "Пользователь зарегистрирован",
         success: true
@@ -32,58 +45,79 @@ export const register = asyncHandler(async (req, res) => {
 export const login = asyncHandler(async (req, res) => {
     const { email, password } = req.body
 
-    if (typeof email !== 'string' || email.trim() === '') {
-        const error = new Error("Invalid email")
-        error.statusCode = 400
-        throw error
-    }
-
-    if (typeof password !== 'string' || password.trim() === '') {
-        const error = new Error("Invalid password")
-        error.statusCode = 400
-        throw error
-    }
-
     const user = await loginUserService(email)
 
     if (!user) {
-        const error = new Error("User not found")
+        const error = new Error("Неверный Email или пароль")
         error.statusCode = 401
         throw error
     }
 
-    const isMatch = await bcrypt.compare(password, user.password)
+    const isMatch = await bcrypt.compare(password, user.password_hash)
 
     if (!isMatch) {
-        const error = new Error("Invalid password")
+        const error = new Error("Неверный Email или пароль")
         error.statusCode = 401
         throw error
     }
 
+    if (user.status !== 'active') {
+        const pendingVerification = await ensurePendingVerificationService(user.email)
+
+        if (pendingVerification.shouldSendEmail) {
+            await sendVerificationEmail(pendingVerification.email, pendingVerification.verificationCode)
+        }
+
+        return res.status(403).json({
+            success: false,
+            message: pendingVerification.shouldSendEmail
+                ? 'Почта не подтверждена. Мы отправили новый код'
+                : 'Почта не подтверждена. Введите код из письма',
+            data: {
+                code: 'EMAIL_NOT_VERIFIED',
+                email: user.email,
+                redirectTo: `/verify-email/${encodeURIComponent(user.email)}`,
+            },
+        })
+    }
+
+    await loginConfirmationService(user.id)
+
     const token = jwt.sign(
-        { id: user.id, role: user.role },
+        { id: user.id, roleId: user.role_id },
         process.env.JWT_SECRET,
         { expiresIn: '1h' }
     )
 
     res.cookie('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        ...authCookieOptions,
         maxAge: 3600000
-    });
+    })
 
     res.json({
         success: true,
-        message: "Logged in successfully",
+        message: "Вы успешно вошли в аккаунт",
         data: {
             id: user.id,
-            email: user.email
+            username: user.username,
+            email: user.email,
+            status: user.status,
         }
     })
 })
 
 export const getMe = asyncHandler(async (req, res) => {
+    if (!req.user) {
+        return res.json({
+            success: true,
+            message: "Guest session",
+            data: {
+                user: null,
+                isAuthenticated: false,
+            }
+        })
+    }
+
     const userId = req.user.id
 
     const user = await getUserService(userId)
@@ -91,15 +125,62 @@ export const getMe = asyncHandler(async (req, res) => {
     res.json({
         success: true,
         message: "User fetched successfully",
-        data: user
+        data: {
+            user,
+            isAuthenticated: true,
+        }
     })
 })
 
 export const logout = (req, res) => {
-    res.clearCookie('token')
+    res.clearCookie('token', authCookieOptions)
 
     res.json({
         success: true,
         message: 'Logged out successfully'
     })
 }
+
+export const getVerificationMeta = asyncHandler(async (req, res) => {
+    const { email } = req.params
+
+    const meta = await getVerificationMetaService(email)
+
+    res.json({
+        success: true,
+        message: 'Verification metadata fetched successfully',
+        data: meta,
+    })
+})
+
+export const verifyEmail = asyncHandler(async (req, res) => {
+    const { email } = req.params
+    const { code } = req.body
+
+    const user = await verifyEmailService(email, code)
+
+    res.json({
+        success: true,
+        message: 'Email verified successfully',
+        data: {
+            user,
+            redirectTo: '/login',
+        },
+    })
+})
+
+export const resendVerificationEmail = asyncHandler(async (req, res) => {
+    const { email } = req.body
+
+    const { email: userEmail, verificationCode } = await resendVerificationCodeService(email)
+
+    await sendVerificationEmail(userEmail, verificationCode)
+
+    const meta = await getVerificationMetaService(userEmail)
+
+    res.json({
+        success: true,
+        message: 'Verification email sent successfully',
+        data: meta,
+    })
+})

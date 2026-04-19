@@ -1,13 +1,16 @@
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import AuthInput from "../../shared/ui/Auth/AuthInput"
 import { registerInputs } from "./AuthForm.data"
 import { useRegister } from "../../shared/hooks/useAuth"
+import { useNavigate } from "react-router-dom"
+import notify from "../../utils/Notifications"
 
 const RegisterForm = () => {
+    const navigate = useNavigate()
     const {
         register,
         handleSubmit,
-        watch,
+        control,
         formState: { errors }
     } = useForm({
         mode: "onChange"
@@ -15,11 +18,21 @@ const RegisterForm = () => {
 
     const { mutate, isPending, error: serverError } = useRegister()
 
-    const onSubmit = (data) => {
-        mutate(data)
+    const onSubmit = async (data) => {
+        const response = await mutate(data)
+        if(!response.success) {
+            notify(response.message, "error")
+            return
+        }
+        
+        const redirectTo = response.redirectTo || `/verify-email/${encodeURIComponent(data.email)}`
+
+        notify(response.message)
+
+        navigate(redirectTo)
     };
     
-    const password = watch("password")
+    const password = useWatch({ control, name: "password" })
 
     return (
         <form id="registerForm" noValidate onSubmit={handleSubmit(onSubmit)}>

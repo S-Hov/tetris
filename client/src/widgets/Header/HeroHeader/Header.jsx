@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import './Header.css'
 import { modeItems, modeStats, navItems } from './header.data.js'
 import HeaderNavContext from '../../../shared/context/HeaderNavContext.js'
@@ -8,19 +9,18 @@ import { parseKValue, formatNumberValue } from './header.utils.js'
 import GlowEffect from '../../../shared/ui/GlowEffect'
 
 export default function Header() {
-    const [activePage, setActivePage] = useState('home')
-    const [activeMode, setActiveMode] = useState(null)
+    const { pathname } = useLocation()
     const [liveStats, setLiveStats] = useState(() =>
         Object.fromEntries(
             Object.entries(modeStats).map(([modeKey, modeValue]) => [modeKey, { ...modeValue }]),
         ),
     )
+    const activeMode = getActiveItemKey(modeItems, pathname)
+    const activePage = activeMode ? null : getActiveItemKey(navItems, pathname)
 
     const contextValue = {
         activePage,
-        setActivePage,
         activeMode,
-        setActiveMode,
         navItems,
         modeItems,
         modeStats,
@@ -93,4 +93,28 @@ export default function Header() {
             </header>
         </GlowEffect>
     )
+}
+
+const getActiveItemKey = (items, pathname) => {
+    const normalizedPathname = normalizePath(pathname)
+    const sortedItems = [...items].sort((firstItem, secondItem) => secondItem.to.length - firstItem.to.length)
+    const activeItem = sortedItems.find((item) => {
+        const itemPath = normalizePath(item.to)
+
+        if (itemPath === '/') {
+            return normalizedPathname === '/'
+        }
+
+        return normalizedPathname === itemPath || normalizedPathname.startsWith(`${itemPath}/`)
+    })
+
+    return activeItem?.key || null
+}
+
+const normalizePath = (path) => {
+    if (!path || path === '/') {
+        return '/'
+    }
+
+    return path.replace(/\/+$/, '')
 }

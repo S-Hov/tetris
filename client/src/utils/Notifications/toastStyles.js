@@ -35,6 +35,16 @@ export const getTypeStyles = (type) => {
             iconFamily: 'fas',
             title: 'ПРЕДУПРЕЖДЕНИЕ',
             rgb: '245, 158, 11'
+        },
+        info: {
+            gradient: 'linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)',
+            color: '#3b82f6',
+            lightColor: '#60a5fa',
+            bg: 'rgba(59, 130, 246, 0.05)',
+            border: 'rgba(59, 130, 246, 0.3)',
+            glow: 'rgba(59, 130, 246, 0.1)',
+            title: 'ИНФОРМАЦИЯ',
+            rgb: '59, 130, 246'
         }
     }
     return styles[type] || styles.success

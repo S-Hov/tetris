@@ -1,20 +1,37 @@
 import express from 'express'
-import { checkNotAuth } from '../middleware/checkAuth.js'
-import { register } from '../controllers/authController.js'
+import { checkNotAuth, optionalAuth } from '../middleware/checkAuth.js'
+import {
+    getVerificationMeta,
+    getMe,
+    login,
+    logout,
+    register,
+    resendVerificationEmail,
+    verifyEmail,
+} from '../controllers/authController.js'
 import { validate } from '../middleware/validateAuth.js'
-import { registerSchema } from '../validations/auth.validation.js'
+import {
+    loginSchema,
+    registerSchema,
+    resendVerificationEmailSchema,
+    verifyEmailSchema,
+} from '../validations/auth.validation.js'
 
 
 const authRouter = express.Router()
 
 authRouter.post('/register', checkNotAuth, validate(registerSchema), register)
 
-authRouter.post('/login', checkNotAuth)
+authRouter.post('/login', checkNotAuth, validate(loginSchema), login)
 
-authRouter.post('/verify-email/:email', checkNotAuth)
+authRouter.get('/me', optionalAuth, getMe)
 
-authRouter.post('/resend-verification-email', checkNotAuth)
+authRouter.post('/logout', logout)
 
-authRouter.get('/verification-time/:email', checkNotAuth)
+authRouter.post('/verify-email/:email', checkNotAuth, validate(verifyEmailSchema), verifyEmail)
+
+authRouter.post('/resend-verification-email', checkNotAuth, validate(resendVerificationEmailSchema), resendVerificationEmail)
+
+authRouter.get('/verification-time/:email', checkNotAuth, getVerificationMeta)
 
 export default authRouter

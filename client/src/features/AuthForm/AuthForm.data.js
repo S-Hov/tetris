@@ -40,9 +40,18 @@ export const loginInputs = [
     {
         key: 'email', type: 'email', placeholder: 'Электронная почта',
         icon: 'fas fa-envelope',
+        ariaError: 'login-email-error',
+        validation: {
+            required: "Введите электронную почту",
+            pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Email должен быть в формате name@example.com" }
+        }
     },
     {
         key: 'password', type: 'password', placeholder: 'Пароль',
         icon: 'fas fa-lock',
+        ariaError: 'login-password-error',
+        validation: {
+            required: "Введите пароль",
+        }
     },
 ]

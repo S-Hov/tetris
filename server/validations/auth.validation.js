@@ -21,3 +21,22 @@ export const registerSchema = z.object({
     message: "Пароли не совпадают",
     path: ["confirmPassword"],
 })
+
+export const loginSchema = z.object({
+    email: z.string()
+        .email("Неверный формат email"),
+
+    password: z.string()
+        .min(1, "Введите пароль"),
+})
+
+export const verifyEmailSchema = z.object({
+    code: z.string()
+        .trim()
+        .regex(/^\d+$/, "Код должен состоять только из цифр"),
+})
+
+export const resendVerificationEmailSchema = z.object({
+    email: z.string()
+        .email("Неверный формат email"),
+})

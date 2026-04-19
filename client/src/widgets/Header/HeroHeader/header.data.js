@@ -1,7 +1,7 @@
 export const navItems = [
     { key: 'home', label: 'ГЛАВНАЯ', icon: 'fas fa-home', to: '/' },
     { key: 'about', label: 'О НАС', icon: 'fas fa-info-circle', to: '/about' },
-    { key: 'profile', label: 'ЛИЧНЫЙ КАБИНЕТ', icon: 'fas fa-user-astronaut', to: '/login' },
+    { key: 'profile', label: 'ЛИЧНЫЙ КАБИНЕТ', icon: 'fas fa-user-astronaut', to: '/profile' },
     { key: 'leaderboard', label: 'РЕЙТИНГ', icon: 'fas fa-trophy', to: '/rating' },
     { key: 'support', label: 'ПОДДЕРЖКА', icon: 'fas fa-headset', to: '/support' }
 ]

@@ -5,20 +5,8 @@ import HeaderNavContext from '../../../context/HeaderNavContext'
 const HeaderLink = ({ item, type = 'nav' }) => {
     const {
         activePage,
-        setActivePage,
         activeMode,
-        setActiveMode,
     } = useContext(HeaderNavContext)
-
-    const handleClick = () => {
-        if (type === 'nav') {
-            setActivePage(item.key)
-            setActiveMode(null)
-        } else if (type === 'mode') {
-            setActiveMode(item.key)
-            setActivePage(null)
-        }
-    }
 
     const isActive = type === 'nav'
         ? activePage === item.key
@@ -29,7 +17,7 @@ const HeaderLink = ({ item, type = 'nav' }) => {
         : `mode-btn header-nav-btn btn-hover-shine button ${isActive ? 'active-page' : ''}`
 
     return (
-        <NavLink to={item.to} className={className} onClick={handleClick}>
+        <NavLink to={item.to} className={className}>
             <i className={item.icon}></i> {item.label}
         </NavLink>
     )
