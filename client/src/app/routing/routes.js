@@ -9,6 +9,7 @@ import InnerPageLayout from '../layouts/InnerPageLayout.jsx'
 import ProtectedRoute from './ProtectedRoute.jsx'
 import GuestRoute from './GuestRoute.jsx'
 import VerifyEmailPage from '../../pages/VerifyEmail/VerifyEmailPage.jsx'
+import GamePage from '../../pages/GamePage/GamePage.jsx'
 
 export const routes = [
     {
@@ -44,5 +45,11 @@ export const routes = [
         component: VerifyEmailPage,
         layout: InnerPageLayout,
         guard: GuestRoute,
+    },
+    {
+        key: 'Solo',
+        path: '/game/solo',
+        component: GamePage,
+        layout: MainLayout,
     },
 ]

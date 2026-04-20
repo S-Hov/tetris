@@ -66,7 +66,7 @@ export default function Header() {
                         <HeaderNav type="mode" />
                     </HeaderNavContext.Provider>
 
-                    {stats && (
+                    {/* {stats && (
                         <div className="stats-panel">
                             <div className="stat">
                                 <i className="fas fa-globe"></i>
@@ -86,7 +86,7 @@ export default function Header() {
                                 <span className="stat-value">{stats.lobbies}</span>
                             </div>
                         </div>
-                    )}
+                    )} */}
                 </div>
 
                 <div className="glow-line" />

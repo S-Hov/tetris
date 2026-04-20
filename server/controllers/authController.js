@@ -86,12 +86,12 @@ export const login = asyncHandler(async (req, res) => {
     const token = jwt.sign(
         { id: user.id, roleId: user.role_id },
         process.env.JWT_SECRET,
-        { expiresIn: '1h' }
+        { expiresIn: `${parseInt(process.env.TOKEN_LIFETIME)}d` }
     )
 
     res.cookie('token', token, {
         ...authCookieOptions,
-        maxAge: 3600000
+        maxAge: 1000 * 60 * 60 * 24 * parseInt(process.env.TOKEN_LIFETIME)
     })
 
     res.json({

@@ -3,6 +3,10 @@
     align-items: center;
     gap: 1rem;
     flex-shrink: 0;
+
+    & .description {
+        padding-left: 50px;
+    }
 }
 
 .tetris-icon {

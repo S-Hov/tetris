@@ -1,0 +1,14 @@
+.tetris-section{
+    min-height: 100%;
+}
+
+.tetris-container{
+    background: transparent;
+    min-height: 100%;
+    padding: 100px 40px;
+}
+
+.tetris-box{
+    width: fit-content;
+    margin: 0 auto;
+}
