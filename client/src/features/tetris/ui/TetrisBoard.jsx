@@ -1,13 +1,19 @@
 import './TetrisBoard.css'
 
-const TetrisBoard = ({ board }) => {
+const TetrisBoard = ({ board, clearingRows = [] }) => {
     return (
         <div className="tetris-board">
             {board.map((row, rowIndex) =>
                 row.map((cell, cellIndex) => (
                     <div
                         key={`${rowIndex}-${cellIndex}`}
-                        className={`tetris-cell ${cell ? 'filled' : ''}`}
+                        className={[
+                            'tetris-cell',
+                            cell ? `cell--${cell.type}` : '',
+                            cell?.variant === 'ghost' ? 'ghost' : '',
+                            cell?.variant === 'filled' ? 'filled' : '',
+                            clearingRows.includes(rowIndex) ? 'clearing' : '',
+                        ].filter(Boolean).join(' ')}
                     />
                 ))
             )}

@@ -5,17 +5,72 @@
     gap: 1px;
     padding: 8px;
     background: rgba(0, 0, 0, 0.4);
-    border: 2px solid cyan;
+    border: 2px solid var(--turquoise);
     width: max-content;
     backdrop-filter: blur(12px);
+    border-radius: 15px;
+    box-shadow: var(--lite-shadow);
 }
 
 .tetris-cell {
     width: 50px;
     height: 50px;
     background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
     
     &.filled {
         background: cyan;
+    }
+
+    &.ghost {
+        background: rgba(0, 255, 255, 0.18);
+        border: 1px dashed rgba(0, 255, 255, 0.7);
+    }
+}
+
+.tetris-cell.cell--I.filled {
+    background: #46dff0;
+}
+
+.tetris-cell.cell--O.filled {
+    background: #f5d742;
+}
+
+.tetris-cell.cell--T.filled {
+    background: #b36cff;
+}
+
+.tetris-cell.cell--L.filled {
+    background: #ff9f43;
+}
+
+.tetris-cell.cell--⅃.filled {
+    background: #4d7cff;
+}
+
+.tetris-cell.ghost.cell--I,
+.tetris-cell.ghost.cell--O,
+.tetris-cell.ghost.cell--T,
+.tetris-cell.ghost.cell--L,
+.tetris-cell.ghost.cell--J {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.tetris-cell.clearing {
+    animation: line-clear-flash 220ms ease-in-out infinite alternate;
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.9);
+}
+
+@keyframes line-clear-flash {
+    from {
+        transform: scale(1);
+        filter: brightness(1);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(0.88) translateY(10px);
+        filter: brightness(1.9);
+        opacity: 0.25;
     }
 }

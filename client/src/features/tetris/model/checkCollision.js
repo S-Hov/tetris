@@ -1,7 +1,9 @@
 export function checkCollision(board, piece, position) {
-    for (let y = 0; y < piece.length; y++) {
-        for (let x = 0; x < piece[y].length; x++) {
-            if (!piece[y][x]) continue
+    const shape = piece.shape
+
+    for (let y = 0; y < shape.length; y++) {
+        for (let x = 0; x < shape[y].length; x++) {
+            if (!shape[y][x]) continue
 
             const boardY = position.y + y
             const boardX = position.x + x
