@@ -9,6 +9,10 @@ import productRouter from './routes/products.js'
 import { logger } from './middleware/logger.js'
 import { errorHandler } from './middleware/errorHandler.js'
 
+import http from 'http'
+import { Server } from 'socket.io'
+import { registerSocketHandlers } from './sockets/index.js'
+
 const app = express()
 
 const allowedOrigins = [
@@ -41,7 +45,6 @@ console.log(`App: ${APP_NAME}`)
 
 app.use(logger)
 
-
 app.use("/api/authentication", authRouter)
 
 app.use("/products", productRouter)
@@ -50,6 +53,17 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 8880
 
-app.listen(PORT, () => {
+const httpServer = http.createServer(app)
+
+const io = new Server(httpServer, {
+    cors: {
+        origin: 'http://localhost:5173',
+        credentials: true,
+    },
+})
+
+registerSocketHandlers(io)
+
+httpServer.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
 })

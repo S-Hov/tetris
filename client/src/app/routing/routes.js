@@ -10,6 +10,8 @@ import ProtectedRoute from './ProtectedRoute.jsx'
 import GuestRoute from './GuestRoute.jsx'
 import VerifyEmailPage from '../../pages/VerifyEmail/VerifyEmailPage.jsx'
 import GamePage from '../../pages/GamePage/GamePage.jsx'
+import LobbyPage from '../../pages/Lobby/LobbyPage.jsx'
+import MatchPage from '../../pages/Match/MatchPage.jsx'
 
 export const routes = [
     {
@@ -50,6 +52,18 @@ export const routes = [
         key: 'Solo',
         path: '/game/solo',
         component: GamePage,
+        layout: MainLayout,
+    },
+    {
+        key: 'Lobby',
+        path: '/lobby',
+        component: LobbyPage,
+        layout: MainLayout,
+    },
+    {
+        key: 'Match',
+        path: '/match/:roomId',
+        component: MatchPage,
         layout: MainLayout,
     },
 ]

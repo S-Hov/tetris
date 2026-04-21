@@ -13,15 +13,26 @@ import {
     togglePause,
     withDerivedState,
 } from '../../features/tetris/model/tetrisEngine.js'
+import { socket } from '../../shared/api/socket/index.js'
+import { useParams } from 'react-router-dom'
 
-import './GamePage.css'
+
+import './MatchPage.css'
 
 const CONTROL_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space', 'KeyA', 'KeyD', 'KeyS', 'KeyW', 'KeyP', 'Escape']
 
-const GamePage = () => {
+const MatchPage = () => {
     const [gameState, setGameState] = useState(() => createGameState())
     const derivedState = withDerivedState(gameState)
     const boardWithPiece = getRenderedBoard(derivedState)
+    const [opponentState, setOpponentState] = useState({
+        score: 0,
+        linesCleared: 0,
+        level: 1,
+        isGameOver: false,
+        isPaused: false,
+    })
+    const { roomId } = useParams()
 
     useEffect(() => {
         if (!derivedState.isClearing) {
@@ -94,6 +105,62 @@ const GamePage = () => {
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [])
 
+    useEffect(() => {
+        const handleOpponentUpdate = ({ payload }) => {
+            setOpponentState(payload)
+        }
+
+        socket.on('opponent:update', handleOpponentUpdate)
+
+        return () => {
+            socket.off('opponent:update', handleOpponentUpdate)
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!roomId) return
+        socket.emit('game:update', {
+            roomId,
+            payload: {
+                score: derivedState.score,
+                linesCleared: derivedState.linesCleared,
+                level: derivedState.level,
+                isGameOver: derivedState.isGameOver,
+                isPaused: derivedState.isPaused,
+            },
+        })
+    }, [
+        roomId,
+        derivedState.score,
+        derivedState.linesCleared,
+        derivedState.level,
+        derivedState.isGameOver,
+        derivedState.isPaused,
+    ])
+
+    useEffect(() => {
+        if (!derivedState.isGameOver || !roomId) return
+
+        socket.emit('game:over', {
+            roomId,
+            payload: {
+                score: derivedState.score,
+                linesCleared: derivedState.linesCleared,
+                level: derivedState.level,
+            },
+        })
+    }, [derivedState.isGameOver, roomId])
+
+    useEffect(() => {
+        const handleMatchEnd = ({ loserSocketId }) => {
+            console.log('Match ended. Loser:', loserSocketId)
+        }
+
+        socket.on('match:end', handleMatchEnd)
+
+        return () => socket.off('match:end', handleMatchEnd)
+    }, [])
+
     const handleRestart = () => {
         setGameState((prevState) => (
             prevState.isGameOver
@@ -158,6 +225,13 @@ const GamePage = () => {
                                     Restart
                                 </button>
                             </div>
+                            <div className='opponent-panel'>
+                                <h3>Opponent</h3>
+                                <p>Score: {opponentState.score}</p>
+                                <p>Lines: {opponentState.linesCleared}</p>
+                                <p>Level: {opponentState.level}</p>
+                                <p>Status: {opponentState.isGameOver ? 'Game Over' : 'Playing'}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -166,4 +240,4 @@ const GamePage = () => {
     )
 }
 
-export default GamePage
+export default MatchPage
