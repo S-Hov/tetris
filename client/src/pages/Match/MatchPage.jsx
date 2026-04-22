@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+
 import TetrisBoard from '../../features/tetris/ui/TetrisBoard.jsx'
 import {
     LINE_CLEAR_ANIMATION_MS,
@@ -13,13 +15,21 @@ import {
     togglePause,
     withDerivedState,
 } from '../../features/tetris/model/tetrisEngine.js'
-import { socket } from '../../shared/api/socket/index.js'
-import { useParams } from 'react-router-dom'
-
+import { createBoard } from '../../features/tetris/model/createBoard.js'
+import { ensureSocketSession, socket } from '../../shared/api/socket/index.js'
+import { useAuth } from '../../shared/hooks/useAuth.js'
+import notify from '../../utils/Notifications'
 
 import './MatchPage.css'
 
 const CONTROL_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space', 'KeyA', 'KeyD', 'KeyS', 'KeyW', 'KeyP', 'Escape']
+const emitWithAck = (eventName, payload) => {
+    return new Promise((resolve) => {
+        socket.emit(eventName, payload, (response) => {
+            resolve(response || { success: false, message: 'Нет ответа от сервера' })
+        })
+    })
+}
 
 const MatchPage = () => {
     const [gameState, setGameState] = useState(() => createGameState())
@@ -31,8 +41,33 @@ const MatchPage = () => {
         level: 1,
         isGameOver: false,
         isPaused: false,
+        energy: 0,
+        board: createBoard(),
     })
     const { roomId } = useParams()
+    const { user } = useAuth()
+
+    useEffect(() => {
+        const restoreMatchSocketSession = async () => {
+            try {
+                await ensureSocketSession({ user })
+
+                if (!roomId) {
+                    return
+                }
+
+                const response = await emitWithAck('room:join', { roomId })
+
+                if (!response.success) {
+                    notify(response.message || 'Не удалось восстановить участие в матче', 'warning')
+                }
+            } catch (error) {
+                notify(error.message || 'Не удалось восстановить подключение к матчу', 'error')
+            }
+        }
+
+        restoreMatchSocketSession()
+    }, [roomId, user])
 
     useEffect(() => {
         if (!derivedState.isClearing) {
@@ -127,6 +162,7 @@ const MatchPage = () => {
                 level: derivedState.level,
                 isGameOver: derivedState.isGameOver,
                 isPaused: derivedState.isPaused,
+                board: boardWithPiece,
             },
         })
     }, [
@@ -136,6 +172,7 @@ const MatchPage = () => {
         derivedState.level,
         derivedState.isGameOver,
         derivedState.isPaused,
+        boardWithPiece,
     ])
 
     useEffect(() => {
@@ -149,11 +186,14 @@ const MatchPage = () => {
                 level: derivedState.level,
             },
         })
-    }, [derivedState.isGameOver, roomId])
+    }, [derivedState.isGameOver, derivedState.level, derivedState.linesCleared, derivedState.score, roomId])
 
     useEffect(() => {
         const handleMatchEnd = ({ loserSocketId }) => {
-            console.log('Match ended. Loser:', loserSocketId)
+            notify(
+                loserSocketId === socket.id ? 'Матч завершён. Вы проиграли раунд' : 'Матч завершён. Вы победили',
+                loserSocketId === socket.id ? 'warning' : 'success'
+            )
         }
 
         socket.on('match:end', handleMatchEnd)
@@ -174,6 +214,7 @@ const MatchPage = () => {
             <div className="container tetris-container">
                 <div className="tetris-box">
                     <h2>Solo mod</h2>
+
                     <div className="tetris-layout">
                         <TetrisBoard board={boardWithPiece} clearingRows={derivedState.clearingRows} />
                         <div className='right-board'>
@@ -205,6 +246,16 @@ const MatchPage = () => {
                                 <p><i className="fa-solid fa-trophy"></i> РЕКОРД <span>7984</span></p>
                                 <p>Status: {derivedState.isPaused ? 'Paused' : 'Playing'}</p>
                             </div>
+                            <div className="energy-panel">
+                                <p><i className="fa-solid fa-bolt"></i> Skill Energy</p>
+                                <div className="energy-bar">
+                                    <div
+                                        className="energy-fill"
+                                        style={{ width: `${derivedState.energy}%` }}
+                                    />
+                                </div>
+                                <span>{derivedState.energy}%</span>
+                            </div>
                             <div className="actions">
                                 <button
                                     type="button"
@@ -233,6 +284,12 @@ const MatchPage = () => {
                                 <p>Status: {opponentState.isGameOver ? 'Game Over' : 'Playing'}</p>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div className='opponent-board-panel tetris-box'>
+                    <h2>Opponent Board</h2>
+                    <div className='opponent-board-wrapper'>
+                        <TetrisBoard board={opponentState.board} clearingRows={[]} compact />
                     </div>
                 </div>
             </div>

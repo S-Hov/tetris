@@ -7,6 +7,7 @@ import { getDropPosition } from './getDropPosition.js'
 import { lockPiece } from './lockPiece.js'
 import { getStartPosition } from './getStartPosition.js'
 import { getScoreForLines } from './getScoreForLines.js'
+import { getEnergyForLines } from './getEnergyForLines.js'
 
 export const LINE_CLEAR_ANIMATION_MS = 250
 export const ROTATION_KICK_OFFSETS = [0, -1, 1, -2, 2]
@@ -106,6 +107,7 @@ export function createGameState(options = {}) {
         isPaused: false,
         clearingRows: [],
         pendingClear: null,
+        energy: 0,
     }
 }
 
@@ -122,6 +124,7 @@ export function resolveLineClear(state) {
         ...state,
         board: state.pendingClear.board,
         score: state.score + getScoreForLines(state.pendingClear.clearedLinesCount),
+        energy: Math.min(100, state.energy + getEnergyForLines(state.pendingClear.clearedLinesCount)),
         linesCleared: state.linesCleared + state.pendingClear.clearedLinesCount,
     })
 

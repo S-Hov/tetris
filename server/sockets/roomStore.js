@@ -1,5 +1,25 @@
 const rooms = new Map()
 
+export const isSocketRoomParticipant = (room, socketOrSocketId) => {
+    if (!room || !socketOrSocketId) {
+        return false
+    }
+
+    const socketId = typeof socketOrSocketId === 'string'
+        ? socketOrSocketId
+        : socketOrSocketId.id
+
+    return room.players.some((player) => player.socketId === socketId)
+}
+
+export const getRoomPlayerByUserId = (room, userId) => {
+    if (!room || !userId) {
+        return null
+    }
+
+    return room.players.find((player) => player.userId === userId) || null
+}
+
 export const roomStore = {
     createRoom(room) {
         rooms.set(room.id, room)
@@ -25,5 +45,46 @@ export const roomStore = {
 
     getAllRooms() {
         return Array.from(rooms.values())
+    },
+
+    findRoomBySocketId(socketId) {
+        return this.getAllRooms().find((room) => (
+            room.players.some((player) => player.socketId === socketId)
+        )) || null
+    },
+
+    removePlayerBySocketId(socketId) {
+        const room = this.findRoomBySocketId(socketId)
+
+        if (!room) {
+            return null
+        }
+
+        const removedPlayer = room.players.find((player) => player.socketId === socketId) || null
+        const players = room.players.filter((player) => player.socketId !== socketId)
+
+        if (players.length === 0) {
+            rooms.delete(room.id)
+
+            return {
+                roomId: room.id,
+                room: null,
+                removedPlayer,
+            }
+        }
+
+        const updatedRoom = {
+            ...room,
+            status: players.length === 2 ? room.status : 'waiting',
+            players,
+        }
+
+        rooms.set(room.id, updatedRoom)
+
+        return {
+            roomId: room.id,
+            room: updatedRoom,
+            removedPlayer,
+        }
     },
 }

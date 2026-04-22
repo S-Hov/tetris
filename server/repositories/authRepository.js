@@ -42,6 +42,21 @@ export const getUserRepo = async (id) => {
     return result.rows[0]
 }
 
+export const getSocketUserRepo = async (id) => {
+    const result = await pool.query(
+        `
+        SELECT users.id, users.username, users.email, roles.key AS role
+        FROM users
+        JOIN roles ON roles.id = users.role_id
+        WHERE users.id = $1
+        LIMIT 1
+        `,
+        [id]
+    )
+
+    return result.rows[0] || null
+}
+
 export const registerUserWithVerificationRepo = async ({
     username,
     email,

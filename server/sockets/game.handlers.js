@@ -1,5 +1,13 @@
+import { isSocketRoomParticipant, roomStore } from './roomStore.js'
+
 export const registerGameHandlers = (io, socket) => {
     socket.on('game:update', ({ roomId, payload }) => {
+        const room = roomStore.getRoom(roomId)
+
+        if (!isSocketRoomParticipant(room, socket)) {
+            return
+        }
+
         socket.to(roomId).emit('opponent:update', {
             socketId: socket.id,
             payload,
@@ -7,6 +15,12 @@ export const registerGameHandlers = (io, socket) => {
     })
 
     socket.on('game:over', ({ roomId, payload }) => {
+        const room = roomStore.getRoom(roomId)
+
+        if (!isSocketRoomParticipant(room, socket)) {
+            return
+        }
+
         socket.to(roomId).emit('opponent:update', {
             socketId: socket.id,
             payload: {
