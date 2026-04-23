@@ -8,8 +8,9 @@ import {
     getRenderedBoard,
     hardDrop,
     movePiece,
+    resolveAbilityChoice,
     resolveLineClear,
-    restartGame,
+    // restartGame,
     rotateCurrentPiece,
     tickGame,
     togglePause,
@@ -23,6 +24,8 @@ import notify from '../../utils/Notifications'
 import './MatchPage.css'
 
 const CONTROL_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space', 'KeyA', 'KeyD', 'KeyS', 'KeyW', 'KeyP', 'Escape']
+const getAbilitySecondsLeft = (endsAt) => Math.max(0, Math.ceil(((endsAt ?? 0) - Date.now()) / 1000))
+
 const emitWithAck = (eventName, payload) => {
     return new Promise((resolve) => {
         socket.emit(eventName, payload, (response) => {
@@ -33,6 +36,7 @@ const emitWithAck = (eventName, payload) => {
 
 const MatchPage = () => {
     const [gameState, setGameState] = useState(() => createGameState())
+    const [abilitySecondsLeft, setAbilitySecondsLeft] = useState(0)
     const derivedState = withDerivedState(gameState)
     const boardWithPiece = getRenderedBoard(derivedState)
     const [opponentState, setOpponentState] = useState({
@@ -43,6 +47,9 @@ const MatchPage = () => {
         isPaused: false,
         energy: 0,
         board: createBoard(),
+        isChoosingAbility: false,
+        abilityOptions: [],
+        abilityChoiceEndsAt: null,
     })
     const { roomId } = useParams()
     const { user } = useAuth()
@@ -82,7 +89,7 @@ const MatchPage = () => {
     }, [derivedState.isClearing])
 
     useEffect(() => {
-        if (derivedState.isGameOver || derivedState.isPaused || derivedState.isClearing) {
+        if (derivedState.isGameOver || derivedState.isPaused || derivedState.isClearing || derivedState.isChoosingAbility) {
             return undefined
         }
 
@@ -91,7 +98,7 @@ const MatchPage = () => {
         }, derivedState.speed)
 
         return () => clearInterval(intervalId)
-    }, [derivedState.isClearing, derivedState.isGameOver, derivedState.isPaused, derivedState.speed])
+    }, [derivedState.isClearing, derivedState.isGameOver, derivedState.isPaused, derivedState.speed, derivedState.isChoosingAbility])
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -110,7 +117,7 @@ const MatchPage = () => {
                     return togglePause(prevState)
                 }
 
-                if (state.isGameOver || state.isPaused) {
+                if (state.isGameOver || state.isPaused || state.isChoosingAbility) {
                     return prevState
                 }
 
@@ -201,6 +208,31 @@ const MatchPage = () => {
         return () => socket.off('match:end', handleMatchEnd)
     }, [])
 
+    const handleAbilityChoose = (ability) => {
+        notify(`${ability.title} is prepared`, 'success')
+        setGameState((prevState) => resolveAbilityChoice(prevState, ability))
+    }
+
+    useEffect(() => {
+        if (!derivedState.isChoosingAbility) return
+
+        setAbilitySecondsLeft(getAbilitySecondsLeft(derivedState.abilityChoiceEndsAt))
+
+        const intervalId = setInterval(() => {
+            setAbilitySecondsLeft(getAbilitySecondsLeft(derivedState.abilityChoiceEndsAt))
+        }, 250)
+
+        const timeout = setTimeout(() => {
+            notify('Ability window expired', 'warning')
+            setGameState((prevState) => resolveAbilityChoice(prevState))
+        }, Math.max(0, (derivedState.abilityChoiceEndsAt ?? Date.now()) - Date.now()))
+
+        return () => {
+            clearInterval(intervalId)
+            clearTimeout(timeout)
+        }
+    }, [derivedState.abilityChoiceEndsAt, derivedState.isChoosingAbility])
+
     return (
         <section className="tetris-section">
             <div className="container tetris-container">
@@ -211,7 +243,39 @@ const MatchPage = () => {
                     </div>
 
                     <div className="tetris-layout">
-                        <TetrisBoard board={boardWithPiece} clearingRows={derivedState.clearingRows} />
+                        <div className="player-board-shell">
+                            <TetrisBoard board={boardWithPiece} clearingRows={derivedState.clearingRows} />
+
+                            {derivedState.isChoosingAbility && (
+                                <div className="ability-overlay" role="dialog" aria-modal="true" aria-labelledby="ability-title">
+                                    <div className="ability-picker">
+                                        <div className="ability-picker-header">
+                                            <span className="ability-kicker">Time stopped</span>
+                                            <h3 id="ability-title">Choose a debuff</h3>
+                                            <p>{abilitySecondsLeft}s left</p>
+                                        </div>
+
+                                        <div className="ability-options">
+                                            {derivedState.abilityOptions.map((ability) => (
+                                                <button
+                                                    type="button"
+                                                    className="ability-card"
+                                                    key={ability.id}
+                                                    onClick={() => handleAbilityChoose(ability)}
+                                                >
+                                                    <span className={`ability-visual ability-visual--${ability.visual}`}>
+                                                        <i className={`fa-solid ${ability.icon}`} aria-hidden="true"></i>
+                                                    </span>
+                                                    <span className="ability-card-label">{ability.label}</span>
+                                                    <span className="ability-card-title">{ability.title}</span>
+                                                    <span className="ability-card-description">{ability.description}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                         <div className='right-board'>
                             <div className="next-piece-panel">
                                 <h3><i className="fa-solid fa-eye"></i> Next Piece</h3>

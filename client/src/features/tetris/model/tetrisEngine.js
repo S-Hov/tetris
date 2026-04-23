@@ -8,6 +8,7 @@ import { lockPiece } from './lockPiece.js'
 import { getStartPosition } from './getStartPosition.js'
 import { getScoreForLines } from './getScoreForLines.js'
 import { getEnergyForLines } from './getEnergyForLines.js'
+import { ABILITY_CHOICE_DURATION_MS, getRandomDebuffs } from './abilities.data.js'
 
 export const LINE_CLEAR_ANIMATION_MS = 250
 export const ROTATION_KICK_OFFSETS = [0, -1, 1, -2, 2]
@@ -108,6 +109,9 @@ export function createGameState(options = {}) {
         clearingRows: [],
         pendingClear: null,
         energy: 0,
+        isChoosingAbility: false,
+        abilityOptions: [],
+        abilityChoiceEndsAt: null,
     }
 }
 
@@ -127,6 +131,38 @@ export function resolveLineClear(state) {
         energy: Math.min(100, state.energy + getEnergyForLines(state.pendingClear.clearedLinesCount)),
         linesCleared: state.linesCleared + state.pendingClear.clearedLinesCount,
     })
+
+    if (nextState.energy >= 100) {
+        return {
+            ...nextState,
+            isChoosingAbility: true,
+            abilityOptions: getRandomDebuffs(),
+            abilityChoiceEndsAt: Date.now() + ABILITY_CHOICE_DURATION_MS,
+        }
+    }
+
+    return spawnPreparedPiece(
+        nextState,
+        state.pendingClear.board,
+        state.pendingClear.currentPiece,
+        state.pendingClear.nextPiece,
+        state.pendingClear.currentPosition
+    )
+}
+
+export function resolveAbilityChoice(state, selectedAbility = null) {
+    const nextState = {
+        ...state,
+        energy: Math.max(0, state.energy - 100),
+        isChoosingAbility: false,
+        abilityOptions: [],
+        abilityChoiceEndsAt: null,
+        selectedAbility,
+    }
+
+    if (!state.pendingClear) {
+        return nextState
+    }
 
     return spawnPreparedPiece(
         nextState,

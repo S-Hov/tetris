@@ -71,6 +71,12 @@
     position: relative;
 }
 
+.player-board-shell {
+    position: relative;
+    width: var(--match-player-board-width);
+    flex: 0 0 auto;
+}
+
 .next-piece-panel {
     min-height: clamp(120px, 22vh, 190px);
     display: flex;
@@ -185,6 +191,158 @@
     width: var(--match-opponent-board-width);
 }
 
+.ability-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(12px, 2vmin, 18px);
+    background: rgba(3, 8, 18, 0.82);
+    backdrop-filter: blur(10px);
+    border-radius: clamp(10px, 1.4vmin, 15px);
+    z-index: 5;
+}
+
+.ability-picker {
+    width: min(100%, 92%);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 1.8vmin, 18px);
+    align-items: center;
+}
+
+.ability-picker-header {
+    text-align: center;
+}
+
+.ability-kicker {
+    display: inline-block;
+    margin-bottom: 6px;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #8ce8ff;
+}
+
+.ability-picker-header h3 {
+    margin: 0 0 6px;
+    font-size: clamp(1.2rem, 2.2vmin, 1.8rem);
+    color: var(--text-color);
+}
+
+.ability-picker-header p {
+    margin: 0;
+    font-size: clamp(0.78rem, 1.4vmin, 0.95rem);
+    color: #a8b6c7;
+}
+
+.ability-options {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(8px, 1.2vmin, 12px);
+}
+
+.ability-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(6px, 1vmin, 10px);
+    padding: clamp(10px, 1.4vmin, 14px);
+    border: 1px solid rgba(0, 240, 255, 0.45);
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(6, 16, 32, 0.96), rgba(8, 13, 24, 0.92));
+    color: var(--text-color);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.ability-card:hover,
+.ability-card:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(124, 243, 255, 0.95);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.24);
+    background: linear-gradient(180deg, rgba(10, 22, 40, 0.98), rgba(9, 17, 30, 0.96));
+    outline: none;
+}
+
+.ability-visual {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: radial-gradient(circle at 50% 50%, rgba(54, 241, 255, 0.18), rgba(13, 21, 34, 0.94));
+    overflow: hidden;
+}
+
+.ability-visual i {
+    font-size: clamp(1.2rem, 2.6vmin, 1.8rem);
+    color: #d9fbff;
+    text-shadow: 0 0 18px rgba(0, 240, 255, 0.4);
+}
+
+.ability-visual--darkness {
+    background:
+        radial-gradient(circle at 50% 50%, rgba(110, 90, 255, 0.38), rgba(7, 9, 18, 0.96) 60%),
+        linear-gradient(180deg, rgba(12, 15, 28, 0.98), rgba(3, 5, 10, 0.98));
+}
+
+.ability-visual--speed {
+    background:
+        linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(123, 92, 255, 0.3)),
+        repeating-linear-gradient(135deg, transparent 0 12px, rgba(255, 255, 255, 0.08) 12px 15px);
+}
+
+.ability-visual--garbage {
+    background:
+        linear-gradient(135deg, rgba(0, 240, 255, 0.14), rgba(255, 0, 200, 0.16)),
+        radial-gradient(circle at 25% 30%, rgba(255, 159, 67, 0.4), transparent 28%),
+        radial-gradient(circle at 70% 55%, rgba(77, 124, 255, 0.4), transparent 30%);
+}
+
+.ability-visual--controls {
+    background:
+        linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(255, 255, 255, 0.04)),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0 10px, transparent 10px 20px);
+}
+
+.ability-visual--fog {
+    background:
+        radial-gradient(circle at 30% 35%, rgba(255, 255, 255, 0.18), transparent 22%),
+        linear-gradient(180deg, rgba(105, 122, 150, 0.22), rgba(9, 18, 31, 0.95));
+}
+
+.ability-visual--gravity {
+    background:
+        linear-gradient(180deg, rgba(255, 0, 200, 0.18), rgba(0, 240, 255, 0.12)),
+        radial-gradient(circle at 50% 75%, rgba(255, 255, 255, 0.16), transparent 26%);
+}
+
+.ability-card-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #8ce8ff;
+}
+
+.ability-card-title {
+    font-size: clamp(0.9rem, 1.6vmin, 1.05rem);
+    font-weight: 700;
+    color: #f4fbff;
+}
+
+.ability-card-description {
+    font-size: clamp(0.72rem, 1.25vmin, 0.86rem);
+    line-height: 1.35;
+    color: #9fb0c3;
+}
+
 @media (max-width: 1100px) {
     .tetris-container {
         --match-player-board-width: min(42vw, calc((100dvh - 220px) / 2), 380px);
@@ -209,6 +367,10 @@
 
     .opponent-board-panel {
         display: none;
+    }
+
+    .ability-options {
+        grid-template-columns: 1fr;
     }
 }
 
