@@ -1,4 +1,4 @@
-export const ABILITY_CHOICE_DURATION_MS = 5000
+export const ABILITY_CHOICE_DURATION_MS = 50000000
 export const ABILITY_CHOICE_COUNT = 3
 
 export const ABILITIES = [

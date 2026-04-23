@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import TetrisBoard from '../../features/tetris/ui/TetrisBoard.jsx'
 import {
@@ -25,6 +25,27 @@ import './MatchPage.css'
 
 const CONTROL_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space', 'KeyA', 'KeyD', 'KeyS', 'KeyW', 'KeyP', 'Escape']
 const getAbilitySecondsLeft = (endsAt) => Math.max(0, Math.ceil(((endsAt ?? 0) - Date.now()) / 1000))
+const MATCH_END_REDIRECT_DELAY_MS = 3200
+const DANGER_ZONE_ROWS = 7
+
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
+
+const getBoardDangerLevel = (board) => {
+    if (!Array.isArray(board) || board.length === 0) {
+        return 0
+    }
+
+    const topFilledRowIndex = board.findIndex((row) => row.some(Boolean))
+
+    if (topFilledRowIndex === -1) {
+        return 0
+    }
+
+    const rowsLeftToLose = topFilledRowIndex
+    const rawDanger = (DANGER_ZONE_ROWS - rowsLeftToLose) / DANGER_ZONE_ROWS
+
+    return clamp(rawDanger, 0, 1)
+}
 
 const emitWithAck = (eventName, payload) => {
     return new Promise((resolve) => {
@@ -36,9 +57,11 @@ const emitWithAck = (eventName, payload) => {
 
 const MatchPage = () => {
     const [gameState, setGameState] = useState(() => createGameState())
-    const [abilitySecondsLeft, setAbilitySecondsLeft] = useState(0)
+    const [abilityTick, setAbilityTick] = useState(0)
+    const [matchResult, setMatchResult] = useState(null)
     const derivedState = withDerivedState(gameState)
     const boardWithPiece = getRenderedBoard(derivedState)
+    const navigate = useNavigate()
     const [opponentState, setOpponentState] = useState({
         score: 0,
         linesCleared: 0,
@@ -53,6 +76,19 @@ const MatchPage = () => {
     })
     const { roomId } = useParams()
     const { user } = useAuth()
+    const redirectTimeoutRef = useRef(null)
+    const isMatchFinished = Boolean(matchResult)
+    const dangerLevel = useMemo(() => getBoardDangerLevel(derivedState.board), [derivedState.board])
+    const abilitySecondsLeft = useMemo(() => {
+        void abilityTick
+        return derivedState.isChoosingAbility ? getAbilitySecondsLeft(derivedState.abilityChoiceEndsAt) : 0
+    }, [abilityTick, derivedState.abilityChoiceEndsAt, derivedState.isChoosingAbility])
+    const boardShellClassName = [
+        'player-board-shell',
+        dangerLevel > 0 ? 'player-board-shell--danger' : '',
+        matchResult === 'lose' ? 'player-board-shell--defeated' : '',
+        matchResult === 'win' ? 'player-board-shell--victorious' : '',
+    ].filter(Boolean).join(' ')
 
     useEffect(() => {
         const restoreMatchSocketSession = async () => {
@@ -89,7 +125,7 @@ const MatchPage = () => {
     }, [derivedState.isClearing])
 
     useEffect(() => {
-        if (derivedState.isGameOver || derivedState.isPaused || derivedState.isClearing || derivedState.isChoosingAbility) {
+        if (isMatchFinished || derivedState.isGameOver || derivedState.isPaused || derivedState.isClearing || derivedState.isChoosingAbility) {
             return undefined
         }
 
@@ -98,7 +134,7 @@ const MatchPage = () => {
         }, derivedState.speed)
 
         return () => clearInterval(intervalId)
-    }, [derivedState.isClearing, derivedState.isGameOver, derivedState.isPaused, derivedState.speed, derivedState.isChoosingAbility])
+    }, [derivedState.isClearing, derivedState.isGameOver, derivedState.isPaused, derivedState.speed, derivedState.isChoosingAbility, isMatchFinished])
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -114,10 +150,14 @@ const MatchPage = () => {
                 }
 
                 if (event.code === 'KeyP' || event.code === 'Escape') {
+                    if (isMatchFinished) {
+                        return prevState
+                    }
+
                     return togglePause(prevState)
                 }
 
-                if (state.isGameOver || state.isPaused || state.isChoosingAbility) {
+                if (isMatchFinished || state.isGameOver || state.isPaused || state.isChoosingAbility) {
                     return prevState
                 }
 
@@ -145,11 +185,15 @@ const MatchPage = () => {
         window.addEventListener('keydown', handleKeyDown)
 
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [])
+    }, [isMatchFinished])
 
     useEffect(() => {
         const handleOpponentUpdate = ({ payload }) => {
-            setOpponentState(payload)
+            setOpponentState((prevState) => ({
+                ...prevState,
+                ...payload,
+                board: Array.isArray(payload?.board) ? payload.board : prevState.board,
+            }))
         }
 
         socket.on('opponent:update', handleOpponentUpdate)
@@ -160,7 +204,7 @@ const MatchPage = () => {
     }, [])
 
     useEffect(() => {
-        if (!roomId) return
+        if (!roomId || isMatchFinished) return
         socket.emit('game:update', {
             roomId,
             payload: {
@@ -180,10 +224,11 @@ const MatchPage = () => {
         derivedState.isGameOver,
         derivedState.isPaused,
         boardWithPiece,
+        isMatchFinished,
     ])
 
     useEffect(() => {
-        if (!derivedState.isGameOver || !roomId) return
+        if (!derivedState.isGameOver || !roomId || isMatchFinished) return
 
         socket.emit('game:over', {
             roomId,
@@ -193,20 +238,47 @@ const MatchPage = () => {
                 level: derivedState.level,
             },
         })
-    }, [derivedState.isGameOver, derivedState.level, derivedState.linesCleared, derivedState.score, roomId])
+    }, [derivedState.isGameOver, derivedState.level, derivedState.linesCleared, derivedState.score, isMatchFinished, roomId])
 
     useEffect(() => {
-        const handleMatchEnd = ({ loserSocketId }) => {
+        const handleMatchEnd = ({ loserSocketId, winnerSocketId }) => {
+            const nextMatchResult = loserSocketId === socket.id ? 'lose' : 'win'
+
+            setMatchResult((currentValue) => currentValue || nextMatchResult)
+
             notify(
-                loserSocketId === socket.id ? 'Матч завершён. Вы проиграли раунд' : 'Матч завершён. Вы победили',
-                loserSocketId === socket.id ? 'warning' : 'success'
+                nextMatchResult === 'lose'
+                    ? 'Раунд завершён. Вы проиграли'
+                    : 'Раунд завершён. Вы победили',
+                nextMatchResult === 'lose' ? 'warning' : 'success'
             )
+
+            if (redirectTimeoutRef.current) {
+                clearTimeout(redirectTimeoutRef.current)
+            }
+
+            redirectTimeoutRef.current = setTimeout(() => {
+                navigate('/lobby', {
+                    replace: true,
+                    state: {
+                        roomId,
+                        matchResult: nextMatchResult,
+                        winnerSocketId,
+                    },
+                })
+            }, MATCH_END_REDIRECT_DELAY_MS)
         }
 
         socket.on('match:end', handleMatchEnd)
 
-        return () => socket.off('match:end', handleMatchEnd)
-    }, [])
+        return () => {
+            if (redirectTimeoutRef.current) {
+                clearTimeout(redirectTimeoutRef.current)
+            }
+
+            socket.off('match:end', handleMatchEnd)
+        }
+    }, [navigate, roomId])
 
     const handleAbilityChoose = (ability) => {
         notify(`${ability.title} is prepared`, 'success')
@@ -216,10 +288,8 @@ const MatchPage = () => {
     useEffect(() => {
         if (!derivedState.isChoosingAbility) return
 
-        setAbilitySecondsLeft(getAbilitySecondsLeft(derivedState.abilityChoiceEndsAt))
-
         const intervalId = setInterval(() => {
-            setAbilitySecondsLeft(getAbilitySecondsLeft(derivedState.abilityChoiceEndsAt))
+            setAbilityTick((currentValue) => currentValue + 1)
         }, 250)
 
         const timeout = setTimeout(() => {
@@ -233,6 +303,11 @@ const MatchPage = () => {
         }
     }, [derivedState.abilityChoiceEndsAt, derivedState.isChoosingAbility])
 
+    const dangerStyle = {
+        '--danger-level': dangerLevel.toFixed(3),
+        '--danger-shake-duration': `${Math.max(700 - dangerLevel * 420, 220)}ms`,
+    }
+
     return (
         <section className="tetris-section">
             <div className="container tetris-container">
@@ -243,8 +318,19 @@ const MatchPage = () => {
                     </div>
 
                     <div className="tetris-layout">
-                        <div className="player-board-shell">
-                            <TetrisBoard board={boardWithPiece} clearingRows={derivedState.clearingRows} />
+                        <div className={boardShellClassName} style={dangerStyle}>
+                            <TetrisBoard
+                                board={boardWithPiece}
+                                clearingRows={derivedState.clearingRows}
+                                className={dangerLevel > 0 ? 'tetris-board--danger' : ''}
+                            />
+
+                            {dangerLevel > 0 && !isMatchFinished && (
+                                <div className="board-danger-status" aria-hidden="true">
+                                    <span>CRITICAL ZONE</span>
+                                    <strong>{Math.round(dangerLevel * 100)}%</strong>
+                                </div>
+                            )}
 
                             {derivedState.isChoosingAbility && (
                                 <div className="ability-overlay" role="dialog" aria-modal="true" aria-labelledby="ability-title">
@@ -275,6 +361,7 @@ const MatchPage = () => {
                                     </div>
                                 </div>
                             )}
+
                         </div>
                         <div className='right-board'>
                             <div className="next-piece-panel">
@@ -320,9 +407,27 @@ const MatchPage = () => {
                                 <p>Score: {opponentState.score}</p>
                                 <p>Lines: {opponentState.linesCleared}</p>
                                 <p>Level: {opponentState.level}</p>
-                                <p>Status: {opponentState.isGameOver ? 'Game Over' : 'Playing'}</p>
+                                <p>Status: {isMatchFinished ? 'Round ended' : opponentState.isGameOver ? 'Game Over' : 'Playing'}</p>
                             </div>
                         </div>
+
+                        {isMatchFinished && (
+                            <div
+                                className={`match-result-banner match-result-banner--${matchResult}`}
+                                role="status"
+                                aria-live="polite"
+                            >
+                                <span className="match-result-banner__eyebrow">
+                                    {matchResult === 'win' ? 'Round Complete' : 'Round Lost'}
+                                </span>
+                                <h3>{matchResult === 'win' ? 'Победа' : 'Поражение'}</h3>
+                                <p>
+                                    {matchResult === 'win'
+                                        ? 'Вы забрали этот раунд. Возвращаем вас в лобби вместе с соперником.'
+                                        : 'Раунд завершён. Сейчас вы оба вернётесь в лобби и сможете начать заново.'}
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className='opponent-board-panel tetris-box tetris-box--opponent'>

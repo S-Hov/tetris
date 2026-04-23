@@ -1,20 +1,13 @@
-import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import './Header.css'
 import { modeItems, modeStats, navItems } from './header.data.js'
 import HeaderNavContext from '../../../shared/context/HeaderNavContext.js'
 import HeaderNav from '../../../features/HeaderNav'
 import HeaderBrand from '../../../shared/ui/Header/HeaderBrand'
-import { parseKValue, formatNumberValue } from './header.utils.js'
 import GlowEffect from '../../../shared/ui/GlowEffect'
 
 export default function Header() {
     const { pathname } = useLocation()
-    const [liveStats, setLiveStats] = useState(() =>
-        Object.fromEntries(
-            Object.entries(modeStats).map(([modeKey, modeValue]) => [modeKey, { ...modeValue }]),
-        ),
-    )
     const activeMode = getActiveItemKey(modeItems, pathname)
     const activePage = activeMode ? null : getActiveItemKey(navItems, pathname)
 
@@ -25,34 +18,6 @@ export default function Header() {
         modeItems,
         modeStats,
     }
-
-    useEffect(() => {
-        const intervalId = setInterval(() => {
-            setLiveStats((prev) => {
-                if (!activeMode) return prev
-                const currentModeStats = prev[activeMode] ?? modeStats[activeMode]
-                if (!currentModeStats) return prev
-                const currentOnline = parseKValue(currentModeStats.online)
-                const currentLobbies = parseKValue(currentModeStats.lobbies)
-
-                const nextOnline = Math.max(300, Math.min(15000, currentOnline + Math.floor(Math.random() * 200) - 60))
-                const nextLobbies = Math.max(10, Math.min(500, currentLobbies + Math.floor(Math.random() * 12) - 2))
-
-                return {
-                    ...prev,
-                    [activeMode]: {
-                        ...currentModeStats,
-                        online: formatNumberValue(nextOnline, true),
-                        lobbies: formatNumberValue(nextLobbies, true),
-                    },
-                }
-            })
-        }, 8000)
-
-        return () => clearInterval(intervalId)
-    }, [activeMode])
-
-    const stats = activeMode ? liveStats[activeMode] ?? modeStats[activeMode] : null
 
     return (
         <GlowEffect >

@@ -1,9 +1,16 @@
+import { createBoard } from '../model/createBoard.js'
+
 import './TetrisBoard.css'
 
-const TetrisBoard = ({ board, clearingRows = [], compact = false }) => {
+const TetrisBoard = ({ board, clearingRows = [], compact = false, className = '', style }) => {
+    const safeBoard = Array.isArray(board) ? board : createBoard()
+
     return (
-        <div className={`tetris-board${compact ? ' tetris-board--compact' : ''}`}>
-            {board.map((row, rowIndex) =>
+        <div
+            className={['tetris-board', compact ? 'tetris-board--compact' : '', className].filter(Boolean).join(' ')}
+            style={style}
+        >
+            {safeBoard.map((row, rowIndex) =>
                 row.map((cell, cellIndex) => (
                     <div
                         key={`${rowIndex}-${cellIndex}`}

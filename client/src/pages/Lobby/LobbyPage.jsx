@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../../shared/hooks/useAuth'
 import {
@@ -37,6 +37,7 @@ const getClientUserId = (user) => {
 
 const LobbyPage = () => {
     const navigate = useNavigate()
+    const location = useLocation()
     const { user } = useAuth()
     const [roomId, setRoomId] = useState('')
     const [currentRoom, setCurrentRoom] = useState(null)
@@ -45,7 +46,10 @@ const LobbyPage = () => {
     const [isBusy, setIsBusy] = useState(false)
     const [connectionState, setConnectionState] = useState(() => (socket.connected ? 'connected' : 'disconnected'))
     const notifiedRoomRef = useRef('')
+    const restoredRoomRef = useRef('')
     const clientUserId = getClientUserId(user)
+    const matchResult = location.state?.matchResult || null
+    const roomIdFromMatch = location.state?.roomId || ''
 
     useEffect(() => {
         if (user?.username || user?.email) {
@@ -62,6 +66,24 @@ const LobbyPage = () => {
             notify(error.message || 'Не удалось подключиться к арене', 'error')
         })
     }, [user])
+
+    useEffect(() => {
+        if (!matchResult) {
+            return
+        }
+
+        notify(
+            matchResult === 'win'
+                ? 'Раунд завершён. Вы победили и вернулись в лобби'
+                : 'Раунд завершён. Вы проиграли и вернулись в лобби',
+            matchResult === 'win' ? 'success' : 'warning'
+        )
+
+        navigate(location.pathname, {
+            replace: true,
+            state: {},
+        })
+    }, [location.pathname, matchResult, navigate])
 
     useEffect(() => {
         const handleConnect = () => {
@@ -94,6 +116,7 @@ const LobbyPage = () => {
         const handleRoomState = (room) => {
             setCurrentRoom(room)
             setRoomId(room?.id || '')
+            setJoinRoomId(room?.id || '')
         }
 
         const handlePlayerJoined = ({ username, userId }) => {
@@ -130,7 +153,7 @@ const LobbyPage = () => {
         }
     }, [clientUserId, currentRoom?.id, navigate])
 
-    const ensurePlayableIdentity = async () => {
+    const ensurePlayableIdentity = useCallback(async () => {
         if (user) {
             return await ensureSocketSession({ user })
         }
@@ -140,7 +163,36 @@ const LobbyPage = () => {
         }
 
         return await ensureSocketSession({ nickname })
-    }
+    }, [nickname, user])
+
+    useEffect(() => {
+        if (!roomIdFromMatch || restoredRoomRef.current === roomIdFromMatch) {
+            return
+        }
+
+        restoredRoomRef.current = roomIdFromMatch
+
+        const restoreRoom = async () => {
+            try {
+                await ensurePlayableIdentity()
+
+                const response = await emitWithAck('room:join', { roomId: roomIdFromMatch })
+
+                if (!response.success) {
+                    notify(response.message || 'Не удалось восстановить комнату после матча', 'error')
+                    return
+                }
+
+                setCurrentRoom(response.room)
+                setRoomId(response.room.id)
+                setJoinRoomId(response.room.id)
+            } catch (error) {
+                notify(error.message || 'Не удалось восстановить комнату после матча', 'error')
+            }
+        }
+
+        restoreRoom()
+    }, [ensurePlayableIdentity, roomIdFromMatch])
 
     const handleCreateRoom = async () => {
         setIsBusy(true)
