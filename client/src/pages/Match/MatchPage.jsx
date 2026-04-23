@@ -212,7 +212,7 @@ const MatchPage = () => {
     return (
         <section className="tetris-section">
             <div className="container tetris-container">
-                <div className="tetris-box">
+                <div className="tetris-box tetris-box--player">
                     <h2>Solo mod</h2>
 
                     <div className="tetris-layout">
@@ -224,8 +224,8 @@ const MatchPage = () => {
                                     <div
                                         className="next-piece-grid"
                                         style={{
-                                            gridTemplateColumns: `repeat(${derivedState.nextPiece.shape[0].length}, 35px)`,
-                                            gridTemplateRows: `repeat(${derivedState.nextPiece.shape.length}, 35px)`,
+                                            gridTemplateColumns: `repeat(${derivedState.nextPiece.shape[0].length}, var(--next-piece-cell-size))`,
+                                            gridTemplateRows: `repeat(${derivedState.nextPiece.shape.length}, var(--next-piece-cell-size))`,
                                         }}
                                     >
                                         {derivedState.nextPiece.shape.flatMap((row, rowIndex) =>
@@ -286,7 +286,7 @@ const MatchPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className='opponent-board-panel tetris-box'>
+                <div className='opponent-board-panel tetris-box tetris-box--opponent'>
                     <h2>Opponent Board</h2>
                     <div className='opponent-board-wrapper'>
                         <TetrisBoard board={opponentState.board} clearingRows={[]} compact />

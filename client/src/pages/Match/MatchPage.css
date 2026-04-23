@@ -1,31 +1,55 @@
 .tetris-section {
     height: 100%;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .tetris-container {
+    --match-player-board-width: min(34vw, calc((100dvh - 210px) / 2), 420px);
+    --match-opponent-board-width: min(18vw, calc((100dvh - 260px) / 2), 230px);
+    --match-panel-width: clamp(180px, 13vw, 230px);
+    --next-piece-cell-size: clamp(18px, calc(var(--match-player-board-width) / 15), 30px);
+
     background: transparent;
     height: 100%;
-    padding: 50px 40px;
-    display: flex;
+    min-height: 0;
+    padding: clamp(10px, 2vh, 24px) clamp(12px, 3vw, 40px);
+    display: grid;
+    grid-template-columns: minmax(0, auto) minmax(130px, var(--match-opponent-board-width));
+    align-items: start;
+    justify-content: center;
+    gap: clamp(12px, 2vw, 28px);
+    overflow: hidden;
 }
 
 .tetris-box {
-    width: fit-content;
-    margin: 0 auto;
+    min-width: 0;
 
     & h2 {
-        margin-bottom: 10px;
+        margin-bottom: clamp(5px, 0.8vh, 10px);
+        font-size: clamp(18px, 2vw, 24px);
+        line-height: 1.1;
     }
+}
+
+.tetris-box--player {
+    --tetris-board-width: var(--match-player-board-width);
+}
+
+.tetris-box--opponent {
+    --tetris-board-width: var(--match-opponent-board-width);
 }
 
 .right-board {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: clamp(6px, 0.8vh, 9px);
+    width: var(--match-panel-width);
+    min-width: 0;
 
     &>div {
-        min-width: 280px;
-        padding: 16px;
+        min-width: 0;
+        padding: clamp(8px, 1vh, 12px);
         border: 2px solid var(--turquoise);
         border-radius: 10px;
         backdrop-filter: blur(12px);
@@ -36,18 +60,20 @@
 .tetris-layout {
     display: flex;
     align-items: flex-start;
-    gap: 24px;
+    gap: clamp(12px, 2vw, 24px);
+    min-width: 0;
 }
 
 .next-piece-panel {
-    height: 300px;
+    min-height: clamp(120px, 22vh, 190px);
     display: flex;
-    gap: 10px;
+    gap: clamp(6px, 1vh, 10px);
     flex-direction: column;
     align-items: center;
 
     & h3{
-        font-size: 20px;
+        font-size: clamp(16px, 1.8vw, 20px);
+        line-height: 1.15;
     }
 
     & .next-piece{
@@ -60,7 +86,7 @@
 
 .next-piece-grid {
     display: grid;
-    gap: 4px;
+    gap: clamp(2px, 0.4vmin, 4px);
     justify-content: center;
     align-items: center;
     flex: 1;
@@ -68,10 +94,10 @@
 }
 
 .next-piece-cell {
-    width: 35px;
+    width: var(--next-piece-cell-size);
     aspect-ratio: 1;
     background: rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
+    border-radius: clamp(5px, 0.8vmin, 8px);
 
     &.filled {
         background: cyan;
@@ -80,18 +106,18 @@
 
 
 .info-panel {
-    margin-top: 20px;
+    margin-top: 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: clamp(6px, 1vh, 10px);
     
     & p{
-        font-size: 1rem;
+        font-size: clamp(0.78rem, 1vw, 0.95rem);
         color: #8a9aa8;
     }
     
     & span {
-        font-size: 1.4rem;
+        font-size: clamp(0.95rem, 1.2vw, 1.25rem);
         float: right;
         color: var(--text-color);
     }
@@ -100,7 +126,13 @@
 .actions{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 8px;
+}
+
+.action-item {
+    min-width: 0;
+    padding-inline: 0.75rem;
+    font-size: clamp(0.72rem, 0.9vw, 0.85rem);
 }
 
 .action-item{
@@ -110,15 +142,15 @@
 }
 
 .energy-panel {
-    margin-top: 16px;
+    margin-top: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: clamp(6px, 1vh, 8px);
 }
 
 .energy-bar {
     width: 100%;
-    height: 14px;
+    height: clamp(10px, 1.4vh, 14px);
     border-radius: 999px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.08);
@@ -134,8 +166,48 @@
 }
 
 .opponent-board-wrapper {
-    transform: scale(0.55);
-    transform-origin: top left;
-    width: fit-content;
-    height: fit-content;
+    width: var(--match-opponent-board-width);
+}
+
+@media (max-width: 1100px) {
+    .tetris-container {
+        --match-player-board-width: min(42vw, calc((100dvh - 220px) / 2), 380px);
+        --match-opponent-board-width: min(18vw, calc((100dvh - 270px) / 2), 190px);
+        --match-panel-width: clamp(170px, 24vw, 220px);
+    }
+}
+
+@media (max-width: 820px) {
+    .tetris-container {
+        --match-player-board-width: min(58vw, calc((100dvh - 220px) / 2), 340px);
+        --match-opponent-board-width: min(28vw, calc((100dvh - 250px) / 2), 180px);
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        justify-items: center;
+        overflow-y: auto;
+    }
+
+    .tetris-layout {
+        justify-content: center;
+    }
+
+    .opponent-board-panel {
+        display: none;
+    }
+}
+
+@media (max-width: 620px) {
+    .tetris-container {
+        --match-player-board-width: min(54vw, calc((100dvh - 210px) / 2), 280px);
+        --match-panel-width: clamp(160px, 38vw, 190px);
+        padding-inline: 8px;
+    }
+
+    .right-board {
+        width: min(38vw, 190px);
+    }
+
+    .right-board > div {
+        padding: 8px;
+    }
 }

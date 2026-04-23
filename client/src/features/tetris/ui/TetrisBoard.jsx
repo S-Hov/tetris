@@ -1,8 +1,8 @@
 import './TetrisBoard.css'
 
-const TetrisBoard = ({ board, clearingRows = [] }) => {
+const TetrisBoard = ({ board, clearingRows = [], compact = false }) => {
     return (
-        <div className="tetris-board">
+        <div className={`tetris-board${compact ? ' tetris-board--compact' : ''}`}>
             {board.map((row, rowIndex) =>
                 row.map((cell, cellIndex) => (
                     <div
