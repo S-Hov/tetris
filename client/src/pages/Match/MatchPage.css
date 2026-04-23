@@ -37,6 +37,7 @@
 }
 
 .tetris-box--opponent {
+    z-index: -1;
     --tetris-board-width: var(--match-opponent-board-width);
 }
 
@@ -52,6 +53,7 @@
     gap: clamp(6px, 0.8vh, 9px);
     width: var(--match-panel-width);
     min-width: 0;
+    z-index: -1;
 
     &>div {
         min-width: 0;
@@ -315,6 +317,7 @@
     height: 50%;
     align-items: center;
     width: max-content;
+    z-index: -1;
 }
 
 .energy-bar {
@@ -403,7 +406,7 @@
     background: rgba(3, 8, 18, 0.82);
     backdrop-filter: blur(10px);
     border-radius: clamp(10px, 1.4vmin, 15px);
-    z-index: 5;
+    z-index: 500;
 }
 
 .ability-picker {

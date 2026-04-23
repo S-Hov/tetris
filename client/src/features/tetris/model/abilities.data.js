@@ -1,9 +1,19 @@
 export const ABILITY_CHOICE_DURATION_MS = 50000000
 export const ABILITY_CHOICE_COUNT = 3
 
+export const ABILITY_IDS = {
+    SPEED_X2_FOR_4S: 'speed_x2_for_4s',
+    DARKNESS: 'darkness',
+    GARBAGE_RAIN: 'garbage_rain',
+    CONTROLS_SWAP: 'controls_swap',
+    FOG_PIECE: 'fog_piece',
+    GRAVITY_LOCK: 'gravity_lock',
+}
+
 export const ABILITIES = [
     {
-        id: 'speed_surge',
+        id: ABILITY_IDS.SPEED_X2_FOR_4S,
+        enabled: true,
         label: 'Overclock',
         title: 'Speed Surge',
         description: 'Opponent pieces fall much faster for a short time.',
@@ -11,7 +21,8 @@ export const ABILITIES = [
         visual: 'speed',
     },
     {
-        id: 'darkness',
+        id: ABILITY_IDS.DARKNESS,
+        enabled: false,
         label: 'Blackout',
         title: 'Darkness',
         description: 'Covers most of the opponent board with a dark veil.',
@@ -19,7 +30,8 @@ export const ABILITIES = [
         visual: 'darkness',
     },
     {
-        id: 'garbage_rain',
+        id: ABILITY_IDS.GARBAGE_RAIN,
+        enabled: false,
         label: 'Garbage Rain',
         title: 'Random Blocks',
         description: 'Drops a few messy blocks into the opponent board.',
@@ -27,7 +39,8 @@ export const ABILITIES = [
         visual: 'garbage',
     },
     {
-        id: 'controls_swap',
+        id: ABILITY_IDS.CONTROLS_SWAP,
+        enabled: false,
         label: 'Input Scramble',
         title: 'Swapped Controls',
         description: 'Temporarily reverses the opponent movement controls.',
@@ -35,7 +48,8 @@ export const ABILITIES = [
         visual: 'controls',
     },
     {
-        id: 'fog_piece',
+        id: ABILITY_IDS.FOG_PIECE,
+        enabled: false,
         label: 'Blind Next',
         title: 'Hidden Preview',
         description: 'Hides the opponent next piece preview.',
@@ -43,7 +57,8 @@ export const ABILITIES = [
         visual: 'fog',
     },
     {
-        id: 'gravity_lock',
+        id: ABILITY_IDS.GRAVITY_LOCK,
+        enabled: false,
         label: 'Heavy Gravity',
         title: 'Sticky Drop',
         description: 'Makes soft correction harder after a piece starts falling.',
@@ -53,7 +68,10 @@ export const ABILITIES = [
 ]
 
 export function getRandomDebuffs(count = ABILITY_CHOICE_COUNT, random = Math.random) {
-    return [...ABILITIES]
+    const enabledAbilities = ABILITIES.filter((ability) => ability.enabled)
+
+    return enabledAbilities
+        .slice()
         .sort(() => random() - 0.5)
-        .slice(0, Math.min(count, ABILITIES.length))
+        .slice(0, Math.min(count, enabledAbilities.length))
 }

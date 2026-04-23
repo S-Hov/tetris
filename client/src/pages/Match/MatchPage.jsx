@@ -16,12 +16,14 @@ import {
     togglePause,
     withDerivedState,
 } from '../../features/tetris/model/tetrisEngine.js'
+import { ABILITY_IDS } from '../../features/tetris/model/abilities.data.js'
 import { createBoard } from '../../features/tetris/model/createBoard.js'
 import { ensureSocketSession, socket } from '../../shared/api/socket/index.js'
 import { useAuth } from '../../shared/hooks/useAuth.js'
 import notify from '../../utils/Notifications'
 
 import './MatchPage.css'
+import { removeExpiredEffects } from '../../features/tetris/model/effects.js'
 
 const CONTROL_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space', 'KeyA', 'KeyD', 'KeyS', 'KeyW', 'KeyP', 'Escape']
 const getAbilitySecondsLeft = (endsAt) => Math.max(0, Math.ceil(((endsAt ?? 0) - Date.now()) / 1000))
@@ -130,7 +132,10 @@ const MatchPage = () => {
         }
 
         const intervalId = setInterval(() => {
-            setGameState((prevState) => tickGame(prevState))
+            setGameState((prevState) => {
+                const cleanedState = removeExpiredEffects(prevState)
+                return tickGame(cleanedState)
+            })
         }, derivedState.speed)
 
         return () => clearInterval(intervalId)
@@ -214,7 +219,8 @@ const MatchPage = () => {
                 isGameOver: derivedState.isGameOver,
                 isPaused: derivedState.isPaused,
                 board: boardWithPiece,
-            },
+                energy: derivedState.energy,
+            }
         })
     }, [
         roomId,
@@ -225,6 +231,7 @@ const MatchPage = () => {
         derivedState.isPaused,
         boardWithPiece,
         isMatchFinished,
+        derivedState.energy
     ])
 
     useEffect(() => {
@@ -281,9 +288,48 @@ const MatchPage = () => {
     }, [navigate, roomId])
 
     const handleAbilityChoose = (ability) => {
-        notify(`${ability.title} is prepared`, 'success')
-        setGameState((prevState) => resolveAbilityChoice(prevState, ability))
+        if (!roomId) return
+
+        socket.emit('ability:use', {
+            roomId,
+            abilityId: ability.id,
+        }, (response) => {
+            if (!response?.success) {
+                notify(response?.message || 'Не удалось применить способность', 'error')
+                return
+            }
+
+            notify(`${ability.title} activated`, 'success')
+            setGameState((prev) => resolveAbilityChoice(prev, ability))
+        })
     }
+
+    useEffect(() => {
+        const handleEffectApply = ({ effect }) => {
+            if (effect.type === ABILITY_IDS.SPEED_X2_FOR_4S) {
+                const expiresAt = Date.now() + effect.durationMs
+
+                setGameState((prevState) => ({
+                    ...prevState,
+                    activeEffects: [
+                        ...prevState.activeEffects.filter((item) => item.type !== effect.type),
+                        {
+                            type: effect.type,
+                            expiresAt,
+                        },
+                    ],
+                }))
+
+                notify('На вас применили ускорение x2 на 4 секунды', 'warning')
+            }
+        }
+
+        socket.on('effect:apply', handleEffectApply)
+
+        return () => {
+            socket.off('effect:apply', handleEffectApply)
+        }
+    }, [])
 
     useEffect(() => {
         if (!derivedState.isChoosingAbility) return
@@ -313,7 +359,7 @@ const MatchPage = () => {
             <div className="container tetris-container">
                 <div className="tetris-box tetris-box--player">
                     <div className='tetris-box-header'>
-                        <h2>Solo mod</h2>
+                        <h2>1v1 Match</h2>
                         <p><i className="fa-solid fa-star"></i> Score: <b>{derivedState.score}</b></p>
                     </div>
 

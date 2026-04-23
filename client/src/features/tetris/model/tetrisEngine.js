@@ -9,6 +9,7 @@ import { getStartPosition } from './getStartPosition.js'
 import { getScoreForLines } from './getScoreForLines.js'
 import { getEnergyForLines } from './getEnergyForLines.js'
 import { ABILITY_CHOICE_DURATION_MS, getRandomDebuffs } from './abilities.data.js'
+import { hasEffect, EFFECT_TYPES } from './effects.js'
 
 export const LINE_CLEAR_ANIMATION_MS = 250
 export const ROTATION_KICK_OFFSETS = [0, -1, 1, -2, 2]
@@ -112,6 +113,7 @@ export function createGameState(options = {}) {
         isChoosingAbility: false,
         abilityOptions: [],
         abilityChoiceEndsAt: null,
+        activeEffects: [],
     }
 }
 
@@ -291,9 +293,15 @@ export function getRenderedBoard(state) {
 }
 
 export function withDerivedState(state) {
+    const baseSpeed = Math.max(100, 1000 - state.level * 100)
+
+    const speed = hasEffect(state, EFFECT_TYPES.SPEED_X2)
+        ? Math.max(50, Math.floor(baseSpeed / 2))
+        : baseSpeed
+    
     return {
         ...state,
         isClearing: state.clearingRows.length > 0,
-        speed: Math.max(100, 1000 - state.level * 100),
+        speed,
     }
 }
