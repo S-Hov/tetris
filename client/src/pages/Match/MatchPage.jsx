@@ -201,19 +201,14 @@ const MatchPage = () => {
         return () => socket.off('match:end', handleMatchEnd)
     }, [])
 
-    const handleRestart = () => {
-        setGameState((prevState) => (
-            prevState.isGameOver
-                ? restartGame()
-                : prevState
-        ))
-    }
-
     return (
         <section className="tetris-section">
             <div className="container tetris-container">
                 <div className="tetris-box tetris-box--player">
-                    <h2>Solo mod</h2>
+                    <div className='tetris-box-header'>
+                        <h2>Solo mod</h2>
+                        <p><i className="fa-solid fa-star"></i> Score: <b>{derivedState.score}</b></p>
+                    </div>
 
                     <div className="tetris-layout">
                         <TetrisBoard board={boardWithPiece} clearingRows={derivedState.clearingRows} />
@@ -251,30 +246,10 @@ const MatchPage = () => {
                                 <div className="energy-bar">
                                     <div
                                         className="energy-fill"
-                                        style={{ width: `${derivedState.energy}%` }}
+                                        style={{ height: `${derivedState.energy}%` }}
                                     />
                                 </div>
                                 <span>{derivedState.energy}%</span>
-                            </div>
-                            <div className="actions">
-                                <button
-                                    type="button"
-                                    className='action-item button'
-                                    onClick={() => setGameState((prevState) => togglePause(prevState))}
-                                    disabled={derivedState.isGameOver}
-                                >
-                                    {derivedState.isPaused ? (<i className="fa-solid fa-play"></i>) : (<i className="fa-solid fa-pause"></i>)}
-                                    Pause
-                                </button>
-                                <button
-                                    type="button"
-                                    className='action-item button'
-                                    onClick={handleRestart}
-                                    disabled={!derivedState.isGameOver}
-                                >
-                                    <i className="fa-solid fa-rotate-right"></i>
-                                    Restart
-                                </button>
                             </div>
                             <div className='opponent-panel'>
                                 <h3>Opponent</h3>

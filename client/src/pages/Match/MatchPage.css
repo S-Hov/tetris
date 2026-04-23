@@ -40,6 +40,12 @@
     --tetris-board-width: var(--match-opponent-board-width);
 }
 
+.tetris-box-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .right-board {
     display: flex;
     flex-direction: column;
@@ -62,6 +68,7 @@
     align-items: flex-start;
     gap: clamp(12px, 2vw, 24px);
     min-width: 0;
+    position: relative;
 }
 
 .next-piece-panel {
@@ -71,12 +78,12 @@
     flex-direction: column;
     align-items: center;
 
-    & h3{
+    & h3 {
         font-size: clamp(16px, 1.8vw, 20px);
         line-height: 1.15;
     }
 
-    & .next-piece{
+    & .next-piece {
         flex: 1;
         display: flex;
         align-items: center;
@@ -110,12 +117,12 @@
     display: flex;
     flex-direction: column;
     gap: clamp(6px, 1vh, 10px);
-    
-    & p{
+
+    & p {
         font-size: clamp(0.78rem, 1vw, 0.95rem);
         color: #8a9aa8;
     }
-    
+
     & span {
         font-size: clamp(0.95rem, 1.2vw, 1.25rem);
         float: right;
@@ -123,7 +130,7 @@
     }
 }
 
-.actions{
+.actions {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
@@ -135,8 +142,8 @@
     font-size: clamp(0.72rem, 0.9vw, 0.85rem);
 }
 
-.action-item{
-    & i{
+.action-item {
+    & i {
         margin-right: 5px;
     }
 }
@@ -146,21 +153,30 @@
     display: flex;
     flex-direction: column;
     gap: clamp(6px, 1vh, 8px);
+    position: absolute;
+    right: calc(100% + clamp(12px, 2vw, 24px));
+    height: 50%;
+    align-items: center;
+    width: max-content;
 }
 
 .energy-bar {
     width: 100%;
+    max-width: 50px;
     height: clamp(10px, 1.4vh, 14px);
-    border-radius: 999px;
+    border-radius: 10px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(0, 255, 255, 0.6);
-}
+    flex: 1;
+    display: flex;
+    flex-direction: column-reverse;
+}   
 
 .energy-fill {
-    height: 100%;
-    border-radius: 999px;
-    background: linear-gradient(90deg, #00f0ff, #7a5cff, #ff00c8);
+    width: 100%;
+    border-radius: 10px;
+    background: linear-gradient(0deg, #00f0ff, #7a5cff, #ff03c8);
     box-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
     transition: width 0.25s ease;
 }
@@ -207,7 +223,7 @@
         width: min(38vw, 190px);
     }
 
-    .right-board > div {
+    .right-board>div {
         padding: 8px;
     }
 }

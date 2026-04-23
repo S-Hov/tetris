@@ -39,7 +39,7 @@
 }
 
 .next-piece-panel {
-    height: 300px;
+    height: clamp(120px, 22vh, 190px);
     display: flex;
     gap: 10px;
     flex-direction: column;
