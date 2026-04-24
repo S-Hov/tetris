@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import TetrisBoard from '../../features/tetris/ui/TetrisBoard.jsx'
 import {
     LINE_CLEAR_ANIMATION_MS,
     createGameState,
@@ -10,14 +9,22 @@ import {
     movePiece,
     resolveAbilityChoice,
     resolveLineClear,
-    // restartGame,
     rotateCurrentPiece,
     tickGame,
     togglePause,
     withDerivedState,
 } from '../../features/tetris/model/tetrisEngine.js'
 import { ABILITY_IDS } from '../../features/tetris/model/abilities.data.js'
+import { GAME_MODE_REGISTRY, GAME_MODE_TYPES } from '../../features/tetris/model/gameModes.js'
 import { createBoard } from '../../features/tetris/model/createBoard.js'
+import AbilityOverlay from '../../features/tetris/ui/AbilityOverlay.jsx'
+import EnergyPanel from '../../features/tetris/ui/EnergyPanel.jsx'
+import GameLayout from '../../features/tetris/ui/GameLayout.jsx'
+import MatchResultBanner from '../../features/tetris/ui/MatchResultBanner.jsx'
+import NextPiecePanel from '../../features/tetris/ui/NextPiecePanel.jsx'
+import PlayerSummaryPanel from '../../features/tetris/ui/PlayerSummaryPanel.jsx'
+import StatsPanel from '../../features/tetris/ui/StatsPanel.jsx'
+import TetrisBoard from '../../features/tetris/ui/TetrisBoard.jsx'
 import { ensureSocketSession, socket } from '../../shared/api/socket/index.js'
 import { useAuth } from '../../shared/hooks/useAuth.js'
 import notify from '../../utils/Notifications'
@@ -29,6 +36,7 @@ const CONTROL_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space'
 const getAbilitySecondsLeft = (endsAt) => Math.max(0, Math.ceil(((endsAt ?? 0) - Date.now()) / 1000))
 const MATCH_END_REDIRECT_DELAY_MS = 3200
 const DANGER_ZONE_ROWS = 7
+const versusMode = GAME_MODE_REGISTRY[GAME_MODE_TYPES.VERSUS_1V1_EFFECTS]
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
 
@@ -354,136 +362,71 @@ const MatchPage = () => {
         '--danger-shake-duration': `${Math.max(700 - dangerLevel * 420, 220)}ms`,
     }
 
-    return (
-        <section className="tetris-section">
-            <div className="container tetris-container">
-                <div className="tetris-box tetris-box--player">
-                    <div className='tetris-box-header'>
-                        <h2>1v1 Match</h2>
-                        <p><i className="fa-solid fa-star"></i> Score: <b>{derivedState.score}</b></p>
-                    </div>
-
-                    <div className="tetris-layout">
-                        <div className={boardShellClassName} style={dangerStyle}>
-                            <TetrisBoard
-                                board={boardWithPiece}
-                                clearingRows={derivedState.clearingRows}
-                                className={dangerLevel > 0 ? 'tetris-board--danger' : ''}
-                            />
-
-                            {dangerLevel > 0 && !isMatchFinished && (
-                                <div className="board-danger-status" aria-hidden="true">
-                                    <span>CRITICAL ZONE</span>
-                                    <strong>{Math.round(dangerLevel * 100)}%</strong>
-                                </div>
-                            )}
-
-                            {derivedState.isChoosingAbility && (
-                                <div className="ability-overlay" role="dialog" aria-modal="true" aria-labelledby="ability-title">
-                                    <div className="ability-picker">
-                                        <div className="ability-picker-header">
-                                            <span className="ability-kicker">Time stopped</span>
-                                            <h3 id="ability-title">Choose a debuff</h3>
-                                            <p>{abilitySecondsLeft}s left</p>
-                                        </div>
-
-                                        <div className="ability-options">
-                                            {derivedState.abilityOptions.map((ability) => (
-                                                <button
-                                                    type="button"
-                                                    className="ability-card"
-                                                    key={ability.id}
-                                                    onClick={() => handleAbilityChoose(ability)}
-                                                >
-                                                    <span className={`ability-visual ability-visual--${ability.visual}`}>
-                                                        <i className={`fa-solid ${ability.icon}`} aria-hidden="true"></i>
-                                                    </span>
-                                                    <span className="ability-card-label">{ability.label}</span>
-                                                    <span className="ability-card-title">{ability.title}</span>
-                                                    <span className="ability-card-description">{ability.description}</span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                        </div>
-                        <div className='right-board'>
-                            <div className="next-piece-panel">
-                                <h3><i className="fa-solid fa-eye"></i> Next Piece</h3>
-                                <div className='next-piece'>
-                                    <div
-                                        className="next-piece-grid"
-                                        style={{
-                                            gridTemplateColumns: `repeat(${derivedState.nextPiece.shape[0].length}, var(--next-piece-cell-size))`,
-                                            gridTemplateRows: `repeat(${derivedState.nextPiece.shape.length}, var(--next-piece-cell-size))`,
-                                        }}
-                                    >
-                                        {derivedState.nextPiece.shape.flatMap((row, rowIndex) =>
-                                            row.map((cell, cellIndex) => (
-                                                <div
-                                                    key={`${rowIndex}-${cellIndex}`}
-                                                    className={`next-piece-cell ${cell ? 'filled' : ''}`}
-                                                />
-                                            ))
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='info-panel'>
-                                <p><i className="fa-solid fa-star"></i> Score: <span>{derivedState.score}</span></p>
-                                <p><i className="fa-solid fa-grip-lines"></i> Lines: <span>{derivedState.linesCleared}</span></p>
-                                <p><i className="fas fa-gauge-high"></i> Level: <span>{derivedState.level}</span></p>
-                                <p><i className="fa-solid fa-trophy"></i> РЕКОРД <span>7984</span></p>
-                                <p>Status: {derivedState.isPaused ? 'Paused' : 'Playing'}</p>
-                            </div>
-                            <div className="energy-panel">
-                                <p><i className="fa-solid fa-bolt"></i> Skill Energy</p>
-                                <div className="energy-bar">
-                                    <div
-                                        className="energy-fill"
-                                        style={{ height: `${derivedState.energy}%` }}
-                                    />
-                                </div>
-                                <span>{derivedState.energy}%</span>
-                            </div>
-                            <div className='opponent-panel'>
-                                <h3>Opponent</h3>
-                                <p>Score: {opponentState.score}</p>
-                                <p>Lines: {opponentState.linesCleared}</p>
-                                <p>Level: {opponentState.level}</p>
-                                <p>Status: {isMatchFinished ? 'Round ended' : opponentState.isGameOver ? 'Game Over' : 'Playing'}</p>
-                            </div>
-                        </div>
-
-                        {isMatchFinished && (
-                            <div
-                                className={`match-result-banner match-result-banner--${matchResult}`}
-                                role="status"
-                                aria-live="polite"
-                            >
-                                <span className="match-result-banner__eyebrow">
-                                    {matchResult === 'win' ? 'Round Complete' : 'Round Lost'}
-                                </span>
-                                <h3>{matchResult === 'win' ? 'Победа' : 'Поражение'}</h3>
-                                <p>
-                                    {matchResult === 'win'
-                                        ? 'Вы забрали этот раунд. Возвращаем вас в лобби вместе с соперником.'
-                                        : 'Раунд завершён. Сейчас вы оба вернётесь в лобби и сможете начать заново.'}
-                                </p>
-                            </div>
-                        )}
-                    </div>
+    const boardDecor = (
+        <>
+            {dangerLevel > 0 && !isMatchFinished && (
+                <div className="board-danger-status" aria-hidden="true">
+                    <span>CRITICAL ZONE</span>
+                    <strong>{Math.round(dangerLevel * 100)}%</strong>
                 </div>
-                <div className='opponent-board-panel tetris-box tetris-box--opponent'>
-                    <h2>Opponent Board</h2>
-                    <div className='opponent-board-wrapper'>
-                        <TetrisBoard board={opponentState.board} clearingRows={[]} compact />
-                    </div>
-                </div>
+            )}
+        </>
+    )
+
+    const sidebar = (
+        <>
+            <NextPiecePanel nextPiece={derivedState.nextPiece} />
+            <StatsPanel
+                score={derivedState.score}
+                lines={derivedState.linesCleared}
+                level={derivedState.level}
+                status={derivedState.isPaused ? 'Paused' : 'Playing'}
+            />
+            <PlayerSummaryPanel
+                title="Opponent"
+                score={opponentState.score}
+                lines={opponentState.linesCleared}
+                level={opponentState.level}
+                status={isMatchFinished ? 'Round ended' : opponentState.isGameOver ? 'Game Over' : 'Playing'}
+            />
+        </>
+    )
+
+    const secondaryColumn = (
+        <>
+            <h2 className="game-layout__secondary-title">Opponent Board</h2>
+            <div className="game-layout__secondary-board">
+                <TetrisBoard board={opponentState.board} clearingRows={[]} compact />
             </div>
-        </section>
+        </>
+    )
+
+    const overlay = derivedState.isChoosingAbility ? (
+        <AbilityOverlay
+            eyebrow="Time stopped"
+            title="Choose a debuff"
+            secondsLeft={abilitySecondsLeft}
+            options={derivedState.abilityOptions}
+            onChoose={handleAbilityChoose}
+        />
+    ) : null
+
+    return (
+        <GameLayout
+            mode={versusMode}
+            score={derivedState.score}
+            board={boardWithPiece}
+            clearingRows={derivedState.clearingRows}
+            boardClassName={dangerLevel > 0 ? 'tetris-board--danger' : ''}
+            boardShellClassName={boardShellClassName}
+            boardShellStyle={dangerStyle}
+            boardDecor={boardDecor}
+            leftRail={<EnergyPanel energy={derivedState.energy} />}
+            sidebar={sidebar}
+            overlay={overlay}
+            banner={isMatchFinished ? <MatchResultBanner result={matchResult} /> : null}
+            secondaryColumn={secondaryColumn}
+        />
     )
 }
 

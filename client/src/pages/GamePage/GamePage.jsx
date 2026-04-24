@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import TetrisBoard from '../../features/tetris/ui/TetrisBoard.jsx'
 import {
     LINE_CLEAR_ANIMATION_MS,
     createGameState,
@@ -13,10 +12,14 @@ import {
     togglePause,
     withDerivedState,
 } from '../../features/tetris/model/tetrisEngine.js'
-
-import './GamePage.css'
+import { GAME_MODE_REGISTRY, GAME_MODE_TYPES } from '../../features/tetris/model/gameModes.js'
+import ActionsPanel from '../../features/tetris/ui/ActionsPanel.jsx'
+import GameLayout from '../../features/tetris/ui/GameLayout.jsx'
+import NextPiecePanel from '../../features/tetris/ui/NextPiecePanel.jsx'
+import StatsPanel from '../../features/tetris/ui/StatsPanel.jsx'
 
 const CONTROL_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space', 'KeyA', 'KeyD', 'KeyS', 'KeyW', 'KeyP', 'Escape']
+const soloMode = GAME_MODE_REGISTRY[GAME_MODE_TYPES.SOLO_CLASSIC]
 
 const GamePage = () => {
     const [gameState, setGameState] = useState(() => createGameState())
@@ -94,75 +97,52 @@ const GamePage = () => {
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [])
 
-    const handleRestart = () => {
-        setGameState((prevState) => (
-            prevState.isGameOver
-                ? restartGame()
-                : prevState
-        ))
+    const handlePauseToggle = () => {
+        setGameState((prevState) => togglePause(prevState))
     }
 
+    const handleRestart = () => {
+        setGameState(() => restartGame())
+    }
+
+    const sidebar = (
+        <>
+            <NextPiecePanel nextPiece={derivedState.nextPiece} />
+            <StatsPanel
+                score={derivedState.score}
+                lines={derivedState.linesCleared}
+                level={derivedState.level}
+                status={derivedState.isPaused ? 'Paused' : 'Playing'}
+            />
+            <ActionsPanel
+                actions={[
+                    {
+                        key: 'pause',
+                        icon: derivedState.isPaused ? 'fa-play' : 'fa-pause',
+                        label: derivedState.isPaused ? 'Resume' : 'Pause',
+                        onClick: handlePauseToggle,
+                        disabled: derivedState.isGameOver,
+                        pressed: derivedState.isPaused,
+                    },
+                    {
+                        key: 'restart',
+                        icon: 'fa-rotate-right',
+                        label: 'Restart',
+                        onClick: handleRestart,
+                    },
+                ]}
+            />
+        </>
+    )
+
     return (
-        <section className="tetris-section">
-            <div className="container tetris-container">
-                <div className="tetris-box">
-                    <h2>Solo mod</h2>
-                    <div className="tetris-layout">
-                        <TetrisBoard board={boardWithPiece} clearingRows={derivedState.clearingRows} />
-                        <div className='right-board'>
-                            <div className="next-piece-panel">
-                                <h3><i className="fa-solid fa-eye"></i> Next Piece</h3>
-                                <div className='next-piece'>
-                                    <div
-                                        className="next-piece-grid"
-                                        style={{
-                                            gridTemplateColumns: `repeat(${derivedState.nextPiece.shape[0].length}, 35px)`,
-                                            gridTemplateRows: `repeat(${derivedState.nextPiece.shape.length}, 35px)`,
-                                        }}
-                                    >
-                                        {derivedState.nextPiece.shape.flatMap((row, rowIndex) =>
-                                            row.map((cell, cellIndex) => (
-                                                <div
-                                                    key={`${rowIndex}-${cellIndex}`}
-                                                    className={`next-piece-cell ${cell ? 'filled' : ''}`}
-                                                />
-                                            ))
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='info-panel'>
-                                <p><i className="fa-solid fa-star"></i> Score: <span>{derivedState.score}</span></p>
-                                <p><i className="fa-solid fa-grip-lines"></i> Lines: <span>{derivedState.linesCleared}</span></p>
-                                <p><i className="fas fa-gauge-high"></i> Level: <span>{derivedState.level}</span></p>
-                                <p><i className="fa-solid fa-trophy"></i> РЕКОРД <span>7984</span></p>
-                                <p>Status: {derivedState.isPaused ? 'Paused' : 'Playing'}</p>
-                            </div>
-                            <div className="actions">
-                                <button
-                                    type="button"
-                                    className='action-item button'
-                                    onClick={() => setGameState((prevState) => togglePause(prevState))}
-                                    disabled={derivedState.isGameOver}
-                                >
-                                    {derivedState.isPaused ? (<i className="fa-solid fa-play"></i>) : (<i className="fa-solid fa-pause"></i>)}
-                                    Pause
-                                </button>
-                                <button
-                                    type="button"
-                                    className='action-item button'
-                                    onClick={handleRestart}
-                                    disabled={!derivedState.isGameOver}
-                                >
-                                    <i className="fa-solid fa-rotate-right"></i>
-                                    Restart
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <GameLayout
+            mode={soloMode}
+            score={derivedState.score}
+            board={boardWithPiece}
+            clearingRows={derivedState.clearingRows}
+            sidebar={sidebar}
+        />
     )
 }
 
