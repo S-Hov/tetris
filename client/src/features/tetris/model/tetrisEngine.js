@@ -96,6 +96,7 @@ export function createGameState(options = {}) {
     const randomPiece = createPieceGenerator(options.randomPiece)
     const currentPiece = randomPiece()
     const nextPiece = randomPiece()
+    const abilitiesEnabled = options.abilitiesEnabled ?? true
 
     return {
         board: createBoard(),
@@ -110,6 +111,7 @@ export function createGameState(options = {}) {
         clearingRows: [],
         pendingClear: null,
         energy: 0,
+        abilitiesEnabled,
         isChoosingAbility: false,
         abilityOptions: [],
         abilityChoiceEndsAt: null,
@@ -134,7 +136,7 @@ export function resolveLineClear(state) {
         linesCleared: state.linesCleared + state.pendingClear.clearedLinesCount,
     })
 
-    if (nextState.energy >= 100) {
+    if (nextState.abilitiesEnabled && nextState.energy >= 100) {
         return {
             ...nextState,
             isChoosingAbility: true,

@@ -1,7 +1,7 @@
-import LoginForm from "./LoginForm"
-import LoginFormHeader from "../../shared/ui/Auth/AuthHeader/LoginHeader"
-import RegisterForm from "./RegisterForm"
-import RegisterFormHeader from "../../shared/ui/Auth/AuthHeader/RegisterHeader"
+import LoginForm from './LoginForm.jsx'
+import LoginFormHeader from '../../shared/ui/Auth/AuthHeader/LoginHeader.jsx'
+import RegisterForm from './RegisterForm.jsx'
+import RegisterFormHeader from '../../shared/ui/Auth/AuthHeader/RegisterHeader.jsx'
 
 const AUTH_VIEWS = {
     login: {

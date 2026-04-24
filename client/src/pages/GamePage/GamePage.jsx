@@ -20,9 +20,10 @@ import StatsPanel from '../../features/tetris/ui/StatsPanel.jsx'
 
 const CONTROL_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space', 'KeyA', 'KeyD', 'KeyS', 'KeyW', 'KeyP', 'Escape']
 const soloMode = GAME_MODE_REGISTRY[GAME_MODE_TYPES.SOLO_CLASSIC]
+const createSoloGameState = () => createGameState({ abilitiesEnabled: false })
 
 const GamePage = () => {
-    const [gameState, setGameState] = useState(() => createGameState())
+    const [gameState, setGameState] = useState(() => createSoloGameState())
     const derivedState = withDerivedState(gameState)
     const boardWithPiece = getRenderedBoard(derivedState)
 
@@ -102,7 +103,7 @@ const GamePage = () => {
     }
 
     const handleRestart = () => {
-        setGameState(() => restartGame())
+        setGameState(() => restartGame({ abilitiesEnabled: false }))
     }
 
     const sidebar = (
