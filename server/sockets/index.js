@@ -2,6 +2,11 @@ import { registerLobbyHandlers } from './lobby.socket.js'
 import { registerGameHandlers } from './game.handlers.js'
 import { roomStore } from './roomStore.js'
 import { socketAuthMiddleware } from './socketAuth.js'
+import {
+    abandonRoomMatchService,
+    cancelRoomMatchService,
+    markRoomPlayerLeftService,
+} from '../services/matchService.js'
 
 export const registerSocketHandlers = (io) => {
     io.use(socketAuthMiddleware)
@@ -20,6 +25,41 @@ export const registerSocketHandlers = (io) => {
             if (!result || !result.removedPlayer) {
                 return
             }
+
+            void (async () => {
+                try {
+                    await markRoomPlayerLeftService({
+                        roomId: result.roomId,
+                        player: result.removedPlayer,
+                    })
+
+                    if (!result.room) {
+                        await cancelRoomMatchService({
+                            roomId: result.roomId,
+                        })
+                        return
+                    }
+
+                    if (result.previousRoom?.status === 'playing') {
+                        const winner = result.room.players[0] || null
+
+                        await abandonRoomMatchService({
+                            roomId: result.roomId,
+                            winnerPlayer: winner,
+                            loserPlayer: result.removedPlayer,
+                        })
+
+                        io.to(result.roomId).emit('match:end', {
+                            roomId: result.roomId,
+                            loserSocketId: result.removedPlayer.socketId,
+                            winnerSocketId: winner?.socketId || null,
+                            reason: 'disconnect',
+                        })
+                    }
+                } catch (error) {
+                    console.error('disconnect persistence error', error)
+                }
+            })()
 
             if (result.room) {
                 io.to(result.roomId).emit('room:state', result.room)

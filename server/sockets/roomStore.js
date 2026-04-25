@@ -20,6 +20,14 @@ export const getRoomPlayerByUserId = (room, userId) => {
     return room.players.find((player) => player.userId === userId) || null
 }
 
+export const getRoomPlayerBySocketId = (room, socketId) => {
+    if (!room || !socketId) {
+        return null
+    }
+
+    return room.players.find((player) => player.socketId === socketId) || null
+}
+
 export const roomStore = {
     createRoom(room) {
         rooms.set(room.id, room)
@@ -69,6 +77,7 @@ export const roomStore = {
             return {
                 roomId: room.id,
                 room: null,
+                previousRoom: room,
                 removedPlayer,
             }
         }
@@ -84,7 +93,23 @@ export const roomStore = {
         return {
             roomId: room.id,
             room: updatedRoom,
+            previousRoom: room,
             removedPlayer,
         }
+    },
+
+    updatePlayer(roomId, socketId, updater) {
+        const room = rooms.get(roomId)
+        if (!room) return null
+
+        const updatedRoom = {
+            ...room,
+            players: room.players.map((player) => (
+                player.socketId === socketId ? updater(player) : player
+            )),
+        }
+
+        rooms.set(roomId, updatedRoom)
+        return updatedRoom
     },
 }

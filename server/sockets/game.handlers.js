@@ -1,4 +1,8 @@
 import { isSocketRoomParticipant, roomStore } from './roomStore.js'
+import {
+    finishRoomMatchService,
+    recordMatchEventService,
+} from '../services/matchService.js'
 
 const ABILITY_EFFECTS = {
     speed_x2_for_4s: {
@@ -19,13 +23,18 @@ export const registerGameHandlers = (io, socket) => {
             return
         }
 
+        roomStore.updatePlayer(roomId, socket.id, (player) => ({
+            ...player,
+            gameState: payload,
+        }))
+
         socket.to(roomId).emit('opponent:update', {
             socketId: socket.id,
             payload,
         })
     })
 
-    socket.on('game:over', ({ roomId, payload }) => {
+    socket.on('game:over', async ({ roomId, payload }) => {
         const room = roomStore.getRoom(roomId)
 
         if (!isSocketRoomParticipant(room, socket)) {
@@ -48,6 +57,20 @@ export const registerGameHandlers = (io, socket) => {
         })
 
         const winner = room.players.find((player) => player.socketId !== socket.id) || null
+        const loser = room.players.find((player) => player.socketId === socket.id) || null
+
+        if (winner && loser) {
+            try {
+                await finishRoomMatchService({
+                    roomId,
+                    winnerPlayer: winner,
+                    loserPlayer: loser,
+                    loserPayload: payload,
+                })
+            } catch (error) {
+                console.error('game:over persistence error', error)
+            }
+        }
 
         socket.to(roomId).emit('opponent:update', {
             socketId: socket.id,
@@ -68,7 +91,7 @@ export const registerGameHandlers = (io, socket) => {
         })
     })
 
-    socket.on('ability:use', ({ roomId, abilityId }, callback) => {
+    socket.on('ability:use', async ({ roomId, abilityId }, callback) => {
         const room = roomStore.getRoom(roomId)
 
         if (!room) {
@@ -108,6 +131,22 @@ export const registerGameHandlers = (io, socket) => {
                 sourceSocketId: socket.id,
             },
         })
+
+        try {
+            await recordMatchEventService({
+                roomId,
+                eventType: 'ability_used',
+                sourcePlayer,
+                targetPlayer,
+                payload: {
+                    abilityId,
+                    effectType: effect.type,
+                    durationMs: effect.durationMs,
+                },
+            })
+        } catch (error) {
+            console.error('ability:use persistence error', error)
+        }
 
         callback?.({ success: true, effectType: effect.type })
     })
