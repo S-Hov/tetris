@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PvP Tetris | Выбор режима игры — 1 VS 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0f2f5;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .bg-subtle {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
+        }
+
+        /* HEADER */
+        .site-header {
+            position: relative;
+            margin-top: 1.5rem;
+            margin-bottom: 2rem;
+            width: 90%;
+            max-width: 1280px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            border: 1px solid #eef2f6;
+        }
+
+        .header-content {
+            padding: 0.9rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .tetris-icon {
+            font-size: 1.8rem;
+            color: #2c4c6c;
+        }
+
+        .logo-text h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a2a3a;
+            letter-spacing: -0.3px;
+        }
+
+        .back-link {
+            background: #f0f4f8;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            color: #4a6a7a;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            background: #e4eaf0;
+        }
+
+        /* ОСНОВНОЙ КОНТЕЙНЕР */
+        .main-container {
+            width: 90%;
+            max-width: 1280px;
+            margin: 0 auto 3rem;
+        }
+
+        /* Режим баннер */
+        .mode-banner {
+            background: linear-gradient(135deg, #1a2a3a 0%, #2c4c6c 100%);
+            border-radius: 24px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .mode-banner h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mode-banner p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .online-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+        }
+
+        /* Карточки выбора режима */
+        .play-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .option-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 1.8rem;
+            border: 1px solid #eef2f6;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .option-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+            border-color: #dce4ec;
+        }
+
+        .option-icon {
+            width: 60px;
+            height: 60px;
+            background: #f0f4f8;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .option-icon i {
+            font-size: 1.8rem;
+            color: #2c4c6c;
+        }
+
+        .option-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a2a3a;
+            margin-bottom: 0.5rem;
+        }
+
+        .option-card p {
+            color: #6c7a89;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+
+        .option-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.7rem;
+            color: #8a9aa8;
+        }
+
+        /* Настройки матча */
+        .settings-section {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 1.8rem;
+            border: 1px solid #eef2f6;
+            margin-bottom: 2rem;
+        }
+
+        .settings-section h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a2a3a;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eef2f6;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-label {
+            font-weight: 600;
+            color: #1a2a3a;
+            font-size: 0.9rem;
+        }
+
+        .setting-desc {
+            font-size: 0.7rem;
+            color: #8a9aa8;
+            margin-top: 0.2rem;
+        }
+
+        /* Переключатели */
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: #dce4ec;
+            border-radius: 30px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background: #2c4c6c;
+        }
+
+        .toggle-knob {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: all 0.2s;
+        }
+
+        .toggle-switch.active .toggle-knob {
+            left: 22px;
+        }
+
+        /* Селекты */
+        .styled-select {
+            background: #f0f4f8;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            color: #1a2a3a;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* Создание комнаты */
+        .create-room-section {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 1.8rem;
+            border: 1px solid #eef2f6;
+            margin-bottom: 2rem;
+        }
+
+        .room-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .room-field {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .room-field label {
+            display: block;
+            font-size: 0.7rem;
+            color: #8a9aa8;
+            margin-bottom: 0.3rem;
+        }
+
+        .room-field input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid #eef2f6;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .room-field input:focus {
+            border-color: #2c4c6c;
+        }
+
+        .create-room-btn {
+            background: #2c4c6c;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .create-room-btn:hover {
+            background: #1a2a3a;
+        }
+
+        /* Кнопка быстрой игры */
+        .quick-play-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 60px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .quick-play-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Тост уведомления */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a2a3a;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* Адаптив */
+        @media (max-width: 700px) {
+            .play-options {
+                grid-template-columns: 1fr;
+            }
+            .room-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .mode-banner {
+                text-align: center;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-subtle"></div>
+
+<header class="site-header">
+    <div class="header-content">
+        <div class="brand">
+            <div class="tetris-icon">
+                <i class="fas fa-cubes"></i>
+            </div>
+            <div class="logo-text">
+                <h1>PVP Tetris</h1>
+                <p>РЕЖИМ 1 VS 1</p>
+            </div>
+        </div>
+        <a href="#" class="back-link" id="backBtn"><i class="fas fa-arrow-left"></i> Назад</a>
+    </div>
+</header>
+
+<div class="main-container">
+    <!-- Баннер режима -->
+    <div class="mode-banner">
+        <div>
+            <h2><i class="fas fa-fist-raised"></i> Дуэль 1 VS 1</h2>
+            <p>Сразитесь с соперником в напряжённой битве линий</p>
+        </div>
+        <div class="online-badge">
+            <i class="fas fa-globe"></i> 1,234 игроков онлайн
+        </div>
+    </div>
+
+    <!-- Три основных варианта игры -->
+    <div class="play-options">
+        <div class="option-card" data-play-type="ranked">
+            <div class="option-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h3>🏆 Рейтинговый матч</h3>
+            <p>Игра на рейтинг. Побеждайте, поднимайтесь в таблице лидеров и получайте награды.</p>
+            <div class="option-meta">
+                <span><i class="fas fa-chart-line"></i> Влияет на рейтинг</span>
+                <span><i class="fas fa-clock"></i> ~5-10 мин</span>
+            </div>
+        </div>
+
+        <div class="option-card" data-play-type="casual">
+            <div class="option-icon">
+                <i class="fas fa-gamepad"></i>
+            </div>
+            <h3>🎮 Обычная игра (без рейтинга)</h3>
+            <p>Классическая дуэль без давления рейтинга. Тренируйтесь и получайте удовольствие.</p>
+            <div class="option-meta">
+                <span><i class="fas fa-smile"></i> Без риска</span>
+                <span><i class="fas fa-users"></i> Быстрый поиск</span>
+            </div>
+        </div>
+
+        <div class="option-card" data-play-type="create-room">
+            <div class="option-icon">
+                <i class="fas fa-door-open"></i>
+            </div>
+            <h3>🚪 Создать комнату</h3>
+            <p>Играйте с друзьями. Создайте приватную комнату и поделитесь кодом приглашения.</p>
+            <div class="option-meta">
+                <span><i class="fas fa-lock"></i> Приватная комната</span>
+                <span><i class="fas fa-user-friends"></i> До 2-10 игроков</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Дополнительные настройки (способности, нестандартные блоки и т.д.) -->
+    <div class="settings-section">
+        <h3><i class="fas fa-sliders-h"></i> Настройки матча</h3>
+        <div class="settings-grid">
+            <div class="setting-row">
+                <div class="setting-info">
+                    <div class="setting-label">Способности</div>
+                    <div class="setting-desc">Активные способности (ускорение, щит, атака)</div>
+                </div>
+                <div class="toggle-switch" id="abilitiesToggle">
+                    <div class="toggle-knob"></div>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <div class="setting-label">Нестандартные блоки</div>
+                    <div class="setting-desc">Специальные блоки с бонусами/штрафами</div>
+                </div>
+                <div class="toggle-switch" id="specialBlocksToggle">
+                    <div class="toggle-knob"></div>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <div class="setting-label">Стартовая скорость</div>
+                    <div class="setting-desc">Начальная скорость падения блоков</div>
+                </div>
+                <select class="styled-select" id="startSpeedSelect">
+                    <option value="slow">Медленная (новичок)</option>
+                    <option value="normal" selected>Стандартная</option>
+                    <option value="fast">Быстрая</option>
+                    <option value="insane">Экстремальная</option>
+                </select>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <div class="setting-label">Правила атаки</div>
+                    <div class="setting-desc">Как отправляются мусорные линии</div>
+                </div>
+                <select class="styled-select" id="attackRulesSelect">
+                    <option value="classic" selected>Классические</option>
+                    <option value="combo">Комбо-ориентированные</option>
+                    <option value="all-clear">С бонусом за All Clear</option>
+                    <option value="chaos">Хаос (случайные)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Создание комнаты (появляется при выборе "Создать комнату") -->
+    <div class="create-room-section" id="createRoomSection" style="display: none;">
+        <h3><i class="fas fa-plus-circle"></i> Создание приватной комнаты</h3>
+        <div class="room-form">
+            <div class="room-field">
+                <label>Название комнаты</label>
+                <input type="text" id="roomName" placeholder="Моя эпичная битва" value="Битва друзей">
+            </div>
+            <div class="room-field">
+                <label>Пароль (опционально)</label>
+                <input type="text" id="roomPassword" placeholder="Оставьте пустым для открытой комнаты">
+            </div>
+            <div class="room-field">
+                <label>Макс. игроков</label>
+                <select id="maxPlayers" class="styled-select" style="width: 100%;">
+                    <option value="2">2 игрока</option>
+                    <option value="4">4 игрока (2v2)</option>
+                    <option value="6">6 игроков (3v3)</option>
+                    <option value="8">8 игроков (4v4)</option>
+                    <option value="10">10 игроков (5v5)</option>
+                </select>
+            </div>
+            <button class="create-room-btn" id="createRoomBtn">Создать комнату →</button>
+        </div>
+    </div>
+
+    <!-- Кнопка быстрой игры -->
+    <button class="quick-play-btn" id="quickPlayBtn">
+        <i class="fas fa-play"></i> Быстрая игра
+    </button>
+</div>
+
+<script>
+    // Состояние переключателей
+    let abilitiesEnabled = true;
+    let specialBlocksEnabled = false;
+    let currentPlayType = null; // ranked, casual, create-room
+
+    // Элементы
+    const abilitiesToggle = document.getElementById('abilitiesToggle');
+    const specialBlocksToggle = document.getElementById('specialBlocksToggle');
+    const createRoomSection = document.getElementById('createRoomSection');
+    const quickPlayBtn = document.getElementById('quickPlayBtn');
+    const backBtn = document.getElementById('backBtn');
+
+    // Функция показа уведомления
+    function showToast(message) {
+        const existingToast = document.querySelector('.toast-notification');
+        if (existingToast) existingToast.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.3s';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // Инициализация переключателей
+    function initToggles() {
+        // Способности (по умолчанию включены)
+        abilitiesToggle.classList.add('active');
+        abilitiesToggle.addEventListener('click', () => {
+            abilitiesToggle.classList.toggle('active');
+            abilitiesEnabled = abilitiesToggle.classList.contains('active');
+            showToast(abilitiesEnabled ? 'Способности включены' : 'Способности отключены');
+        });
+
+        // Нестандартные блоки
+        specialBlocksToggle.addEventListener('click', () => {
+            specialBlocksToggle.classList.toggle('active');
+            specialBlocksEnabled = specialBlocksToggle.classList.contains('active');
+            showToast(specialBlocksEnabled ? 'Нестандартные блоки активированы' : 'Стандартные блоки');
+        });
+    }
+
+    // Обработчики карточек режимов
+    function initOptionCards() {
+        const cards = document.querySelectorAll('.option-card');
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                const playType = card.dataset.playType;
+                currentPlayType = playType;
+                
+                // Визуальное выделение выбранной карточки
+                cards.forEach(c => c.style.borderColor = '#eef2f6');
+                card.style.borderColor = '#2c4c6c';
+                card.style.boxShadow = '0 4px 12px rgba(44,76,108,0.1)';
+                
+                // Показываем/скрываем секцию создания комнаты
+                if (playType === 'create-room') {
+                    createRoomSection.style.display = 'block';
+                    showToast('Заполните данные комнаты и нажмите "Создать"');
+                } else {
+                    createRoomSection.style.display = 'none';
+                    if (playType === 'ranked') {
+                        showToast('🏆 Рейтинговый режим. Включены все настройки выше.');
+                    } else if (playType === 'casual') {
+                        showToast('🎮 Обычный режим. Игра без рейтинга.');
+                    }
+                }
+            });
+        });
+    }
+
+    // Создание комнаты
+    function initCreateRoom() {
+        const createBtn = document.getElementById('createRoomBtn');
+        createBtn.addEventListener('click', () => {
+            const roomName = document.getElementById('roomName').value.trim();
+            const roomPassword = document.getElementById('roomPassword').value;
+            const maxPlayers = document.getElementById('maxPlayers').value;
+            
+            if (!roomName) {
+                showToast('Введите название комнаты');
+                return;
+            }
+            
+            // Генерация кода комнаты
+            const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            // Сбор всех настроек
+            const settings = {
+                abilities: abilitiesEnabled,
+                specialBlocks: specialBlocksEnabled,
+                startSpeed: document.getElementById('startSpeedSelect').value,
+                attackRules: document.getElementById('attackRulesSelect').value
+            };
+            
+            showToast(`✅ Комната "${roomName}" создана!\nКод: ${roomCode}\nПригласите друзей и начните игру!`);
+            
+            // В реальном проекте здесь был бы API-запрос на создание комнаты
+            console.log('Создана комната:', { roomName, roomPassword, maxPlayers, roomCode, settings });
+            
+            // Имитация перехода в лобби
+            setTimeout(() => {
+                alert(`Переход в комнату "${roomName}"\nКод приглашения: ${roomCode}\nПоделитесь им с друзьями!`);
+            }, 500);
+        });
+    }
+
+    // Быстрая игра (с текущими настройками)
+    function initQuickPlay() {
+        quickPlayBtn.addEventListener('click', () => {
+            const settings = {
+                abilities: abilitiesEnabled,
+                specialBlocks: specialBlocksEnabled,
+                startSpeed: document.getElementById('startSpeedSelect').value,
+                attackRules: document.getElementById('attackRulesSelect').value
+            };
+            
+            // Определяем тип игры (если не выбран, по умолчанию casual)
+            let gameMode = 'обычный';
+            if (currentPlayType === 'ranked') gameMode = 'рейтинговый';
+            else if (currentPlayType === 'casual') gameMode = 'обычный';
+            else if (currentPlayType === 'create-room') gameMode = 'комнатный';
+            
+            const speedNames = {
+                slow: 'медленная',
+                normal: 'стандартная',
+                fast: 'быстрая',
+                insane: 'экстремальная'
+            };
+            
+            const attackNames = {
+                classic: 'классические',
+                combo: 'комбо-ориентированные',
+                'all-clear': 'с бонусом All Clear',
+                chaos: 'хаос'
+            };
+            
+            let message = `🎮 Поиск соперника...\n\n`;
+            message += `Режим: ${gameMode}\n`;
+            message += `Способности: ${settings.abilities ? '✅ Включены' : '❌ Выключены'}\n`;
+            message += `Нестандартные блоки: ${settings.specialBlocks ? '✅ Включены' : '❌ Выключены'}\n`;
+            message += `Скорость: ${speedNames[settings.startSpeed]}\n`;
+            message += `Правила атаки: ${attackNames[settings.attackRules]}\n\n`;
+            message += `⏳ Поиск игрока... (демо-режим)`;
+            
+            showToast('🔍 Поиск соперника...');
+            
+            setTimeout(() => {
+                alert(message + '\n\n(В реальном проекте здесь начнётся игра)');
+            }, 800);
+        });
+    }
+
+    // Кнопка назад
+    backBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('Возврат на главную страницу');
+    });
+
+    // Инициализация всех компонентов
+    initToggles();
+    initOptionCards();
+    initCreateRoom();
+    initQuickPlay();
+
+    // Дополнительная информация о выбранных настройках при изменении селектов
+    const startSpeedSelect = document.getElementById('startSpeedSelect');
+    const attackRulesSelect = document.getElementById('attackRulesSelect');
+    
+    startSpeedSelect.addEventListener('change', () => {
+        const speedNames = { slow: 'Медленная', normal: 'Стандартная', fast: 'Быстрая', insane: 'Экстремальная' };
+        showToast(`Стартовая скорость: ${speedNames[startSpeedSelect.value]}`);
+    });
+    
+    attackRulesSelect.addEventListener('change', () => {
+        const attackNames = { classic: 'Классические', combo: 'Комбо-ориентированные', 'all-clear': 'С бонусом All Clear', chaos: 'Хаос' };
+        showToast(`Правила атаки: ${attackNames[attackRulesSelect.value]}`);
+    });
+</script>
+</body>
+</html>

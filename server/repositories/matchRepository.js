@@ -1,11 +1,12 @@
 import { pool } from '../db/index.js'
+import { forbidden, notFound } from '../helpers/error.helper.js'
 
 const MATCH_MODE = '1v1'
 const MATCH_TYPE = 'private'
 
 const getMatchByRoomIdQuery = `
     SELECT id, room_id, mode, match_type, status, is_online, counts_for_rating, winner_team_id,
-           started_at, ended_at, created_at, updated_at
+            started_at, ended_at, created_at, updated_at
     FROM matches
     WHERE room_id = $1
     ORDER BY created_at DESC, id DESC
@@ -465,5 +466,259 @@ export const createMatchEventRepo = async ({
         throw error
     } finally {
         client.release()
+    }
+}
+
+export const getUserMatchesRepo = async ({
+    userId,
+    page = 1,
+    limit = 10,
+    result = 'all',
+    mode = 'all',
+    search = '',
+}) => {
+    const normalizedPage = Number.isInteger(page) && page > 0 ? page : 1
+    const normalizedLimit = Number.isInteger(limit) && limit > 0 ? Math.min(limit, 50) : 10
+    const offset = (normalizedPage - 1) * normalizedLimit
+
+    const values = [userId]
+    const filters = [
+        'self_player.user_id = $1',
+        `matches.status IN ('finished', 'abandoned')`,
+    ]
+
+    if (result === 'win' || result === 'loss') {
+        values.push(result === 'win' ? 'win' : 'lose')
+        filters.push(`self_player.result = $${values.length}`)
+    }
+
+    if (mode && mode !== 'all') {
+        values.push(mode)
+        filters.push(`matches.mode = $${values.length}`)
+    }
+
+    const normalizedSearch = String(search || '').trim()
+
+    if (normalizedSearch) {
+        values.push(`%${normalizedSearch.toLowerCase()}%`)
+        filters.push(`(
+            LOWER(COALESCE(opponent_data.opponent_label, '')) LIKE $${values.length}
+            OR LOWER(COALESCE(self_player.nickname, '')) LIKE $${values.length}
+            OR LOWER(COALESCE(matches.mode, '')) LIKE $${values.length}
+        )`)
+    }
+
+    const whereClause = filters.join('\n          AND ')
+
+    const summaryResult = await pool.query(
+        `
+        SELECT
+            COUNT(*)::int AS total_matches,
+            COUNT(*) FILTER (WHERE self_player.result = 'win')::int AS wins,
+            COUNT(*) FILTER (WHERE self_player.result = 'lose')::int AS losses,
+            COALESCE(AVG(self_player.lines_cleared), 0)::float AS avg_lines
+        FROM match_players AS self_player
+        JOIN matches ON matches.id = self_player.match_id
+        LEFT JOIN LATERAL (
+            SELECT
+                CASE
+                    WHEN COUNT(*) FILTER (WHERE opponent_player.team_id IS DISTINCT FROM self_player.team_id) > 1
+                        THEN CONCAT('Команда ', COALESCE(MAX(opponent_team.team_number), 2))
+                    ELSE COALESCE(
+                        MAX(opponent_user.username),
+                        MAX(opponent_player.nickname),
+                        'Неизвестный соперник'
+                    )
+                END AS opponent_label
+            FROM match_players AS opponent_player
+            LEFT JOIN users AS opponent_user
+                ON opponent_user.id = opponent_player.user_id
+            LEFT JOIN match_teams AS opponent_team
+                ON opponent_team.id = opponent_player.team_id
+            WHERE opponent_player.match_id = self_player.match_id
+                AND opponent_player.id <> self_player.id
+                AND opponent_player.team_id IS DISTINCT FROM self_player.team_id
+        ) AS opponent_data ON TRUE
+        WHERE ${whereClause}
+        `,
+        values
+    )
+
+    const pagedValues = [...values, normalizedLimit, offset]
+    const matchesResult = await pool.query(
+        `
+        SELECT
+            matches.id,
+            matches.room_id,
+            matches.mode,
+            matches.match_type,
+            matches.status,
+            matches.started_at,
+            matches.ended_at,
+            matches.created_at,
+            self_player.result,
+            self_player.score,
+            self_player.lines_cleared,
+            self_player.level_reached,
+            self_player.nickname AS self_nickname,
+            self_team.team_number AS self_team_number,
+            self_team.team_score AS self_team_score,
+            opponent_data.opponent_label,
+            opponent_data.opponent_team_number,
+            opponent_data.opponent_team_score,
+            COUNT(*) OVER()::int AS total_count
+        FROM match_players AS self_player
+        JOIN matches ON matches.id = self_player.match_id
+        LEFT JOIN match_teams AS self_team
+            ON self_team.id = self_player.team_id
+        LEFT JOIN LATERAL (
+            SELECT
+                CASE
+                    WHEN COUNT(*) FILTER (WHERE opponent_player.team_id IS DISTINCT FROM self_player.team_id) > 1
+                        THEN CONCAT('Команда ', COALESCE(MAX(opponent_team.team_number), 2))
+                    ELSE COALESCE(
+                        MAX(opponent_user.username),
+                        MAX(opponent_player.nickname),
+                        'Неизвестный соперник'
+                    )
+                END AS opponent_label,
+                MAX(opponent_team.team_number) AS opponent_team_number,
+                COALESCE(MAX(opponent_team.team_score), 0) AS opponent_team_score
+            FROM match_players AS opponent_player
+            LEFT JOIN users AS opponent_user
+                ON opponent_user.id = opponent_player.user_id
+            LEFT JOIN match_teams AS opponent_team
+                ON opponent_team.id = opponent_player.team_id
+            WHERE opponent_player.match_id = self_player.match_id
+                AND opponent_player.id <> self_player.id
+                AND opponent_player.team_id IS DISTINCT FROM self_player.team_id
+        ) AS opponent_data ON TRUE
+        WHERE ${whereClause}
+        ORDER BY COALESCE(matches.ended_at, matches.created_at) DESC, matches.id DESC
+        LIMIT $${pagedValues.length - 1}
+        OFFSET $${pagedValues.length}
+        `,
+        pagedValues
+    )
+
+    return {
+        summary: summaryResult.rows[0] || null,
+        matches: matchesResult.rows,
+        totalCount: matchesResult.rows[0]?.total_count || 0,
+        page: normalizedPage,
+        limit: normalizedLimit,
+    }
+}
+
+export const getUserMatchDetailsRepo = async ({ userId, matchId }) => {
+    const membershipResult = await pool.query(
+        `
+        SELECT
+            matches.id,
+            matches.room_id,
+            matches.mode,
+            matches.match_type,
+            matches.status,
+            matches.is_online,
+            matches.counts_for_rating,
+            matches.winner_team_id,
+            matches.started_at,
+            matches.ended_at,
+            matches.created_at,
+            matches.updated_at,
+            self_player.id AS self_player_id,
+            self_player.result AS self_result,
+            self_player.team_id AS self_team_id
+        FROM matches
+        JOIN match_players AS self_player
+            ON self_player.match_id = matches.id
+        WHERE matches.id = $1
+            AND self_player.user_id = $2
+        LIMIT 1
+        `,
+        [matchId, userId]
+    )
+
+    const match = membershipResult.rows[0]
+
+    if (!match) {
+        const existsResult = await pool.query(
+            'SELECT id FROM matches WHERE id = $1 LIMIT 1',
+            [matchId]
+        )
+
+        if (!existsResult.rows[0]) {
+            throw notFound('Матч не найден')
+        }
+
+        throw forbidden('У вас нет доступа к этому матчу')
+    }
+
+    const [teamsResult, playersResult, eventsResult] = await Promise.all([
+        pool.query(
+            `
+            SELECT id, match_id, team_number, team_score, result
+            FROM match_teams
+            WHERE match_id = $1
+            ORDER BY team_number ASC, id ASC
+            `,
+            [matchId]
+        ),
+        pool.query(
+            `
+            SELECT
+                match_players.id,
+                match_players.match_id,
+                match_players.team_id,
+                match_players.user_id,
+                match_players.is_registered,
+                match_players.nickname,
+                match_players.score,
+                match_players.lines_cleared,
+                match_players.level_reached,
+                match_players.result,
+                match_players.left_at,
+                users.username
+            FROM match_players
+            LEFT JOIN users ON users.id = match_players.user_id
+            WHERE match_players.match_id = $1
+            ORDER BY match_players.team_id ASC, match_players.id ASC
+            `,
+            [matchId]
+        ),
+        pool.query(
+            `
+            SELECT
+                match_events.id,
+                match_events.event_type,
+                match_events.payload,
+                match_events.created_at,
+                source_player.id AS source_player_id,
+                source_player.nickname AS source_nickname,
+                source_user.username AS source_username,
+                target_player.id AS target_player_id,
+                target_player.nickname AS target_nickname,
+                target_user.username AS target_username
+            FROM match_events
+            LEFT JOIN match_players AS source_player
+                ON source_player.id = match_events.source_player_id
+            LEFT JOIN users AS source_user
+                ON source_user.id = source_player.user_id
+            LEFT JOIN match_players AS target_player
+                ON target_player.id = match_events.target_player_id
+            LEFT JOIN users AS target_user
+                ON target_user.id = target_player.user_id
+            WHERE match_events.match_id = $1
+            ORDER BY match_events.created_at ASC, match_events.id ASC
+            `,
+            [matchId]
+        ),
+    ])
+
+    return {
+        match,
+        teams: teamsResult.rows,
+        players: playersResult.rows,
+        events: eventsResult.rows,
     }
 }

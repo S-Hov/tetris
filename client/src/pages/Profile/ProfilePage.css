@@ -261,6 +261,30 @@
     }
 }
 
+.profile-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.profile-section-heading .profile-section-title {
+    margin-bottom: 0;
+}
+
+.profile-section-link {
+    color: var(--turquoise-lite);
+    font-size: 0.82rem;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.profile-section-link:hover {
+    color: var(--turquoise);
+    text-shadow: var(--text-shadow);
+}
+
 
 .profile-match-list {
     display: grid;
@@ -285,6 +309,17 @@
     & > div:last-child {
         justify-items: end;
     }
+}
+
+.profile-match-item--link {
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.profile-match-item--link:hover {
+    border-color: rgba(0, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.18);
 }
 
 .profile-match-mode,

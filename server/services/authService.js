@@ -81,11 +81,11 @@ export const getUserService = async (id) => {
             status: match.status,
             playedAt: match.played_at,
             result: match.result || 'lose',
-            score: Number(match.score) || 0,
+            score: Number(match.self_team_score ?? match.score) || 0,
             linesCleared: Number(match.lines_cleared) || 0,
             levelReached: Number(match.level_reached) || 1,
-            opponent: match.opponent_username || match.opponent_nickname || 'Неизвестный соперник',
-            opponentScore: Number(match.opponent_score) || 0,
+            opponent: match.opponent_label || 'Неизвестный соперник',
+            opponentScore: Number(match.opponent_team_score) || 0,
         })),
     }
 }

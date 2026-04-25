@@ -80,18 +80,36 @@ export const getRecentUserMatchesRepo = async (userId, limit = 6) => {
             COALESCE(matches.ended_at, matches.created_at) AS played_at,
             self_player.result,
             self_player.score,
+            self_team.team_score AS self_team_score,
             self_player.lines_cleared,
             self_player.level_reached,
-            opponent_player.nickname AS opponent_nickname,
-            opponent_user.username AS opponent_username,
-            opponent_player.score AS opponent_score
+            opponent_data.opponent_label,
+            opponent_data.opponent_team_score
         FROM match_players AS self_player
         JOIN matches ON matches.id = self_player.match_id
-        LEFT JOIN match_players AS opponent_player
-            ON opponent_player.match_id = self_player.match_id
-           AND opponent_player.id <> self_player.id
-        LEFT JOIN users AS opponent_user
-            ON opponent_user.id = opponent_player.user_id
+        LEFT JOIN match_teams AS self_team
+            ON self_team.id = self_player.team_id
+        LEFT JOIN LATERAL (
+            SELECT
+                CASE
+                    WHEN COUNT(*) FILTER (WHERE opponent_player.team_id IS DISTINCT FROM self_player.team_id) > 1
+                        THEN CONCAT('Команда ', COALESCE(MAX(opponent_team.team_number), 2))
+                    ELSE COALESCE(
+                        MAX(opponent_user.username),
+                        MAX(opponent_player.nickname),
+                        'Неизвестный соперник'
+                    )
+                END AS opponent_label,
+                COALESCE(MAX(opponent_team.team_score), 0) AS opponent_team_score
+            FROM match_players AS opponent_player
+            LEFT JOIN users AS opponent_user
+                ON opponent_user.id = opponent_player.user_id
+            LEFT JOIN match_teams AS opponent_team
+                ON opponent_team.id = opponent_player.team_id
+            WHERE opponent_player.match_id = self_player.match_id
+              AND opponent_player.id <> self_player.id
+              AND opponent_player.team_id IS DISTINCT FROM self_player.team_id
+        ) AS opponent_data ON TRUE
         WHERE self_player.user_id = $1
           AND matches.status IN ('finished', 'abandoned')
         ORDER BY COALESCE(matches.ended_at, matches.created_at) DESC, matches.id DESC

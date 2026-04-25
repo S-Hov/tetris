@@ -2,6 +2,9 @@ import HomePage from '@/pages/Home/HomePage.jsx'
 import LoginPage from '@/pages/Login/LoginPage.jsx'
 import RegisterPage from '@/pages/Register/RegisterPage.jsx'
 import ProfilePage from '@/pages/Profile/ProfilePage.jsx'
+import MatchesPage from '@/pages/Matches/MatchesPage.jsx'
+import MatchDetailsPage from '@/pages/MatchDetails/MatchDetailsPage.jsx'
+import ModeSelectPage from '@/pages/ModeSelect/ModeSelectPage.jsx'
 
 import MainLayout from '../layouts/MainLayout.jsx'
 import InnerPageLayout from '../layouts/InnerPageLayout.jsx'
@@ -42,6 +45,20 @@ export const routes = [
         guard: ProtectedRoute,
     },
     {
+        key: 'matches',
+        path: '/matches',
+        component: MatchesPage,
+        layout: InnerPageLayout,
+        guard: ProtectedRoute,
+    },
+    {
+        key: 'match-details',
+        path: '/matches/:matchId',
+        component: MatchDetailsPage,
+        layout: InnerPageLayout,
+        guard: ProtectedRoute,
+    },
+    {
         key: 'Email Verification',
         path: '/verify-email/:email',
         component: VerifyEmailPage,
@@ -52,6 +69,12 @@ export const routes = [
         key: 'Solo',
         path: '/game/solo',
         component: GamePage,
+        layout: MainLayout,
+    },
+    {
+        key: 'mode-select',
+        path: '/game/:mode',
+        component: ModeSelectPage,
         layout: MainLayout,
     },
     {

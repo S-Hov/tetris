@@ -4,6 +4,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 
 import authRouter from './routes/auth.js'
+import matchesRouter from './routes/matches.js'
 
 import { logger } from './middleware/logger.js'
 import { errorHandler } from './middleware/errorHandler.js'
@@ -45,6 +46,7 @@ console.log(`App: ${APP_NAME}`)
 app.use(logger)
 
 app.use("/api/authentication", authRouter)
+app.use("/api/matches", matchesRouter)
 
 app.use(errorHandler)
 

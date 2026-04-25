@@ -2,6 +2,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { useAuth } from '@/shared/hooks/useAuth'
+import {
+    formatMatchDate,
+    formatMatchResultLabel,
+    getMatchModeLabel,
+    getMatchResultClass,
+} from '@/shared/lib/matches/presentation.js'
 import './ProfilePage.css'
 
 const fallbackProfile = {
@@ -123,7 +129,7 @@ const ProfilePage = () => {
     const matchHistory = useMemo(
         () => profile.recentMatches.map((match) => ({
             id: match.id,
-            mode: formatMatchMode(match.mode),
+            mode: getMatchModeLabel(match.mode),
             result: match.result === 'win' ? 'win' : 'loss',
             opponent: match.opponent,
             score: `${match.score}-${match.opponentScore}`,
@@ -226,19 +232,24 @@ const ProfilePage = () => {
                     <section className="profile-history-card">
                         <GlowEffect>
                             <div className="glow-effect">
-                                <div className="profile-section-title">
-                                    <i className="fas fa-history"></i>
-                                    История матчей
+                                <div className="profile-section-heading">
+                                    <div className="profile-section-title">
+                                        <i className="fas fa-history"></i>
+                                        История матчей
+                                    </div>
+                                    <Link to="/matches" className="profile-section-link">
+                                        Все матчи
+                                    </Link>
                                 </div>
 
                                 <div className="profile-match-list">
                                     {matchHistory.length > 0 ? (
                                         matchHistory.map((match) => (
-                                            <article key={match.id} className="profile-match-item">
+                                            <Link key={match.id} to={`/matches/${match.id}`} className="profile-match-item profile-match-item--link">
                                                 <div>
                                                     <span className="profile-match-mode">{match.mode}</span>
-                                                    <strong className={`profile-match-result profile-match-result--${match.result}`}>
-                                                        {match.result === 'win' ? 'Победа' : 'Поражение'}
+                                                    <strong className={`profile-match-result profile-match-result--${getMatchResultClass(match.result)}`}>
+                                                        {formatMatchResultLabel(match.result)}
                                                     </strong>
                                                     <span className="profile-match-opponent">{match.opponent}</span>
                                                 </div>
@@ -246,7 +257,7 @@ const ProfilePage = () => {
                                                     <strong className="profile-match-score">{match.score}</strong>
                                                     <span className="profile-match-date">{match.date}</span>
                                                 </div>
-                                            </article>
+                                            </Link>
                                         ))
                                     ) : (
                                         <article className="profile-match-item">
@@ -361,33 +372,6 @@ const formatLastLogin = (value) => {
         hour: '2-digit',
         minute: '2-digit',
     }).format(date)
-}
-
-const formatMatchDate = (value) => {
-    if (!value) {
-        return 'Нет данных'
-    }
-
-    const date = new Date(value)
-
-    if (Number.isNaN(date.getTime())) {
-        return 'Нет данных'
-    }
-
-    return new Intl.DateTimeFormat('ru-RU', {
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit',
-    }).format(date)
-}
-
-const formatMatchMode = (mode) => {
-    if (mode === '1v1') {
-        return '1 VS 1'
-    }
-
-    return mode || 'Матч'
 }
 
 export default ProfilePage

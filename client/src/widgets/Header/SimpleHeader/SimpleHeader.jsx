@@ -8,8 +8,9 @@ import GlowEffect from '@/shared/ui/GlowEffect'
 
 export default function SimpleHeader() {
     const location = useLocation()
+    const activeConfig = simpleHeaderConfig.find((config) => config.match(location.pathname))
 
-    const currentConfig = simpleHeaderConfig[location.pathname] || {
+    const currentConfig = activeConfig || {
         backTo: '/',
         backLabel: 'На главную',
     }
@@ -26,7 +27,7 @@ export default function SimpleHeader() {
                             <i className="fas fa-arrow-left"></i> {currentConfig.backLabel}
                         </Link>
                         {
-                            simpleHeaderConfig[location.pathname]
+                            activeConfig
                                 ? <Link to="/" className="back-link button ">
                                     <i className="fas fa-arrow-left"></i> На главную
                                 </Link>
