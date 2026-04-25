@@ -35,11 +35,72 @@ export const loginUserRepo = async (email) => {
 
 export const getUserRepo = async (id) => {
     const result = await pool.query(
-        'SELECT id, username, email, status, role_id FROM users WHERE id = $1',
+        `
+        SELECT id, username, email, status, role_id, created_at, last_login_at
+        FROM users
+        WHERE id = $1
+        `,
         [id]
     )
 
     return result.rows[0]
+}
+
+export const getUserMatchStatsRepo = async (userId) => {
+    const result = await pool.query(
+        `
+        SELECT
+            COUNT(*) FILTER (WHERE matches.status IN ('finished', 'abandoned'))::int AS total_games,
+            COUNT(*) FILTER (
+                WHERE matches.status IN ('finished', 'abandoned')
+                  AND match_players.result = 'win'
+            )::int AS wins
+        FROM match_players
+        JOIN matches ON matches.id = match_players.match_id
+        WHERE match_players.user_id = $1
+        `,
+        [userId]
+    )
+
+    return result.rows[0] || {
+        total_games: 0,
+        wins: 0,
+    }
+}
+
+export const getRecentUserMatchesRepo = async (userId, limit = 6) => {
+    const normalizedLimit = Number.isInteger(limit) && limit > 0 ? limit : 6
+
+    const result = await pool.query(
+        `
+        SELECT
+            matches.id,
+            matches.mode,
+            matches.status,
+            COALESCE(matches.ended_at, matches.created_at) AS played_at,
+            self_player.result,
+            self_player.score,
+            self_player.lines_cleared,
+            self_player.level_reached,
+            opponent_player.nickname AS opponent_nickname,
+            opponent_user.username AS opponent_username,
+            opponent_player.score AS opponent_score
+        FROM match_players AS self_player
+        JOIN matches ON matches.id = self_player.match_id
+        LEFT JOIN match_players AS opponent_player
+            ON opponent_player.match_id = self_player.match_id
+           AND opponent_player.id <> self_player.id
+        LEFT JOIN users AS opponent_user
+            ON opponent_user.id = opponent_player.user_id
+        WHERE self_player.user_id = $1
+          AND matches.status IN ('finished', 'abandoned')
+        ORDER BY COALESCE(matches.ended_at, matches.created_at) DESC, matches.id DESC
+        LIMIT $2
+        `,
+        [userId, normalizedLimit]
+    )
+
+    return result.rows
 }
 
 export const getSocketUserRepo = async (id) => {

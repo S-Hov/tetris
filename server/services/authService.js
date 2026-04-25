@@ -6,7 +6,9 @@ import {
     createAuthLogRepo,
     createEmailVerificationRepo,
     expireEmailVerificationRepo,
+    getRecentUserMatchesRepo,
     getLatestPendingVerificationByEmailRepo,
+    getUserMatchStatsRepo,
     getUserByEmailRepo,
     getUserRepo,
     loginUserRepo,
@@ -56,7 +58,36 @@ export const loginConfirmationService = async (id) => {
 }
 
 export const getUserService = async (id) => {
-    return await getUserRepo(id)
+    const user = await getUserRepo(id)
+
+    if (!user) {
+        return null
+    }
+
+    const [stats, recentMatches] = await Promise.all([
+        getUserMatchStatsRepo(id),
+        getRecentUserMatchesRepo(id, 6),
+    ])
+
+    return {
+        ...user,
+        stats: {
+            totalGames: Number(stats.total_games) || 0,
+            wins: Number(stats.wins) || 0,
+        },
+        recentMatches: recentMatches.map((match) => ({
+            id: match.id,
+            mode: match.mode,
+            status: match.status,
+            playedAt: match.played_at,
+            result: match.result || 'lose',
+            score: Number(match.score) || 0,
+            linesCleared: Number(match.lines_cleared) || 0,
+            levelReached: Number(match.level_reached) || 1,
+            opponent: match.opponent_username || match.opponent_nickname || 'Неизвестный соперник',
+            opponentScore: Number(match.opponent_score) || 0,
+        })),
+    }
 }
 
 export const getVerificationMetaService = async (email) => {

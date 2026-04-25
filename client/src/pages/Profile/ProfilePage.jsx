@@ -12,47 +12,6 @@ const fallbackProfile = {
     rating: 2840,
 }
 
-const playerStats = [
-    {
-        key: 'games',
-        title: 'Всего игр',
-        value: '347',
-        change: '+12 на этой неделе',
-        icon: 'fas fa-chart-line',
-    },
-    {
-        key: 'wins',
-        title: 'Побед',
-        value: '218',
-        change: 'Процент побед: 62.8%',
-        icon: 'fas fa-trophy',
-    },
-    {
-        key: 'combo',
-        title: 'Макс. комбо',
-        value: '14',
-        change: 'Рекорд серии',
-        icon: 'fas fa-fire',
-    },
-    {
-        key: 'crystals',
-        title: 'Заработано',
-        value: '12.4k',
-        unit: 'кристаллов',
-        change: '+340 за месяц',
-        icon: 'fas fa-gem',
-    },
-]
-
-const matchHistory = [
-    { mode: '1 VS 1', result: 'win', opponent: 'ShadowBlade', score: '3-1', date: 'Сегодня, 13:20' },
-    { mode: '2 VS 2', result: 'win', opponent: 'Team Chaos', score: '2-0', date: 'Вчера, 21:45' },
-    { mode: '1 VS 1', result: 'loss', opponent: 'TetrisGod', score: '0-3', date: 'Вчера, 19:10' },
-    { mode: '5 VS 5', result: 'win', opponent: 'Red Squad', score: '4-2', date: '17 апр, 22:30' },
-    { mode: 'ROYALE', result: 'win', opponent: '12 игроков', score: '1st', date: '16 апр, 18:15' },
-    { mode: '1 VS 1', result: 'loss', opponent: 'FastDrop', score: '1-3', date: '15 апр, 20:00' },
-]
-
 const defaultSettings = [
     {
         key: 'matchNotifications',
@@ -111,12 +70,67 @@ const ProfilePage = () => {
             email: user?.email || 'neo@pvp-tetris.com',
             status: user?.status || 'active',
             country: fallbackProfile.country,
-            memberSince: fallbackProfile.memberSince,
-            lastLogin: fallbackProfile.lastLogin,
+            memberSince: formatMemberSince(user?.created_at) || fallbackProfile.memberSince,
+            lastLogin: formatLastLogin(user?.last_login_at) || fallbackProfile.lastLogin,
             rank: fallbackProfile.rank,
             rating: fallbackProfile.rating,
+            stats: {
+                totalGames: user?.stats?.totalGames || 0,
+                wins: user?.stats?.wins || 0,
+            },
+            recentMatches: Array.isArray(user?.recentMatches) ? user.recentMatches : [],
         }
     }, [user])
+
+    const playerStats = useMemo(() => {
+        const totalGames = profile.stats.totalGames
+        const wins = profile.stats.wins
+        const winRate = totalGames > 0 ? ((wins / totalGames) * 100).toFixed(1) : '0.0'
+
+        return [
+            {
+                key: 'games',
+                title: 'Всего игр',
+                value: String(totalGames),
+                change: 'Актуально по данным БД',
+                icon: 'fas fa-chart-line',
+            },
+            {
+                key: 'wins',
+                title: 'Побед',
+                value: String(wins),
+                change: `Процент побед: ${winRate}%`,
+                icon: 'fas fa-trophy',
+            },
+            {
+                key: 'combo',
+                title: 'Макс. комбо',
+                value: '14',
+                change: 'Рекорд серии',
+                icon: 'fas fa-fire',
+            },
+            {
+                key: 'crystals',
+                title: 'Заработано',
+                value: '12.4k',
+                unit: 'кристаллов',
+                change: '+340 за месяц',
+                icon: 'fas fa-gem',
+            },
+        ]
+    }, [profile.stats.totalGames, profile.stats.wins])
+
+    const matchHistory = useMemo(
+        () => profile.recentMatches.map((match) => ({
+            id: match.id,
+            mode: formatMatchMode(match.mode),
+            result: match.result === 'win' ? 'win' : 'loss',
+            opponent: match.opponent,
+            score: `${match.score}-${match.opponentScore}`,
+            date: formatMatchDate(match.playedAt),
+        })),
+        [profile.recentMatches]
+    )
 
     const handleLogout = async () => {
         await logout()
@@ -218,21 +232,35 @@ const ProfilePage = () => {
                                 </div>
 
                                 <div className="profile-match-list">
-                                    {matchHistory.map((match) => (
-                                        <article key={`${match.mode}-${match.opponent}-${match.date}`} className="profile-match-item">
+                                    {matchHistory.length > 0 ? (
+                                        matchHistory.map((match) => (
+                                            <article key={match.id} className="profile-match-item">
+                                                <div>
+                                                    <span className="profile-match-mode">{match.mode}</span>
+                                                    <strong className={`profile-match-result profile-match-result--${match.result}`}>
+                                                        {match.result === 'win' ? 'Победа' : 'Поражение'}
+                                                    </strong>
+                                                    <span className="profile-match-opponent">{match.opponent}</span>
+                                                </div>
+                                                <div>
+                                                    <strong className="profile-match-score">{match.score}</strong>
+                                                    <span className="profile-match-date">{match.date}</span>
+                                                </div>
+                                            </article>
+                                        ))
+                                    ) : (
+                                        <article className="profile-match-item">
                                             <div>
-                                                <span className="profile-match-mode">{match.mode}</span>
-                                                <strong className={`profile-match-result profile-match-result--${match.result}`}>
-                                                    {match.result === 'win' ? 'Победа' : 'Поражение'}
-                                                </strong>
-                                                <span className="profile-match-opponent">{match.opponent}</span>
+                                                <span className="profile-match-mode">Матчи</span>
+                                                <strong className="profile-match-result">Пока пусто</strong>
+                                                <span className="profile-match-opponent">Сыграйте первую игру, и она появится здесь</span>
                                             </div>
                                             <div>
-                                                <strong className="profile-match-score">{match.score}</strong>
-                                                <span className="profile-match-date">{match.date}</span>
+                                                <strong className="profile-match-score">0</strong>
+                                                <span className="profile-match-date">Нет данных</span>
                                             </div>
                                         </article>
-                                    ))}
+                                    )}
                                 </div>
                             </div>
                         </GlowEffect>
@@ -297,6 +325,69 @@ const formatStatus = (status) => {
     if (status === 'pending_verification') return 'Ожидает подтверждения'
 
     return status || 'Активен'
+}
+
+const formatMemberSince = (value) => {
+    if (!value) {
+        return null
+    }
+
+    const date = new Date(value)
+
+    if (Number.isNaN(date.getTime())) {
+        return null
+    }
+
+    return new Intl.DateTimeFormat('ru-RU', {
+        month: 'long',
+        year: 'numeric',
+    }).format(date)
+}
+
+const formatLastLogin = (value) => {
+    if (!value) {
+        return null
+    }
+
+    const date = new Date(value)
+
+    if (Number.isNaN(date.getTime())) {
+        return null
+    }
+
+    return new Intl.DateTimeFormat('ru-RU', {
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+    }).format(date)
+}
+
+const formatMatchDate = (value) => {
+    if (!value) {
+        return 'Нет данных'
+    }
+
+    const date = new Date(value)
+
+    if (Number.isNaN(date.getTime())) {
+        return 'Нет данных'
+    }
+
+    return new Intl.DateTimeFormat('ru-RU', {
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+    }).format(date)
+}
+
+const formatMatchMode = (mode) => {
+    if (mode === '1v1') {
+        return '1 VS 1'
+    }
+
+    return mode || 'Матч'
 }
 
 export default ProfilePage
