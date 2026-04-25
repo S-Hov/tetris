@@ -1,4 +1,5 @@
 import {
+    createAuthLogService,
     getUserService,
     getVerificationMetaService,
     ensurePendingVerificationService,
@@ -19,11 +20,23 @@ const authCookieOptions = {
     sameSite: 'strict',
 }
 
+const getRequestMeta = (req) => ({
+    ipAddress: req.ip || req.socket?.remoteAddress || null,
+    userAgent: req.get('user-agent') || null,
+})
+
 export const register = asyncHandler(async (req, res) => {
     console.log('запрос на регистрацию')
     const { username, email, password } = req.body
 
     const { user, verificationCode } = await registerUserService(username, email, password)
+    const requestMeta = getRequestMeta(req)
+
+    await createAuthLogService({
+        userId: user.id,
+        eventType: 'register_success',
+        ...requestMeta,
+    })
 
     try {
         await sendVerificationEmail(user.email, verificationCode)
@@ -44,10 +57,17 @@ export const register = asyncHandler(async (req, res) => {
 
 export const login = asyncHandler(async (req, res) => {
     const { email, password } = req.body
+    const requestMeta = getRequestMeta(req)
 
     const user = await loginUserService(email)
 
     if (!user) {
+        await createAuthLogService({
+            userId: null,
+            eventType: 'login_invalid_credentials',
+            ...requestMeta,
+        })
+
         const error = new Error("Неверный Email или пароль")
         error.statusCode = 401
         throw error
@@ -56,12 +76,24 @@ export const login = asyncHandler(async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password_hash)
 
     if (!isMatch) {
+        await createAuthLogService({
+            userId: user.id,
+            eventType: 'login_invalid_credentials',
+            ...requestMeta,
+        })
+
         const error = new Error("Неверный Email или пароль")
         error.statusCode = 401
         throw error
     }
 
     if (user.status !== 'active') {
+        await createAuthLogService({
+            userId: user.id,
+            eventType: 'login_unverified_email',
+            ...requestMeta,
+        })
+
         const pendingVerification = await ensurePendingVerificationService(user.email)
 
         if (pendingVerification.shouldSendEmail) {
@@ -82,6 +114,11 @@ export const login = asyncHandler(async (req, res) => {
     }
 
     await loginConfirmationService(user.id)
+    await createAuthLogService({
+        userId: user.id,
+        eventType: 'login_success',
+        ...requestMeta,
+    })
 
     const token = jwt.sign(
         { id: user.id, roleId: user.role_id },
@@ -133,6 +170,18 @@ export const getMe = asyncHandler(async (req, res) => {
 })
 
 export const logout = (req, res) => {
+    const requestMeta = getRequestMeta(req)
+
+    if (req.user?.id) {
+        void createAuthLogService({
+            userId: req.user.id,
+            eventType: 'logout',
+            ...requestMeta,
+        }).catch((error) => {
+            console.error('Auth log error:', error)
+        })
+    }
+
     res.clearCookie('token', authCookieOptions)
 
     res.json({
@@ -158,6 +207,13 @@ export const verifyEmail = asyncHandler(async (req, res) => {
     const { code } = req.body
 
     const user = await verifyEmailService(email, code)
+    const requestMeta = getRequestMeta(req)
+
+    await createAuthLogService({
+        userId: user.id,
+        eventType: 'email_verification_success',
+        ...requestMeta,
+    })
 
     res.json({
         success: true,

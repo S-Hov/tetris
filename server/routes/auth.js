@@ -26,7 +26,7 @@ authRouter.post('/login', checkNotAuth, validate(loginSchema), login)
 
 authRouter.get('/me', optionalAuth, getMe)
 
-authRouter.post('/logout', logout)
+authRouter.post('/logout', optionalAuth, logout)
 
 authRouter.post('/verify-email/:email', checkNotAuth, validate(verifyEmailSchema), verifyEmail)
 

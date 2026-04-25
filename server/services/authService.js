@@ -3,7 +3,9 @@ import crypto from 'crypto'
 import { badRequest } from '../helpers/error.helper.js'
 import {
     checkEmailRepo,
+    createAuthLogRepo,
     createEmailVerificationRepo,
+    expireEmailVerificationRepo,
     getLatestPendingVerificationByEmailRepo,
     getUserByEmailRepo,
     getUserRepo,
@@ -106,6 +108,7 @@ export const verifyEmailService = async (email, code) => {
     }
 
     if (getRemainingSeconds(verification.expires_at) <= 0) {
+        await expireEmailVerificationRepo(verification.id)
         throw badRequest('Срок действия кода истёк. Запросите новый код')
     }
 
@@ -188,6 +191,10 @@ export const ensurePendingVerificationService = async (email) => {
         shouldSendEmail: true,
         verificationCode,
     }
+}
+
+export const createAuthLogService = async (payload) => {
+    return await createAuthLogRepo(payload)
 }
 
 export const getVerificationCodeLength = () => {

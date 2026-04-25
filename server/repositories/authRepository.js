@@ -179,6 +179,15 @@ export const markEmailVerifiedRepo = async ({ userId, verificationId }) => {
             [verificationId]
         )
 
+        await client.query(
+            `
+            UPDATE email_verifications
+            SET status = 'expired'
+            WHERE user_id = $1 AND status = 'pending' AND id <> $2
+            `,
+            [userId, verificationId]
+        )
+
         const userResult = await client.query(
             `
             UPDATE users
@@ -205,4 +214,38 @@ export const updateUserLastLoginRepo = async (id) => {
         'UPDATE users SET last_login_at = NOW() WHERE id = $1 RETURNING id, username, email, status',
         [id]
     )
+
+    return result.rows[0] || null
+}
+
+export const expireEmailVerificationRepo = async (verificationId) => {
+    const result = await pool.query(
+        `
+        UPDATE email_verifications
+        SET status = 'expired'
+        WHERE id = $1 AND status = 'pending'
+        RETURNING id, user_id, email, status, expires_at
+        `,
+        [verificationId]
+    )
+
+    return result.rows[0] || null
+}
+
+export const createAuthLogRepo = async ({
+    userId = null,
+    eventType,
+    ipAddress = null,
+    userAgent = null,
+}) => {
+    const result = await pool.query(
+        `
+        INSERT INTO auth_logs (user_id, event_type, ip_address, user_agent)
+        VALUES ($1, $2, NULLIF($3, '')::inet, $4)
+        RETURNING id, user_id, event_type, ip_address, user_agent, created_at
+        `,
+        [userId, eventType, ipAddress, userAgent]
+    )
+
+    return result.rows[0]
 }
