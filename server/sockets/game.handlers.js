@@ -5,6 +5,10 @@ const ABILITY_EFFECTS = {
         type: 'speed_x2_for_4s',
         durationMs: 4000,
     },
+    darkness: {
+        type: 'darkness',
+        durationMs: 10000,
+    },
 }
 
 export const registerGameHandlers = (io, socket) => {

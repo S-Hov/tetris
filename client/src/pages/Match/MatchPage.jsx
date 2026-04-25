@@ -28,9 +28,9 @@ import TetrisBoard from '../../features/tetris/ui/TetrisBoard.jsx'
 import { ensureSocketSession, socket } from '../../shared/api/socket/index.js'
 import { useAuth } from '../../shared/hooks/useAuth.js'
 import notify from '../../utils/Notifications'
+import { EFFECT_TYPES, removeExpiredEffects } from '../../features/tetris/model/effects.js'
 
 import './MatchPage.css'
-import { removeExpiredEffects } from '../../features/tetris/model/effects.js'
 
 const CONTROL_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space', 'KeyA', 'KeyD', 'KeyS', 'KeyW', 'KeyP', 'Escape']
 const getAbilitySecondsLeft = (endsAt) => Math.max(0, Math.ceil(((endsAt ?? 0) - Date.now()) / 1000))
@@ -314,21 +314,27 @@ const MatchPage = () => {
 
     useEffect(() => {
         const handleEffectApply = ({ effect }) => {
-            if (effect.type === ABILITY_IDS.SPEED_X2_FOR_4S) {
-                const expiresAt = Date.now() + effect.durationMs
+            if (!effect?.type) return
 
-                setGameState((prevState) => ({
-                    ...prevState,
-                    activeEffects: [
-                        ...prevState.activeEffects.filter((item) => item.type !== effect.type),
-                        {
-                            type: effect.type,
-                            expiresAt,
-                        },
-                    ],
-                }))
+            const expiresAt = Date.now() + (effect.durationMs || 4000)
 
+            setGameState((prevState) => ({
+                ...prevState,
+                activeEffects: [
+                    ...prevState.activeEffects.filter((item) => item.type !== effect.type),
+                    {
+                        type: effect.type,
+                        expiresAt,
+                    },
+                ],
+            }))
+
+            if (effect.type === 'speed_x2_for_4s') {
                 notify('На вас применили ускорение x2 на 4 секунды', 'warning')
+            }
+
+            if (effect.type === 'darkness') {
+                notify(`Поле затемнено на ${(effect.durationMs || 4000) / 1000} секунды`, 'warning')
             }
         }
 
@@ -338,6 +344,10 @@ const MatchPage = () => {
             socket.off('effect:apply', handleEffectApply)
         }
     }, [])
+
+    const hasDarkness = derivedState.activeEffects?.some(
+        (effect) => effect.type === 'darkness'
+    )
 
     useEffect(() => {
         if (!derivedState.isChoosingAbility) return
@@ -370,8 +380,13 @@ const MatchPage = () => {
                     <strong>{Math.round(dangerLevel * 100)}%</strong>
                 </div>
             )}
+
+            {hasDarkness && !isMatchFinished && (
+                <div className="board-darkness-layer" aria-hidden="true" />
+            )}
         </>
     )
+
 
     const sidebar = (
         <>

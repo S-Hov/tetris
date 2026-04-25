@@ -22,7 +22,7 @@ export const ABILITIES = [
     },
     {
         id: ABILITY_IDS.DARKNESS,
-        enabled: false,
+        enabled: true,
         label: 'Blackout',
         title: 'Darkness',
         description: 'Covers most of the opponent board with a dark veil.',

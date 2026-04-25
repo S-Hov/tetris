@@ -1,5 +1,6 @@
 export const EFFECT_TYPES = {
     SPEED_X2: 'speed_x2_for_4s',
+    DARKNESS: 'darkness',
 }
 
 export function addEffect(state, effect) {
