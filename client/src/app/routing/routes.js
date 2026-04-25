@@ -1,17 +1,17 @@
-import HomePage from '../../pages/Home/HomePage.jsx'
-import LoginPage from '../../pages/Login/LoginPage.jsx'
-import RegisterPage from '../../pages/Register/RegisterPage.jsx'
-import ProfilePage from '../../pages/Profile/ProfilePage.jsx'
+import HomePage from '@/pages/Home/HomePage.jsx'
+import LoginPage from '@/pages/Login/LoginPage.jsx'
+import RegisterPage from '@/pages/Register/RegisterPage.jsx'
+import ProfilePage from '@/pages/Profile/ProfilePage.jsx'
 
 import MainLayout from '../layouts/MainLayout.jsx'
 import InnerPageLayout from '../layouts/InnerPageLayout.jsx'
 
 import ProtectedRoute from './ProtectedRoute.jsx'
 import GuestRoute from './GuestRoute.jsx'
-import VerifyEmailPage from '../../pages/VerifyEmail/VerifyEmailPage.jsx'
-import GamePage from '../../pages/GamePage/GamePage.jsx'
-import LobbyPage from '../../pages/Lobby/LobbyPage.jsx'
-import MatchPage from '../../pages/Match/MatchPage.jsx'
+import VerifyEmailPage from '@/pages/VerifyEmail/VerifyEmailPage.jsx'
+import GamePage from '@/pages/GamePage/GamePage.jsx'
+import LobbyPage from '@/pages/Lobby/LobbyPage.jsx'
+import MatchPage from '@/pages/Match/MatchPage.jsx'
 
 export const routes = [
     {

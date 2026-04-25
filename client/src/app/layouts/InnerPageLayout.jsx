@@ -1,5 +1,5 @@
-import CyberBg from '../../features/CyberBg'
-import SimpleHeader from '../../widgets/Header/SimpleHeader'
+import CyberBg from '@/features/CyberBg'
+import SimpleHeader from '@/widgets/Header/SimpleHeader'
 
 const InnerPageLayout = ({ children }) => {
     return (

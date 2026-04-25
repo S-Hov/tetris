@@ -1,9 +1,9 @@
 import { useForm, useWatch } from "react-hook-form"
-import AuthInput from "../../shared/ui/Auth/AuthInput"
+import AuthInput from "@/shared/ui/Auth/AuthInput"
 import { registerInputs } from "./AuthForm.data"
-import { useRegister } from "../../shared/hooks/useAuth"
+import { useRegister } from "@/shared/hooks/useAuth"
 import { useNavigate } from "react-router-dom"
-import notify from "../../utils/Notifications"
+import notify from "@/utils/Notifications"
 
 const RegisterForm = () => {
     const navigate = useNavigate()

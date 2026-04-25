@@ -1,4 +1,4 @@
-import EmailVerification from "../../features/EmailVerification/EmailVerification"
+import EmailVerification from "@/features/EmailVerification/EmailVerification"
 
 const VerifyEmailPage = () => {
     return (

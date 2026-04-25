@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { useAuth } from '../../shared/hooks/useAuth'
+import { useAuth } from '@/shared/hooks/useAuth'
 import {
     ensureSocketSession,
     getStoredGuestSession,
     isValidGuestNickname,
     normalizeGuestNickname,
     socket,
-} from '../../shared/api/socket'
-import notify from '../../utils/Notifications'
+} from '@/shared/api/socket'
+import notify from '@/utils/Notifications'
 
 import './LobbyPage.css'
 

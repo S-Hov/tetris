@@ -2,8 +2,8 @@ import { simpleHeaderConfig } from './simpleHeader.data'
 import { Link, useLocation } from 'react-router-dom'
 
 import './SimpleHeader.css'
-import HeaderBrand from '../../../shared/ui/Header/HeaderBrand'
-import GlowEffect from '../../../shared/ui/GlowEffect'
+import HeaderBrand from '@/shared/ui/Header/HeaderBrand'
+import GlowEffect from '@/shared/ui/GlowEffect'
 
 
 export default function SimpleHeader() {

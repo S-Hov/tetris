@@ -11,12 +11,12 @@ import {
     tickGame,
     togglePause,
     withDerivedState,
-} from '../../features/tetris/model/tetrisEngine.js'
-import { GAME_MODE_REGISTRY, GAME_MODE_TYPES } from '../../features/tetris/model/gameModes.js'
-import ActionsPanel from '../../features/tetris/ui/ActionsPanel.jsx'
-import GameLayout from '../../features/tetris/ui/GameLayout.jsx'
-import NextPiecePanel from '../../features/tetris/ui/NextPiecePanel.jsx'
-import StatsPanel from '../../features/tetris/ui/StatsPanel.jsx'
+} from '@/features/tetris/model/tetrisEngine.js'
+import { GAME_MODE_REGISTRY, GAME_MODE_TYPES } from '@/features/tetris/model/gameModes.js'
+import ActionsPanel from '@/features/tetris/ui/ActionsPanel.jsx'
+import GameLayout from '@/features/tetris/ui/GameLayout.jsx'
+import NextPiecePanel from '@/features/tetris/ui/NextPiecePanel.jsx'
+import StatsPanel from '@/features/tetris/ui/StatsPanel.jsx'
 
 const CONTROL_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space', 'KeyA', 'KeyD', 'KeyS', 'KeyW', 'KeyP', 'Escape']
 const soloMode = GAME_MODE_REGISTRY[GAME_MODE_TYPES.SOLO_CLASSIC]

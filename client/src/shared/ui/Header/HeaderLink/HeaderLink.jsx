@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
-import HeaderNavContext from '../../../context/HeaderNavContext'
+import HeaderNavContext from '@/shared/context/HeaderNavContext'
 
 const HeaderLink = ({ item, type = 'nav' }) => {
     const {

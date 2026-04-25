@@ -1,10 +1,10 @@
 import { useLocation } from 'react-router-dom'
 import './Header.css'
 import { modeItems, modeStats, navItems } from './header.data.js'
-import HeaderNavContext from '../../../shared/context/HeaderNavContext.js'
-import HeaderNav from '../../../features/HeaderNav'
-import HeaderBrand from '../../../shared/ui/Header/HeaderBrand'
-import GlowEffect from '../../../shared/ui/GlowEffect'
+import HeaderNavContext from '@/shared/context/HeaderNavContext.js'
+import HeaderNav from '@/features/HeaderNav'
+import HeaderBrand from '@/shared/ui/Header/HeaderBrand'
+import GlowEffect from '@/shared/ui/GlowEffect'
 
 export default function Header() {
     const { pathname } = useLocation()

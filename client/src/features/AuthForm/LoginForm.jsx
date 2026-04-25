@@ -1,10 +1,10 @@
 import { loginInputs } from "./AuthForm.data"
-import AuthInput from "../../shared/ui/Auth/AuthInput"
+import AuthInput from "@/shared/ui/Auth/AuthInput"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
-import { useAuth } from "../../shared/hooks/useAuth"
+import { useAuth } from "@/shared/hooks/useAuth"
 import { useState } from "react"
-import notify from "../../utils/Notifications"
+import notify from "@/utils/Notifications"
 
 const LoginForm = () => {
     const navigate = useNavigate()

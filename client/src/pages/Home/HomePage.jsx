@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import './HomePage.css'
-import GlowEffect from '../../shared/ui/GlowEffect'
+import GlowEffect from '@/shared/ui/GlowEffect'
 
 const gameModes = [
     {

@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { routes } from './routes.js'
-import NotFoundPage from '../../pages/NotFound/NotFoundPage.jsx'
+import NotFoundPage from '@/pages/NotFound/NotFoundPage.jsx'
 
 const AppRouter = () => {
     return (

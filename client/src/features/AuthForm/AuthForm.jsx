@@ -1,5 +1,5 @@
-import AuthRedirect from '../../shared/ui/Auth/AuthRedirect/index.js'
-import GlowEffect from '../../shared/ui/GlowEffect/index.js'
+import AuthRedirect from '@/shared/ui/Auth/AuthRedirect/index.js'
+import GlowEffect from '@/shared/ui/GlowEffect/index.js'
 import AUTH_VIEWS from './AuthViews.config.js'
 
 import './AuthForm.css'

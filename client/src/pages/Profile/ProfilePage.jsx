@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import GlowEffect from '../../shared/ui/GlowEffect'
-import { useAuth } from '../../shared/hooks/useAuth'
+import GlowEffect from '@/shared/ui/GlowEffect'
+import { useAuth } from '@/shared/hooks/useAuth'
 import './ProfilePage.css'
 
 const fallbackProfile = {

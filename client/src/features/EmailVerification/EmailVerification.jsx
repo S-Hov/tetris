@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import GlowEffect from '../../shared/ui/GlowEffect'
-import { authenticationAPI } from '../../shared/api/auth'
-import notify from '../../utils/Notifications'
+import GlowEffect from '@/shared/ui/GlowEffect'
+import { authenticationAPI } from '@/shared/api/auth'
+import notify from '@/utils/Notifications'
 import './EmailVerification.css'
 
 const DEFAULT_CODE_LENGTH = 6

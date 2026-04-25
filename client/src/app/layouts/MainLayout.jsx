@@ -1,5 +1,5 @@
-import CyberBg from '../../features/CyberBg'
-import HeroHeader from '../../widgets/Header/HeroHeader'
+import CyberBg from '@/features/CyberBg'
+import HeroHeader from '@/widgets/Header/HeroHeader'
 
 const MainLayout = ({ children }) => {
     return (
