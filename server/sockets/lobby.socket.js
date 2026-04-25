@@ -25,6 +25,11 @@ const createRoomPlayer = (socket) => {
     }
 }
 
+const normalizeRoomSettings = (settings = {}) => ({
+    abilitiesEnabled: settings.abilitiesEnabled ?? true,
+    specialBlocksEnabled: settings.specialBlocksEnabled ?? false,
+})
+
 const syncRemovedPlayerWithPersistence = async (io, result) => {
     if (!result?.removedPlayer) {
         return
@@ -92,7 +97,7 @@ const leavePreviousRoomIfNeeded = async (io, socket, nextRoomId = null) => {
 }
 
 export const registerLobbyHandlers = (io, socket) => {
-    socket.on('room:create', async (_, callback) => {
+    socket.on('room:create', async (payload = {}, callback) => {
         try {
             await leavePreviousRoomIfNeeded(io, socket)
 
@@ -107,6 +112,8 @@ export const registerLobbyHandlers = (io, socket) => {
                 id: roomId,
                 status: 'waiting',
                 matchId: matchBinding.matchId,
+                modeKey: payload.modeKey || '1v1',
+                settings: normalizeRoomSettings(payload.settings),
                 players: [
                     {
                         ...player,

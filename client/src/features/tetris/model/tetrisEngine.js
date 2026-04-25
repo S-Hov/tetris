@@ -123,7 +123,7 @@ export function restartGame(options = {}) {
     return createGameState(options)
 }
 
-export function resolveLineClear(state) {
+export function resolveLineClear(state, options = {}) {
     if (!state.pendingClear) {
         return state
     }
@@ -150,11 +150,12 @@ export function resolveLineClear(state) {
         state.pendingClear.board,
         state.pendingClear.currentPiece,
         state.pendingClear.nextPiece,
-        state.pendingClear.currentPosition
+        state.pendingClear.currentPosition,
+        options
     )
 }
 
-export function resolveAbilityChoice(state, selectedAbility = null) {
+export function resolveAbilityChoice(state, selectedAbility = null, options = {}) {
     const nextState = {
         ...state,
         energy: Math.max(0, state.energy - 100),
@@ -173,7 +174,8 @@ export function resolveAbilityChoice(state, selectedAbility = null) {
         state.pendingClear.board,
         state.pendingClear.currentPiece,
         state.pendingClear.nextPiece,
-        state.pendingClear.currentPosition
+        state.pendingClear.currentPosition,
+        options
     )
 }
 

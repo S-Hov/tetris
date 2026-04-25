@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { useAuth } from '@/shared/hooks/useAuth'
 import {
@@ -10,6 +10,8 @@ import {
     socket,
 } from '@/shared/api/socket'
 import notify from '@/utils/Notifications'
+import { defaultMatchSettings, normalizeMatchSettings } from '@/features/tetris/model/matchSettings.js'
+import { getModeSelectionConfig } from '@/shared/config/gameModes.js'
 
 import './LobbyPage.css'
 
@@ -38,6 +40,7 @@ const getClientUserId = (user) => {
 const LobbyPage = () => {
     const navigate = useNavigate()
     const location = useLocation()
+    const { mode } = useParams()
     const { user } = useAuth()
     const [roomId, setRoomId] = useState('')
     const [currentRoom, setCurrentRoom] = useState(null)
@@ -50,12 +53,21 @@ const LobbyPage = () => {
     const clientUserId = getClientUserId(user)
     const matchResult = location.state?.matchResult || null
     const roomIdFromMatch = location.state?.roomId || ''
+    const modeKey = location.state?.modeKey || currentRoom?.modeKey || mode || '1v1'
+    const modeConfig = getModeSelectionConfig(modeKey)
+    const [roomSettings, setRoomSettings] = useState(() => normalizeMatchSettings(location.state?.roomSettings || defaultMatchSettings))
 
     useEffect(() => {
         if (user?.username || user?.email) {
             setNickname(user.username || user.email)
         }
     }, [user])
+
+    useEffect(() => {
+        if (location.state?.roomSettings) {
+            setRoomSettings(normalizeMatchSettings(location.state.roomSettings))
+        }
+    }, [location.state])
 
     useEffect(() => {
         if (!user) {
@@ -117,6 +129,9 @@ const LobbyPage = () => {
             setCurrentRoom(room)
             setRoomId(room?.id || '')
             setJoinRoomId(room?.id || '')
+            if (room?.settings) {
+                setRoomSettings(normalizeMatchSettings(room.settings))
+            }
         }
 
         const handlePlayerJoined = ({ username, userId }) => {
@@ -137,7 +152,12 @@ const LobbyPage = () => {
                 notify('Оба игрока готовы. Матч начинается', 'success')
             }
 
-            navigate(`/match/${startedRoomId}`)
+            navigate(`/match/${startedRoomId}`, {
+                state: {
+                    roomSettings: normalizeMatchSettings(currentRoom?.settings || roomSettings),
+                    modeKey: currentRoom?.modeKey || modeKey,
+                },
+            })
         }
 
         socket.on('room:state', handleRoomState)
@@ -151,7 +171,7 @@ const LobbyPage = () => {
             socket.off('room:player-left', handlePlayerLeft)
             socket.off('match:start', handleMatchStart)
         }
-    }, [clientUserId, currentRoom?.id, navigate])
+    }, [clientUserId, currentRoom?.id, currentRoom?.modeKey, currentRoom?.settings, modeKey, navigate, roomSettings])
 
     const ensurePlayableIdentity = useCallback(async () => {
         if (user) {
@@ -186,6 +206,9 @@ const LobbyPage = () => {
                 setCurrentRoom(response.room)
                 setRoomId(response.room.id)
                 setJoinRoomId(response.room.id)
+                if (response.room?.settings) {
+                    setRoomSettings(normalizeMatchSettings(response.room.settings))
+                }
             } catch (error) {
                 notify(error.message || 'Не удалось восстановить комнату после матча', 'error')
             }
@@ -199,7 +222,10 @@ const LobbyPage = () => {
 
         try {
             await ensurePlayableIdentity()
-            const response = await emitWithAck('room:create', {})
+            const response = await emitWithAck('room:create', {
+                modeKey,
+                settings: roomSettings,
+            })
 
             if (!response.success) {
                 notify(response.message || 'Не удалось создать комнату', 'error')
@@ -208,6 +234,9 @@ const LobbyPage = () => {
 
             setCurrentRoom(response.room)
             setRoomId(response.room.id)
+            if (response.room?.settings) {
+                setRoomSettings(normalizeMatchSettings(response.room.settings))
+            }
             notify(response.message || 'Комната создана', 'success')
         } catch (error) {
             notify(error.message || 'Не удалось создать комнату', 'error')
@@ -230,6 +259,9 @@ const LobbyPage = () => {
 
             setCurrentRoom(response.room)
             setRoomId(response.room.id)
+            if (response.room?.settings) {
+                setRoomSettings(normalizeMatchSettings(response.room.settings))
+            }
             notify(response.message || 'Вы вошли в комнату', 'success')
         } catch (error) {
             notify(error.message || 'Не удалось подключиться к комнате', 'error')
@@ -281,10 +313,10 @@ const LobbyPage = () => {
                             {connectionState === 'disconnected' && 'Arena offline'}
                             {connectionState === 'error' && 'Arena error'}
                         </span>
-                        <h1 className="lobby-title">Лобби дуэли 1 на 1</h1>
+                        <h1 className="lobby-title">{modeConfig.title}</h1>
                         <p className="lobby-lead">
                             Авторизованный игрок заходит по своему аккаунту, гость играет по никнейму.
-                            Права не подделываются.
+                            Права не подделываются. Лобби универсальное, а настройки режима сохраняются в самой комнате.
                         </p>
                     </div>
                     <div className="lobby-hero-panel">
@@ -293,6 +325,8 @@ const LobbyPage = () => {
                         <div className="lobby-player-meta">
                             <span>{isGuest ? 'Guest session' : 'Authenticated session'}</span>
                             <span>Role: {user?.role || 'guest'}</span>
+                            <span>{roomSettings.abilitiesEnabled ? 'Эффекты: ON' : 'Эффекты: OFF'}</span>
+                            <span>{roomSettings.specialBlocksEnabled ? 'Нестандартные блоки: ON' : 'Нестандартные блоки: OFF'}</span>
                         </div>
                     </div>
                 </header>
@@ -390,6 +424,24 @@ const LobbyPage = () => {
                             >
                                 {activePlayer?.isReady ? 'Снять готовность' : 'Я готов'}
                             </button>
+                        </div>
+                    </div>
+
+                    <div className="lobby-settings-panel">
+                        <div className="lobby-settings-panel__header">
+                            <span className="lobby-panel-label">Конфигурация матча</span>
+                            <strong>{modeConfig.title}</strong>
+                        </div>
+
+                        <div className="lobby-settings-pills">
+                            <span className={`lobby-settings-pill ${roomSettings.abilitiesEnabled ? 'is-active' : ''}`}>
+                                <i className="fas fa-bolt"></i>
+                                {roomSettings.abilitiesEnabled ? 'Способности включены' : 'Без способностей'}
+                            </span>
+                            <span className={`lobby-settings-pill ${roomSettings.specialBlocksEnabled ? 'is-active' : ''}`}>
+                                <i className="fas fa-shapes"></i>
+                                {roomSettings.specialBlocksEnabled ? 'Нестандартные блоки включены' : 'Только стандартные блоки'}
+                            </span>
                         </div>
                     </div>
 

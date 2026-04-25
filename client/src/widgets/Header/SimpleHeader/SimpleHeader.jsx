@@ -14,6 +14,12 @@ export default function SimpleHeader() {
         backTo: '/',
         backLabel: 'На главную',
     }
+    const primaryTo = typeof currentConfig.backTo === 'function'
+        ? currentConfig.backTo(location.pathname)
+        : currentConfig.backTo
+    const secondaryTo = typeof currentConfig.secondaryTo === 'function'
+        ? currentConfig.secondaryTo(location.pathname)
+        : currentConfig.secondaryTo
 
     return (
         <GlowEffect>
@@ -23,13 +29,13 @@ export default function SimpleHeader() {
                 <div className="header-content">
                     <HeaderBrand description={false} />
                     <nav className="simple-header-nav">
-                        <Link to={currentConfig.backTo} className="back-link button">
+                        <Link to={primaryTo} className="back-link button">
                             <i className="fas fa-arrow-left"></i> {currentConfig.backLabel}
                         </Link>
                         {
-                            activeConfig
-                                ? <Link to="/" className="back-link button ">
-                                    <i className="fas fa-arrow-left"></i> На главную
+                            activeConfig && secondaryTo
+                                ? <Link to={secondaryTo} className="back-link button ">
+                                    <i className="fas fa-arrow-left"></i> {currentConfig.secondaryLabel || 'На главную'}
                                 </Link>
                                 : null
                         }

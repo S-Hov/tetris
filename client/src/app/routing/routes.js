@@ -79,9 +79,9 @@ export const routes = [
     },
     {
         key: 'Lobby',
-        path: '/lobby',
+        path: '/game/:mode/lobby',
         component: LobbyPage,
-        layout: MainLayout,
+        layout: InnerPageLayout,
     },
     {
         key: 'Match',

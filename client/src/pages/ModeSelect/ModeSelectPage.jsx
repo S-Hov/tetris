@@ -35,7 +35,7 @@ const ModeSelectPage = () => {
                 return
             }
 
-            navigate('/lobby', {
+            navigate(`/game/${modeConfig.key}/lobby`, {
                 state: {
                     modeKey: modeConfig.key,
                     modeTitle: modeConfig.title,

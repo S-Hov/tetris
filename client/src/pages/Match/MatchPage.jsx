@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import {
     LINE_CLEAR_ANIMATION_MS,
@@ -29,6 +29,11 @@ import { ensureSocketSession, socket } from '@/shared/api/socket/index.js'
 import { useAuth } from '@/shared/hooks/useAuth.js'
 import notify from '@/utils/Notifications'
 import { EFFECT_TYPES, removeExpiredEffects } from '@/features/tetris/model/effects.js'
+import {
+    defaultMatchSettings,
+    getRandomPieceGeneratorForSettings,
+    normalizeMatchSettings,
+} from '@/features/tetris/model/matchSettings.js'
 
 import './MatchPage.css'
 
@@ -66,7 +71,16 @@ const emitWithAck = (eventName, payload) => {
 }
 
 const MatchPage = () => {
-    const [gameState, setGameState] = useState(() => createGameState())
+    const location = useLocation()
+    const [roomSettings, setRoomSettings] = useState(() => normalizeMatchSettings(location.state?.roomSettings || defaultMatchSettings))
+    const randomPieceGenerator = useMemo(
+        () => getRandomPieceGeneratorForSettings(roomSettings),
+        [roomSettings]
+    )
+    const [gameState, setGameState] = useState(() => createGameState({
+        abilitiesEnabled: roomSettings.abilitiesEnabled,
+        randomPiece: randomPieceGenerator,
+    }))
     const [abilityTick, setAbilityTick] = useState(0)
     const [matchResult, setMatchResult] = useState(null)
     const derivedState = withDerivedState(gameState)
@@ -101,6 +115,13 @@ const MatchPage = () => {
     ].filter(Boolean).join(' ')
 
     useEffect(() => {
+        setGameState(() => createGameState({
+            abilitiesEnabled: roomSettings.abilitiesEnabled,
+            randomPiece: randomPieceGenerator,
+        }))
+    }, [randomPieceGenerator, roomSettings.abilitiesEnabled])
+
+    useEffect(() => {
         const restoreMatchSocketSession = async () => {
             try {
                 await ensureSocketSession({ user })
@@ -113,6 +134,11 @@ const MatchPage = () => {
 
                 if (!response.success) {
                     notify(response.message || 'Не удалось восстановить участие в матче', 'warning')
+                    return
+                }
+
+                if (response.room?.settings) {
+                    setRoomSettings(normalizeMatchSettings(response.room.settings))
                 }
             } catch (error) {
                 notify(error.message || 'Не удалось восстановить подключение к матчу', 'error')
@@ -142,12 +168,12 @@ const MatchPage = () => {
         const intervalId = setInterval(() => {
             setGameState((prevState) => {
                 const cleanedState = removeExpiredEffects(prevState)
-                return tickGame(cleanedState)
+                return tickGame(cleanedState, { randomPiece: randomPieceGenerator })
             })
         }, derivedState.speed)
 
         return () => clearInterval(intervalId)
-    }, [derivedState.isClearing, derivedState.isGameOver, derivedState.isPaused, derivedState.speed, derivedState.isChoosingAbility, isMatchFinished])
+    }, [derivedState.isClearing, derivedState.isGameOver, derivedState.isPaused, derivedState.speed, derivedState.isChoosingAbility, isMatchFinished, randomPieceGenerator])
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -188,7 +214,7 @@ const MatchPage = () => {
                     case 'KeyW':
                         return rotateCurrentPiece(prevState)
                     case 'Space':
-                        return hardDrop(prevState)
+                        return hardDrop(prevState, { randomPiece: randomPieceGenerator })
                     default:
                         return prevState
                 }
@@ -198,7 +224,7 @@ const MatchPage = () => {
         window.addEventListener('keydown', handleKeyDown)
 
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [isMatchFinished])
+    }, [isMatchFinished, randomPieceGenerator])
 
     useEffect(() => {
         const handleOpponentUpdate = ({ payload }) => {
@@ -273,12 +299,14 @@ const MatchPage = () => {
             }
 
             redirectTimeoutRef.current = setTimeout(() => {
-                navigate('/lobby', {
+                navigate(`/game/${location.state?.modeKey || '1v1'}/lobby`, {
                     replace: true,
                     state: {
                         roomId,
                         matchResult: nextMatchResult,
                         winnerSocketId,
+                        roomSettings,
+                        modeKey: location.state?.modeKey || '1v1',
                     },
                 })
             }, MATCH_END_REDIRECT_DELAY_MS)
@@ -293,7 +321,7 @@ const MatchPage = () => {
 
             socket.off('match:end', handleMatchEnd)
         }
-    }, [navigate, roomId])
+    }, [location.state?.modeKey, navigate, roomId, roomSettings])
 
     const handleAbilityChoose = (ability) => {
         if (!roomId) return
@@ -308,7 +336,7 @@ const MatchPage = () => {
             }
 
             notify(`${ability.title} activated`, 'success')
-            setGameState((prev) => resolveAbilityChoice(prev, ability))
+            setGameState((prev) => resolveAbilityChoice(prev, ability, { randomPiece: randomPieceGenerator }))
         })
     }
 
@@ -358,14 +386,14 @@ const MatchPage = () => {
 
         const timeout = setTimeout(() => {
             notify('Ability window expired', 'warning')
-            setGameState((prevState) => resolveAbilityChoice(prevState))
+            setGameState((prevState) => resolveAbilityChoice(prevState, null, { randomPiece: randomPieceGenerator }))
         }, Math.max(0, (derivedState.abilityChoiceEndsAt ?? Date.now()) - Date.now()))
 
         return () => {
             clearInterval(intervalId)
             clearTimeout(timeout)
         }
-    }, [derivedState.abilityChoiceEndsAt, derivedState.isChoosingAbility])
+    }, [derivedState.abilityChoiceEndsAt, derivedState.isChoosingAbility, randomPieceGenerator])
 
     const dangerStyle = {
         '--danger-level': dangerLevel.toFixed(3),
@@ -416,7 +444,7 @@ const MatchPage = () => {
         </>
     )
 
-    const overlay = derivedState.isChoosingAbility ? (
+    const overlay = roomSettings.abilitiesEnabled && derivedState.isChoosingAbility ? (
         <AbilityOverlay
             eyebrow="Time stopped"
             title="Choose a debuff"
@@ -436,7 +464,7 @@ const MatchPage = () => {
             boardShellClassName={boardShellClassName}
             boardShellStyle={dangerStyle}
             boardDecor={boardDecor}
-            leftRail={<EnergyPanel energy={derivedState.energy} />}
+            leftRail={roomSettings.abilitiesEnabled ? <EnergyPanel energy={derivedState.energy} /> : null}
             sidebar={sidebar}
             overlay={overlay}
             banner={isMatchFinished ? <MatchResultBanner result={matchResult} /> : null}

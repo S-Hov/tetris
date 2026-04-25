@@ -279,6 +279,52 @@
     gap: 1rem;
 }
 
+.lobby-settings-panel {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem 1.1rem;
+    border-radius: 24px;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.lobby-settings-panel__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.lobby-settings-panel__header strong {
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: 1rem;
+}
+
+.lobby-settings-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.lobby-settings-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 36px;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
+    font-size: 0.8rem;
+}
+
+.lobby-settings-pill.is-active {
+    color: var(--text-active-color);
+    background: rgba(0, 255, 255, 0.16);
+    box-shadow: inset 0 0 0 1px rgba(0, 255, 255, 0.12);
+}
+
 .lobby-room-header {
     display: flex;
     justify-content: space-between;
