@@ -66,8 +66,8 @@ export const routes = [
         guard: GuestRoute,
     },
     {
-        key: 'Solo',
-        path: '/game/solo',
+        key: 'solo-play',
+        path: '/game/solo/play',
         component: GamePage,
         layout: MainLayout,
     },

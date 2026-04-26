@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { useAbilityTimer } from '@/features/tetris/hooks/useAbilityTimer.js'
+import { useGameCountdown } from '@/features/tetris/hooks/useGameCountdown.js'
 import { useMatchResult } from '@/features/tetris/hooks/useMatchResult.js'
 import { useMatchSocketSync } from '@/features/tetris/hooks/useMatchSocketSync.js'
 import { useTetrisControls } from '@/features/tetris/hooks/useTetrisControls.js'
@@ -17,6 +18,7 @@ import { togglePause } from '@/features/tetris/model/tetrisEngine.js'
 import AbilityOverlay from '@/features/tetris/ui/AbilityOverlay.jsx'
 import ActionsPanel from '@/features/tetris/ui/ActionsPanel.jsx'
 import EnergyPanel from '@/features/tetris/ui/EnergyPanel.jsx'
+import GameCountdownOverlay from '@/features/tetris/ui/GameCountdownOverlay.jsx'
 import GameLayout from '@/features/tetris/ui/GameLayout.jsx'
 import MatchResultBanner from '@/features/tetris/ui/MatchResultBanner.jsx'
 import NextPiecePanel from '@/features/tetris/ui/NextPiecePanel.jsx'
@@ -134,15 +136,9 @@ const MatchPageGame = ({
         () => getRandomPieceGeneratorForSettings(roomSettings),
         [roomSettings]
     )
-    const {
-        boardWithPiece,
-        derivedState,
-        resetGame,
-        setGameState,
-    } = useTetrisGameLoop({
-        abilitiesEnabled: roomSettings.abilitiesEnabled,
-        paused: false,
-        randomPiece: randomPieceGenerator,
+    const [countdownStartedAt, setCountdownStartedAt] = useState(() => Date.now())
+    const { countdownValue, isCountingDown } = useGameCountdown({
+        startedAt: countdownStartedAt,
     })
     const { isMatchFinished, matchResult } = useMatchResult({
         enabled: isOnline,
@@ -150,6 +146,16 @@ const MatchPageGame = ({
         navigate,
         roomId,
         roomSettings,
+    })
+    const {
+        boardWithPiece,
+        derivedState,
+        resetGame,
+        setGameState,
+    } = useTetrisGameLoop({
+        abilitiesEnabled: roomSettings.abilitiesEnabled,
+        paused: isCountingDown || isMatchFinished,
+        randomPiece: randomPieceGenerator,
     })
     const { handleAbilityChoose, opponentState } = useMatchSocketSync({
         boardWithPiece,
@@ -170,7 +176,7 @@ const MatchPageGame = ({
     })
 
     useTetrisControls({
-        disabled: isMatchFinished,
+        disabled: isMatchFinished || isCountingDown,
         randomPiece: randomPieceGenerator,
         setGameState,
     })
@@ -179,10 +185,12 @@ const MatchPageGame = ({
     const hasDarkness = derivedState.activeEffects?.some(
         (effect) => effect.type === 'darkness'
     )
+    const isSoloGameOver = !isOnline && derivedState.isGameOver
+    const isDefeated = matchResult === 'lose' || isSoloGameOver
     const boardShellClassName = [
         'player-board-shell',
         dangerLevel > 0 ? 'player-board-shell--danger' : '',
-        matchResult === 'lose' ? 'player-board-shell--defeated' : '',
+        isDefeated ? 'player-board-shell--defeated' : '',
         matchResult === 'win' ? 'player-board-shell--victorious' : '',
     ].filter(Boolean).join(' ')
     const dangerStyle = {
@@ -191,7 +199,24 @@ const MatchPageGame = ({
     }
 
     const handlePauseToggle = () => {
+        if (isCountingDown) {
+            return
+        }
+
         setGameState((prevState) => togglePause(prevState))
+    }
+
+    const handleRestart = () => {
+        resetGame()
+        setCountdownStartedAt(Date.now())
+    }
+
+    const handleBackToModeSelect = () => {
+        navigate('/game/solo', {
+            state: {
+                roomSettings,
+            },
+        })
     }
 
     const boardDecor = (
@@ -222,7 +247,7 @@ const MatchPageGame = ({
             key: 'restart',
             icon: 'fa-rotate-right',
             label: 'Restart',
-            onClick: resetGame,
+            onClick: handleRestart,
         },
     ] : []
 
@@ -233,7 +258,7 @@ const MatchPageGame = ({
                 score={derivedState.score}
                 lines={derivedState.linesCleared}
                 level={derivedState.level}
-                status={derivedState.isPaused ? 'Paused' : 'Playing'}
+                status={isCountingDown ? 'Starting' : derivedState.isPaused ? 'Paused' : 'Playing'}
             />
             {isOnline ? (
                 <PlayerSummaryPanel
@@ -258,15 +283,55 @@ const MatchPageGame = ({
         </>
     ) : null
 
-    const overlay = roomSettings.abilitiesEnabled && derivedState.isChoosingAbility ? (
-        <AbilityOverlay
-            eyebrow="Time stopped"
-            title="Choose a debuff"
-            secondsLeft={abilitySecondsLeft}
-            options={derivedState.abilityOptions}
-            onChoose={handleAbilityChoose}
+    const soloResultOverlay = isSoloGameOver ? (
+        <MatchResultBanner
+            result="lose"
+            eyebrow="Solo run ended"
+            title="Игра окончена"
+            description="Фигуры дошли до верхней границы. Можно сразу начать заново или вернуться к настройкам solo режима."
+            actions={[
+                {
+                    key: 'restart',
+                    icon: 'fa-rotate-right',
+                    label: 'Сыграть заново',
+                    onClick: handleRestart,
+                },
+                {
+                    key: 'mode-select',
+                    icon: 'fa-sliders',
+                    label: 'К выбору режима',
+                    onClick: handleBackToModeSelect,
+                    variant: 'secondary',
+                },
+            ]}
         />
     ) : null
+
+    const onlineResultOverlay = isMatchFinished ? (
+        <MatchResultBanner
+            result={matchResult}
+            description={matchResult === 'win'
+                ? 'Раунд завершён в вашу пользу. Через пару секунд вы вернётесь в лобби вместе с соперником.'
+                : 'Раунд завершён. Через пару секунд вы вернётесь в лобби и сможете начать новую попытку.'}
+        />
+    ) : null
+
+    const overlay = (
+        <>
+            {roomSettings.abilitiesEnabled && derivedState.isChoosingAbility ? (
+                <AbilityOverlay
+                    eyebrow="Time stopped"
+                    title="Choose a debuff"
+                    secondsLeft={abilitySecondsLeft}
+                    options={derivedState.abilityOptions}
+                    onChoose={handleAbilityChoose}
+                />
+            ) : null}
+            {isCountingDown ? <GameCountdownOverlay value={countdownValue} /> : null}
+            {onlineResultOverlay}
+            {soloResultOverlay}
+        </>
+    )
 
     return (
         <GameLayout
@@ -281,7 +346,7 @@ const MatchPageGame = ({
             leftRail={roomSettings.abilitiesEnabled ? <EnergyPanel energy={derivedState.energy} /> : null}
             sidebar={sidebar}
             overlay={overlay}
-            banner={isMatchFinished ? <MatchResultBanner result={matchResult} /> : null}
+            banner={null}
             secondaryColumn={secondaryColumn}
         />
     )

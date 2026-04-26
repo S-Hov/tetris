@@ -18,6 +18,29 @@ export const defaultModeSettings = {
 }
 
 export const modeSelectionCatalog = {
+    [PLAY_MODE_KEYS.SOLO]: {
+        key: PLAY_MODE_KEYS.SOLO,
+        title: 'Одиночная игра',
+        subtitle: 'Классический забег на выживание с настройками партии перед стартом.',
+        icon: 'fas fa-user',
+        online: 'Solo practice',
+        roomSupported: false,
+        heroLabel: 'Solo режим',
+        availablePlayOptions: [MATCH_PLAY_OPTIONS.CASUAL],
+        cardMeta: {
+            casual: ['Личный рекорд', 'Без соперников', 'Мгновенный старт'],
+        },
+        settingsCopy: {
+            abilities: {
+                title: 'Подлянки от игры',
+                description: 'Макет будущего режима: игра иногда будет накладывать эффекты на игрока.',
+            },
+            specialBlocks: {
+                title: 'Нестандартные блоки',
+                description: 'Добавляет в пул специальные фигуры и меняет привычный темп партии.',
+            },
+        },
+    },
     [PLAY_MODE_KEYS.DUEL_1V1]: {
         key: PLAY_MODE_KEYS.DUEL_1V1,
         title: 'Дуэль 1 VS 1',
@@ -26,6 +49,11 @@ export const modeSelectionCatalog = {
         online: '1,234 игроков онлайн',
         roomSupported: true,
         heroLabel: 'Режим 1 VS 1',
+        availablePlayOptions: [
+            MATCH_PLAY_OPTIONS.RANKED,
+            MATCH_PLAY_OPTIONS.CASUAL,
+            MATCH_PLAY_OPTIONS.ROOM,
+        ],
         cardMeta: {
             ranked: ['Влияет на рейтинг', '~5-10 мин'],
             casual: ['Без риска', 'Быстрый поиск'],
@@ -40,6 +68,11 @@ export const modeSelectionCatalog = {
         online: '876 игроков онлайн',
         roomSupported: false,
         heroLabel: 'Режим 2 VS 2',
+        availablePlayOptions: [
+            MATCH_PLAY_OPTIONS.RANKED,
+            MATCH_PLAY_OPTIONS.CASUAL,
+            MATCH_PLAY_OPTIONS.ROOM,
+        ],
         cardMeta: {
             ranked: ['Командный рейтинг', 'Подбор по MMR'],
             casual: ['Свободная игра', 'Тренировка связок'],
@@ -54,6 +87,11 @@ export const modeSelectionCatalog = {
         online: '642 игрока онлайн',
         roomSupported: false,
         heroLabel: 'Режим 5 VS 5',
+        availablePlayOptions: [
+            MATCH_PLAY_OPTIONS.RANKED,
+            MATCH_PLAY_OPTIONS.CASUAL,
+            MATCH_PLAY_OPTIONS.ROOM,
+        ],
         cardMeta: {
             ranked: ['Сезонные дивизионы', 'Крупные матчи'],
             casual: ['Нерейтинговые битвы', 'Отработка ролей'],
@@ -68,6 +106,11 @@ export const modeSelectionCatalog = {
         online: '1,908 игроков онлайн',
         roomSupported: false,
         heroLabel: 'Режим Royale',
+        availablePlayOptions: [
+            MATCH_PLAY_OPTIONS.RANKED,
+            MATCH_PLAY_OPTIONS.CASUAL,
+            MATCH_PLAY_OPTIONS.ROOM,
+        ],
         cardMeta: {
             ranked: ['Турнирный формат', '20 игроков'],
             casual: ['Свободный вход', 'Быстрые сессии'],

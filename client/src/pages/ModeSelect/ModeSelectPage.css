@@ -75,6 +75,10 @@
     transition: var(--transition);
 }
 
+.mode-option-card>div {
+    height: 100%;
+}
+
 .mode-option-card:hover {
     transform: translateY(-3px);
 }
