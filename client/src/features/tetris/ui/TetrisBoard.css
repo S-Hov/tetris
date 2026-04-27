@@ -60,6 +60,30 @@
     background: #4d7cff;
 }
 
+.tetris-cell.cell--U.filled {
+    background: #00b725;
+}
+
+.tetris-cell.cell--Z.filled {
+    background: #c6009e;
+}
+
+.tetris-cell.cell--Е.filled {
+    background: #ff8c00;
+}
+
+.tetris-cell.cell--P.filled {
+    background: #e22626;
+}
+
+.tetris-cell.cell--_.filled {
+    background: #0fa7ac;
+}
+
+.tetris-cell.cell--⁄.filled {
+    background: #bedcff;
+}
+
 .tetris-cell.ghost.cell--I,
 .tetris-cell.ghost.cell--O,
 .tetris-cell.ghost.cell--T,
