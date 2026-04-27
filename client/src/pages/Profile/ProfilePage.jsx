@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { useAuth } from '@/shared/hooks/useAuth'
+import { authenticationAPI } from '@/shared/api/auth'
+import notify from '@/utils/Notifications'
 import {
     formatMatchDate,
     formatMatchResultLabel,
@@ -39,11 +41,19 @@ const defaultSettings = [
     },
 ]
 
+const AVATAR_MAX_SIZE = 2 * 1024 * 1024
+const AVATAR_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/avif', 'video/webm']
+
 const ProfilePage = () => {
     const navigate = useNavigate()
-    const { checkAuth, logout, user } = useAuth()
+    const { checkAuth, logout, setUser, user } = useAuth()
     const [settings, setSettings] = useState(defaultSettings)
     const [isRefreshing, setIsRefreshing] = useState(false)
+    const [isProfileEditing, setIsProfileEditing] = useState(false)
+    const [profileForm, setProfileForm] = useState({ username: '' })
+    const [avatarFile, setAvatarFile] = useState(null)
+    const [avatarPreview, setAvatarPreview] = useState('')
+    const [isSavingProfile, setIsSavingProfile] = useState(false)
 
     useEffect(() => {
         let ignore = false
@@ -74,6 +84,7 @@ const ProfilePage = () => {
             id: user?.id,
             name: displayName,
             email: user?.email || 'neo@pvp-tetris.com',
+            avatarUrl: getAssetUrl(user?.avatar_url),
             status: user?.status || 'active',
             country: fallbackProfile.country,
             memberSince: formatMemberSince(user?.created_at) || fallbackProfile.memberSince,
@@ -88,6 +99,24 @@ const ProfilePage = () => {
             recentMatches: Array.isArray(user?.recentMatches) ? user.recentMatches : [],
         }
     }, [user])
+
+    useEffect(() => {
+        setProfileForm({
+            username: profile.name,
+        })
+    }, [profile.name])
+
+    useEffect(() => {
+        if (!avatarFile) {
+            setAvatarPreview('')
+            return undefined
+        }
+
+        const previewUrl = URL.createObjectURL(avatarFile)
+        setAvatarPreview(previewUrl)
+
+        return () => URL.revokeObjectURL(previewUrl)
+    }, [avatarFile])
 
     const playerStats = useMemo(() => {
         const totalGames = profile.rankStats?.totalMatches || profile.stats.totalGames
@@ -153,6 +182,60 @@ const ProfilePage = () => {
         )
     }
 
+    const handleAvatarChange = (event) => {
+        const file = event.target.files?.[0]
+
+        if (!file) {
+            return
+        }
+
+        if (!AVATAR_TYPES.includes(file.type)) {
+            notify('Поддерживаются PNG, JPG, GIF, WEBP, AVIF и WEBM', 'error')
+            event.target.value = ''
+            return
+        }
+
+        if (file.size > AVATAR_MAX_SIZE) {
+            notify('Аватарка не должна быть больше 2 МБ', 'error')
+            event.target.value = ''
+            return
+        }
+
+        setAvatarFile(file)
+    }
+
+    const handleProfileSave = async () => {
+        setIsSavingProfile(true)
+
+        try {
+            let nextUser = null
+
+            if (profileForm.username.trim() && profileForm.username.trim() !== profile.name) {
+                const response = await authenticationAPI.updateProfile({
+                    username: profileForm.username,
+                })
+                nextUser = response.user
+            }
+
+            if (avatarFile) {
+                const response = await authenticationAPI.updateAvatar(avatarFile)
+                nextUser = response.user
+            }
+
+            if (nextUser) {
+                setUser(nextUser)
+            }
+
+            setAvatarFile(null)
+            setIsProfileEditing(false)
+            notify('Профиль обновлён', 'success')
+        } catch (error) {
+            notify(error.message || 'Не удалось сохранить профиль', 'error')
+        } finally {
+            setIsSavingProfile(false)
+        }
+    }
+
     return (
         <section className="section profile-page">
             <div className="container profile-container">
@@ -202,7 +285,11 @@ const ProfilePage = () => {
                             <div className="glow-effect">
                                 <div className="profile-card-header">
                                     <div className="profile-avatar">
-                                        <i className="fas fa-user-astronaut"></i>
+                                        {avatarPreview || profile.avatarUrl ? (
+                                            profileAvatarMedia(avatarPreview || profile.avatarUrl, profile.name)
+                                        ) : (
+                                            <i className="fas fa-user-astronaut"></i>
+                                        )}
                                     </div>
                                     <h2>{profile.name}</h2>
                                     <p>Участник с {profile.memberSince}</p>
@@ -216,7 +303,7 @@ const ProfilePage = () => {
                                 </div>
 
                                 <div className="profile-card-actions">
-                                    <button type="button" className="button">
+                                    <button type="button" className="button" onClick={() => setIsProfileEditing((value) => !value)}>
                                         <i className="fas fa-pen"></i>
                                         Редактировать профиль
                                     </button>
@@ -225,6 +312,43 @@ const ProfilePage = () => {
                                         Выйти
                                     </button>
                                 </div>
+
+                                {isProfileEditing && (
+                                    <div className="profile-edit-panel">
+                                        <label className="profile-edit-field">
+                                            <span>Имя игрока</span>
+                                            <input
+                                                type="text"
+                                                value={profileForm.username}
+                                                maxLength={32}
+                                                onChange={(event) => setProfileForm({ username: event.target.value })}
+                                            />
+                                        </label>
+
+                                        <label className="profile-avatar-upload">
+                                            <input
+                                                type="file"
+                                                accept="image/png,image/jpeg,image/gif,image/webp,image/avif,video/webm"
+                                                onChange={handleAvatarChange}
+                                            />
+                                            <span>
+                                                <i className="fas fa-image"></i>
+                                                {avatarFile ? avatarFile.name : 'Выбрать аватар'}
+                                            </span>
+                                            <small>PNG, JPG, GIF, WEBP, AVIF, WEBM до 2 МБ</small>
+                                        </label>
+
+                                        <div className="profile-edit-actions">
+                                            <button type="button" className="button" onClick={handleProfileSave} disabled={isSavingProfile}>
+                                                <i className="fas fa-save"></i>
+                                                {isSavingProfile ? 'Сохраняем...' : 'Сохранить'}
+                                            </button>
+                                            <button type="button" className="button profile-edit-cancel" onClick={() => setIsProfileEditing(false)}>
+                                                Отмена
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </GlowEffect>
                     </section>
@@ -330,6 +454,32 @@ const DetailRow = ({ icon, label, value }) => (
         <strong>{value}</strong>
     </div>
 )
+
+const getAssetUrl = (value) => {
+    if (!value) {
+        return ''
+    }
+
+    if (/^https?:\/\//i.test(value)) {
+        return value
+    }
+
+    const baseUrl = import.meta.env.VITE_API_URL || (
+        typeof window !== 'undefined' && window.location.hostname
+            ? `http://${window.location.hostname}:8880`
+            : 'http://127.0.0.1:8880'
+    )
+
+    return `${baseUrl}${value}`
+}
+
+const profileAvatarMedia = (src, alt) => {
+    if (src.toLowerCase().includes('.webm')) {
+        return <video src={src} autoPlay loop muted playsInline aria-label={alt} />
+    }
+
+    return <img src={src} alt={alt} />
+}
 
 const formatStatus = (status) => {
     if (status === 'active') return 'Активен'

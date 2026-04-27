@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { socket } from '@/shared/api/socket/index.js'
 import notify from '@/utils/Notifications'
 
-const MATCH_END_REDIRECT_DELAY_MS = 3200
+const MATCH_END_REDIRECT_DELAY_MS = 5200
 
 export const useMatchResult = ({
     enabled,
@@ -20,8 +20,9 @@ export const useMatchResult = ({
             return undefined
         }
 
-        const handleMatchEnd = ({ loserSocketId, winnerSocketId }) => {
+        const handleMatchEnd = ({ loserSocketId, winnerSocketId, matchType }) => {
             const nextMatchResult = loserSocketId === socket.id ? 'lose' : 'win'
+            const shouldReturnToLobby = (matchType || roomSettings?.matchType) === 'private'
 
             setMatchResult((currentValue) => currentValue || nextMatchResult)
 
@@ -37,15 +38,22 @@ export const useMatchResult = ({
             }
 
             redirectTimeoutRef.current = setTimeout(() => {
-                navigate(`/game/${modeKey}/lobby`, {
+                navigate(shouldReturnToLobby ? `/game/${modeKey}/lobby` : `/game/${modeKey}`, {
                     replace: true,
-                    state: {
-                        roomId,
-                        matchResult: nextMatchResult,
-                        winnerSocketId,
-                        roomSettings,
-                        modeKey,
-                    },
+                    state: shouldReturnToLobby
+                        ? {
+                            roomId,
+                            matchResult: nextMatchResult,
+                            winnerSocketId,
+                            roomSettings,
+                            modeKey,
+                        }
+                        : {
+                            matchResult: nextMatchResult,
+                            winnerSocketId,
+                            roomSettings,
+                            modeKey,
+                        },
                 })
             }, MATCH_END_REDIRECT_DELAY_MS)
         }

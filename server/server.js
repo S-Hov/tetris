@@ -2,6 +2,8 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
 import authRouter from './routes/auth.js'
 import matchesRouter from './routes/matches.js'
@@ -15,6 +17,8 @@ import { Server } from 'socket.io'
 import { registerSocketHandlers } from './sockets/index.js'
 
 const app = express()
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const allowedOrigins = [
     'http://localhost:5173',
@@ -45,6 +49,10 @@ const APP_NAME = process.env.APP_NAME || "App"
 console.log(`App: ${APP_NAME}`)
 
 app.use(logger)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+    fallthrough: false,
+    maxAge: '7d',
+}))
 
 app.use("/api/authentication", authRouter)
 app.use("/api/matches", matchesRouter)

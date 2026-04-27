@@ -1,5 +1,8 @@
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
+import { promises as fs } from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import { badRequest } from '../helpers/error.helper.js'
 import {
     checkEmailRepo,
@@ -15,10 +18,26 @@ import {
     loginUserRepo,
     markEmailVerifiedRepo,
     registerUserWithVerificationRepo,
+    updateUserAvatarRepo,
     updateUserLastLoginRepo,
+    updateUserProfileRepo,
 } from '../repositories/authRepository.js'
 import { getRoleByKeyRepo } from '../repositories/helper.js'
 import { getRankTier } from './rankRules.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const SERVER_ROOT = path.resolve(__dirname, '..')
+const AVATAR_UPLOAD_DIR = path.join(SERVER_ROOT, 'uploads', 'avatars')
+const MAX_AVATAR_SIZE_BYTES = 2 * 1024 * 1024
+const AVATAR_TYPES = {
+    'image/png': { ext: 'png', validate: (buffer) => buffer.subarray(0, 4).equals(Buffer.from([0x89, 0x50, 0x4E, 0x47])) },
+    'image/jpeg': { ext: 'jpg', validate: (buffer) => buffer.subarray(0, 3).equals(Buffer.from([0xFF, 0xD8, 0xFF])) },
+    'image/gif': { ext: 'gif', validate: (buffer) => ['GIF87a', 'GIF89a'].includes(buffer.subarray(0, 6).toString('ascii')) },
+    'image/webp': { ext: 'webp', validate: (buffer) => buffer.subarray(0, 4).toString('ascii') === 'RIFF' && buffer.subarray(8, 12).toString('ascii') === 'WEBP' },
+    'image/avif': { ext: 'avif', validate: (buffer) => buffer.subarray(4, 8).toString('ascii') === 'ftyp' },
+    'video/webm': { ext: 'webm', validate: (buffer) => buffer.subarray(0, 4).equals(Buffer.from([0x1A, 0x45, 0xDF, 0xA3])) },
+}
 
 export const registerUserService = async (username, email, password) => {
     if (await checkEmailRepo(email)) {
@@ -107,6 +126,70 @@ export const getUserService = async (id) => {
             opponentScore: Number(match.opponent_team_score) || 0,
         })),
     }
+}
+
+export const updateUserProfileService = async ({ userId, username }) => {
+    const normalizedUsername = normalizeUsername(username)
+
+    if (!normalizedUsername) {
+        throw badRequest('Введите имя игрока')
+    }
+
+    const user = await updateUserProfileRepo({
+        userId,
+        username: normalizedUsername,
+    })
+
+    if (!user) {
+        throw badRequest('Пользователь не найден')
+    }
+
+    return await getUserService(userId)
+}
+
+export const updateUserAvatarService = async ({ userId, contentType, buffer }) => {
+    const normalizedContentType = String(contentType || '').split(';')[0].trim().toLowerCase()
+    const avatarType = AVATAR_TYPES[normalizedContentType]
+
+    if (!avatarType) {
+        throw badRequest('Поддерживаются только PNG, JPG, GIF, WEBP, AVIF и WEBM')
+    }
+
+    if (!Buffer.isBuffer(buffer) || buffer.length === 0) {
+        throw badRequest('Файл не найден')
+    }
+
+    if (buffer.length > MAX_AVATAR_SIZE_BYTES) {
+        throw badRequest('Аватарка не должна быть больше 2 МБ')
+    }
+
+    if (!avatarType.validate(buffer)) {
+        throw badRequest('Файл не похож на заявленный формат изображения')
+    }
+
+    await fs.mkdir(AVATAR_UPLOAD_DIR, { recursive: true })
+
+    const fileHash = crypto
+        .createHash('sha256')
+        .update(`${userId}:${Date.now()}:${crypto.randomUUID()}`)
+        .digest('hex')
+        .slice(0, 32)
+    const filename = `${userId}-${fileHash}.${avatarType.ext}`
+    const filePath = path.join(AVATAR_UPLOAD_DIR, filename)
+    const avatarUrl = `/uploads/avatars/${filename}`
+
+    await fs.writeFile(filePath, buffer, { flag: 'wx' })
+
+    const user = await updateUserAvatarRepo({
+        userId,
+        avatarUrl,
+    })
+
+    if (!user) {
+        throw badRequest('Пользователь не найден')
+    }
+
+    return await getUserService(userId)
 }
 
 export const getVerificationMetaService = async (email) => {
@@ -276,6 +359,20 @@ const createVerificationExpiresAt = () => {
     const ttlSeconds = Number(process.env.EMAIL_VERIFICATION_TTL_SECONDS || 180)
 
     return new Date(Date.now() + ttlSeconds * 1000)
+}
+
+const normalizeUsername = (value) => {
+    const username = String(value || '').trim().replace(/\s+/g, ' ')
+
+    if (username.length < 2 || username.length > 32) {
+        return null
+    }
+
+    if (!/^[\p{L}\p{N}_ .-]+$/u.test(username)) {
+        return null
+    }
+
+    return username
 }
 
 const getRemainingSeconds = (expiresAt) => {

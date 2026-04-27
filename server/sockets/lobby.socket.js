@@ -17,6 +17,8 @@ const createRoomPlayer = (socket) => {
         userId: user.id,
         isRegistered: user.role !== 'guest',
         username: user.username || user.email || 'Guest',
+        avatarUrl: user.avatarUrl || null,
+        rankStats: user.rankStats || null,
         isReady: false,
         gameState: null,
         teamId: null,
@@ -63,7 +65,12 @@ const syncRemovedPlayerWithPersistence = async (io, result) => {
             loserSocketId: result.removedPlayer.socketId,
             winnerSocketId: winner?.socketId || null,
             reason: 'room_switch',
+            matchType: result.previousRoom?.settings?.matchType || 'private',
         })
+
+        if (result.previousRoom?.settings?.matchType && result.previousRoom.settings.matchType !== 'private') {
+            roomStore.deleteRoom(result.roomId)
+        }
 
         return
     }

@@ -1,5 +1,9 @@
 import { registerLobbyHandlers } from './lobby.socket.js'
 import { registerGameHandlers } from './game.handlers.js'
+import {
+    registerMatchmakingHandlers,
+    removeSocketFromMatchmakingQueue,
+} from './matchmaking.socket.js'
 import { roomStore } from './roomStore.js'
 import { socketAuthMiddleware } from './socketAuth.js'
 import {
@@ -16,9 +20,11 @@ export const registerSocketHandlers = (io) => {
 
         registerLobbyHandlers(io, socket)
         registerGameHandlers(io, socket)
+        registerMatchmakingHandlers(io, socket)
 
         socket.on('disconnect', () => {
             console.log('Socket disconnected:', socket.id)
+            removeSocketFromMatchmakingQueue(socket.id)
 
             const result = roomStore.removePlayerBySocketId(socket.id)
 
@@ -54,7 +60,12 @@ export const registerSocketHandlers = (io) => {
                             loserSocketId: result.removedPlayer.socketId,
                             winnerSocketId: winner?.socketId || null,
                             reason: 'disconnect',
+                            matchType: result.previousRoom?.settings?.matchType || 'private',
                         })
+
+                        if (result.previousRoom?.settings?.matchType && result.previousRoom.settings.matchType !== 'private') {
+                            roomStore.deleteRoom(result.roomId)
+                        }
                     }
                 } catch (error) {
                     console.error('disconnect persistence error', error)

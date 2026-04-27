@@ -88,7 +88,12 @@ export const registerGameHandlers = (io, socket) => {
             roomId,
             loserSocketId: socket.id,
             winnerSocketId: winner?.socketId || null,
+            matchType: room.settings?.matchType || 'private',
         })
+
+        if (room.settings?.matchType && room.settings.matchType !== 'private') {
+            roomStore.deleteRoom(roomId)
+        }
     })
 
     socket.on('ability:use', async ({ roomId, abilityId }, callback) => {

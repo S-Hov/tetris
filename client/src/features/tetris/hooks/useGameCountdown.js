@@ -4,17 +4,17 @@ const COUNTDOWN_STEP_MS = 920
 const COUNTDOWN_VALUES = [3, 2, 1]
 const COUNTDOWN_DURATION_MS = COUNTDOWN_STEP_MS * COUNTDOWN_VALUES.length
 
-export const useGameCountdown = ({ startedAt = 0 } = {}) => {
+export const useGameCountdown = ({ enabled = true, startedAt = 0 } = {}) => {
     const [now, setNow] = useState(() => Date.now())
     const elapsedMs = Math.max(0, now - startedAt)
-    const isCountingDown = elapsedMs < COUNTDOWN_DURATION_MS
+    const isCountingDown = enabled && elapsedMs < COUNTDOWN_DURATION_MS
     const stepIndex = Math.min(
         Math.floor(elapsedMs / COUNTDOWN_STEP_MS),
         COUNTDOWN_VALUES.length - 1
     )
 
     useEffect(() => {
-        if (!isCountingDown) {
+        if (!enabled || !isCountingDown) {
             return undefined
         }
 
@@ -25,7 +25,7 @@ export const useGameCountdown = ({ startedAt = 0 } = {}) => {
         }, nextDelay)
 
         return () => clearTimeout(timeoutId)
-    }, [elapsedMs, isCountingDown, startedAt, stepIndex])
+    }, [elapsedMs, enabled, isCountingDown, startedAt, stepIndex])
 
     return useMemo(() => ({
         countdownValue: COUNTDOWN_VALUES[stepIndex],

@@ -90,6 +90,15 @@ export const socketAuthMiddleware = async (socket, next) => {
                 email: user.email,
                 role: user.role,
                 username: user.username || undefined,
+                avatarUrl: user.avatar_url || null,
+                rankStats: {
+                    rankPoints: Number(user.rank_points) || 0,
+                    mmr: Number(user.mmr) || 1000,
+                    wins: Number(user.wins) || 0,
+                    losses: Number(user.losses) || 0,
+                    draws: Number(user.draws) || 0,
+                    totalMatches: Number(user.total_matches) || 0,
+                },
             }
 
             next()

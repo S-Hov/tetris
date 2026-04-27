@@ -529,20 +529,19 @@
 .game-result__panel {
     position: relative;
     z-index: 1;
-    width: min(1120px, 100%);
-    border-radius: 20px;
-    min-height: min(560px, calc(100dvh - 48px));
+    width: min(820px, 100%);
+    border-radius: 28px;
+    min-height: auto;
     display: grid;
-    grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1fr);
-    align-items: center;
-    gap: clamp(16px, 4vmin, 44px);
-    padding: clamp(18px, 5vmin, 58px);
+    justify-items: center;
+    gap: clamp(12px, 2.5vmin, 22px);
+    padding: clamp(16px, 4vmin, 44px);
     border: 0;
     background:
-        radial-gradient(circle at 22% 48%, color-mix(in srgb, var(--result-accent) 16%, transparent), transparent 38%),
-        linear-gradient(90deg, rgba(4, 10, 18, 0.62), transparent 72%);
+        radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--result-accent) 18%, transparent), transparent 42%),
+        linear-gradient(180deg, rgba(4, 10, 18, 0.42), rgba(4, 10, 18, 0.1));
     box-shadow:
-        0 34px 90px rgba(0, 0, 0, 0.18),
+        0 34px 90px rgba(0, 0, 0, 0.1),
         0 0 90px color-mix(in srgb, var(--result-accent) 12%, transparent);
     overflow: hidden;
     transform-style: preserve-3d;
@@ -574,14 +573,13 @@
     min-width: 0;
     display: grid;
     place-items: center;
-    aspect-ratio: 1;
 }
 
 .game-result__media img {
     position: relative;
     z-index: 2;
-    width: min(100%, 500px);
-    max-height: min(54dvh, 500px);
+    width: min(100%, 560px);
+    max-height: min(58dvh, 520px);
     object-fit: contain;
     user-select: none;
     filter:
@@ -604,35 +602,17 @@
 .game-result__content {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-}
-
-.game-result__eyebrow {
-    display: inline-flex;
-    margin-bottom: 0.65rem;
-    color: color-mix(in srgb, var(--result-accent) 74%, white);
-    font-size: 0.76rem;
-    letter-spacing: 0.16em;
-    line-height: 1;
-    text-transform: uppercase;
-}
-
-.game-result__title {
-    margin: 0;
-    color: #f7fbff;
-    font-size: clamp(2.9rem, 8.6vmin, 7.2rem);
-    line-height: 0.92;
-    text-shadow:
-        0 0 24px color-mix(in srgb, var(--result-accent) 34%, transparent),
-        0 18px 34px rgba(0, 0, 0, 0.3);
+    align-items: center;
+    text-align: center;
 }
 
 .game-result__description {
-    max-width: 520px;
-    margin: clamp(12px, 2vmin, 18px) 0 0;
-    color: rgba(235, 246, 255, 0.82);
-    font-size: clamp(0.95rem, 1.9vmin, 1.12rem);
+    max-width: 620px;
+    margin: 0;
+    color: rgba(235, 246, 255, 0.9);
+    font-size: clamp(1rem, 2vmin, 1.22rem);
     line-height: 1.55;
+    text-shadow: 0 0 18px color-mix(in srgb, var(--result-accent) 22%, transparent);
 }
 
 .game-result__actions {

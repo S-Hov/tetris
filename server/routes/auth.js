@@ -1,5 +1,5 @@
 import express from 'express'
-import { checkNotAuth, optionalAuth } from '../middleware/checkAuth.js'
+import { checkAuth, checkNotAuth, optionalAuth } from '../middleware/checkAuth.js'
 import {
     getVerificationMeta,
     getMe,
@@ -7,6 +7,8 @@ import {
     logout,
     register,
     resendVerificationEmail,
+    updateAvatar,
+    updateMe,
     verifyEmail,
 } from '../controllers/authController.js'
 import { validate } from '../middleware/validateAuth.js'
@@ -25,6 +27,18 @@ authRouter.post('/register', checkNotAuth, validate(registerSchema), register)
 authRouter.post('/login', checkNotAuth, validate(loginSchema), login)
 
 authRouter.get('/me', optionalAuth, getMe)
+
+authRouter.patch('/me', checkAuth, updateMe)
+
+authRouter.put(
+    '/me/avatar',
+    checkAuth,
+    express.raw({
+        type: ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/avif', 'video/webm'],
+        limit: '2mb',
+    }),
+    updateAvatar
+)
 
 authRouter.post('/logout', optionalAuth, logout)
 

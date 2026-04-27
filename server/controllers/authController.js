@@ -6,6 +6,8 @@ import {
     loginUserService,
     registerUserService,
     resendVerificationCodeService,
+    updateUserAvatarService,
+    updateUserProfileService,
     verifyEmailService,
     loginConfirmationService,
 } from "../services/authService.js"
@@ -166,6 +168,37 @@ export const getMe = asyncHandler(async (req, res) => {
             user,
             isAuthenticated: true,
         }
+    })
+})
+
+export const updateMe = asyncHandler(async (req, res) => {
+    const user = await updateUserProfileService({
+        userId: req.user.id,
+        username: req.body.username,
+    })
+
+    res.json({
+        success: true,
+        message: 'Профиль обновлён',
+        data: {
+            user,
+        },
+    })
+})
+
+export const updateAvatar = asyncHandler(async (req, res) => {
+    const user = await updateUserAvatarService({
+        userId: req.user.id,
+        contentType: req.get('content-type'),
+        buffer: req.body,
+    })
+
+    res.json({
+        success: true,
+        message: 'Аватар обновлён',
+        data: {
+            user,
+        },
     })
 })
 

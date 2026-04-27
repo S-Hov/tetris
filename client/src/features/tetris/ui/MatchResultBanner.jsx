@@ -3,24 +3,20 @@ import winImage from '@/features/tetris/assets/results/win.png'
 
 const resultContent = {
     lose: {
-        eyebrow: 'Game Over',
-        title: 'Поражение',
-        description: 'Поле переполнено. Соберите дыхание, перезапустите партию и верните контроль над темпом.',
+        description: 'Раунд ушёл сопернику. Через несколько секунд вы вернётесь к выбору следующего матча.',
         image: loseImage,
     },
     win: {
-        eyebrow: 'Round Complete',
-        title: 'Победа',
-        description: 'Вы забрали этот раунд. Соперник сломался под давлением, а вы держали темп до конца.',
+        description: 'Вы забрали темп и закрыли раунд. Через несколько секунд можно будет искать новую игру.',
         image: winImage,
     },
 }
 
-const MatchResultBanner = ({ result, actions = [], description, eyebrow, title }) => {
+const MatchResultBanner = ({ result, actions = [], description }) => {
     const content = resultContent[result] || resultContent.lose
 
     return (
-        <div className={`game-result game-result--${result}`} role="dialog" aria-modal="true" aria-labelledby="game-result-title">
+        <div className={`game-result game-result--${result}`} role="dialog" aria-modal="true" aria-label="Раунд завершён">
             <div className="game-result__backdrop" aria-hidden="true" />
             <div className="game-result__panel">
                 <div className="game-result__media" aria-hidden="true">
@@ -29,8 +25,6 @@ const MatchResultBanner = ({ result, actions = [], description, eyebrow, title }
                 </div>
 
                 <div className="game-result__content">
-                    <span className="game-result__eyebrow">{eyebrow || content.eyebrow}</span>
-                    <h3 className="game-result__title" id="game-result-title">{title || content.title}</h3>
                     <p className="game-result__description">{description || content.description}</p>
 
                     {actions.length > 0 ? (

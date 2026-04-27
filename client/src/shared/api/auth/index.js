@@ -30,6 +30,23 @@ export const authenticationAPI = {
         })
     },
 
+    updateProfile(data) {
+        return apiClient('/api/authentication/me', {
+            method: 'PATCH',
+            body: JSON.stringify(data)
+        })
+    },
+
+    updateAvatar(file) {
+        return apiClient('/api/authentication/me/avatar', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': file.type,
+            },
+            body: file
+        })
+    },
+
     verifyEmail(data) {
         const { email, code } = data
 

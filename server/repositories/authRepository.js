@@ -36,7 +36,7 @@ export const loginUserRepo = async (email) => {
 export const getUserRepo = async (id) => {
     const result = await pool.query(
         `
-        SELECT id, username, email, status, role_id, created_at, last_login_at
+        SELECT id, username, email, avatar_url, status, role_id, created_at, last_login_at
         FROM users
         WHERE id = $1
         `,
@@ -124,13 +124,53 @@ export const getRecentUserMatchesRepo = async (userId, limit = 6) => {
 export const getSocketUserRepo = async (id) => {
     const result = await pool.query(
         `
-        SELECT users.id, users.username, users.email, roles.key AS role
+        SELECT
+            users.id,
+            users.username,
+            users.email,
+            users.avatar_url,
+            roles.key AS role,
+            COALESCE(user_rank_stats.rank_points, 0) AS rank_points,
+            COALESCE(user_rank_stats.mmr, 1000) AS mmr,
+            COALESCE(user_rank_stats.wins, 0) AS wins,
+            COALESCE(user_rank_stats.losses, 0) AS losses,
+            COALESCE(user_rank_stats.draws, 0) AS draws,
+            COALESCE(user_rank_stats.total_matches, 0) AS total_matches
         FROM users
         JOIN roles ON roles.id = users.role_id
+        LEFT JOIN user_rank_stats ON user_rank_stats.user_id = users.id
         WHERE users.id = $1
         LIMIT 1
         `,
         [id]
+    )
+
+    return result.rows[0] || null
+}
+
+export const updateUserProfileRepo = async ({ userId, username }) => {
+    const result = await pool.query(
+        `
+        UPDATE users
+        SET username = $2
+        WHERE id = $1
+        RETURNING id, username, email, avatar_url, status, role_id, created_at, last_login_at
+        `,
+        [userId, username]
+    )
+
+    return result.rows[0] || null
+}
+
+export const updateUserAvatarRepo = async ({ userId, avatarUrl }) => {
+    const result = await pool.query(
+        `
+        UPDATE users
+        SET avatar_url = $2
+        WHERE id = $1
+        RETURNING id, username, email, avatar_url, status, role_id, created_at, last_login_at
+        `,
+        [userId, avatarUrl]
     )
 
     return result.rows[0] || null

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { useAbilityTimer } from '@/features/tetris/hooks/useAbilityTimer.js'
@@ -26,11 +26,13 @@ import PlayerSummaryPanel from '@/features/tetris/ui/PlayerSummaryPanel.jsx'
 import StatsPanel from '@/features/tetris/ui/StatsPanel.jsx'
 import TetrisBoard from '@/features/tetris/ui/TetrisBoard.jsx'
 import { useAuth } from '@/shared/hooks/useAuth.js'
+import { socket } from '@/shared/api/socket'
 
 import './MatchPage.css'
 
 const DANGER_ZONE_ROWS = 7
 const DEFAULT_ONLINE_MODE_KEY = '1v1'
+const MATCH_INTRO_DURATION_MS = 5000
 
 const modeByPlayMode = {
     [MATCH_PLAY_MODES.ONLINE]: GAME_MODE_REGISTRY[GAME_MODE_TYPES.VERSUS_1V1_EFFECTS],
@@ -86,6 +88,7 @@ const MatchPage = ({
     const roomId = roomIdProp ?? params.roomId
     const modeKey = modeKeyProp ?? location.state?.modeKey ?? DEFAULT_ONLINE_MODE_KEY
     const mode = modeProp ?? modeByPlayMode[playMode] ?? modeByPlayMode[MATCH_PLAY_MODES.ONLINE]
+    const matchRoom = location.state?.room || null
     const [roomSettings, setRoomSettingsState] = useState(() => getInitialSettings({
         initialSettings,
         locationState: location.state,
@@ -115,6 +118,7 @@ const MatchPage = ({
             modeKey={modeKey}
             navigate={navigate}
             roomId={roomId}
+            matchRoom={matchRoom}
             roomSettings={roomSettings}
             setRoomSettings={setRoomSettings}
             user={user}
@@ -128,6 +132,7 @@ const MatchPageGame = ({
     modeKey,
     navigate,
     roomId,
+    matchRoom,
     roomSettings,
     setRoomSettings,
     user,
@@ -136,10 +141,14 @@ const MatchPageGame = ({
         () => getRandomPieceGeneratorForSettings(roomSettings),
         [roomSettings]
     )
+    const [isIntroVisible, setIsIntroVisible] = useState(() => Boolean(isOnline && matchRoom?.players?.length))
+    const [introSecondsLeft, setIntroSecondsLeft] = useState(() => Math.ceil(MATCH_INTRO_DURATION_MS / 1000))
     const [countdownStartedAt, setCountdownStartedAt] = useState(() => Date.now())
     const { countdownValue, isCountingDown } = useGameCountdown({
+        enabled: !isIntroVisible,
         startedAt: countdownStartedAt,
     })
+    const shouldShowCountdown = !isIntroVisible && isCountingDown
     const { isMatchFinished, matchResult } = useMatchResult({
         enabled: isOnline,
         modeKey,
@@ -154,7 +163,7 @@ const MatchPageGame = ({
         setGameState,
     } = useTetrisGameLoop({
         abilitiesEnabled: roomSettings.abilitiesEnabled,
-        paused: isCountingDown || isMatchFinished,
+        paused: isIntroVisible || isCountingDown || isMatchFinished,
         randomPiece: randomPieceGenerator,
     })
     const { handleAbilityChoose, opponentState } = useMatchSocketSync({
@@ -176,7 +185,7 @@ const MatchPageGame = ({
     })
 
     useTetrisControls({
-        disabled: isMatchFinished || isCountingDown,
+        disabled: isIntroVisible || isMatchFinished || isCountingDown,
         randomPiece: randomPieceGenerator,
         setGameState,
     })
@@ -199,7 +208,7 @@ const MatchPageGame = ({
     }
 
     const handlePauseToggle = () => {
-        if (isCountingDown) {
+        if (isIntroVisible || isCountingDown) {
             return
         }
 
@@ -208,8 +217,35 @@ const MatchPageGame = ({
 
     const handleRestart = () => {
         resetGame()
+        setIsIntroVisible(false)
         setCountdownStartedAt(Date.now())
     }
+
+    useEffect(() => {
+        if (!isIntroVisible) {
+            return undefined
+        }
+
+        const introStartedAt = Date.now()
+        const timeoutId = setTimeout(() => {
+            setIsIntroVisible(false)
+            setIntroSecondsLeft(Math.ceil(MATCH_INTRO_DURATION_MS / 1000))
+            setCountdownStartedAt(Date.now())
+        }, MATCH_INTRO_DURATION_MS)
+        const intervalId = setInterval(() => {
+            const elapsedMs = Date.now() - introStartedAt
+            const nextSecondsLeft = Math.max(1, Math.ceil((MATCH_INTRO_DURATION_MS - elapsedMs) / 1000))
+
+            setIntroSecondsLeft(nextSecondsLeft)
+        }, 200)
+
+        return () => {
+            clearTimeout(timeoutId)
+            clearInterval(intervalId)
+        }
+    }, [isIntroVisible])
+
+    const introPlayers = getIntroPlayers(matchRoom)
 
     const handleBackToModeSelect = () => {
         navigate('/game/solo', {
@@ -327,7 +363,14 @@ const MatchPageGame = ({
                     onChoose={handleAbilityChoose}
                 />
             ) : null}
-            {isCountingDown ? <GameCountdownOverlay value={countdownValue} /> : null}
+            {isIntroVisible ? (
+                <MatchIntroOverlay
+                    secondsLeft={introSecondsLeft}
+                    opponent={introPlayers.opponent}
+                    self={introPlayers.self}
+                />
+            ) : null}
+            {shouldShowCountdown ? <GameCountdownOverlay value={countdownValue} /> : null}
             {onlineResultOverlay}
             {soloResultOverlay}
         </>
@@ -350,6 +393,86 @@ const MatchPageGame = ({
             secondaryColumn={secondaryColumn}
         />
     )
+}
+
+const MatchIntroOverlay = ({ self, opponent, secondsLeft }) => (
+    <div className="match-intro" role="dialog" aria-modal="true" aria-label="Знакомство соперников">
+        <div className="match-intro__backdrop" aria-hidden="true" />
+        <div className="match-intro__panel">
+            <div className="match-intro__heading">
+                <span>Match found</span>
+                <h2>Соперники готовы</h2>
+            </div>
+
+            <div className="match-intro__players">
+                <IntroPlayerCard title="Вы" player={self} />
+                <div className="match-intro__versus">VS</div>
+                <IntroPlayerCard title="Соперник" player={opponent} />
+            </div>
+
+            <div className="match-intro__footer">
+                <i className="fas fa-bolt"></i>
+                Старт через <strong>{secondsLeft}</strong> сек.
+            </div>
+        </div>
+    </div>
+)
+
+const IntroPlayerCard = ({ title, player }) => {
+    const stats = player?.rankStats || {}
+    const totalMatches = Number(stats.totalMatches) || 0
+    const wins = Number(stats.wins) || 0
+    const losses = Number(stats.losses) || 0
+    const winRate = totalMatches > 0 ? Math.round((wins / totalMatches) * 100) : 0
+
+    return (
+        <article className="match-intro-player">
+            <span>{title}</span>
+            <div className="match-intro-player__avatar">
+                {player?.avatarUrl ? (
+                    renderAvatarMedia(getAssetUrl(player.avatarUrl), player.username)
+                ) : (
+                    <i className="fas fa-user-astronaut"></i>
+                )}
+            </div>
+            <h3>{player?.username || 'Игрок'}</h3>
+            <div className="match-intro-player__stats">
+                <small>RP <strong>{Number(stats.rankPoints) || 0}</strong></small>
+                <small>MMR <strong>{Number(stats.mmr) || 1000}</strong></small>
+                <small>W/L <strong>{wins}/{losses}</strong></small>
+                <small>WR <strong>{winRate}%</strong></small>
+            </div>
+        </article>
+    )
+}
+
+const getIntroPlayers = (matchRoom) => {
+    const players = Array.isArray(matchRoom?.players) ? matchRoom.players : []
+    const self = players.find((player) => player.socketId === socket.id) || players[0] || null
+    const opponent = players.find((player) => player.socketId !== socket.id) || players[1] || null
+
+    return { self, opponent }
+}
+
+const getAssetUrl = (value) => {
+    if (!value) return ''
+    if (/^https?:\/\//i.test(value)) return value
+
+    const baseUrl = import.meta.env.VITE_API_URL || (
+        typeof window !== 'undefined' && window.location.hostname
+            ? `http://${window.location.hostname}:8880`
+            : 'http://127.0.0.1:8880'
+    )
+
+    return `${baseUrl}${value}`
+}
+
+const renderAvatarMedia = (src, alt) => {
+    if (src.toLowerCase().includes('.webm')) {
+        return <video src={src} autoPlay loop muted playsInline aria-label={alt || 'avatar'} />
+    }
+
+    return <img src={src} alt={alt || 'avatar'} />
 }
 
 export default MatchPage
