@@ -28,7 +28,16 @@ const createRoomPlayer = (socket) => {
 const normalizeRoomSettings = (settings = {}) => ({
     abilitiesEnabled: settings.abilitiesEnabled ?? true,
     specialBlocksEnabled: settings.specialBlocksEnabled ?? false,
+    matchType: normalizeMatchType(settings.matchType),
 })
+
+const normalizeMatchType = (value) => {
+    if (value === 'ranked' || value === 'casual' || value === 'private') {
+        return value
+    }
+
+    return 'private'
+}
 
 const syncRemovedPlayerWithPersistence = async (io, result) => {
     if (!result?.removedPlayer) {
@@ -102,10 +111,22 @@ export const registerLobbyHandlers = (io, socket) => {
             await leavePreviousRoomIfNeeded(io, socket)
 
             const player = createRoomPlayer(socket)
+            const roomSettings = normalizeRoomSettings(payload.settings)
+
+            if (roomSettings.matchType === 'ranked' && !player.isRegistered) {
+                callback?.({
+                    success: false,
+                    message: 'Рейтинговый матч доступен только авторизованным игрокам',
+                })
+                return
+            }
+
             const roomId = crypto.randomUUID()
             const matchBinding = await createRoomMatchService({
                 roomId,
                 player,
+                matchType: roomSettings.matchType,
+                countsForRating: roomSettings.matchType === 'ranked',
             })
 
             const room = {
@@ -113,7 +134,7 @@ export const registerLobbyHandlers = (io, socket) => {
                 status: 'waiting',
                 matchId: matchBinding.matchId,
                 modeKey: payload.modeKey || '1v1',
-                settings: normalizeRoomSettings(payload.settings),
+                settings: roomSettings,
                 players: [
                     {
                         ...player,
@@ -213,6 +234,15 @@ export const registerLobbyHandlers = (io, socket) => {
             }
 
             const player = createRoomPlayer(socket)
+
+            if (room.settings?.matchType === 'ranked' && !player.isRegistered) {
+                callback?.({
+                    success: false,
+                    message: 'Рейтинговый матч доступен только авторизованным игрокам',
+                })
+                return
+            }
+
             const teamNumber = room.players.length + 1
             const matchBinding = await attachPlayerToRoomMatchService({
                 roomId,

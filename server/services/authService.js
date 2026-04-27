@@ -9,6 +9,7 @@ import {
     getRecentUserMatchesRepo,
     getLatestPendingVerificationByEmailRepo,
     getUserMatchStatsRepo,
+    getUserRankStatsRepo,
     getUserByEmailRepo,
     getUserRepo,
     loginUserRepo,
@@ -17,6 +18,7 @@ import {
     updateUserLastLoginRepo,
 } from '../repositories/authRepository.js'
 import { getRoleByKeyRepo } from '../repositories/helper.js'
+import { getRankTier } from './rankRules.js'
 
 export const registerUserService = async (username, email, password) => {
     if (await checkEmailRepo(email)) {
@@ -64,16 +66,33 @@ export const getUserService = async (id) => {
         return null
     }
 
-    const [stats, recentMatches] = await Promise.all([
+    const [stats, rankStats, recentMatches] = await Promise.all([
         getUserMatchStatsRepo(id),
+        getUserRankStatsRepo(id),
         getRecentUserMatchesRepo(id, 6),
     ])
+    const totalRankedMatches = Number(rankStats?.total_matches) || 0
+    const rankedWins = Number(rankStats?.wins) || 0
+    const rankPoints = Number(rankStats?.rank_points) || 0
 
     return {
         ...user,
         stats: {
             totalGames: Number(stats.total_games) || 0,
             wins: Number(stats.wins) || 0,
+        },
+        rankStats: {
+            rankPoints,
+            mmr: Number(rankStats?.mmr) || 1000,
+            wins: rankedWins,
+            losses: Number(rankStats?.losses) || 0,
+            draws: Number(rankStats?.draws) || 0,
+            totalMatches: totalRankedMatches,
+            winRate: totalRankedMatches > 0
+                ? Math.round((rankedWins / totalRankedMatches) * 100)
+                : 0,
+            bestSoloScore: Number(rankStats?.best_solo_score) || 0,
+            rank: getRankTier(rankPoints),
         },
         recentMatches: recentMatches.map((match) => ({
             id: match.id,

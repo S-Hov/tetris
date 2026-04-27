@@ -116,8 +116,6 @@ export function createGameState(options = {}) {
         abilityOptions: [],
         abilityChoiceEndsAt: null,
         activeEffects: [],
-        combo: 0,
-        lastCombo: 0,
     }
 }
 

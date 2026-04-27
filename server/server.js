@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 
 import authRouter from './routes/auth.js'
 import matchesRouter from './routes/matches.js'
+import leaderboardRouter from './routes/leaderboard.js'
 
 import { logger } from './middleware/logger.js'
 import { errorHandler } from './middleware/errorHandler.js'
@@ -47,6 +48,7 @@ app.use(logger)
 
 app.use("/api/authentication", authRouter)
 app.use("/api/matches", matchesRouter)
+app.use("/api/leaderboard", leaderboardRouter)
 
 app.use(errorHandler)
 

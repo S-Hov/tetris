@@ -1,8 +1,10 @@
 import { pool } from '../db/index.js'
 import { forbidden, notFound } from '../helpers/error.helper.js'
+import { applyRankedMatchResultRepo } from './rankRepository.js'
 
 const MATCH_MODE = '1v1'
 const MATCH_TYPE = 'private'
+const MATCH_TYPES = new Set(['ranked', 'casual', 'private'])
 
 const getMatchByRoomIdQuery = `
     SELECT id, room_id, mode, match_type, status, is_online, counts_for_rating, winner_team_id,
@@ -139,8 +141,14 @@ const findMatchPlayerByIdentity = async (client, { matchId, player }) => {
     return result.rows[0] || null
 }
 
-export const createMatchForRoomRepo = async ({ roomId, player }) => {
+export const createMatchForRoomRepo = async ({
+    roomId,
+    player,
+    matchType = MATCH_TYPE,
+    countsForRating = false,
+}) => {
     const client = await pool.connect()
+    const normalizedMatchType = MATCH_TYPES.has(matchType) ? matchType : MATCH_TYPE
 
     try {
         await client.query('BEGIN')
@@ -169,10 +177,10 @@ export const createMatchForRoomRepo = async ({ roomId, player }) => {
         const matchResult = await client.query(
             `
             INSERT INTO matches (room_id, mode, match_type, status, is_online, counts_for_rating)
-            VALUES ($1, $2, $3, 'created', TRUE, FALSE)
+            VALUES ($1, $2, $3, 'created', TRUE, $4)
             RETURNING id, status
             `,
-            [roomId, MATCH_MODE, MATCH_TYPE]
+            [roomId, MATCH_MODE, normalizedMatchType, Boolean(countsForRating)]
         )
 
         const match = matchResult.rows[0]
@@ -349,9 +357,18 @@ export const markRoomMatchFinishedRepo = async ({
             [match.id, status, winnerTeamId]
         )
 
+        const ratingUpdates = await applyRankedMatchResultRepo(client, match.id)
+
         await client.query('COMMIT')
 
-        return result.rows[0] || null
+        const finishedMatch = result.rows[0] || null
+
+        return finishedMatch
+            ? {
+                ...finishedMatch,
+                ratingUpdates,
+            }
+            : null
     } catch (error) {
         await client.query('ROLLBACK')
         throw error

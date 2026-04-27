@@ -14,8 +14,8 @@ const fallbackProfile = {
     country: 'Россия',
     memberSince: 'января 2024',
     lastLogin: 'Сегодня, 14:32',
-    rank: 'Мастер I',
-    rating: 2840,
+    rank: 'Bronze',
+    rating: 0,
 }
 
 const defaultSettings = [
@@ -78,8 +78,9 @@ const ProfilePage = () => {
             country: fallbackProfile.country,
             memberSince: formatMemberSince(user?.created_at) || fallbackProfile.memberSince,
             lastLogin: formatLastLogin(user?.last_login_at) || fallbackProfile.lastLogin,
-            rank: fallbackProfile.rank,
-            rating: fallbackProfile.rating,
+            rank: user?.rankStats?.rank?.label || fallbackProfile.rank,
+            rating: user?.rankStats?.rankPoints ?? fallbackProfile.rating,
+            rankStats: user?.rankStats || null,
             stats: {
                 totalGames: user?.stats?.totalGames || 0,
                 wins: user?.stats?.wins || 0,
@@ -89,16 +90,16 @@ const ProfilePage = () => {
     }, [user])
 
     const playerStats = useMemo(() => {
-        const totalGames = profile.stats.totalGames
-        const wins = profile.stats.wins
+        const totalGames = profile.rankStats?.totalMatches || profile.stats.totalGames
+        const wins = profile.rankStats?.wins || 0
         const winRate = totalGames > 0 ? ((wins / totalGames) * 100).toFixed(1) : '0.0'
 
         return [
             {
                 key: 'games',
-                title: 'Всего игр',
+                title: 'Ranked игр',
                 value: String(totalGames),
-                change: 'Актуально по данным БД',
+                change: 'Влияют на ранг',
                 icon: 'fas fa-chart-line',
             },
             {
@@ -110,21 +111,20 @@ const ProfilePage = () => {
             },
             {
                 key: 'combo',
-                title: 'Макс. комбо',
-                value: '14',
-                change: 'Рекорд серии',
-                icon: 'fas fa-fire',
+                title: 'MMR',
+                value: String(profile.rankStats?.mmr || 1000),
+                change: 'Скрытый подбор соперников',
+                icon: 'fas fa-wave-square',
             },
             {
                 key: 'crystals',
-                title: 'Заработано',
-                value: '12.4k',
-                unit: 'кристаллов',
-                change: '+340 за месяц',
-                icon: 'fas fa-gem',
+                title: 'Solo рекорд',
+                value: String(profile.rankStats?.bestSoloScore || 0),
+                change: `${profile.rankStats?.losses || 0} поражений | ${profile.rankStats?.draws || 0} ничьих`,
+                icon: 'fas fa-star',
             },
         ]
-    }, [profile.stats.totalGames, profile.stats.wins])
+    }, [profile.rankStats, profile.stats.totalGames])
 
     const matchHistory = useMemo(
         () => profile.recentMatches.map((match) => ({

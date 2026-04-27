@@ -76,7 +76,30 @@ const ModeSelectPage = () => {
                     modeKey: modeConfig.key,
                     modeTitle: modeConfig.title,
                     modeIcon: modeConfig.icon,
-                    roomSettings: settings,
+                    roomSettings: {
+                        ...settings,
+                        matchType: 'private',
+                    },
+                },
+            })
+            return
+        }
+
+        if (playType === MATCH_PLAY_OPTIONS.RANKED || playType === MATCH_PLAY_OPTIONS.CASUAL) {
+            if (!roomActionEnabled) {
+                notify('Этот сценарий пока открыт как макет для будущего развития режима', 'info')
+                return
+            }
+
+            navigate(`/game/${modeConfig.key}/lobby`, {
+                state: {
+                    modeKey: modeConfig.key,
+                    modeTitle: modeConfig.title,
+                    modeIcon: modeConfig.icon,
+                    roomSettings: {
+                        ...settings,
+                        matchType: playType,
+                    },
                 },
             })
             return

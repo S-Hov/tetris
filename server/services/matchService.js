@@ -22,9 +22,20 @@ const getPlayerStats = (player, fallbackPayload = null) => {
     }
 }
 
-export const createRoomMatchService = async ({ roomId, player, teamNumber = 1 }) => {
+export const createRoomMatchService = async ({
+    roomId,
+    player,
+    teamNumber = 1,
+    matchType = 'private',
+    countsForRating = false,
+}) => {
     const result = teamNumber === 1
-        ? await createMatchForRoomRepo({ roomId, player })
+        ? await createMatchForRoomRepo({
+            roomId,
+            player,
+            matchType,
+            countsForRating,
+        })
         : await attachPlayerToRoomMatchRepo({ roomId, player, teamNumber })
 
     return {

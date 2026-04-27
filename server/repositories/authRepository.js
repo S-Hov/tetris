@@ -168,6 +168,15 @@ export const registerUserWithVerificationRepo = async ({
             [user.id, email, verificationCodeHash, 'pending', expiresAt]
         )
 
+        await client.query(
+            `
+            INSERT INTO user_rank_stats (user_id, rank_points, mmr, wins, losses)
+            VALUES ($1, 0, 1000, 0, 0)
+            ON CONFLICT (user_id) DO NOTHING
+            `,
+            [user.id]
+        )
+
         await client.query('COMMIT')
 
         return user
@@ -186,6 +195,33 @@ export const getUserByEmailRepo = async (email) => {
     )
 
     return result.rows[0]
+}
+
+export const getUserRankStatsRepo = async (userId) => {
+    const result = await pool.query(
+        `
+        INSERT INTO user_rank_stats (user_id)
+        VALUES ($1)
+        ON CONFLICT (user_id) DO NOTHING
+        RETURNING user_id, rank_points, mmr, wins, losses, draws, best_solo_score, total_matches
+        `,
+        [userId]
+    )
+
+    if (result.rows[0]) {
+        return result.rows[0]
+    }
+
+    const existingResult = await pool.query(
+        `
+        SELECT user_id, rank_points, mmr, wins, losses, draws, best_solo_score, total_matches
+        FROM user_rank_stats
+        WHERE user_id = $1
+        `,
+        [userId]
+    )
+
+    return existingResult.rows[0] || null
 }
 
 export const getLatestPendingVerificationByEmailRepo = async (email) => {

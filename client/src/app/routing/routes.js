@@ -5,6 +5,7 @@ import ProfilePage from '@/pages/Profile/ProfilePage.jsx'
 import MatchesPage from '@/pages/Matches/MatchesPage.jsx'
 import MatchDetailsPage from '@/pages/MatchDetails/MatchDetailsPage.jsx'
 import ModeSelectPage from '@/pages/ModeSelect/ModeSelectPage.jsx'
+import RatingPage from '@/pages/Rating/RatingPage.jsx'
 
 import MainLayout from '../layouts/MainLayout.jsx'
 import InnerPageLayout from '../layouts/InnerPageLayout.jsx'
@@ -50,6 +51,12 @@ export const routes = [
         component: MatchesPage,
         layout: InnerPageLayout,
         guard: ProtectedRoute,
+    },
+    {
+        key: 'rating',
+        path: '/rating',
+        component: RatingPage,
+        layout: MainLayout,
     },
     {
         key: 'match-details',
