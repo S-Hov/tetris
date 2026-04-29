@@ -1,4 +1,4 @@
-const StatsPanel = ({ score, lines, level, status, record = 7984 }) => {
+const StatsPanel = ({ score, lines, level, status, record = 0 }) => {
     return (
         <section className="game-panel game-stats-panel">
             <p className="game-stats-panel__row"><i className="fa-solid fa-star"></i> Score: <span className="game-stats-panel__value">{score}</span></p>

@@ -12,8 +12,24 @@ const resultContent = {
     },
 }
 
-const MatchResultBanner = ({ result, actions = [], description }) => {
+const STAT_LABELS = {
+    score: 'Score',
+    lines: 'Lines',
+    level: 'Level',
+    record: 'Record',
+}
+
+const getPlayerStats = (player) => [
+    { key: 'score', value: player.score },
+    { key: 'lines', value: player.lines },
+    { key: 'level', value: player.level },
+    player.record !== undefined ? { key: 'record', value: player.record } : null,
+].filter(Boolean)
+
+const MatchResultBanner = ({ result, actions = [], description, stats = null }) => {
     const content = resultContent[result] || resultContent.lose
+    const primaryStats = stats?.primary || null
+    const secondaryStats = Array.isArray(stats?.secondary) ? stats.secondary : []
 
     return (
         <div className={`game-result game-result--${result}`} role="dialog" aria-modal="true" aria-label="Раунд завершён">
@@ -26,6 +42,34 @@ const MatchResultBanner = ({ result, actions = [], description }) => {
 
                 <div className="game-result__content">
                     <p className="game-result__description">{description || content.description}</p>
+
+                    {primaryStats ? (
+                        <div className="game-result__stats" aria-label="Game statistics">
+                            <section className="game-result__stats-primary">
+                                <span className="game-result__stats-name">{primaryStats.name || 'You'}</span>
+                                <div className="game-result__stats-grid">
+                                    {getPlayerStats(primaryStats).map((stat) => (
+                                        <span key={stat.key} className="game-result__stat">
+                                            <small>{STAT_LABELS[stat.key]}</small>
+                                            <strong>{stat.value}</strong>
+                                        </span>
+                                    ))}
+                                </div>
+                            </section>
+
+                            {secondaryStats.length > 0 ? (
+                                <div className="game-result__stats-secondary">
+                                    {secondaryStats.map((player) => (
+                                        <section key={player.id || player.name} className="game-result__stats-compact">
+                                            <span>{player.name || 'Player'}</span>
+                                            <strong>{player.score}</strong>
+                                            <small>{player.lines} lines - lvl {player.level}</small>
+                                        </section>
+                                    ))}
+                                </div>
+                            ) : null}
+                        </div>
+                    ) : null}
 
                     {actions.length > 0 ? (
                         <div className="game-result__actions">

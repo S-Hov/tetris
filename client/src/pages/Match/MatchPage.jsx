@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { useAbilityTimer } from '@/features/tetris/hooks/useAbilityTimer.js'
@@ -27,6 +27,7 @@ import StatsPanel from '@/features/tetris/ui/StatsPanel.jsx'
 import TetrisBoard from '@/features/tetris/ui/TetrisBoard.jsx'
 import { useAuth } from '@/shared/hooks/useAuth.js'
 import { socket } from '@/shared/api/socket'
+import { matchesAPI } from '@/shared/api/matches'
 
 import './MatchPage.css'
 
@@ -144,6 +145,8 @@ const MatchPageGame = ({
     const [isIntroVisible, setIsIntroVisible] = useState(() => Boolean(isOnline && matchRoom?.players?.length))
     const [introSecondsLeft, setIntroSecondsLeft] = useState(() => Math.ceil(MATCH_INTRO_DURATION_MS / 1000))
     const [countdownStartedAt, setCountdownStartedAt] = useState(() => Date.now())
+    const [soloRecord, setSoloRecord] = useState(() => Number(user?.rankStats?.bestSoloScore) || 0)
+    const soloResultSubmittedRef = useRef(false)
     const { countdownValue, isCountingDown } = useGameCountdown({
         enabled: !isIntroVisible,
         startedAt: countdownStartedAt,
@@ -218,8 +221,69 @@ const MatchPageGame = ({
     const handleRestart = () => {
         resetGame()
         setIsIntroVisible(false)
+        soloResultSubmittedRef.current = false
         setCountdownStartedAt(Date.now())
     }
+
+    useEffect(() => {
+        if (isOnline || !user?.id) {
+            return undefined
+        }
+
+        let isCancelled = false
+
+        const loadSoloRecord = async () => {
+            try {
+                const response = await matchesAPI.getSoloRecord()
+
+                if (!isCancelled) {
+                    setSoloRecord(Number(response.record) || 0)
+                }
+            } catch {
+                if (!isCancelled) {
+                    setSoloRecord(Number(user?.rankStats?.bestSoloScore) || 0)
+                }
+            }
+        }
+
+        loadSoloRecord()
+
+        return () => {
+            isCancelled = true
+        }
+    }, [isOnline, user?.id, user?.rankStats?.bestSoloScore])
+
+    useEffect(() => {
+        if (isOnline || !derivedState.isGameOver || !user?.id || soloResultSubmittedRef.current) {
+            return
+        }
+
+        soloResultSubmittedRef.current = true
+
+        const submitSoloResult = async () => {
+            try {
+                const response = await matchesAPI.submitSoloResult({
+                    score: derivedState.score,
+                    linesCleared: derivedState.linesCleared,
+                    levelReached: derivedState.level,
+                })
+
+                setSoloRecord(Number(response.record) || Math.max(soloRecord, derivedState.score))
+            } catch {
+                setSoloRecord((currentRecord) => Math.max(currentRecord, derivedState.score))
+            }
+        }
+
+        submitSoloResult()
+    }, [
+        derivedState.isGameOver,
+        derivedState.level,
+        derivedState.linesCleared,
+        derivedState.score,
+        isOnline,
+        soloRecord,
+        user?.id,
+    ])
 
     useEffect(() => {
         if (!isIntroVisible) {
@@ -294,6 +358,7 @@ const MatchPageGame = ({
                 score={derivedState.score}
                 lines={derivedState.linesCleared}
                 level={derivedState.level}
+                record={!isOnline ? Math.max(soloRecord, derivedState.score) : soloRecord}
                 status={isCountingDown ? 'Starting' : derivedState.isPaused ? 'Paused' : 'Playing'}
             />
             {isOnline ? (
@@ -319,12 +384,33 @@ const MatchPageGame = ({
         </>
     ) : null
 
+    const resultStats = {
+        primary: {
+            id: user?.id || 'self',
+            name: user?.username || 'You',
+            score: derivedState.score,
+            lines: derivedState.linesCleared,
+            level: derivedState.level,
+            ...(!isOnline ? { record: Math.max(soloRecord, derivedState.score) } : {}),
+        },
+        secondary: isOnline ? [
+            {
+                id: 'opponent',
+                name: introPlayers.opponent?.username || 'Opponent',
+                score: opponentState.score,
+                lines: opponentState.linesCleared,
+                level: opponentState.level,
+            },
+        ] : [],
+    }
+
     const soloResultOverlay = isSoloGameOver ? (
         <MatchResultBanner
             result="lose"
             eyebrow="Solo run ended"
             title="Игра окончена"
             description="Фигуры дошли до верхней границы. Можно сразу начать заново или вернуться к настройкам solo режима."
+            stats={resultStats}
             actions={[
                 {
                     key: 'restart',
@@ -346,6 +432,7 @@ const MatchPageGame = ({
     const onlineResultOverlay = isMatchFinished ? (
         <MatchResultBanner
             result={matchResult}
+            stats={resultStats}
             description={matchResult === 'win'
                 ? 'Раунд завершён в вашу пользу. Через пару секунд вы вернётесь в лобби вместе с соперником.'
                 : 'Раунд завершён. Через пару секунд вы вернётесь в лобби и сможете начать новую попытку.'}

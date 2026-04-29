@@ -615,6 +615,90 @@
     text-shadow: 0 0 18px color-mix(in srgb, var(--result-accent) 22%, transparent);
 }
 
+.game-result__stats {
+    width: min(100%, 560px);
+    margin-top: clamp(16px, 2.6vmin, 28px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+}
+
+.game-result__stats-primary,
+.game-result__stats-compact {
+    border-radius: 8px;
+    border: 1px solid color-mix(in srgb, var(--result-accent) 30%, transparent);
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 0 24px color-mix(in srgb, var(--result-accent) 10%, transparent);
+}
+
+.game-result__stats-primary {
+    padding: clamp(12px, 2vmin, 18px);
+}
+
+.game-result__stats-name {
+    display: block;
+    margin-bottom: 0.7rem;
+    color: color-mix(in srgb, var(--result-accent) 76%, white);
+    font-size: 0.76rem;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.game-result__stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.65rem;
+}
+
+.game-result__stat {
+    min-width: 0;
+    display: grid;
+    gap: 0.25rem;
+}
+
+.game-result__stat small,
+.game-result__stats-compact small {
+    color: rgba(235, 246, 255, 0.62);
+    font-size: 0.72rem;
+    line-height: 1.2;
+}
+
+.game-result__stat strong {
+    color: #f7fbff;
+    font-size: clamp(1.15rem, 3vmin, 2rem);
+    line-height: 1;
+}
+
+.game-result__stats-secondary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.6rem;
+}
+
+.game-result__stats-compact {
+    min-width: 0;
+    padding: 0.75rem;
+}
+
+.game-result__stats-compact span {
+    display: block;
+    overflow: hidden;
+    color: rgba(235, 246, 255, 0.72);
+    font-size: 0.76rem;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.game-result__stats-compact strong {
+    display: block;
+    margin: 0.25rem 0;
+    color: #f7fbff;
+    font-size: 1.18rem;
+    line-height: 1;
+}
+
 .game-result__actions {
     display: flex;
     flex-wrap: wrap;
@@ -1046,6 +1130,10 @@
         align-items: center;
     }
 
+    .game-result__stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .game-result__media {
         width: min(70vw, 300px);
         justify-self: center;
@@ -1074,6 +1162,14 @@
     .game-result__actions {
         width: 100%;
         display: grid;
+    }
+
+    .game-result__stats {
+        width: 100%;
+    }
+
+    .game-result__stats-secondary {
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 

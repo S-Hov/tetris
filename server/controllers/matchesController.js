@@ -2,6 +2,8 @@ import { asyncHandler } from '../utils/asyncHandler.js'
 import {
     getUserMatchDetailsService,
     getUserMatchesService,
+    getUserSoloRecordService,
+    submitSoloResultService,
 } from '../services/userMatchesService.js'
 
 export const getUserMatches = asyncHandler(async (req, res) => {
@@ -30,6 +32,31 @@ export const getUserMatchDetails = asyncHandler(async (req, res) => {
     res.json({
         success: true,
         message: 'Детали матча получены',
+        data,
+    })
+})
+
+export const getUserSoloRecord = asyncHandler(async (req, res) => {
+    const data = await getUserSoloRecordService({
+        userId: req.user.id,
+    })
+
+    res.json({
+        success: true,
+        message: 'Solo record loaded',
+        data,
+    })
+})
+
+export const submitSoloResult = asyncHandler(async (req, res) => {
+    const data = await submitSoloResultService({
+        user: req.user,
+        stats: req.body,
+    })
+
+    res.json({
+        success: true,
+        message: data.isNewRecord ? 'Solo record saved' : 'Solo result skipped',
         data,
     })
 })

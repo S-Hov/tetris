@@ -1,6 +1,8 @@
 import {
+    createSoloRecordMatchRepo,
     getUserMatchDetailsRepo,
     getUserMatchesRepo,
+    getUserSoloRecordRepo,
 } from '../repositories/matchRepository.js'
 
 const MATCH_RESULT_MAP = {
@@ -144,6 +146,30 @@ export const getUserMatchDetailsService = async ({ userId, matchId }) => {
     }
 }
 
+export const getUserSoloRecordService = async ({ userId }) => {
+    return {
+        record: await getUserSoloRecordRepo({ userId }),
+    }
+}
+
+export const submitSoloResultService = async ({ user, stats }) => {
+    const normalizedStats = {
+        score: normalizeNonNegativeInteger(stats?.score, 0),
+        linesCleared: normalizeNonNegativeInteger(stats?.linesCleared, 0),
+        levelReached: normalizePositiveInteger(stats?.levelReached ?? stats?.level, 1),
+    }
+    const result = await createSoloRecordMatchRepo({
+        userId: user.id,
+        username: user.username,
+        stats: normalizedStats,
+    })
+
+    return {
+        ...result,
+        isNewRecord: Boolean(result.saved),
+    }
+}
+
 const toPositiveInteger = (value, fallback) => {
     const parsed = Number.parseInt(value, 10)
 
@@ -152,6 +178,26 @@ const toPositiveInteger = (value, fallback) => {
     }
 
     return parsed
+}
+
+const normalizeNonNegativeInteger = (value, fallback) => {
+    const parsed = Number(value)
+
+    if (!Number.isFinite(parsed)) {
+        return fallback
+    }
+
+    return Math.max(0, Math.floor(parsed))
+}
+
+const normalizePositiveInteger = (value, fallback) => {
+    const parsed = Number(value)
+
+    if (!Number.isFinite(parsed)) {
+        return fallback
+    }
+
+    return Math.max(1, Math.floor(parsed))
 }
 
 const normalizeListResult = (value) => {

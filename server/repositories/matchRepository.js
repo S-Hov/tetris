@@ -5,6 +5,8 @@ import { applyRankedMatchResultRepo } from './rankRepository.js'
 const MATCH_MODE = '1v1'
 const MATCH_TYPE = 'private'
 const MATCH_TYPES = new Set(['ranked', 'casual', 'private'])
+const SOLO_MATCH_MODE = 'solo'
+const SOLO_MATCH_TYPE = MATCH_TYPE
 
 const getMatchByRoomIdQuery = `
     SELECT id, room_id, mode, match_type, status, is_online, counts_for_rating, winner_team_id,
@@ -478,6 +480,138 @@ export const createMatchEventRepo = async ({
         await client.query('COMMIT')
 
         return result.rows[0]
+    } catch (error) {
+        await client.query('ROLLBACK')
+        throw error
+    } finally {
+        client.release()
+    }
+}
+
+export const getUserSoloRecordRepo = async ({ userId }) => {
+    const result = await pool.query(
+        `
+        SELECT COALESCE(MAX(match_players.score), 0)::int AS record
+        FROM match_players
+        JOIN matches ON matches.id = match_players.match_id
+        WHERE match_players.user_id = $1
+          AND matches.mode = $2
+          AND matches.status = 'finished'
+        `,
+        [userId, SOLO_MATCH_MODE]
+    )
+
+    return Number(result.rows[0]?.record) || 0
+}
+
+export const createSoloRecordMatchRepo = async ({ userId, username, stats }) => {
+    const client = await pool.connect()
+    const score = Number.isFinite(stats.score) ? Math.max(0, Math.floor(stats.score)) : 0
+    const linesCleared = Number.isFinite(stats.linesCleared) ? Math.max(0, Math.floor(stats.linesCleared)) : 0
+    const levelReached = Number.isFinite(stats.levelReached) ? Math.max(1, Math.floor(stats.levelReached)) : 1
+
+    try {
+        await client.query('BEGIN')
+
+        await client.query(
+            `
+            INSERT INTO user_rank_stats (user_id)
+            VALUES ($1)
+            ON CONFLICT (user_id) DO NOTHING
+            `,
+            [userId]
+        )
+
+        await client.query(
+            `
+            SELECT best_solo_score
+            FROM user_rank_stats
+            WHERE user_id = $1
+            FOR UPDATE
+            `,
+            [userId]
+        )
+        const matchesRecordResult = await client.query(
+            `
+            SELECT COALESCE(MAX(match_players.score), 0)::int AS record
+            FROM match_players
+            JOIN matches ON matches.id = match_players.match_id
+            WHERE match_players.user_id = $1
+              AND matches.mode = $2
+              AND matches.status = 'finished'
+            `,
+            [userId, SOLO_MATCH_MODE]
+        )
+        const previousRecord = Number(matchesRecordResult.rows[0]?.record) || 0
+
+        if (score <= previousRecord) {
+            await client.query('COMMIT')
+
+            return {
+                saved: false,
+                previousRecord,
+                record: previousRecord,
+                matchId: null,
+            }
+        }
+
+        const matchResult = await client.query(
+            `
+            INSERT INTO matches (room_id, mode, match_type, status, is_online, counts_for_rating, started_at, ended_at)
+            VALUES ($1, $2, $3, 'finished', FALSE, FALSE, NOW(), NOW())
+            RETURNING id
+            `,
+            [`solo-${userId}-${Date.now()}`, SOLO_MATCH_MODE, SOLO_MATCH_TYPE]
+        )
+        const match = matchResult.rows[0]
+        const team = await ensureTeamForMatch(client, match.id, 1)
+
+        await client.query(
+            `
+            UPDATE match_teams
+            SET team_score = $2,
+                result = 'lose'
+            WHERE id = $1
+            `,
+            [team.id, score]
+        )
+
+        await client.query(
+            `
+            INSERT INTO match_players (
+                match_id,
+                team_id,
+                user_id,
+                is_registered,
+                nickname,
+                score,
+                lines_cleared,
+                level_reached,
+                result
+            )
+            VALUES ($1, $2, $3, TRUE, $4, $5, $6, $7, 'lose')
+            `,
+            [match.id, team.id, userId, username || 'Player', score, linesCleared, levelReached]
+        )
+
+        await client.query(
+            `
+            UPDATE user_rank_stats
+            SET best_solo_score = $2,
+                updated_at = NOW()
+            WHERE user_id = $1
+            `,
+            [userId, score]
+        )
+
+        await client.query('COMMIT')
+
+        return {
+            saved: true,
+            previousRecord,
+            record: score,
+            matchId: match.id,
+        }
     } catch (error) {
         await client.query('ROLLBACK')
         throw error

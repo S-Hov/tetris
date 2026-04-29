@@ -22,4 +22,17 @@ export const matchesAPI = {
             method: 'GET',
         })
     },
+
+    getSoloRecord() {
+        return apiClient('/api/matches/solo/record', {
+            method: 'GET',
+        })
+    },
+
+    submitSoloResult(stats) {
+        return apiClient('/api/matches/solo/results', {
+            method: 'POST',
+            body: JSON.stringify(stats),
+        })
+    },
 }
