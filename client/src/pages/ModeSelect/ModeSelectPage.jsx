@@ -238,6 +238,24 @@ const ModeSelectPage = () => {
             return
         }
 
+        if (
+            modeConfig.key === PLAY_MODE_KEYS.TEAM_2V2 &&
+            (playType === MATCH_PLAY_OPTIONS.CASUAL || playType === MATCH_PLAY_OPTIONS.RANKED)
+        ) {
+            navigate(`/game/${modeConfig.key}/party`, {
+                state: {
+                    modeKey: modeConfig.key,
+                    modeTitle: modeConfig.title,
+                    modeIcon: modeConfig.icon,
+                    roomSettings: {
+                        ...settings,
+                        matchType: playType,
+                    },
+                },
+            })
+            return
+        }
+
         if (playType === MATCH_PLAY_OPTIONS.ROOM) {
             if (!roomActionEnabled) {
                 notify('Комнаты для этого режима пока в разработке', 'info')
@@ -300,6 +318,18 @@ const ModeSelectPage = () => {
                         const isDisabled = matchmakingState.isSearching ||
                             (option.key === MATCH_PLAY_OPTIONS.ROOM && !roomActionEnabled)
                         const metaItems = modeConfig.cardMeta[option.key] || []
+                        const actionLabel = isSoloMode
+                            ? 'Начать игру'
+                            : matchmakingState.isSearching
+                                ? 'Идёт поиск'
+                                : isDisabled
+                                    ? 'Скоро будет'
+                                    : option.key === MATCH_PLAY_OPTIONS.ROOM
+                                        ? 'Открыть лобби'
+                                        : modeConfig.key === PLAY_MODE_KEYS.TEAM_2V2 &&
+                                            (option.key === MATCH_PLAY_OPTIONS.CASUAL || option.key === MATCH_PLAY_OPTIONS.RANKED)
+                                            ? 'Открыть поиск'
+                                            : 'Найти матч'
 
                         return (
                             <button
@@ -326,15 +356,7 @@ const ModeSelectPage = () => {
 
                                         <div className="mode-option-footer">
                                             <span className={`mode-option-state ${isDisabled ? 'mode-option-state--disabled' : ''}`}>
-                                                {isSoloMode
-                                                    ? 'Начать игру'
-                                                    : matchmakingState.isSearching
-                                                        ? 'Идёт поиск'
-                                                        : isDisabled
-                                                            ? 'Скоро будет'
-                                                            : option.key === MATCH_PLAY_OPTIONS.ROOM
-                                                                ? 'Открыть лобби'
-                                                                : 'Найти матч'}
+                                                {actionLabel}
                                             </span>
                                         </div>
                                     </div>

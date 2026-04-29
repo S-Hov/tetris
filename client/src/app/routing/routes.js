@@ -16,6 +16,7 @@ import VerifyEmailPage from '@/pages/VerifyEmail/VerifyEmailPage.jsx'
 import GamePage from '@/pages/GamePage/GamePage.jsx'
 import LobbyPage from '@/pages/Lobby/LobbyPage.jsx'
 import MatchPage from '@/pages/Match/MatchPage.jsx'
+import TeamQueuePage from '@/pages/TeamQueue/TeamQueuePage.jsx'
 
 export const routes = [
     {
@@ -88,6 +89,12 @@ export const routes = [
         key: 'Lobby',
         path: '/game/:mode/lobby',
         component: LobbyPage,
+        layout: InnerPageLayout,
+    },
+    {
+        key: 'TeamQueue',
+        path: '/game/:mode/party',
+        component: TeamQueuePage,
         layout: InnerPageLayout,
     },
     {

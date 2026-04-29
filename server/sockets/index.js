@@ -2,15 +2,24 @@ import { registerLobbyHandlers } from './lobby.socket.js'
 import { registerGameHandlers } from './game.handlers.js'
 import {
     registerMatchmakingHandlers,
+    removeSocketFromParties,
     removeSocketFromMatchmakingQueue,
 } from './matchmaking.socket.js'
-import { roomStore } from './roomStore.js'
+import { getRoomPlayers, roomStore } from './roomStore.js'
 import { socketAuthMiddleware } from './socketAuth.js'
 import {
     abandonRoomMatchService,
     cancelRoomMatchService,
     markRoomPlayerLeftService,
 } from '../services/matchService.js'
+
+const getWinnerAfterPlayerLeft = (room, removedPlayer) => {
+    const players = getRoomPlayers(room)
+
+    return players.find((player) => player.teamNumber !== removedPlayer?.teamNumber) ||
+        players[0] ||
+        null
+}
 
 export const registerSocketHandlers = (io) => {
     io.use(socketAuthMiddleware)
@@ -25,6 +34,7 @@ export const registerSocketHandlers = (io) => {
         socket.on('disconnect', () => {
             console.log('Socket disconnected:', socket.id)
             removeSocketFromMatchmakingQueue(socket.id)
+            removeSocketFromParties(io, socket.id)
 
             const result = roomStore.removePlayerBySocketId(socket.id)
 
@@ -47,7 +57,7 @@ export const registerSocketHandlers = (io) => {
                     }
 
                     if (result.previousRoom?.status === 'playing') {
-                        const winner = result.room.players[0] || null
+                        const winner = getWinnerAfterPlayerLeft(result.room, result.removedPlayer)
 
                         await abandonRoomMatchService({
                             roomId: result.roomId,

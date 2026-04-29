@@ -66,7 +66,7 @@ export const modeSelectionCatalog = {
         subtitle: 'Работайте в паре, комбинируйте атаки и перехватывайте темп у другой команды.',
         icon: 'fas fa-users',
         online: '876 игроков онлайн',
-        roomSupported: false,
+        roomSupported: true,
         heroLabel: 'Режим 2 VS 2',
         availablePlayOptions: [
             MATCH_PLAY_OPTIONS.RANKED,
@@ -74,9 +74,9 @@ export const modeSelectionCatalog = {
             MATCH_PLAY_OPTIONS.ROOM,
         ],
         cardMeta: {
-            ranked: ['Командный рейтинг', 'Подбор по MMR'],
-            casual: ['Свободная игра', 'Тренировка связок'],
-            room: ['Будет позже', 'Для дружественных матчей'],
+            ranked: ['Влияет на рейтинг', 'Командный подбор'],
+            casual: ['Свободная игра', 'Лобби 2 на 2'],
+            room: ['Приватная комната', 'До 4 игроков'],
         },
     },
     [PLAY_MODE_KEYS.SQUAD_5V5]: {

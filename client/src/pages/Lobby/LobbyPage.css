@@ -301,6 +301,12 @@
     font-size: 1rem;
 }
 
+.lobby-settings-panel__header span:last-child {
+    color: var(--text-color);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
 .lobby-settings-pills {
     display: flex;
     flex-wrap: wrap;
@@ -345,11 +351,35 @@
     gap: 0.9rem;
 }
 
+.lobby-roster--teams {
+    align-items: start;
+}
+
+.lobby-team-column {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.lobby-team-column__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 42px;
+    padding: 0 0.2rem;
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+}
+
+.lobby-team-column__header span {
+    color: var(--turquoise-lite);
+    font-size: 0.85rem;
+}
+
 .lobby-player-card,
 .lobby-empty-state {
     min-height: 112px;
     padding: 1rem 1.1rem;
-    border-radius: 22px;
+    border-radius: 24px;
     background: rgba(0, 0, 0, 0.28);
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -359,6 +389,68 @@
     justify-content: space-between;
     gap: 1rem;
     align-items: center;
+}
+
+.lobby-player-card__identity {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.lobby-player-avatar {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 50%;
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.22);
+    color: var(--turquoise-lite);
+    box-shadow: inset 0 0 18px rgba(0, 255, 255, 0.08);
+}
+
+.lobby-player-avatar img,
+.lobby-player-avatar video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.lobby-player-avatar i {
+    font-size: 1.25rem;
+}
+
+.lobby-player-card__actions {
+    display: grid;
+    justify-items: end;
+    gap: 0.55rem;
+}
+
+.lobby-team-switcher {
+    display: inline-flex;
+    gap: 0.35rem;
+}
+
+.lobby-team-switcher button {
+    width: 36px;
+    height: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-color);
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.lobby-team-switcher button.is-active,
+.lobby-team-switcher button:disabled {
+    color: var(--turquoise-lite);
+    border-color: rgba(0, 255, 255, 0.35);
+    background: rgba(0, 255, 255, 0.12);
+    cursor: default;
 }
 
 .lobby-player-card h3 {

@@ -20,8 +20,9 @@ export const useMatchResult = ({
             return undefined
         }
 
-        const handleMatchEnd = ({ loserSocketId, winnerSocketId, matchType }) => {
-            const nextMatchResult = loserSocketId === socket.id ? 'lose' : 'win'
+        const handleMatchEnd = ({ loserSocketId, loserSocketIds, winnerSocketId, matchType }) => {
+            const teamLosers = Array.isArray(loserSocketIds) ? loserSocketIds : [loserSocketId]
+            const nextMatchResult = teamLosers.includes(socket.id) ? 'lose' : 'win'
             const shouldReturnToLobby = (matchType || roomSettings?.matchType) === 'private'
 
             setMatchResult((currentValue) => currentValue || nextMatchResult)

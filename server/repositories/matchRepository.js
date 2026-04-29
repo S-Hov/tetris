@@ -146,6 +146,7 @@ const findMatchPlayerByIdentity = async (client, { matchId, player }) => {
 export const createMatchForRoomRepo = async ({
     roomId,
     player,
+    matchMode = MATCH_MODE,
     matchType = MATCH_TYPE,
     countsForRating = false,
 }) => {
@@ -182,7 +183,7 @@ export const createMatchForRoomRepo = async ({
             VALUES ($1, $2, $3, 'created', TRUE, $4)
             RETURNING id, status
             `,
-            [roomId, MATCH_MODE, normalizedMatchType, Boolean(countsForRating)]
+            [roomId, matchMode || MATCH_MODE, normalizedMatchType, Boolean(countsForRating)]
         )
 
         const match = matchResult.rows[0]

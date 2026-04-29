@@ -1,5 +1,15 @@
 import crypto from 'crypto'
-import { getRoomPlayerByUserId, isSocketRoomParticipant, roomStore } from './roomStore.js'
+import {
+    buildRoomTeams,
+    getMaxPlayersForMode,
+    getRoomPlayerByUserId,
+    getRoomPlayers,
+    getTeamIdByNumber,
+    getTeamNumberById,
+    getTeamSizeForMode,
+    isSocketRoomParticipant,
+    roomStore,
+} from './roomStore.js'
 import {
     abandonRoomMatchService,
     attachPlayerToRoomMatchService,
@@ -41,6 +51,35 @@ const normalizeMatchType = (value) => {
     return 'private'
 }
 
+const getPlayerCountByTeam = (room, teamNumber) => {
+    return getRoomPlayers(room).filter((player) => player.teamNumber === teamNumber).length
+}
+
+const getAvailableTeamNumber = (room, preferredTeamNumber = null) => {
+    const teamSize = getTeamSizeForMode(room.modeKey)
+    const candidates = preferredTeamNumber ? [preferredTeamNumber, 1, 2] : [1, 2]
+
+    return candidates.find((teamNumber) => getPlayerCountByTeam(room, teamNumber) < teamSize) || null
+}
+
+const canStartRoom = (room) => {
+    const players = getRoomPlayers(room)
+    const maxPlayers = getMaxPlayersForMode(room.modeKey)
+    const teamSize = getTeamSizeForMode(room.modeKey)
+
+    return players.length === maxPlayers &&
+        room.teams.every((team) => (team.players || []).length === teamSize) &&
+        players.every((player) => player.isReady)
+}
+
+const getWinnerAfterPlayerLeft = (room, removedPlayer) => {
+    const players = getRoomPlayers(room)
+
+    return players.find((player) => player.teamNumber !== removedPlayer?.teamNumber) ||
+        players[0] ||
+        null
+}
+
 const syncRemovedPlayerWithPersistence = async (io, result) => {
     if (!result?.removedPlayer) {
         return
@@ -52,7 +91,7 @@ const syncRemovedPlayerWithPersistence = async (io, result) => {
     })
 
     if (result.previousRoom?.status === 'playing' && result.room) {
-        const winner = result.room.players[0] || null
+        const winner = getWinnerAfterPlayerLeft(result.room, result.removedPlayer)
 
         await abandonRoomMatchService({
             roomId: result.roomId,
@@ -132,6 +171,7 @@ export const registerLobbyHandlers = (io, socket) => {
             const matchBinding = await createRoomMatchService({
                 roomId,
                 player,
+                matchMode: payload.modeKey || '1v1',
                 matchType: roomSettings.matchType,
                 countsForRating: roomSettings.matchType === 'ranked',
             })
@@ -141,12 +181,15 @@ export const registerLobbyHandlers = (io, socket) => {
                 status: 'waiting',
                 matchId: matchBinding.matchId,
                 modeKey: payload.modeKey || '1v1',
+                ownerSocketId: socket.id,
+                ownerUserId: player.userId,
                 settings: roomSettings,
                 players: [
                     {
                         ...player,
                         teamId: matchBinding.teamId,
                         teamNumber: matchBinding.teamNumber,
+                        teamSlot: getTeamIdByNumber(matchBinding.teamNumber),
                         matchPlayerId: matchBinding.matchPlayerId,
                     },
                 ],
@@ -207,7 +250,7 @@ export const registerLobbyHandlers = (io, socket) => {
             if (existingPlayer) {
                 const rejoinedRoom = {
                     ...room,
-                    players: room.players.map((player) => (
+                    players: getRoomPlayers(room).map((player) => (
                         player.userId === user.id
                             ? {
                                 ...player,
@@ -232,7 +275,7 @@ export const registerLobbyHandlers = (io, socket) => {
                 return
             }
 
-            if (room.players.length >= 2) {
+            if (getRoomPlayers(room).length >= getMaxPlayersForMode(room.modeKey)) {
                 callback?.({
                     success: false,
                     message: 'Room is full',
@@ -250,22 +293,32 @@ export const registerLobbyHandlers = (io, socket) => {
                 return
             }
 
-            const teamNumber = room.players.length + 1
+            const preferredTeamNumber = getAvailableTeamNumber(room)
+
+            if (!preferredTeamNumber) {
+                callback?.({
+                    success: false,
+                    message: 'Room is full',
+                })
+                return
+            }
+
             const matchBinding = await attachPlayerToRoomMatchService({
                 roomId,
                 player,
-                teamNumber,
+                teamNumber: preferredTeamNumber,
             })
             const boundPlayer = {
                 ...player,
                 teamId: matchBinding.teamId,
                 teamNumber: matchBinding.teamNumber,
+                teamSlot: getTeamIdByNumber(matchBinding.teamNumber),
                 matchPlayerId: matchBinding.matchPlayerId,
             }
             const updatedRoom = {
                 ...room,
                 players: [
-                    ...room.players,
+                    ...getRoomPlayers(room),
                     boundPlayer,
                 ],
             }
@@ -294,6 +347,56 @@ export const registerLobbyHandlers = (io, socket) => {
         }
     })
 
+    socket.on('room:leave', async ({ roomId } = {}, callback) => {
+        try {
+            const room = roomStore.getRoom(roomId)
+
+            if (!room) {
+                callback?.({ success: false, message: 'Room not found' })
+                return
+            }
+
+            if (!isSocketRoomParticipant(room, socket)) {
+                callback?.({ success: false, message: 'Player is not in this room' })
+                return
+            }
+
+            const result = roomStore.removePlayerBySocketId(socket.id)
+            socket.leave(roomId)
+
+            if (!result) {
+                callback?.({ success: false, message: 'Не удалось выйти из комнаты' })
+                return
+            }
+
+            await syncRemovedPlayerWithPersistence(io, result)
+
+            callback?.({
+                success: true,
+                message: 'Вы вышли из лобби',
+            })
+
+            socket.emit('room:left', {
+                roomId,
+            })
+
+            if (result.room) {
+                io.to(roomId).emit('room:state', result.room)
+            }
+
+            if (result.removedPlayer) {
+                io.to(roomId).emit('room:player-left', {
+                    roomId,
+                    userId: result.removedPlayer.userId,
+                    username: result.removedPlayer.username,
+                })
+            }
+        } catch (error) {
+            console.error('room:leave error', error)
+            callback?.({ success: false, message: 'Не удалось выйти из лобби' })
+        }
+    })
+
     socket.on('player:ready', async ({ roomId }, callback) => {
         try {
             const room = roomStore.getRoom(roomId)
@@ -310,7 +413,7 @@ export const registerLobbyHandlers = (io, socket) => {
 
             const updatedRoom = {
                 ...room,
-                players: room.players.map((player) => {
+                players: getRoomPlayers(room).map((player) => {
                     if (player.socketId === socket.id) {
                         return {
                             ...player,
@@ -321,17 +424,14 @@ export const registerLobbyHandlers = (io, socket) => {
                 }),
             }
 
-            roomStore.createRoom(updatedRoom)
+            const normalizedRoom = roomStore.createRoom(updatedRoom)
 
-            const currentPlayer = updatedRoom.players.find((player) => player.socketId === socket.id)
-
-            const allReady =
-                updatedRoom.players.length === 2 &&
-                updatedRoom.players.every((p) => p.isReady)
+            const currentPlayer = getRoomPlayers(normalizedRoom).find((player) => player.socketId === socket.id)
+            const allReady = canStartRoom(normalizedRoom)
 
             if (allReady) {
                 const playingRoom = {
-                    ...updatedRoom,
+                    ...normalizedRoom,
                     status: 'playing',
                 }
 
@@ -346,7 +446,7 @@ export const registerLobbyHandlers = (io, socket) => {
                 return
             }
 
-            io.to(roomId).emit('room:state', updatedRoom)
+            io.to(roomId).emit('room:state', normalizedRoom)
 
             callback?.({
                 success: true,
@@ -359,6 +459,81 @@ export const registerLobbyHandlers = (io, socket) => {
                 success: false,
                 message: 'Не удалось обновить готовность',
             })
+        }
+    })
+
+    socket.on('room:set-team', async ({ roomId, userId, teamId }, callback) => {
+        try {
+            const room = roomStore.getRoom(roomId)
+
+            if (!room) {
+                callback?.({ success: false, message: 'Room not found' })
+                return
+            }
+
+            if (room.ownerSocketId !== socket.id && room.ownerUserId !== socket.data.user?.id) {
+                callback?.({ success: false, message: 'Только создатель комнаты может менять команды' })
+                return
+            }
+
+            if (room.status === 'playing') {
+                callback?.({ success: false, message: 'Матч уже начался' })
+                return
+            }
+
+            const teamNumber = getTeamNumberById(teamId)
+            const teamSize = getTeamSizeForMode(room.modeKey)
+            const players = getRoomPlayers(room)
+            const targetPlayer = players.find((player) => String(player.userId) === String(userId))
+
+            if (!targetPlayer) {
+                callback?.({ success: false, message: 'Игрок не найден' })
+                return
+            }
+
+            const targetTeamCount = players.filter((player) => (
+                player.teamNumber === teamNumber && String(player.userId) !== String(userId)
+            )).length
+
+            if (targetTeamCount >= teamSize) {
+                callback?.({ success: false, message: 'В этой команде нет свободного места' })
+                return
+            }
+
+            const matchBinding = await attachPlayerToRoomMatchService({
+                roomId,
+                player: targetPlayer,
+                teamNumber,
+            })
+            const updatedPlayers = players.map((player) => {
+                if (String(player.userId) !== String(userId)) {
+                    return {
+                        ...player,
+                        isReady: false,
+                    }
+                }
+
+                return {
+                    ...player,
+                    teamId: matchBinding.teamId,
+                    teamNumber: matchBinding.teamNumber,
+                    teamSlot: getTeamIdByNumber(matchBinding.teamNumber),
+                    matchPlayerId: matchBinding.matchPlayerId,
+                    isReady: false,
+                }
+            })
+            const updatedRoom = roomStore.createRoom({
+                ...room,
+                status: 'waiting',
+                players: updatedPlayers,
+                teams: buildRoomTeams(updatedPlayers, room.teams),
+            })
+
+            io.to(roomId).emit('room:state', updatedRoom)
+            callback?.({ success: true, message: 'Команда обновлена', room: updatedRoom })
+        } catch (error) {
+            console.error('room:set-team error', error)
+            callback?.({ success: false, message: 'Не удалось поменять команду' })
         }
     })
 }

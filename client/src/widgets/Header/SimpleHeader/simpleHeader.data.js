@@ -27,8 +27,8 @@ export const simpleHeaderConfig = [
         backLabel: 'На главную',
     },
     {
-        match: (pathname) => /^\/game\/[^/]+\/lobby$/.test(pathname),
-        backTo: (pathname) => pathname.replace(/\/lobby$/, ''),
+        match: (pathname) => /^\/game\/[^/]+\/(lobby|party)$/.test(pathname),
+        backTo: (pathname) => pathname.replace(/\/(lobby|party)$/, ''),
         backLabel: 'К режиму',
         secondaryTo: '/',
         secondaryLabel: 'На главную',

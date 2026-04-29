@@ -1,4 +1,9 @@
-import { isSocketRoomParticipant, roomStore } from './roomStore.js'
+import {
+    calculateTeamScore,
+    getRoomPlayers,
+    isSocketRoomParticipant,
+    roomStore,
+} from './roomStore.js'
 import {
     finishRoomMatchService,
     recordMatchEventService,
@@ -46,26 +51,67 @@ export const registerGameHandlers = (io, socket) => {
                 return currentRoom
             }
 
+            const players = getRoomPlayers(currentRoom).map((player) => (
+                player.socketId === socket.id
+                    ? {
+                        ...player,
+                        gameState: {
+                            ...(player.gameState || {}),
+                            ...payload,
+                            isGameOver: true,
+                        },
+                    }
+                    : player
+            ))
+            const teams = (currentRoom.teams || []).map((team) => {
+                const teamPlayers = players.filter((player) => player.teamSlot === team.id)
+
+                return {
+                    ...team,
+                    score: calculateTeamScore(teamPlayers),
+                    players: teamPlayers,
+                }
+            })
+            const loser = players.find((player) => player.socketId === socket.id) || null
+            const loserTeam = teams.find((team) => team.players.some((player) => player.socketId === socket.id)) || null
+            const isTeamDefeated = Boolean(loserTeam) &&
+                loserTeam.players.length > 0 &&
+                loserTeam.players.every((player) => player.gameState?.isGameOver)
+
             return {
                 ...currentRoom,
-                status: 'waiting',
-                players: currentRoom.players.map((player) => ({
-                    ...player,
-                    isReady: false,
-                })),
+                status: isTeamDefeated ? 'waiting' : currentRoom.status,
+                players: isTeamDefeated
+                    ? players.map((player) => ({
+                        ...player,
+                        isReady: false,
+                    }))
+                    : players,
+                teams,
+                lastLoserSocketId: loser?.socketId || null,
             }
         })
 
-        const winner = room.players.find((player) => player.socketId !== socket.id) || null
-        const loser = room.players.find((player) => player.socketId === socket.id) || null
+        const players = getRoomPlayers(updatedRoom || room)
+        const loser = players.find((player) => player.socketId === socket.id) || null
+        const loserTeam = updatedRoom?.teams?.find((team) => (
+            (team.players || []).some((player) => player.socketId === socket.id)
+        )) || null
+        const winnerTeam = updatedRoom?.teams?.find((team) => team.id !== loserTeam?.id) || null
+        const isTeamDefeated = Boolean(loserTeam) &&
+            (loserTeam.players || []).length > 0 &&
+            loserTeam.players.every((player) => player.gameState?.isGameOver)
+        const winner = winnerTeam?.players?.[0] || players.find((player) => player.socketId !== socket.id) || null
 
-        if (winner && loser) {
+        if (isTeamDefeated && winner && loser) {
             try {
                 await finishRoomMatchService({
                     roomId,
                     winnerPlayer: winner,
                     loserPlayer: loser,
                     loserPayload: payload,
+                    winnerTeamPlayers: winnerTeam?.players || null,
+                    loserTeamPlayers: loserTeam?.players || null,
                 })
             } catch (error) {
                 console.error('game:over persistence error', error)
@@ -84,10 +130,18 @@ export const registerGameHandlers = (io, socket) => {
             io.to(roomId).emit('room:state', updatedRoom)
         }
 
+        if (!isTeamDefeated) {
+            return
+        }
+
         io.to(roomId).emit('match:end', {
             roomId,
             loserSocketId: socket.id,
             winnerSocketId: winner?.socketId || null,
+            loserSocketIds: (loserTeam?.players || []).map((player) => player.socketId),
+            winnerSocketIds: (winnerTeam?.players || []).map((player) => player.socketId),
+            loserTeamId: loserTeam?.id || null,
+            winnerTeamId: winnerTeam?.id || null,
             matchType: room.settings?.matchType || 'private',
         })
 
@@ -109,14 +163,16 @@ export const registerGameHandlers = (io, socket) => {
             return
         }
 
-        const sourcePlayer = room.players.find((player) => player.socketId === socket.id)
+        const sourcePlayer = getRoomPlayers(room).find((player) => player.socketId === socket.id)
 
         if (!sourcePlayer) {
             callback?.({ success: false, message: 'You are not in this room' })
             return
         }
 
-        const targetPlayer = room.players.find((player) => player.socketId !== socket.id)
+        const targetPlayer = getRoomPlayers(room).find((player) => (
+            player.socketId !== socket.id && player.teamNumber !== sourcePlayer.teamNumber
+        ))
 
         if (!targetPlayer) {
             callback?.({ success: false, message: 'Opponent not found' })

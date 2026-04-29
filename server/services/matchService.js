@@ -22,10 +22,27 @@ const getPlayerStats = (player, fallbackPayload = null) => {
     }
 }
 
+const getTeamStats = (players = []) => {
+    return players.reduce((stats, player) => {
+        const playerStats = getPlayerStats(player)
+
+        return {
+            score: stats.score + playerStats.score,
+            linesCleared: stats.linesCleared + playerStats.linesCleared,
+            levelReached: Math.max(stats.levelReached, playerStats.levelReached),
+        }
+    }, {
+        score: 0,
+        linesCleared: 0,
+        levelReached: 1,
+    })
+}
+
 export const createRoomMatchService = async ({
     roomId,
     player,
     teamNumber = 1,
+    matchMode = '1v1',
     matchType = 'private',
     countsForRating = false,
 }) => {
@@ -33,6 +50,7 @@ export const createRoomMatchService = async ({
         ? await createMatchForRoomRepo({
             roomId,
             player,
+            matchMode,
             matchType,
             countsForRating,
         })
@@ -64,7 +82,51 @@ export const recordMatchEventService = async ({ roomId, eventType, sourcePlayer,
     })
 }
 
-export const finishRoomMatchService = async ({ roomId, winnerPlayer, loserPlayer, loserPayload = null }) => {
+export const finishRoomMatchService = async ({
+    roomId,
+    winnerPlayer,
+    loserPlayer,
+    loserPayload = null,
+    winnerTeamPlayers = null,
+    loserTeamPlayers = null,
+}) => {
+    if (winnerTeamPlayers?.length && loserTeamPlayers?.length) {
+        const winnerStats = getTeamStats(winnerTeamPlayers)
+        const loserStats = getTeamStats(loserTeamPlayers)
+        const winnerTeamId = winnerTeamPlayers[0]?.teamId || null
+        const loserTeamId = loserTeamPlayers[0]?.teamId || null
+
+        return await markRoomMatchFinishedRepo({
+            roomId,
+            status: 'finished',
+            winnerTeamId,
+            teams: [
+                {
+                    teamId: winnerTeamId,
+                    teamScore: winnerStats.score,
+                    result: 'win',
+                },
+                {
+                    teamId: loserTeamId,
+                    teamScore: loserStats.score,
+                    result: 'lose',
+                },
+            ].filter((team) => team.teamId),
+            players: [
+                ...winnerTeamPlayers.map((player) => ({
+                    matchPlayerId: player.matchPlayerId,
+                    ...getPlayerStats(player),
+                    result: 'win',
+                })),
+                ...loserTeamPlayers.map((player) => ({
+                    matchPlayerId: player.matchPlayerId,
+                    ...getPlayerStats(player, player.socketId === loserPlayer?.socketId ? loserPayload : null),
+                    result: 'lose',
+                })),
+            ].filter((player) => player.matchPlayerId),
+        })
+    }
+
     if (!winnerPlayer || !loserPlayer) {
         return null
     }

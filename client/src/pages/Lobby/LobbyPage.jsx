@@ -37,6 +37,53 @@ const getClientUserId = (user) => {
     return guestSession?.id ? `guest:${guestSession.id}` : null
 }
 
+const getRoomPlayers = (room) => {
+    if (!room) {
+        return []
+    }
+
+    if (Array.isArray(room.players)) {
+        return room.players
+    }
+
+    return (room.teams || []).flatMap((team) => team.players || [])
+}
+
+const getModeRosterSize = (modeKey) => (modeKey === '2v2' ? 4 : 2)
+
+const getTeamLabel = (teamId) => (teamId === 'team_2' ? 'Команда 2' : 'Команда 1')
+
+const getAssetUrl = (value) => {
+    if (!value) return ''
+    if (/^https?:\/\//i.test(value)) return value
+
+    const baseUrl = import.meta.env.VITE_API_URL || (
+        typeof window !== 'undefined' && window.location.hostname
+            ? `http://${window.location.hostname}:8880`
+            : 'http://127.0.0.1:8880'
+    )
+
+    return `${baseUrl}${value}`
+}
+
+const renderAvatarMedia = (src, alt) => {
+    if (src.toLowerCase().includes('.webm')) {
+        return <video src={src} autoPlay loop muted playsInline aria-label={alt || 'avatar'} />
+    }
+
+    return <img src={src} alt={alt || 'avatar'} />
+}
+
+const PlayerAvatar = ({ player }) => (
+    <div className="lobby-player-avatar">
+        {player?.avatarUrl ? (
+            renderAvatarMedia(getAssetUrl(player.avatarUrl), player.username)
+        ) : (
+            <i className="fas fa-user-astronaut"></i>
+        )}
+    </div>
+)
+
 const LobbyPage = () => {
     const navigate = useNavigate()
     const location = useLocation()
@@ -146,10 +193,21 @@ const LobbyPage = () => {
             }
         }
 
+        const handleRoomLeft = ({ roomId: leftRoomId }) => {
+            if (leftRoomId === roomId) {
+                setCurrentRoom(null)
+                setRoomId('')
+                setJoinRoomId('')
+            }
+        }
+
         const handleMatchStart = ({ roomId: startedRoomId }) => {
             if (notifiedRoomRef.current !== startedRoomId) {
                 notifiedRoomRef.current = startedRoomId
-                notify('Оба игрока готовы. Матч начинается', 'success')
+                notify(
+                    modeKey === '2v2' ? 'Все игроки готовы. Матч начинается' : 'Оба игрока готовы. Матч начинается',
+                    'success'
+                )
             }
 
             navigate(`/match/${startedRoomId}`, {
@@ -163,15 +221,17 @@ const LobbyPage = () => {
         socket.on('room:state', handleRoomState)
         socket.on('room:player-joined', handlePlayerJoined)
         socket.on('room:player-left', handlePlayerLeft)
+        socket.on('room:left', handleRoomLeft)
         socket.on('match:start', handleMatchStart)
 
         return () => {
             socket.off('room:state', handleRoomState)
             socket.off('room:player-joined', handlePlayerJoined)
             socket.off('room:player-left', handlePlayerLeft)
+            socket.off('room:left', handleRoomLeft)
             socket.off('match:start', handleMatchStart)
         }
-    }, [clientUserId, currentRoom?.id, currentRoom?.modeKey, currentRoom?.settings, modeKey, navigate, roomSettings])
+    }, [clientUserId, currentRoom?.id, currentRoom?.modeKey, currentRoom?.settings, modeKey, navigate, roomId, roomSettings])
 
     const ensurePlayableIdentity = useCallback(async () => {
         if (user) {
@@ -285,6 +345,46 @@ const LobbyPage = () => {
         notify(response.message || 'Статус готовности обновлён', response.isReady ? 'success' : 'info')
     }
 
+    const handleLeaveRoom = async () => {
+        if (!roomId) {
+            return
+        }
+
+        const response = await emitWithAck('room:leave', { roomId })
+
+        if (!response.success) {
+            notify(response.message || 'Не удалось выйти из лобби', 'error')
+            return
+        }
+
+        setCurrentRoom(null)
+        setRoomId('')
+        setJoinRoomId('')
+        notify(response.message || 'Вы вышли из лобби', 'info')
+    }
+
+    const handleSetTeam = async (player, teamId) => {
+        if (!roomId || !player?.userId) {
+            return
+        }
+
+        const response = await emitWithAck('room:set-team', {
+            roomId,
+            userId: player.userId,
+            teamId,
+        })
+
+        if (!response.success) {
+            notify(response.message || 'Не удалось поменять команду', 'error')
+            return
+        }
+
+        if (response.room) {
+            setCurrentRoom(response.room)
+        }
+        notify(response.message || 'Команда обновлена', 'success')
+    }
+
     const handleCopyRoomId = async () => {
         if (!roomId || !navigator?.clipboard) {
             notify('Скопировать ID комнаты не удалось', 'error')
@@ -300,7 +400,17 @@ const LobbyPage = () => {
     }
 
     const activePlayerName = getPlayerDisplayName(user, nickname)
-    const activePlayer = currentRoom?.players.find((player) => player.socketId === socket.id)
+    const roomPlayers = getRoomPlayers(currentRoom)
+    const activePlayer = roomPlayers.find((player) => player.socketId === socket.id)
+    const isRoomOwner = Boolean(currentRoom) &&
+        (currentRoom.ownerSocketId === socket.id || String(currentRoom.ownerUserId) === String(clientUserId))
+    const teamRoster = currentRoom?.teams?.length
+        ? currentRoom.teams
+        : [
+            { id: 'team_1', score: 0, players: roomPlayers.filter((player) => player.teamNumber === 1) },
+            { id: 'team_2', score: 0, players: roomPlayers.filter((player) => player.teamNumber === 2) },
+        ]
+    const maxPlayers = getModeRosterSize(modeKey)
     const isGuest = !user
 
     return (
@@ -361,7 +471,7 @@ const LobbyPage = () => {
                     <section className="lobby-card flex">
                         <div className="lobby-card-header">
                             <h2>Создать комнату</h2>
-                            <p>Откройте дуэльную комнату и отправьте ID другу.</p>
+                            <p>Откройте комнату и отправьте ID друзьям.</p>
                         </div>
 
                         <button
@@ -418,6 +528,14 @@ const LobbyPage = () => {
                             </button>
                             <button
                                 type="button"
+                                className="button lobby-ghost-button"
+                                onClick={handleLeaveRoom}
+                                disabled={!roomId}
+                            >
+                                Выйти из лобби
+                            </button>
+                            <button
+                                type="button"
                                 className={`button lobby-primary-button ${activePlayer?.isReady ? 'danger' : ''}`}
                                 onClick={handleReadyToggle}
                                 disabled={!currentRoom}
@@ -431,6 +549,7 @@ const LobbyPage = () => {
                         <div className="lobby-settings-panel__header">
                             <span className="lobby-panel-label">Конфигурация матча</span>
                             <strong>{modeConfig.title}</strong>
+                            <span>{roomPlayers.length}/{maxPlayers} игроков</span>
                         </div>
 
                         <div className="lobby-settings-pills">
@@ -445,17 +564,53 @@ const LobbyPage = () => {
                         </div>
                     </div>
 
-                    <div className="lobby-roster">
-                        {(currentRoom?.players || []).map((player) => (
-                            <article key={player.userId} className="lobby-player-card">
-                                <div>
-                                    <h3>{player.username}</h3>
-                                    <p>{player.userId === clientUserId ? 'Это вы' : 'Соперник'}</p>
+                    <div className="lobby-roster lobby-roster--teams">
+                        {teamRoster.map((team) => (
+                            <section key={team.id} className="lobby-team-column">
+                                <div className="lobby-team-column__header">
+                                    <strong>{getTeamLabel(team.id)}</strong>
+                                    <span>{Number(team.score) || 0} pts</span>
                                 </div>
-                                <span className={`lobby-ready-badge ${player.isReady ? 'is-ready' : ''}`}>
-                                    {player.isReady ? 'Ready' : 'Waiting'}
-                                </span>
-                            </article>
+
+                                {(team.players || []).map((player) => (
+                                    <article key={`${team.id}-${player.userId}`} className="lobby-player-card">
+                                        <div className="lobby-player-card__identity">
+                                            <PlayerAvatar player={player} />
+                                            <div>
+                                                <h3>{player.username}</h3>
+                                                <p>{player.userId === clientUserId ? 'Это вы' : getTeamLabel(team.id)}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="lobby-player-card__actions">
+                                            {isRoomOwner && modeKey === '2v2' ? (
+                                                <div className="lobby-team-switcher" aria-label="Выбор команды">
+                                                    {['team_1', 'team_2'].map((nextTeamId) => (
+                                                        <button
+                                                            key={nextTeamId}
+                                                            type="button"
+                                                            className={nextTeamId === team.id ? 'is-active' : ''}
+                                                            onClick={() => handleSetTeam(player, nextTeamId)}
+                                                            disabled={nextTeamId === team.id}
+                                                        >
+                                                            {nextTeamId === 'team_1' ? 'T1' : 'T2'}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            ) : null}
+                                            <span className={`lobby-ready-badge ${player.isReady ? 'is-ready' : ''}`}>
+                                                {player.isReady ? 'Ready' : 'Waiting'}
+                                            </span>
+                                        </div>
+                                    </article>
+                                ))}
+
+                                {(team.players || []).length === 0 && currentRoom ? (
+                                    <div className="lobby-empty-state">
+                                        Место свободно.
+                                    </div>
+                                ) : null}
+                            </section>
                         ))}
 
                         {!currentRoom && (
