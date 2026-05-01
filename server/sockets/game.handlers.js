@@ -18,6 +18,46 @@ const ABILITY_EFFECTS = {
         type: 'darkness',
         durationMs: 10000,
     },
+    garbage_rain: {
+        type: 'garbage_rain',
+        durationMs: 1,
+    },
+    controls_swap: {
+        type: 'controls_swap',
+        durationMs: 5000,
+    },
+    fog_piece: {
+        type: 'fog_piece',
+        durationMs: 6000,
+    },
+    gravity_lock: {
+        type: 'gravity_lock',
+        durationMs: 3500,
+    },
+    screen_shake: {
+        type: 'screen_shake',
+        durationMs: 3500,
+    },
+    random_rotation: {
+        type: 'random_rotation',
+        durationMs: 5000,
+    },
+    sticky_walls: {
+        type: 'sticky_walls',
+        durationMs: 5000,
+    },
+    delay_input: {
+        type: 'delay_input',
+        durationMs: 5000,
+    },
+    random_shift: {
+        type: 'random_shift',
+        durationMs: 5000,
+    },
+    invisible_cells: {
+        type: 'invisible_cells',
+        durationMs: 6000,
+    },
 }
 
 export const registerGameHandlers = (io, socket) => {

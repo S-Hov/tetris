@@ -195,16 +195,16 @@ export const registerLobbyHandlers = (io, socket) => {
                 ],
             }
 
-            roomStore.createRoom(room)
+            const normalizedRoom = roomStore.createRoom(room)
             socket.join(roomId)
 
             callback?.({
                 success: true,
                 message: 'Комната создана',
-                room,
+                room: normalizedRoom,
             })
 
-            io.to(roomId).emit('room:state', room)
+            io.to(roomId).emit('room:state', normalizedRoom)
         } catch (error) {
             console.error('room:create error', error)
             callback?.({
@@ -262,16 +262,16 @@ export const registerLobbyHandlers = (io, socket) => {
                     )),
                 }
 
-                roomStore.createRoom(rejoinedRoom)
+                const normalizedRoom = roomStore.createRoom(rejoinedRoom)
                 socket.join(roomId)
 
                 callback?.({
                     success: true,
                     message: 'Вы переподключились к комнате',
-                    room: rejoinedRoom,
+                    room: normalizedRoom,
                 })
 
-                io.to(roomId).emit('room:state', rejoinedRoom)
+                io.to(roomId).emit('room:state', normalizedRoom)
                 return
             }
 
@@ -323,16 +323,16 @@ export const registerLobbyHandlers = (io, socket) => {
                 ],
             }
 
-            roomStore.createRoom(updatedRoom)
+            const normalizedRoom = roomStore.createRoom(updatedRoom)
             socket.join(roomId)
 
             callback?.({
                 success: true,
                 message: 'Вы подключились к комнате',
-                room: updatedRoom,
+                room: normalizedRoom,
             })
 
-            io.to(roomId).emit('room:state', updatedRoom)
+            io.to(roomId).emit('room:state', normalizedRoom)
             io.to(roomId).emit('room:player-joined', {
                 roomId,
                 userId: boundPlayer.userId,

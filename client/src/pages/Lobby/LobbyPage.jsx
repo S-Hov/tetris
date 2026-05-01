@@ -520,19 +520,19 @@ const LobbyPage = () => {
                         <div className="lobby-room-actions">
                             <button
                                 type="button"
+                                className="button lobby-ghost-button danger"
+                                onClick={handleLeaveRoom}
+                                disabled={!roomId}
+                            >
+                                Выйти из лобби
+                            </button>
+                            <button
+                                type="button"
                                 className="button lobby-ghost-button"
                                 onClick={handleCopyRoomId}
                                 disabled={!roomId}
                             >
                                 Скопировать ID
-                            </button>
-                            <button
-                                type="button"
-                                className="button lobby-ghost-button"
-                                onClick={handleLeaveRoom}
-                                disabled={!roomId}
-                            >
-                                Выйти из лобби
                             </button>
                             <button
                                 type="button"

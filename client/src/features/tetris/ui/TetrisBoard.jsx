@@ -2,7 +2,18 @@ import { createBoard } from '../model/createBoard.js'
 
 import './TetrisBoard.css'
 
-const TetrisBoard = ({ board, clearingRows = [], compact = false, className = '', style }) => {
+const shouldHideCell = (rowIndex, cellIndex) => (
+    ((rowIndex * 17 + cellIndex * 31) % 11) < 3
+)
+
+const TetrisBoard = ({
+    board,
+    clearingRows = [],
+    compact = false,
+    className = '',
+    invisibleCells = false,
+    style,
+}) => {
     const safeBoard = Array.isArray(board) ? board : createBoard()
 
     return (
@@ -19,6 +30,7 @@ const TetrisBoard = ({ board, clearingRows = [], compact = false, className = ''
                             cell ? `cell--${cell.type}` : '',
                             cell?.variant === 'ghost' ? 'ghost' : '',
                             cell?.variant === 'filled' ? 'filled' : '',
+                            invisibleCells && cell && cell?.variant !== 'ghost' && shouldHideCell(rowIndex, cellIndex) ? 'invisible' : '',
                             clearingRows.includes(rowIndex) ? 'clearing' : '',
                         ].filter(Boolean).join(' ')}
                     />

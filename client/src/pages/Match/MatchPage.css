@@ -41,6 +41,10 @@
     opacity: 1;
 }
 
+.player-board-shell--effect-shake {
+    animation: board-effect-shake 120ms steps(2, end) infinite;
+}
+
 .player-board-shell--defeated {
     animation: board-defeat-fall 1.24s cubic-bezier(0.16, 0.76, 0.14, 1) forwards;
 }
@@ -281,6 +285,28 @@
 
     80% {
         transform: translate3d(calc(var(--danger-level, 0) * 3px), 0, 0) rotate(calc(var(--danger-level, 0) * 0.2deg));
+    }
+}
+
+@keyframes board-effect-shake {
+    0%, 100% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+
+    20% {
+        transform: translate3d(-7px, 4px, 0) rotate(-0.7deg);
+    }
+
+    40% {
+        transform: translate3d(6px, -5px, 0) rotate(0.55deg);
+    }
+
+    60% {
+        transform: translate3d(-4px, -3px, 0) rotate(-0.45deg);
+    }
+
+    80% {
+        transform: translate3d(5px, 3px, 0) rotate(0.35deg);
     }
 }
 

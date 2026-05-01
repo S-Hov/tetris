@@ -208,10 +208,14 @@
     flex: 1;
 }
 
-.lobby-primary-button.danger {
+.lobby-primary-button.danger,.lobby-ghost-button.danger {
     background: rgba(255, 185, 185, 0.074);
     color: var(--red);
     border: 1px dashed var(--red);
+
+    &:hover {
+        box-shadow: 0 0 15px 2px rgba(255, 0, 0, 0.319);
+    }
 }
 
 .lobby-secondary-button {

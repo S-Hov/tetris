@@ -4,12 +4,14 @@ import {
     LINE_CLEAR_ANIMATION_MS,
     createGameState,
     getRenderedBoard,
+    rotateCurrentPiece,
     resolveLineClear,
     restartGame,
+    shiftBoard,
     tickGame,
     withDerivedState,
 } from '@/features/tetris/model/tetrisEngine.js'
-import { removeExpiredEffects } from '@/features/tetris/model/effects.js'
+import { EFFECT_TYPES, hasEffect, removeExpiredEffects } from '@/features/tetris/model/effects.js'
 
 export const useTetrisGameLoop = ({
     abilitiesEnabled,
@@ -23,6 +25,8 @@ export const useTetrisGameLoop = ({
 
     const derivedState = useMemo(() => withDerivedState(gameState), [gameState])
     const boardWithPiece = useMemo(() => getRenderedBoard(derivedState), [derivedState])
+    const hasRandomRotation = hasEffect(derivedState, EFFECT_TYPES.RANDOM_ROTATION)
+    const hasRandomShift = hasEffect(derivedState, EFFECT_TYPES.RANDOM_SHIFT)
 
     useEffect(() => {
         if (!derivedState.isClearing) {
@@ -63,6 +67,64 @@ export const useTetrisGameLoop = ({
         derivedState.speed,
         paused,
         randomPiece,
+    ])
+
+    useEffect(() => {
+        if (
+            paused ||
+            derivedState.isGameOver ||
+            derivedState.isPaused ||
+            derivedState.isClearing ||
+            derivedState.isChoosingAbility ||
+            !hasRandomRotation
+        ) {
+            return undefined
+        }
+
+        const intervalId = setInterval(() => {
+            if (Math.random() >= 0.3) {
+                return
+            }
+
+            setGameState((prevState) => rotateCurrentPiece(removeExpiredEffects(prevState)))
+        }, 500)
+
+        return () => clearInterval(intervalId)
+    }, [
+        hasRandomRotation,
+        derivedState.isClearing,
+        derivedState.isChoosingAbility,
+        derivedState.isGameOver,
+        derivedState.isPaused,
+        paused,
+    ])
+
+    useEffect(() => {
+        if (
+            paused ||
+            derivedState.isGameOver ||
+            derivedState.isPaused ||
+            derivedState.isClearing ||
+            derivedState.isChoosingAbility ||
+            !hasRandomShift
+        ) {
+            return undefined
+        }
+
+        const intervalId = setInterval(() => {
+            const direction = Math.random() < 0.5 ? -1 : 1
+
+            setGameState((prevState) => shiftBoard(removeExpiredEffects(prevState), direction))
+        }, 1000)
+
+        return () => clearInterval(intervalId)
+    }, [
+        hasRandomShift,
+        derivedState.isClearing,
+        derivedState.isChoosingAbility,
+        derivedState.isGameOver,
+        derivedState.isPaused,
+        paused,
     ])
 
     const resetGame = () => {

@@ -168,6 +168,26 @@ const formatEffectType = (effectType) => {
             return 'Ускорение x2 на 4 сек'
         case 'darkness':
             return 'Затемнение поля'
+        case 'garbage_rain':
+            return 'Мусорный дождь'
+        case 'controls_swap':
+            return 'Смена управления'
+        case 'fog_piece':
+            return 'Скрытие следующей фигуры'
+        case 'gravity_lock':
+            return 'Тяжелая гравитация'
+        case 'screen_shake':
+            return 'Тряска экрана'
+        case 'random_rotation':
+            return 'Случайный поворот'
+        case 'sticky_walls':
+            return 'Липкие стены'
+        case 'delay_input':
+            return 'Задержка ввода'
+        case 'random_shift':
+            return 'Сдвиг поля'
+        case 'invisible_cells':
+            return 'Невидимые клетки'
         default:
             return String(effectType)
                 .replaceAll('_', ' ')

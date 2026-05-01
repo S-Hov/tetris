@@ -7,6 +7,7 @@ import {
     togglePause,
     withDerivedState,
 } from '@/features/tetris/model/tetrisEngine.js'
+import { EFFECT_TYPES, hasEffect } from '@/features/tetris/model/effects.js'
 
 const CONTROL_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space', 'KeyA', 'KeyD', 'KeyS', 'KeyW', 'KeyP', 'Escape']
 
@@ -16,6 +17,27 @@ export const useTetrisControls = ({
     setGameState,
 } = {}) => {
     useEffect(() => {
+        const applyControl = (state, code) => {
+            switch (code) {
+                case 'ArrowLeft':
+                case 'KeyA':
+                    return movePiece(state, { x: -1, y: 0 })
+                case 'ArrowRight':
+                case 'KeyD':
+                    return movePiece(state, { x: 1, y: 0 })
+                case 'ArrowDown':
+                case 'KeyS':
+                    return movePiece(state, { x: 0, y: 1 })
+                case 'ArrowUp':
+                case 'KeyW':
+                    return rotateCurrentPiece(state)
+                case 'Space':
+                    return hardDrop(state, { randomPiece })
+                default:
+                    return state
+            }
+        }
+
         const handleKeyDown = (event) => {
             if (CONTROL_KEYS.includes(event.code)) {
                 event.preventDefault()
@@ -40,24 +62,17 @@ export const useTetrisControls = ({
                     return prevState
                 }
 
-                switch (event.code) {
-                    case 'ArrowLeft':
-                    case 'KeyA':
-                        return movePiece(prevState, { x: -1, y: 0 })
-                    case 'ArrowRight':
-                    case 'KeyD':
-                        return movePiece(prevState, { x: 1, y: 0 })
-                    case 'ArrowDown':
-                    case 'KeyS':
-                        return movePiece(prevState, { x: 0, y: 1 })
-                    case 'ArrowUp':
-                    case 'KeyW':
-                        return rotateCurrentPiece(prevState)
-                    case 'Space':
-                        return hardDrop(prevState, { randomPiece })
-                    default:
-                        return prevState
+                if (hasEffect(state, EFFECT_TYPES.DELAY_INPUT)) {
+                    const code = event.code
+
+                    setTimeout(() => {
+                        setGameState((latestState) => applyControl(latestState, code))
+                    }, 150)
+
+                    return prevState
                 }
+
+                return applyControl(prevState, event.code)
             })
         }
 

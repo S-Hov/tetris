@@ -80,8 +80,17 @@
     background: #0fa7ac;
 }
 
+.tetris-cell.cell--garbage.filled {
+    background: #7f8a96;
+}
+
 .tetris-cell.cell--⁄.filled {
     background: #bedcff;
+}
+
+.tetris-cell.invisible {
+    opacity: 0.08;
+    filter: saturate(0);
 }
 
 .tetris-cell.ghost.cell--I,

@@ -14,6 +14,7 @@ import {
     getRandomPieceGeneratorForSettings,
     normalizeMatchSettings,
 } from '@/features/tetris/model/matchSettings.js'
+import { EFFECT_TYPES, hasEffect } from '@/features/tetris/model/effects.js'
 import { togglePause } from '@/features/tetris/model/tetrisEngine.js'
 import AbilityOverlay from '@/features/tetris/ui/AbilityOverlay.jsx'
 import ActionsPanel from '@/features/tetris/ui/ActionsPanel.jsx'
@@ -194,14 +195,16 @@ const MatchPageGame = ({
     })
 
     const dangerLevel = useMemo(() => getBoardDangerLevel(derivedState.board), [derivedState.board])
-    const hasDarkness = derivedState.activeEffects?.some(
-        (effect) => effect.type === 'darkness'
-    )
+    const hasDarkness = hasEffect(derivedState, EFFECT_TYPES.DARKNESS)
+    const hasFogPiece = hasEffect(derivedState, EFFECT_TYPES.FOG_PIECE)
+    const hasScreenShake = hasEffect(derivedState, EFFECT_TYPES.SCREEN_SHAKE)
+    const hasInvisibleCells = hasEffect(derivedState, EFFECT_TYPES.INVISIBLE_CELLS)
     const isSoloGameOver = !isOnline && derivedState.isGameOver
     const isDefeated = matchResult === 'lose' || isSoloGameOver
     const boardShellClassName = [
         'player-board-shell',
         dangerLevel > 0 ? 'player-board-shell--danger' : '',
+        hasScreenShake ? 'player-board-shell--effect-shake' : '',
         isDefeated ? 'player-board-shell--defeated' : '',
         matchResult === 'win' ? 'player-board-shell--victorious' : '',
     ].filter(Boolean).join(' ')
@@ -353,7 +356,7 @@ const MatchPageGame = ({
 
     const sidebar = (
         <>
-            <NextPiecePanel nextPiece={derivedState.nextPiece} />
+            <NextPiecePanel hidden={hasFogPiece} nextPiece={derivedState.nextPiece} />
             <StatsPanel
                 score={derivedState.score}
                 lines={derivedState.linesCleared}
@@ -473,6 +476,7 @@ const MatchPageGame = ({
             boardShellClassName={boardShellClassName}
             boardShellStyle={dangerStyle}
             boardDecor={boardDecor}
+            boardInvisibleCells={hasInvisibleCells}
             leftRail={roomSettings.abilitiesEnabled ? <EnergyPanel energy={derivedState.energy} /> : null}
             sidebar={sidebar}
             overlay={overlay}

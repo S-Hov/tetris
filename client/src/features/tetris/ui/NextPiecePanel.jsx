@@ -1,8 +1,12 @@
-const NextPiecePanel = ({ nextPiece }) => {
+const NextPiecePanel = ({ hidden = false, nextPiece }) => {
     return (
         <section className="game-panel game-next-piece-panel">
             <h3 className="game-panel__title"><i className="fa-solid fa-eye"></i> Next Piece</h3>
-            <div className="game-next-piece-panel__preview">
+            <div className={[
+                'game-next-piece-panel__preview',
+                hidden ? 'game-next-piece-panel__preview--hidden' : '',
+            ].filter(Boolean).join(' ')}
+            >
                 <div
                     className="game-next-piece-grid"
                     style={{
@@ -19,6 +23,7 @@ const NextPiecePanel = ({ nextPiece }) => {
                         ))
                     )}
                 </div>
+                {hidden ? <span className="game-next-piece-panel__fog">???</span> : null}
             </div>
         </section>
     )

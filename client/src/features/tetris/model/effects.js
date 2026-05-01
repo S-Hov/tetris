@@ -1,6 +1,16 @@
 export const EFFECT_TYPES = {
     SPEED_X2: 'speed_x2_for_4s',
     DARKNESS: 'darkness',
+    GARBAGE_RAIN: 'garbage_rain',
+    CONTROLS_SWAP: 'controls_swap',
+    FOG_PIECE: 'fog_piece',
+    GRAVITY_LOCK: 'gravity_lock',
+    SCREEN_SHAKE: 'screen_shake',
+    RANDOM_ROTATION: 'random_rotation',
+    STICKY_WALLS: 'sticky_walls',
+    DELAY_INPUT: 'delay_input',
+    RANDOM_SHIFT: 'random_shift',
+    INVISIBLE_CELLS: 'invisible_cells',
 }
 
 export function addEffect(state, effect) {

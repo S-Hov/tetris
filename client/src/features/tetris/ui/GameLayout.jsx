@@ -9,6 +9,7 @@ const GameLayout = ({
     board,
     clearingRows = [],
     boardClassName = '',
+    boardInvisibleCells = false,
     boardShellClassName = '',
     boardShellStyle,
     boardDecor = null,
@@ -40,6 +41,7 @@ const GameLayout = ({
                                 board={board}
                                 clearingRows={clearingRows}
                                 className={boardClassName}
+                                invisibleCells={boardInvisibleCells}
                             />
                             {boardDecor}
                         </div>
