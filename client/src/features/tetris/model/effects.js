@@ -9,7 +9,6 @@ export const EFFECT_TYPES = {
     RANDOM_ROTATION: 'random_rotation',
     STICKY_WALLS: 'sticky_walls',
     DELAY_INPUT: 'delay_input',
-    RANDOM_SHIFT: 'random_shift',
     INVISIBLE_CELLS: 'invisible_cells',
 }
 

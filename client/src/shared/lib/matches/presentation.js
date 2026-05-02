@@ -184,8 +184,6 @@ const formatEffectType = (effectType) => {
             return 'Липкие стены'
         case 'delay_input':
             return 'Задержка ввода'
-        case 'random_shift':
-            return 'Сдвиг поля'
         case 'invisible_cells':
             return 'Невидимые клетки'
         default:

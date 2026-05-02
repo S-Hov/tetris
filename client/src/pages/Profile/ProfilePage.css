@@ -329,6 +329,26 @@
     color: #ffd8d8;
 }
 
+.profile-password-form {
+    display: grid;
+    gap: 0.9rem;
+    margin-top: 1.4rem;
+    padding-top: 1.2rem;
+    border-top: 1px dashed rgba(0, 255, 255, 0.25);
+}
+
+.profile-password-title {
+    margin-bottom: 0;
+}
+
+.profile-password-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    width: fit-content;
+}
+
 .profile-logout-button:hover {
     border-color: rgba(219, 56, 56, 0.65);
     color: #ffd8d8;

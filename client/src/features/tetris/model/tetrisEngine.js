@@ -407,7 +407,7 @@ export function applyGarbageRain(state, random = Math.random) {
     }
 }
 
-export function applyIncomingEffect(state, effect) {
+export function applyIncomingEffect(state, effect, options = {}) {
     if (!effect?.type) {
         return state
     }
@@ -415,10 +415,13 @@ export function applyIncomingEffect(state, effect) {
     const now = Date.now()
     const durationMs = Number(effect.durationMs) || 4000
     const expiresAt = now + durationMs
+    const activeEffects = options.replaceActiveEffects
+        ? []
+        : state.activeEffects.filter((item) => item.expiresAt > now && item.type !== effect.type)
     const withEffect = {
         ...state,
         activeEffects: [
-            ...state.activeEffects.filter((item) => item.expiresAt > now && item.type !== effect.type),
+            ...activeEffects,
             {
                 type: effect.type,
                 expiresAt,
@@ -431,30 +434,6 @@ export function applyIncomingEffect(state, effect) {
     }
 
     return withEffect
-}
-
-export function shiftBoard(state, direction) {
-    if (!canRunGameTick(state)) {
-        return state
-    }
-
-    const offset = direction < 0 ? -1 : 1
-    const board = state.board.map((row) => {
-        if (offset < 0) {
-            return [...row.slice(1), 0]
-        }
-
-        return [0, ...row.slice(0, -1)]
-    })
-
-    if (checkCollision(board, state.currentPiece, state.currentPosition)) {
-        return state
-    }
-
-    return {
-        ...state,
-        board,
-    }
 }
 
 export function withDerivedState(state) {

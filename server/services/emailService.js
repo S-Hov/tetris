@@ -33,6 +33,17 @@ export const sendVerificationEmail = async (to, code) => {
     await transporter.sendMail(mailOptions)
 }
 
+export const sendTemporaryPasswordEmail = async (to, password) => {
+    const mailOptions = {
+        from: `"PVP Tetris" <${process.env.EMAIL_USER}>`,
+        to,
+        subject: 'Новый пароль PVP Tetris',
+        html: getTemporaryPasswordTemplate(password),
+    }
+
+    await transporter.sendMail(mailOptions)
+}
+
 const getVerificationTemplate = (code) => `
     <!DOCTYPE html>
     <html lang="ru">
@@ -180,6 +191,44 @@ const getVerificationTemplate = (code) => `
                                             </td>
                                         </tr>
                                     </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </body>
+    </html>
+`
+
+const getTemporaryPasswordTemplate = (password) => `
+    <!DOCTYPE html>
+    <html lang="ru">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>PVP Tetris — Новый пароль</title>
+        </head>
+        <body style="margin:0;padding:0;background:#f4f6fa;font-family:Arial,Helvetica,sans-serif;">
+            <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#f4f6fa">
+                <tr>
+                    <td align="center" style="padding:48px 24px;">
+                        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:24px;box-shadow:0 8px 30px rgba(0,0,0,0.06);">
+                            <tr>
+                                <td align="center" style="padding:40px 36px;">
+                                    <div style="font-size:48px;line-height:1;opacity:.8;">◆</div>
+                                    <h1 style="font-size:28px;font-weight:600;margin:16px 0 4px;color:#1a2a3a;">PVP Tetris</h1>
+                                    <p style="color:#6c7a89;font-size:13px;margin:4px 0 28px;letter-spacing:.3px;">ВОССТАНОВЛЕНИЕ ПАРОЛЯ</p>
+                                    <p style="color:#5a6e7c;font-size:15px;line-height:1.5;margin:0 0 20px;">
+                                        Мы создали новый временный пароль для вашего аккаунта.
+                                        После входа смените его в профиле.
+                                    </p>
+                                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:20px 24px;margin:16px 0 22px;">
+                                        <span style="font-family:Menlo,Monaco,Consolas,monospace;font-size:28px;font-weight:700;letter-spacing:2px;color:#1a3a4a;">${password}</span>
+                                    </div>
+                                    <p style="color:#7a8e9c;font-size:13px;line-height:1.5;margin:0;">
+                                        Если вы не запрашивали восстановление, войдите в аккаунт и смените пароль.
+                                    </p>
                                 </td>
                             </tr>
                         </table>

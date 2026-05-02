@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url'
 import { badRequest } from '../helpers/error.helper.js'
 import {
     checkEmailRepo,
+    changePendingUserEmailRepo,
     createAuthLogRepo,
     createEmailVerificationRepo,
     expireEmailVerificationRepo,
@@ -14,9 +15,11 @@ import {
     getUserMatchStatsRepo,
     getUserRankStatsRepo,
     getUserByEmailRepo,
+    getUserAuthByIdRepo,
     getUserRepo,
     loginUserRepo,
     markEmailVerifiedRepo,
+    updateUserPasswordRepo,
     registerUserWithVerificationRepo,
     updateUserAvatarRepo,
     updateUserLastLoginRepo,
@@ -38,6 +41,8 @@ const AVATAR_TYPES = {
     'image/avif': { ext: 'avif', validate: (buffer) => buffer.subarray(4, 8).toString('ascii') === 'ftyp' },
     'video/webm': { ext: 'webm', validate: (buffer) => buffer.subarray(0, 4).equals(Buffer.from([0x1A, 0x45, 0xDF, 0xA3])) },
 }
+
+const PASSWORD_RULE_MESSAGE = 'Пароль должен быть 8-16 символов, с заглавной, строчной буквой и цифрой'
 
 export const registerUserService = async (username, email, password) => {
     if (await checkEmailRepo(email)) {
@@ -192,6 +197,53 @@ export const updateUserAvatarService = async ({ userId, contentType, buffer }) =
     return await getUserService(userId)
 }
 
+export const changeUnverifiedEmailService = async ({ currentEmail, nextEmail }) => {
+    const normalizedCurrentEmail = normalizeEmail(currentEmail)
+    const normalizedNextEmail = normalizeEmail(nextEmail)
+
+    if (!normalizedCurrentEmail || !normalizedNextEmail) {
+        throw badRequest('Введите корректный email')
+    }
+
+    if (normalizedCurrentEmail === normalizedNextEmail) {
+        throw badRequest('Новая почта совпадает с текущей')
+    }
+
+    const user = await getUserByEmailRepo(normalizedCurrentEmail)
+
+    if (!user) {
+        throw badRequest('Аккаунт с текущей почтой не найден')
+    }
+
+    if (user.status === 'active') {
+        throw badRequest('Почта уже подтверждена. Изменить её можно только через настройки аккаунта')
+    }
+
+    if (await checkEmailRepo(normalizedNextEmail)) {
+        throw badRequest('Пользователь с таким email уже существует')
+    }
+
+    const verificationCode = createVerificationCode()
+    const verificationCodeHash = hashVerificationCode(verificationCode)
+
+    const updatedUser = await changePendingUserEmailRepo({
+        userId: user.id,
+        currentEmail: normalizedCurrentEmail,
+        nextEmail: normalizedNextEmail,
+        verificationCodeHash,
+        expiresAt: createVerificationExpiresAt(),
+    })
+
+    if (!updatedUser) {
+        throw badRequest('Не удалось обновить почту. Запросите новый код или зарегистрируйтесь заново')
+    }
+
+    return {
+        user: updatedUser,
+        verificationCode,
+    }
+}
+
 export const getVerificationMetaService = async (email) => {
     const user = await getUserByEmailRepo(email)
 
@@ -255,6 +307,138 @@ export const verifyEmailService = async (email, code) => {
         userId: verification.user_id,
         verificationId: verification.id,
     })
+}
+
+export const requestPasswordResetService = async (email) => {
+    const normalizedEmail = normalizeEmail(email)
+    const user = await getUserByEmailRepo(normalizedEmail)
+
+    if (!user) {
+        throw badRequest('Пользователь с таким email не найден')
+    }
+
+    if (user.status !== 'active') {
+        throw badRequest('Сначала подтвердите почту аккаунта')
+    }
+
+    const verificationCode = createVerificationCode()
+    const verificationCodeHash = hashVerificationCode(verificationCode)
+
+    await createEmailVerificationRepo({
+        userId: user.id,
+        email: user.email,
+        verificationCodeHash,
+        expiresAt: createVerificationExpiresAt(),
+    })
+
+    return {
+        email: user.email,
+        verificationCode,
+    }
+}
+
+export const getPasswordResetMetaService = async (email) => {
+    const normalizedEmail = normalizeEmail(email)
+    const user = await getUserByEmailRepo(normalizedEmail)
+
+    if (!user) {
+        throw badRequest('Пользователь не найден')
+    }
+
+    if (user.status !== 'active') {
+        throw badRequest('Сначала подтвердите почту аккаунта')
+    }
+
+    const verification = await getLatestPendingVerificationByEmailRepo(user.email)
+
+    return {
+        email: user.email,
+        codeLength: getVerificationCodeLength(),
+        expiresInSeconds: verification ? getRemainingSeconds(verification.expires_at) : 0,
+        isVerified: false,
+        mode: 'password-reset',
+    }
+}
+
+export const completePasswordResetService = async ({ email, code }) => {
+    const normalizedEmail = normalizeEmail(email)
+    const normalizedCode = String(code || '').trim()
+
+    if (normalizedCode.length !== getVerificationCodeLength()) {
+        throw badRequest('Введите полный код подтверждения')
+    }
+
+    const user = await getUserByEmailRepo(normalizedEmail)
+
+    if (!user || user.status !== 'active') {
+        throw badRequest('Аккаунт не найден или почта не подтверждена')
+    }
+
+    const verification = await getLatestPendingVerificationByEmailRepo(user.email)
+
+    if (!verification) {
+        throw badRequest('Код восстановления не найден. Запросите новый код')
+    }
+
+    if (verification.user_id !== user.id) {
+        throw badRequest('Код восстановления не подходит для этого аккаунта')
+    }
+
+    if (getRemainingSeconds(verification.expires_at) <= 0) {
+        await expireEmailVerificationRepo(verification.id)
+        throw badRequest('Срок действия кода истёк. Запросите новый код')
+    }
+
+    if (hashVerificationCode(normalizedCode) !== verification.code_hash) {
+        throw badRequest('Неверный код подтверждения')
+    }
+
+    const temporaryPassword = createTemporaryPassword()
+    const passwordHash = await bcrypt.hash(temporaryPassword, 10)
+
+    await updateUserPasswordRepo({
+        userId: user.id,
+        passwordHash,
+    })
+    await expireEmailVerificationRepo(verification.id)
+
+    return {
+        email: user.email,
+        temporaryPassword,
+    }
+}
+
+export const updateUserPasswordService = async ({ userId, currentPassword, nextPassword }) => {
+    const user = await getUserAuthByIdRepo(userId)
+
+    if (!user) {
+        throw badRequest('Пользователь не найден')
+    }
+
+    if (!isStrongPassword(nextPassword)) {
+        throw badRequest(PASSWORD_RULE_MESSAGE)
+    }
+
+    const isCurrentPasswordValid = await bcrypt.compare(String(currentPassword || ''), user.password_hash)
+
+    if (!isCurrentPasswordValid) {
+        throw badRequest('Текущий пароль указан неверно')
+    }
+
+    const isSamePassword = await bcrypt.compare(String(nextPassword || ''), user.password_hash)
+
+    if (isSamePassword) {
+        throw badRequest('Новый пароль совпадает с текущим')
+    }
+
+    const passwordHash = await bcrypt.hash(nextPassword, 10)
+
+    await updateUserPasswordRepo({
+        userId,
+        passwordHash,
+    })
+
+    return await getUserService(userId)
 }
 
 export const resendVerificationCodeService = async (email) => {
@@ -338,6 +522,37 @@ export const getVerificationCodeLength = () => {
     }
 
     return codeLength
+}
+
+const normalizeEmail = (email) => String(email || '').trim().toLowerCase()
+
+const isStrongPassword = (password) => (
+    typeof password === 'string' &&
+    password.length >= 8 &&
+    password.length <= 16 &&
+    /[A-Z]/.test(password) &&
+    /[a-z]/.test(password) &&
+    /[0-9]/.test(password)
+)
+
+const createTemporaryPassword = () => {
+    const lower = 'abcdefghjkmnpqrstuvwxyz'
+    const upper = 'ABCDEFGHJKMNPQRSTUVWXYZ'
+    const digits = '23456789'
+    const all = `${lower}${upper}${digits}`
+    const requiredChars = [
+        upper[crypto.randomInt(upper.length)],
+        lower[crypto.randomInt(lower.length)],
+        digits[crypto.randomInt(digits.length)],
+    ]
+
+    while (requiredChars.length < 12) {
+        requiredChars.push(all[crypto.randomInt(all.length)])
+    }
+
+    return requiredChars
+        .sort(() => crypto.randomInt(3) - 1)
+        .join('')
 }
 
 const createVerificationCode = () => {

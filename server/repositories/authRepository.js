@@ -15,7 +15,7 @@ export const registerUserRepo = async (username, email, passwordHash, roleId, st
 
 export const checkEmailRepo = async (email) => {
     const result = await pool.query(
-        'SELECT * FROM users WHERE email = $1',
+        'SELECT * FROM users WHERE LOWER(email) = LOWER($1)',
         [email]
     )
 
@@ -26,7 +26,7 @@ export const checkEmailRepo = async (email) => {
 
 export const loginUserRepo = async (email) => {
     const result = await pool.query(
-        'SELECT * FROM users WHERE email = $1',
+        'SELECT * FROM users WHERE LOWER(email) = LOWER($1)',
         [email]
     )
 
@@ -44,6 +44,19 @@ export const getUserRepo = async (id) => {
     )
 
     return result.rows[0]
+}
+
+export const getUserAuthByIdRepo = async (id) => {
+    const result = await pool.query(
+        `
+        SELECT id, username, email, password_hash, status
+        FROM users
+        WHERE id = $1
+        `,
+        [id]
+    )
+
+    return result.rows[0] || null
 }
 
 export const getUserMatchStatsRepo = async (userId) => {
@@ -230,11 +243,68 @@ export const registerUserWithVerificationRepo = async ({
 
 export const getUserByEmailRepo = async (email) => {
     const result = await pool.query(
-        'SELECT id, username, email, status FROM users WHERE email = $1',
+        'SELECT id, username, email, status FROM users WHERE LOWER(email) = LOWER($1)',
         [email]
     )
 
     return result.rows[0]
+}
+
+export const changePendingUserEmailRepo = async ({
+    userId,
+    currentEmail,
+    nextEmail,
+    verificationCodeHash,
+    expiresAt,
+}) => {
+    const client = await pool.connect()
+
+    try {
+        await client.query('BEGIN')
+
+        const userResult = await client.query(
+            `
+            UPDATE users
+            SET email = $3, status = 'pending_verification', email_verified_at = NULL
+            WHERE id = $1 AND LOWER(email) = LOWER($2) AND status = 'pending_verification'
+            RETURNING id, username, email, status
+            `,
+            [userId, currentEmail, nextEmail]
+        )
+
+        const user = userResult.rows[0]
+
+        if (!user) {
+            await client.query('ROLLBACK')
+            return null
+        }
+
+        await client.query(
+            `
+            UPDATE email_verifications
+            SET status = 'expired'
+            WHERE user_id = $1 AND status = 'pending'
+            `,
+            [userId]
+        )
+
+        await client.query(
+            `
+            INSERT INTO email_verifications (user_id, email, code_hash, status, expires_at)
+            VALUES ($1, $2, $3, $4, $5)
+            `,
+            [userId, nextEmail, verificationCodeHash, 'pending', expiresAt]
+        )
+
+        await client.query('COMMIT')
+
+        return user
+    } catch (error) {
+        await client.query('ROLLBACK')
+        throw error
+    } finally {
+        client.release()
+    }
 }
 
 export const getUserRankStatsRepo = async (userId) => {
@@ -269,7 +339,7 @@ export const getLatestPendingVerificationByEmailRepo = async (email) => {
         `
         SELECT id, user_id, email, code_hash, status, expires_at
         FROM email_verifications
-        WHERE email = $1 AND status = 'pending'
+        WHERE LOWER(email) = LOWER($1) AND status = 'pending'
         ORDER BY expires_at DESC
         LIMIT 1
         `,
@@ -294,7 +364,7 @@ export const createEmailVerificationRepo = async ({
             `
             UPDATE email_verifications
             SET status = 'expired'
-            WHERE email = $1 AND status = 'pending'
+            WHERE LOWER(email) = LOWER($1) AND status = 'pending'
             `,
             [email]
         )
@@ -368,6 +438,20 @@ export const updateUserLastLoginRepo = async (id) => {
     const result = await pool.query(
         'UPDATE users SET last_login_at = NOW() WHERE id = $1 RETURNING id, username, email, status',
         [id]
+    )
+
+    return result.rows[0] || null
+}
+
+export const updateUserPasswordRepo = async ({ userId, passwordHash }) => {
+    const result = await pool.query(
+        `
+        UPDATE users
+        SET password_hash = $2
+        WHERE id = $1
+        RETURNING id, username, email, avatar_url, status, role_id, created_at, last_login_at
+        `,
+        [userId, passwordHash]
     )
 
     return result.rows[0] || null

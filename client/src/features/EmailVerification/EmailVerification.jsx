@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { authenticationAPI } from '@/shared/api/auth'
 import notify from '@/utils/Notifications'
@@ -9,8 +9,11 @@ const DEFAULT_CODE_LENGTH = 6
 
 const EmailVerification = () => {
     const { email: emailParam } = useParams()
+    const [searchParams] = useSearchParams()
     const navigate = useNavigate()
     const email = useMemo(() => decodeURIComponent(emailParam || '').trim(), [emailParam])
+    const mode = searchParams.get('mode') === 'password-reset' ? 'password-reset' : 'email-verification'
+    const isPasswordResetMode = mode === 'password-reset'
     const inputRefs = useRef([])
 
     const [codeLength, setCodeLength] = useState(DEFAULT_CODE_LENGTH)
@@ -19,6 +22,9 @@ const EmailVerification = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isResending, setIsResending] = useState(false)
+    const [isEmailModalOpen, setIsEmailModalOpen] = useState(false)
+    const [nextEmail, setNextEmail] = useState(email)
+    const [isChangingEmail, setIsChangingEmail] = useState(false)
     const [message, setMessage] = useState(null)
 
     const code = digits.join('')
@@ -43,7 +49,9 @@ const EmailVerification = () => {
             setMessage(null)
 
             try {
-                const meta = await authenticationAPI.getVerificationTime(email)
+                const meta = isPasswordResetMode
+                    ? await authenticationAPI.getPasswordResetVerificationTime(email)
+                    : await authenticationAPI.getVerificationTime(email)
 
                 if (ignore) return
 
@@ -81,7 +89,11 @@ const EmailVerification = () => {
         return () => {
             ignore = true
         }
-    }, [email, navigate])
+    }, [email, isPasswordResetMode, navigate])
+
+    useEffect(() => {
+        setNextEmail(email)
+    }, [email])
 
     useEffect(() => {
         if (secondsLeft <= 0) return
@@ -176,13 +188,19 @@ const EmailVerification = () => {
         setMessage(null)
 
         try {
-            const response = await authenticationAPI.verifyEmail({ email, code })
+            const response = isPasswordResetMode
+                ? await authenticationAPI.verifyPasswordReset({ email, code })
+                : await authenticationAPI.verifyEmail({ email, code })
 
             setMessage({
                 type: 'success',
-                text: 'Почта подтверждена. Перенаправляем ко входу...',
+                text: isPasswordResetMode
+                    ? 'Проверка пройдена. Новый пароль отправлен на почту...'
+                    : 'Почта подтверждена. Перенаправляем ко входу...',
             })
-            notify('Почта подтверждена. Перенаправляем ко входу...')
+            notify(isPasswordResetMode
+                ? 'Новый пароль отправлен на почту'
+                : 'Почта подтверждена. Перенаправляем ко входу...')
 
             window.setTimeout(() => {
                 navigate(response.redirectTo || '/login', { replace: true })
@@ -205,7 +223,9 @@ const EmailVerification = () => {
         setMessage(null)
 
         try {
-            const meta = await authenticationAPI.resendVerificationCode({ email })
+            const meta = isPasswordResetMode
+                ? await authenticationAPI.requestPasswordReset({ email })
+                : await authenticationAPI.resendVerificationCode({ email })
             const nextCodeLength = normalizeCodeLength(meta.codeLength)
 
             setCodeLength(nextCodeLength)
@@ -228,6 +248,32 @@ const EmailVerification = () => {
         }
     }
 
+    const handleEmailChangeSubmit = async (event) => {
+        event.preventDefault()
+
+        setIsChangingEmail(true)
+        setMessage(null)
+
+        try {
+            const meta = await authenticationAPI.changeUnverifiedEmail({
+                currentEmail: email,
+                email: nextEmail,
+            })
+
+            setIsEmailModalOpen(false)
+            notify('Почта обновлена. Новый код отправлен', 'success')
+            navigate(meta.redirectTo || `/verify-email/${encodeURIComponent(meta.email)}`, { replace: true })
+        } catch (error) {
+            setMessage({
+                type: 'error',
+                text: error.message || 'Не удалось изменить почту',
+            })
+            notify(error.message || 'Не удалось изменить почту', 'error')
+        } finally {
+            setIsChangingEmail(false)
+        }
+    }
+
     return (
         <div className="container verify-email-container">
             <div className="glass-card verify-email-card">
@@ -237,8 +283,8 @@ const EmailVerification = () => {
                             <div className="glow-icon">
                                 <i className="fas fa-envelope"></i>
                             </div>
-                            <h2>Подтверждение почты</h2>
-                            <p>Мы отправили код на адрес</p>
+                            <h2>{isPasswordResetMode ? 'Восстановление пароля' : 'Подтверждение почты'}</h2>
+                            <p>{isPasswordResetMode ? 'Введите код восстановления для адреса' : 'Мы отправили код на адрес'}</p>
                             <div className="email-highlight">{email || 'email не найден'}</div>
                         </div>
 
@@ -305,12 +351,57 @@ const EmailVerification = () => {
                             </div>
                         </div>
 
-                        <Link to="/register" className="verify-email-back-link link">
-                            Изменить почту
-                        </Link>
+                        {isPasswordResetMode ? (
+                            <Link to="/login" className="verify-email-back-link link">
+                                Вернуться ко входу
+                            </Link>
+                        ) : (
+                            <button
+                                type="button"
+                                className="verify-email-back-link verify-email-link-button link"
+                                onClick={() => setIsEmailModalOpen(true)}
+                            >
+                                Изменить почту
+                            </button>
+                        )}
                     </div>
                 </GlowEffect>
             </div>
+
+            {isEmailModalOpen && (
+                <div className="verify-email-modal" role="dialog" aria-modal="true" aria-labelledby="change-email-title">
+                    <form className="verify-email-modal__panel" onSubmit={handleEmailChangeSubmit}>
+                        <h3 id="change-email-title">Изменить почту</h3>
+                        <label>
+                            <span>Текущая почта</span>
+                            <input type="email" value={email} disabled />
+                        </label>
+                        <label>
+                            <span>Новая почта</span>
+                            <input
+                                type="email"
+                                value={nextEmail}
+                                onChange={(event) => setNextEmail(event.target.value)}
+                                autoFocus
+                                required
+                            />
+                        </label>
+                        <div className="verify-email-modal__actions">
+                            <button type="submit" className="submit-btn" disabled={isChangingEmail}>
+                                {isChangingEmail ? 'Сохраняем...' : 'Отправить новый код'}
+                            </button>
+                            <button
+                                type="button"
+                                className="verify-email-modal__cancel"
+                                onClick={() => setIsEmailModalOpen(false)}
+                                disabled={isChangingEmail}
+                            >
+                                Отмена
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
         </div>
     )
 }

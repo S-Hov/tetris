@@ -54,6 +54,12 @@ const ProfilePage = () => {
     const [avatarFile, setAvatarFile] = useState(null)
     const [avatarPreview, setAvatarPreview] = useState('')
     const [isSavingProfile, setIsSavingProfile] = useState(false)
+    const [passwordForm, setPasswordForm] = useState({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+    })
+    const [isSavingPassword, setIsSavingPassword] = useState(false)
 
     useEffect(() => {
         let ignore = false
@@ -233,6 +239,37 @@ const ProfilePage = () => {
             notify(error.message || 'Не удалось сохранить профиль', 'error')
         } finally {
             setIsSavingProfile(false)
+        }
+    }
+
+    const handlePasswordFormChange = (field, value) => {
+        setPasswordForm((currentValue) => ({
+            ...currentValue,
+            [field]: value,
+        }))
+    }
+
+    const handlePasswordSave = async (event) => {
+        event.preventDefault()
+        setIsSavingPassword(true)
+
+        try {
+            const response = await authenticationAPI.updatePassword(passwordForm)
+
+            if (response.user) {
+                setUser(response.user)
+            }
+
+            setPasswordForm({
+                currentPassword: '',
+                newPassword: '',
+                confirmPassword: '',
+            })
+            notify('Пароль обновлён', 'success')
+        } catch (error) {
+            notify(error.message || 'Не удалось обновить пароль', 'error')
+        } finally {
+            setIsSavingPassword(false)
         }
     }
 
@@ -428,6 +465,51 @@ const ProfilePage = () => {
                                     </button>
                                 ))}
                             </div>
+
+                            <form className="profile-password-form" onSubmit={handlePasswordSave}>
+                                <div className="profile-section-title profile-password-title">
+                                    <i className="fas fa-key"></i>
+                                    Смена пароля
+                                </div>
+
+                                <label className="profile-edit-field">
+                                    <span>Текущий пароль</span>
+                                    <input
+                                        type="password"
+                                        value={passwordForm.currentPassword}
+                                        onChange={(event) => handlePasswordFormChange('currentPassword', event.target.value)}
+                                        autoComplete="current-password"
+                                        required
+                                    />
+                                </label>
+
+                                <label className="profile-edit-field">
+                                    <span>Новый пароль</span>
+                                    <input
+                                        type="password"
+                                        value={passwordForm.newPassword}
+                                        onChange={(event) => handlePasswordFormChange('newPassword', event.target.value)}
+                                        autoComplete="new-password"
+                                        required
+                                    />
+                                </label>
+
+                                <label className="profile-edit-field">
+                                    <span>Повторите новый пароль</span>
+                                    <input
+                                        type="password"
+                                        value={passwordForm.confirmPassword}
+                                        onChange={(event) => handlePasswordFormChange('confirmPassword', event.target.value)}
+                                        autoComplete="new-password"
+                                        required
+                                    />
+                                </label>
+
+                                <button type="submit" className="button profile-password-submit" disabled={isSavingPassword}>
+                                    <i className="fas fa-save"></i>
+                                    {isSavingPassword ? 'Обновляем...' : 'Обновить пароль'}
+                                </button>
+                            </form>
                         </div>
                     </GlowEffect>
                 </section>

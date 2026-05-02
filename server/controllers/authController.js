@@ -2,10 +2,15 @@ import {
     createAuthLogService,
     getUserService,
     getVerificationMetaService,
+    changeUnverifiedEmailService,
+    completePasswordResetService,
     ensurePendingVerificationService,
+    getPasswordResetMetaService,
     loginUserService,
     registerUserService,
+    requestPasswordResetService,
     resendVerificationCodeService,
+    updateUserPasswordService,
     updateUserAvatarService,
     updateUserProfileService,
     verifyEmailService,
@@ -14,7 +19,7 @@ import {
 import { asyncHandler } from "../utils/asyncHandler.js"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
-import { sendVerificationEmail } from "../services/emailService.js"
+import { sendTemporaryPasswordEmail, sendVerificationEmail } from "../services/emailService.js"
 
 const authCookieOptions = {
     httpOnly: true,
@@ -202,6 +207,29 @@ export const updateAvatar = asyncHandler(async (req, res) => {
     })
 })
 
+export const updatePassword = asyncHandler(async (req, res) => {
+    const user = await updateUserPasswordService({
+        userId: req.user.id,
+        currentPassword: req.body.currentPassword,
+        nextPassword: req.body.newPassword,
+    })
+    const requestMeta = getRequestMeta(req)
+
+    await createAuthLogService({
+        userId: req.user.id,
+        eventType: 'password_updated',
+        ...requestMeta,
+    })
+
+    res.json({
+        success: true,
+        message: 'Пароль обновлён',
+        data: {
+            user,
+        },
+    })
+})
+
 export const logout = (req, res) => {
     const requestMeta = getRequestMeta(req)
 
@@ -253,6 +281,81 @@ export const verifyEmail = asyncHandler(async (req, res) => {
         message: 'Email verified successfully',
         data: {
             user,
+            redirectTo: '/login',
+        },
+    })
+})
+
+export const changeUnverifiedEmail = asyncHandler(async (req, res) => {
+    const { currentEmail, email } = req.body
+
+    const { user, verificationCode } = await changeUnverifiedEmailService({
+        currentEmail,
+        nextEmail: email,
+    })
+    const requestMeta = getRequestMeta(req)
+
+    await sendVerificationEmail(user.email, verificationCode)
+    await createAuthLogService({
+        userId: user.id,
+        eventType: 'verification_email_changed',
+        ...requestMeta,
+    })
+
+    const meta = await getVerificationMetaService(user.email)
+
+    res.json({
+        success: true,
+        message: 'Почта обновлена. Новый код отправлен',
+        data: {
+            ...meta,
+            redirectTo: `/verify-email/${encodeURIComponent(user.email)}`,
+        },
+    })
+})
+
+export const requestPasswordReset = asyncHandler(async (req, res) => {
+    const { email } = req.body
+
+    const { email: userEmail, verificationCode } = await requestPasswordResetService(email)
+
+    await sendVerificationEmail(userEmail, verificationCode)
+
+    const meta = await getPasswordResetMetaService(userEmail)
+
+    res.json({
+        success: true,
+        message: 'Код восстановления отправлен',
+        data: {
+            ...meta,
+            redirectTo: `/verify-email/${encodeURIComponent(userEmail)}?mode=password-reset`,
+        },
+    })
+})
+
+export const getPasswordResetMeta = asyncHandler(async (req, res) => {
+    const { email } = req.params
+    const meta = await getPasswordResetMetaService(email)
+
+    res.json({
+        success: true,
+        message: 'Password reset metadata fetched successfully',
+        data: meta,
+    })
+})
+
+export const completePasswordReset = asyncHandler(async (req, res) => {
+    const { email } = req.params
+    const { code } = req.body
+
+    const { email: userEmail, temporaryPassword } = await completePasswordResetService({ email, code })
+
+    await sendTemporaryPasswordEmail(userEmail, temporaryPassword)
+
+    res.json({
+        success: true,
+        message: 'Новый пароль отправлен на почту',
+        data: {
             redirectTo: '/login',
         },
     })

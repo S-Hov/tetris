@@ -148,6 +148,80 @@
     font-size: 0.9rem;
 }
 
+.verify-email-link-button {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.verify-email-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgba(2, 8, 18, 0.74);
+    backdrop-filter: blur(12px);
+}
+
+.verify-email-modal__panel {
+    width: min(100%, 440px);
+    display: grid;
+    gap: 1rem;
+    padding: 1.5rem;
+    border: var(--border);
+    border-radius: 12px;
+    background: rgba(8, 17, 31, 0.96);
+    box-shadow: var(--lite-shadow);
+}
+
+.verify-email-modal__panel h3 {
+    margin: 0;
+    color: var(--text-active-color);
+}
+
+.verify-email-modal__panel label {
+    display: grid;
+    gap: 0.45rem;
+    color: var(--turquoise-lite);
+    font-size: 0.85rem;
+}
+
+.verify-email-modal__panel input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: var(--border);
+    border-radius: 8px;
+    background: var(--elem-bg);
+    color: var(--text-active-color);
+}
+
+.verify-email-modal__panel input:disabled {
+    opacity: 0.65;
+}
+
+.verify-email-modal__actions {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.verify-email-modal__actions .submit-btn {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+.verify-email-modal__cancel {
+    border: var(--border);
+    border-radius: 999px;
+    padding: 0.8rem 1rem;
+    background: transparent;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
 @media (max-width: 520px) {
     .verify-email-content {
         padding: 2rem 1rem;
@@ -155,5 +229,9 @@
 
     .code-input-wrapper {
         gap: 0.45rem;
+    }
+
+    .verify-email-modal__actions {
+        grid-template-columns: 1fr;
     }
 }

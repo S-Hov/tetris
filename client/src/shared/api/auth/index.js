@@ -47,6 +47,13 @@ export const authenticationAPI = {
         })
     },
 
+    updatePassword(data) {
+        return apiClient('/api/authentication/me/password', {
+            method: 'PATCH',
+            body: JSON.stringify(data)
+        })
+    },
+
     verifyEmail(data) {
         const { email, code } = data
 
@@ -63,8 +70,37 @@ export const authenticationAPI = {
         })
     },
 
+    changeUnverifiedEmail(data) {
+        return apiClient('/api/authentication/change-unverified-email', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        })
+    },
+
+    requestPasswordReset(data) {
+        return apiClient('/api/authentication/password-reset', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        })
+    },
+
+    verifyPasswordReset(data) {
+        const { email, code } = data
+
+        return apiClient(`/api/authentication/password-reset/verify/${encodeURIComponent(email)}`, {
+            method: 'POST',
+            body: JSON.stringify({ code })
+        })
+    },
+
     getVerificationTime(email) {
         return apiClient(`/api/authentication/verification-time/${encodeURIComponent(email)}`, {
+            method: 'GET'
+        })
+    },
+
+    getPasswordResetVerificationTime(email) {
+        return apiClient(`/api/authentication/password-reset/verification-time/${encodeURIComponent(email)}`, {
             method: 'GET'
         })
     }

@@ -13,7 +13,6 @@ export const ABILITY_IDS = {
     RANDOM_ROTATION: 'random_rotation',
     STICKY_WALLS: 'sticky_walls',
     DELAY_INPUT: 'delay_input',
-    RANDOM_SHIFT: 'random_shift',
     INVISIBLE_CELLS: 'invisible_cells',
 }
 
@@ -109,15 +108,6 @@ export const ABILITIES = [
         visual: 'delay',
     },
     {
-        id: ABILITY_IDS.RANDOM_SHIFT,
-        enabled: true,
-        label: 'Board Drift',
-        title: 'Random Shift',
-        description: 'Occasionally shifts locked blocks sideways.',
-        icon: 'fa-arrows-left-right',
-        visual: 'shift',
-    },
-    {
         id: ABILITY_IDS.INVISIBLE_CELLS,
         enabled: true,
         label: 'Ghost Blocks',
@@ -167,10 +157,6 @@ export const ABILITY_EFFECTS = {
     },
     [ABILITY_IDS.DELAY_INPUT]: {
         type: ABILITY_IDS.DELAY_INPUT,
-        durationMs: 5000,
-    },
-    [ABILITY_IDS.RANDOM_SHIFT]: {
-        type: ABILITY_IDS.RANDOM_SHIFT,
         durationMs: 5000,
     },
     [ABILITY_IDS.INVISIBLE_CELLS]: {

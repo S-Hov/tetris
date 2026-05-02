@@ -50,10 +50,6 @@ const ABILITY_EFFECTS = {
         type: 'delay_input',
         durationMs: 5000,
     },
-    random_shift: {
-        type: 'random_shift',
-        durationMs: 5000,
-    },
     invisible_cells: {
         type: 'invisible_cells',
         durationMs: 6000,

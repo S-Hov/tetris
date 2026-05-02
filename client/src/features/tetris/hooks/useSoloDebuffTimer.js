@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import {
     SOLO_DEBUFF_INTERVAL_SECONDS,
@@ -24,6 +24,7 @@ export const useSoloDebuffTimer = ({
     setGameState,
 } = {}) => {
     const [remainingMs, setRemainingMs] = useState(() => toMs(SOLO_DEBUFF_INTERVAL_SECONDS))
+    const remainingMsRef = useRef(toMs(SOLO_DEBUFF_INTERVAL_SECONDS))
 
     useEffect(() => {
         if (!enabled || paused) {
@@ -36,37 +37,37 @@ export const useSoloDebuffTimer = ({
             const now = Date.now()
             const elapsedMs = now - lastTickAt
             lastTickAt = now
+            const nextValue = remainingMsRef.current - elapsedMs
 
-            setRemainingMs((currentValue) => {
-                const nextValue = currentValue - elapsedMs
+            if (nextValue > 0) {
+                remainingMsRef.current = nextValue
+                setRemainingMs(nextValue)
+                return
+            }
 
-                if (nextValue > 0) {
-                    return nextValue
-                }
+            const [ability] = getRandomDebuffs(1)
+            const effect = getAbilityEffect(ability?.id)
 
-                const [ability] = getRandomDebuffs(1)
-                const effect = getAbilityEffect(ability?.id)
+            if (effect) {
+                setGameState((prevState) => {
+                    const derivedState = withDerivedState(prevState)
 
-                if (effect) {
-                    setGameState((prevState) => {
-                        const derivedState = withDerivedState(prevState)
+                    if (
+                        derivedState.isGameOver ||
+                        derivedState.isPaused ||
+                        derivedState.isClearing ||
+                        derivedState.isChoosingAbility
+                    ) {
+                        return prevState
+                    }
 
-                        if (
-                            derivedState.isGameOver ||
-                            derivedState.isPaused ||
-                            derivedState.isClearing ||
-                            derivedState.isChoosingAbility
-                        ) {
-                            return prevState
-                        }
+                    return applyIncomingEffect(prevState, effect, { replaceActiveEffects: true })
+                })
+                notify(getDebuffMessage(ability), 'warning')
+            }
 
-                        return applyIncomingEffect(prevState, effect)
-                    })
-                    notify(getDebuffMessage(ability), 'warning')
-                }
-
-                return toMs(SOLO_DEBUFF_INTERVAL_SECONDS)
-            })
+            remainingMsRef.current = toMs(SOLO_DEBUFF_INTERVAL_SECONDS)
+            setRemainingMs(remainingMsRef.current)
         }, 250)
 
         return () => window.clearInterval(intervalId)
