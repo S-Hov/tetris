@@ -199,6 +199,61 @@
     margin-right: 5px;
 }
 
+.solo-debuff-panel {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1vh, 12px);
+}
+
+.solo-debuff-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.solo-debuff-panel__header span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    color: #9fb0c3;
+    font-size: clamp(0.72rem, 0.9vw, 0.86rem);
+}
+
+.solo-debuff-panel__header strong {
+    flex: 0 0 auto;
+    min-width: 2.4ch;
+    color: #f4fbff;
+    font-size: clamp(1.35rem, 2.4vw, 2rem);
+    line-height: 1;
+    text-align: right;
+    text-shadow: 0 0 12px rgba(255, 66, 198, 0.45);
+}
+
+.solo-debuff-panel__progress {
+    height: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 240, 255, 0.42);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.solo-debuff-panel__progress span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #00f0ff, #ff42c6);
+    box-shadow: 0 0 14px rgba(0, 240, 255, 0.36);
+    transition: width 0.2s ease;
+}
+
+.solo-debuff-panel__interval {
+    margin: 0;
+    font-size: clamp(0.72rem, 0.9vw, 0.84rem);
+    color: #9fb0c3;
+}
+
 .game-energy-panel {
     margin-top: 0;
     display: flex;

@@ -15,6 +15,7 @@ export const MATCH_PLAY_OPTIONS = {
 export const defaultModeSettings = {
     abilitiesEnabled: true,
     specialBlocksEnabled: false,
+    soloGameDebuffsMockEnabled: false,
 }
 
 export const modeSelectionCatalog = {

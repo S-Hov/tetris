@@ -1,5 +1,6 @@
 export const ABILITY_CHOICE_DURATION_MS = 50000000
 export const ABILITY_CHOICE_COUNT = 3
+export const SOLO_DEBUFF_INTERVAL_SECONDS = 30
 
 export const ABILITY_IDS = {
     SPEED_X2_FOR_4S: 'speed_x2_for_4s',
@@ -127,6 +128,57 @@ export const ABILITIES = [
     },
 ]
 
+export const ABILITY_EFFECTS = {
+    [ABILITY_IDS.SPEED_X2_FOR_4S]: {
+        type: ABILITY_IDS.SPEED_X2_FOR_4S,
+        durationMs: 4000,
+    },
+    [ABILITY_IDS.DARKNESS]: {
+        type: ABILITY_IDS.DARKNESS,
+        durationMs: 10000,
+    },
+    [ABILITY_IDS.GARBAGE_RAIN]: {
+        type: ABILITY_IDS.GARBAGE_RAIN,
+        durationMs: 1,
+    },
+    [ABILITY_IDS.CONTROLS_SWAP]: {
+        type: ABILITY_IDS.CONTROLS_SWAP,
+        durationMs: 5000,
+    },
+    [ABILITY_IDS.FOG_PIECE]: {
+        type: ABILITY_IDS.FOG_PIECE,
+        durationMs: 6000,
+    },
+    [ABILITY_IDS.GRAVITY_LOCK]: {
+        type: ABILITY_IDS.GRAVITY_LOCK,
+        durationMs: 3500,
+    },
+    [ABILITY_IDS.SCREEN_SHAKE]: {
+        type: ABILITY_IDS.SCREEN_SHAKE,
+        durationMs: 3500,
+    },
+    [ABILITY_IDS.RANDOM_ROTATION]: {
+        type: ABILITY_IDS.RANDOM_ROTATION,
+        durationMs: 5000,
+    },
+    [ABILITY_IDS.STICKY_WALLS]: {
+        type: ABILITY_IDS.STICKY_WALLS,
+        durationMs: 5000,
+    },
+    [ABILITY_IDS.DELAY_INPUT]: {
+        type: ABILITY_IDS.DELAY_INPUT,
+        durationMs: 5000,
+    },
+    [ABILITY_IDS.RANDOM_SHIFT]: {
+        type: ABILITY_IDS.RANDOM_SHIFT,
+        durationMs: 5000,
+    },
+    [ABILITY_IDS.INVISIBLE_CELLS]: {
+        type: ABILITY_IDS.INVISIBLE_CELLS,
+        durationMs: 6000,
+    },
+}
+
 export function getRandomDebuffs(count = ABILITY_CHOICE_COUNT, random = Math.random) {
     const enabledAbilities = ABILITIES.filter((ability) => ability.enabled)
 
@@ -134,4 +186,8 @@ export function getRandomDebuffs(count = ABILITY_CHOICE_COUNT, random = Math.ran
         .slice()
         .sort(() => random() - 0.5)
         .slice(0, Math.min(count, enabledAbilities.length))
+}
+
+export function getAbilityEffect(abilityId) {
+    return ABILITY_EFFECTS[abilityId] || null
 }

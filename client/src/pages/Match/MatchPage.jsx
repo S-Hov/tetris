@@ -5,6 +5,7 @@ import { useAbilityTimer } from '@/features/tetris/hooks/useAbilityTimer.js'
 import { useGameCountdown } from '@/features/tetris/hooks/useGameCountdown.js'
 import { useMatchResult } from '@/features/tetris/hooks/useMatchResult.js'
 import { useMatchSocketSync } from '@/features/tetris/hooks/useMatchSocketSync.js'
+import { useSoloDebuffTimer } from '@/features/tetris/hooks/useSoloDebuffTimer.js'
 import { useTetrisControls } from '@/features/tetris/hooks/useTetrisControls.js'
 import { useTetrisGameLoop } from '@/features/tetris/hooks/useTetrisGameLoop.js'
 import { GAME_MODE_REGISTRY, GAME_MODE_TYPES } from '@/features/tetris/model/gameModes.js'
@@ -24,6 +25,7 @@ import GameLayout from '@/features/tetris/ui/GameLayout.jsx'
 import MatchResultBanner from '@/features/tetris/ui/MatchResultBanner.jsx'
 import NextPiecePanel from '@/features/tetris/ui/NextPiecePanel.jsx'
 import PlayerSummaryPanel from '@/features/tetris/ui/PlayerSummaryPanel.jsx'
+import SoloDebuffTimerPanel from '@/features/tetris/ui/SoloDebuffTimerPanel.jsx'
 import StatsPanel from '@/features/tetris/ui/StatsPanel.jsx'
 import TetrisBoard from '@/features/tetris/ui/TetrisBoard.jsx'
 import { useAuth } from '@/shared/hooks/useAuth.js'
@@ -102,7 +104,8 @@ const MatchPage = ({
 
             if (
                 currentSettings.abilitiesEnabled === normalizedSettings.abilitiesEnabled &&
-                currentSettings.specialBlocksEnabled === normalizedSettings.specialBlocksEnabled
+                currentSettings.specialBlocksEnabled === normalizedSettings.specialBlocksEnabled &&
+                currentSettings.soloGameDebuffsMockEnabled === normalizedSettings.soloGameDebuffsMockEnabled
             ) {
                 return currentSettings
             }
@@ -110,7 +113,12 @@ const MatchPage = ({
             return normalizedSettings
         })
     }, [])
-    const roomSettingsKey = `${playMode}:${roomSettings.abilitiesEnabled}:${roomSettings.specialBlocksEnabled}`
+    const roomSettingsKey = [
+        playMode,
+        roomSettings.abilitiesEnabled,
+        roomSettings.specialBlocksEnabled,
+        roomSettings.soloGameDebuffsMockEnabled,
+    ].join(':')
 
     return (
         <MatchPageGame
@@ -185,6 +193,18 @@ const MatchPageGame = ({
         abilityChoiceEndsAt: derivedState.abilityChoiceEndsAt,
         isChoosingAbility: derivedState.isChoosingAbility,
         randomPiece: randomPieceGenerator,
+        setGameState,
+    })
+    const isSoloDebuffsEnabled = !isOnline && roomSettings.soloGameDebuffsMockEnabled
+    const soloDebuffTimer = useSoloDebuffTimer({
+        enabled: isSoloDebuffsEnabled,
+        paused: isIntroVisible ||
+            isCountingDown ||
+            isMatchFinished ||
+            derivedState.isGameOver ||
+            derivedState.isPaused ||
+            derivedState.isClearing ||
+            derivedState.isChoosingAbility,
         setGameState,
     })
 
@@ -373,7 +393,16 @@ const MatchPageGame = ({
                     status={isMatchFinished ? 'Round ended' : opponentState.isGameOver ? 'Game Over' : 'Playing'}
                 />
             ) : (
-                <ActionsPanel actions={actions} />
+                <>
+                    {isSoloDebuffsEnabled ? (
+                        <SoloDebuffTimerPanel
+                            intervalSeconds={soloDebuffTimer.intervalSeconds}
+                            progress={soloDebuffTimer.progress}
+                            secondsLeft={soloDebuffTimer.secondsLeft}
+                        />
+                    ) : null}
+                    <ActionsPanel actions={actions} />
+                </>
             )}
         </>
     )

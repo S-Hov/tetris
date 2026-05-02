@@ -8,6 +8,7 @@ const GamePage = () => {
     const location = useLocation()
     const settings = normalizeMatchSettings({
         abilitiesEnabled: false,
+        soloGameDebuffsMockEnabled: location.state?.roomSettings?.soloGameDebuffsMockEnabled ?? false,
         specialBlocksEnabled: location.state?.roomSettings?.specialBlocksEnabled ?? false,
     })
 
