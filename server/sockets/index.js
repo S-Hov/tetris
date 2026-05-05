@@ -8,7 +8,7 @@ import {
 import { getRoomPlayers, roomStore } from './roomStore.js'
 import { socketAuthMiddleware } from './socketAuth.js'
 import {
-    abandonRoomMatchService,
+    abandonRoomTeamMatchService,
     cancelRoomMatchService,
     markRoomPlayerLeftService,
 } from '../services/matchService.js'
@@ -19,6 +19,19 @@ const getWinnerAfterPlayerLeft = (room, removedPlayer) => {
     return players.find((player) => player.teamNumber !== removedPlayer?.teamNumber) ||
         players[0] ||
         null
+}
+
+const getTeamOutcomeAfterPlayerLeft = (previousRoom, updatedRoom, removedPlayer) => {
+    const previousPlayers = getRoomPlayers(previousRoom)
+    const updatedPlayers = getRoomPlayers(updatedRoom)
+    const loserTeamNumber = removedPlayer?.teamNumber
+    const winnerTeamPlayers = updatedPlayers.filter((player) => player.teamNumber !== loserTeamNumber)
+    const loserTeamPlayers = previousPlayers.filter((player) => player.teamNumber === loserTeamNumber)
+
+    return {
+        winnerTeamPlayers,
+        loserTeamPlayers: loserTeamPlayers.length ? loserTeamPlayers : [removedPlayer].filter(Boolean),
+    }
 }
 
 export const registerSocketHandlers = (io) => {
@@ -58,10 +71,16 @@ export const registerSocketHandlers = (io) => {
 
                     if (result.previousRoom?.status === 'playing') {
                         const winner = getWinnerAfterPlayerLeft(result.room, result.removedPlayer)
+                        const teamOutcome = getTeamOutcomeAfterPlayerLeft(
+                            result.previousRoom,
+                            result.room,
+                            result.removedPlayer
+                        )
 
-                        await abandonRoomMatchService({
+                        await abandonRoomTeamMatchService({
                             roomId: result.roomId,
-                            winnerPlayer: winner,
+                            winnerTeamPlayers: teamOutcome.winnerTeamPlayers,
+                            loserTeamPlayers: teamOutcome.loserTeamPlayers,
                             loserPlayer: result.removedPlayer,
                         })
 
@@ -69,6 +88,10 @@ export const registerSocketHandlers = (io) => {
                             roomId: result.roomId,
                             loserSocketId: result.removedPlayer.socketId,
                             winnerSocketId: winner?.socketId || null,
+                            loserSocketIds: teamOutcome.loserTeamPlayers.map((player) => player.socketId),
+                            winnerSocketIds: teamOutcome.winnerTeamPlayers.map((player) => player.socketId),
+                            loserTeamId: teamOutcome.loserTeamPlayers[0]?.teamSlot || null,
+                            winnerTeamId: teamOutcome.winnerTeamPlayers[0]?.teamSlot || null,
                             reason: 'disconnect',
                             matchType: result.previousRoom?.settings?.matchType || 'private',
                         })

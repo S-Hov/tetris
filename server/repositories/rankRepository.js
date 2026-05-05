@@ -27,7 +27,7 @@ export const applyRankedMatchResultRepo = async (client, matchId) => {
 
     const match = matchResult.rows[0]
 
-    if (!match?.counts_for_rating || match.status !== 'finished') {
+    if (!match?.counts_for_rating || !['finished', 'abandoned'].includes(match.status)) {
         return []
     }
 

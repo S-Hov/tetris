@@ -46,6 +46,10 @@ const getLatestMatchByRoomId = async (client, roomId, { forUpdate = false } = {}
     return result.rows[0] || null
 }
 
+const isReusableRoomMatch = (match) => (
+    match && (match.status === 'created' || match.status === 'playing')
+)
+
 const ensureTeamForMatch = async (client, matchId, teamNumber) => {
     const existingTeam = await client.query(
         `
@@ -158,7 +162,7 @@ export const createMatchForRoomRepo = async ({
 
         const existingMatch = await getLatestMatchByRoomId(client, roomId, { forUpdate: true })
 
-        if (existingMatch) {
+        if (isReusableRoomMatch(existingMatch)) {
             const team = await ensureTeamForMatch(client, existingMatch.id, 1)
             const matchPlayer = await upsertMatchPlayer(client, {
                 matchId: existingMatch.id,

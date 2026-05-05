@@ -210,6 +210,58 @@ export const abandonRoomMatchService = async ({ roomId, winnerPlayer = null, los
     })
 }
 
+export const abandonRoomTeamMatchService = async ({
+    roomId,
+    winnerTeamPlayers = [],
+    loserTeamPlayers = [],
+    loserPlayer = null,
+}) => {
+    if (!winnerTeamPlayers.length || !loserTeamPlayers.length) {
+        return await abandonRoomMatchService({
+            roomId,
+            winnerPlayer: winnerTeamPlayers[0] || null,
+            loserPlayer: loserPlayer || loserTeamPlayers[0] || null,
+        })
+    }
+
+    const now = new Date()
+    const winnerStats = getTeamStats(winnerTeamPlayers)
+    const loserStats = getTeamStats(loserTeamPlayers)
+    const winnerTeamId = winnerTeamPlayers[0]?.teamId || null
+    const loserTeamId = loserTeamPlayers[0]?.teamId || null
+
+    return await markRoomMatchFinishedRepo({
+        roomId,
+        status: 'abandoned',
+        winnerTeamId,
+        teams: [
+            {
+                teamId: winnerTeamId,
+                teamScore: winnerStats.score,
+                result: 'win',
+            },
+            {
+                teamId: loserTeamId,
+                teamScore: loserStats.score,
+                result: 'lose',
+            },
+        ].filter((team) => team.teamId),
+        players: [
+            ...winnerTeamPlayers.map((player) => ({
+                matchPlayerId: player.matchPlayerId,
+                ...getPlayerStats(player),
+                result: 'win',
+            })),
+            ...loserTeamPlayers.map((player) => ({
+                matchPlayerId: player.matchPlayerId,
+                ...getPlayerStats(player),
+                result: 'lose',
+                leftAt: player.socketId === loserPlayer?.socketId ? now : null,
+            })),
+        ].filter((player) => player.matchPlayerId),
+    })
+}
+
 export const cancelRoomMatchService = async ({ roomId }) => {
     return await cancelRoomMatchRepo({ roomId })
 }

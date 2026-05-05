@@ -82,6 +82,10 @@ export const registerGameHandlers = (io, socket) => {
             return
         }
 
+        if (room.status !== 'playing') {
+            return
+        }
+
         const updatedRoom = roomStore.updateRoom(roomId, (currentRoom) => {
             if (!currentRoom) {
                 return currentRoom

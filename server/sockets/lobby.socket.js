@@ -11,7 +11,7 @@ import {
     roomStore,
 } from './roomStore.js'
 import {
-    abandonRoomMatchService,
+    abandonRoomTeamMatchService,
     attachPlayerToRoomMatchService,
     cancelRoomMatchService,
     createRoomMatchService,
@@ -80,6 +80,76 @@ const getWinnerAfterPlayerLeft = (room, removedPlayer) => {
         null
 }
 
+const getTeamOutcomeAfterPlayerLeft = (previousRoom, updatedRoom, removedPlayer) => {
+    const previousPlayers = getRoomPlayers(previousRoom)
+    const updatedPlayers = getRoomPlayers(updatedRoom)
+    const loserTeamNumber = removedPlayer?.teamNumber
+    const winnerTeamPlayers = updatedPlayers.filter((player) => player.teamNumber !== loserTeamNumber)
+    const loserTeamPlayers = previousPlayers.filter((player) => player.teamNumber === loserTeamNumber)
+
+    return {
+        winnerTeamPlayers,
+        loserTeamPlayers: loserTeamPlayers.length ? loserTeamPlayers : [removedPlayer].filter(Boolean),
+    }
+}
+
+const bindRoomPlayersToFreshMatch = async (room) => {
+    const players = getRoomPlayers(room)
+    const firstTeamOnePlayer = players.find((player) => player.teamNumber === 1) || players[0]
+
+    if (!firstTeamOnePlayer) {
+        return room
+    }
+
+    const roomSettings = room.settings || {}
+    const countsForRating = roomSettings.matchType === 'ranked'
+    const firstBinding = await createRoomMatchService({
+        roomId: room.id,
+        player: firstTeamOnePlayer,
+        matchMode: room.modeKey || '1v1',
+        matchType: roomSettings.matchType || 'private',
+        countsForRating,
+    })
+    const bindings = new Map([
+        [firstTeamOnePlayer.socketId, firstBinding],
+    ])
+
+    for (const player of players) {
+        if (player.socketId === firstTeamOnePlayer.socketId) {
+            continue
+        }
+
+        const binding = await attachPlayerToRoomMatchService({
+            roomId: room.id,
+            player,
+            teamNumber: player.teamNumber || 1,
+        })
+
+        bindings.set(player.socketId, binding)
+    }
+
+    const reboundPlayers = players.map((player) => {
+        const binding = bindings.get(player.socketId)
+
+        return binding
+            ? {
+                ...player,
+                teamId: binding.teamId,
+                teamNumber: binding.teamNumber,
+                teamSlot: getTeamIdByNumber(binding.teamNumber),
+                matchPlayerId: binding.matchPlayerId,
+            }
+            : player
+    })
+
+    return roomStore.createRoom({
+        ...room,
+        matchId: firstBinding.matchId,
+        players: reboundPlayers,
+        teams: buildRoomTeams(reboundPlayers, room.teams),
+    })
+}
+
 const syncRemovedPlayerWithPersistence = async (io, result) => {
     if (!result?.removedPlayer) {
         return
@@ -92,10 +162,12 @@ const syncRemovedPlayerWithPersistence = async (io, result) => {
 
     if (result.previousRoom?.status === 'playing' && result.room) {
         const winner = getWinnerAfterPlayerLeft(result.room, result.removedPlayer)
+        const teamOutcome = getTeamOutcomeAfterPlayerLeft(result.previousRoom, result.room, result.removedPlayer)
 
-        await abandonRoomMatchService({
+        await abandonRoomTeamMatchService({
             roomId: result.roomId,
-            winnerPlayer: winner,
+            winnerTeamPlayers: teamOutcome.winnerTeamPlayers,
+            loserTeamPlayers: teamOutcome.loserTeamPlayers,
             loserPlayer: result.removedPlayer,
         })
 
@@ -103,6 +175,10 @@ const syncRemovedPlayerWithPersistence = async (io, result) => {
             roomId: result.roomId,
             loserSocketId: result.removedPlayer.socketId,
             winnerSocketId: winner?.socketId || null,
+            loserSocketIds: teamOutcome.loserTeamPlayers.map((player) => player.socketId),
+            winnerSocketIds: teamOutcome.winnerTeamPlayers.map((player) => player.socketId),
+            loserTeamId: teamOutcome.loserTeamPlayers[0]?.teamSlot || null,
+            winnerTeamId: teamOutcome.winnerTeamPlayers[0]?.teamSlot || null,
             reason: 'room_switch',
             matchType: result.previousRoom?.settings?.matchType || 'private',
         })
@@ -430,8 +506,9 @@ export const registerLobbyHandlers = (io, socket) => {
             const allReady = canStartRoom(normalizedRoom)
 
             if (allReady) {
+                const reboundRoom = await bindRoomPlayersToFreshMatch(normalizedRoom)
                 const playingRoom = {
-                    ...normalizedRoom,
+                    ...reboundRoom,
                     status: 'playing',
                 }
 

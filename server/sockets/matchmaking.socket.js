@@ -179,6 +179,11 @@ const createMatchedRoom = async ({ io, firstEntry, secondEntry }) => {
         io.to(player.socketId).emit('matchmaking:found', payload)
     }
 
+    removePartiesForSocketIds([
+        ...getEntrySocketIds(firstEntry),
+        ...getEntrySocketIds(secondEntry),
+    ])
+
     io.to(roomId).emit('room:state', normalizedRoom)
     io.to(roomId).emit('match:start', { roomId })
 }
@@ -295,6 +300,16 @@ const findPartyBySocketId = (socketId) => (
         party.players.some((player) => player.socket.id === socketId)
     )) || null
 )
+
+const removePartiesForSocketIds = (socketIds = []) => {
+    const socketIdSet = new Set(socketIds)
+
+    for (const [partyId, party] of parties.entries()) {
+        if (party.players.some((player) => socketIdSet.has(player.socket.id))) {
+            parties.delete(partyId)
+        }
+    }
+}
 
 const leavePartyBySocketId = (io, socketId) => {
     const party = findPartyBySocketId(socketId)
