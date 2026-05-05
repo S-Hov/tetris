@@ -31,4 +31,3 @@ dist-ssr
 .env.production.local
 
 .helper.txt
-.sql
