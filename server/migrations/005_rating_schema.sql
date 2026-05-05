@@ -1,0 +1,26 @@
+CREATE TABLE IF NOT EXISTS user_rank_stats (
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    rank_points INTEGER NOT NULL DEFAULT 0,
+    mmr INTEGER NOT NULL DEFAULT 1000,
+    wins INTEGER NOT NULL DEFAULT 0,
+    losses INTEGER NOT NULL DEFAULT 0,
+    draws INTEGER NOT NULL DEFAULT 0,
+    best_solo_score INTEGER NOT NULL DEFAULT 0,
+    total_matches INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS rating_history (
+    id BIGSERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    match_id BIGINT REFERENCES matches(id) ON DELETE SET NULL,
+    old_rank_points INTEGER NOT NULL,
+    new_rank_points INTEGER NOT NULL,
+    rank_delta INTEGER NOT NULL,
+    old_mmr INTEGER NOT NULL,
+    new_mmr INTEGER NOT NULL,
+    mmr_delta INTEGER NOT NULL,
+    reason VARCHAR(50) NOT NULL DEFAULT 'match_result',
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);

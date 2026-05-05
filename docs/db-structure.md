@@ -6,7 +6,7 @@
 
 ## Общая картина
 
-База состоит из 10 таблиц:
+База состоит из 12 таблиц:
 
 1. `roles`
 2. `users`
@@ -18,12 +18,15 @@
 8. `match_events`
 9. `user_rank_stats`
 10. `rating_history`
+11. `game_rooms`
+12. `game_room_players`
 
 По смыслу схема делится на 3 зоны:
 
 - аутентификация и аккаунты: `roles`, `users`, `auth_logs`, `email_verifications`
 - матчи и игровая телеметрия: `matches`, `match_teams`, `match_players`, `match_events`
 - рейтинг и ранговая статистика: `user_rank_stats`, `rating_history`
+- runtime-состояние комнат: `game_rooms`, `game_room_players`
 
 ## Карта связей
 

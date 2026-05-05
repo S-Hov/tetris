@@ -29,6 +29,7 @@
 ```bash
 cd server
 npm install
+npm run db:migrate
 node server.js
 ```
 
@@ -55,6 +56,8 @@ npm run dev
 | `server/sockets/lobby.socket.js` | Приватные комнаты и ready-flow |
 | `server/sockets/matchmaking.socket.js` | Очередь поиска, party и автоматическое создание матча |
 | `server/sockets/game.handlers.js` | `game:update`, `game:over`, `ability:use` |
+
+Миграции БД описаны в [`docs/db-migrations.md`](docs/db-migrations.md).
 
 ## Текущее состояние
 
