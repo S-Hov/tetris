@@ -243,6 +243,102 @@ match_events.target_player_id
 
 - здесь есть циклическая бизнес-связь: матч содержит команды, а матч также хранит `winner_team_id`
 
+### `game_rooms`
+
+Текущие игровые комнаты. Это оперативное состояние комнаты, вынесенное из памяти сервера в БД: состав,
+статус, настройки и привязка к текущему/последнему матчу.
+
+| Поле | Тип | Null | По умолчанию | Описание |
+|---|---|---|---|---|
+| `id` | `varchar(100)` | нет |  | публичный ID комнаты |
+| `status` | `varchar(30)` | нет | `'waiting'` | состояние комнаты |
+| `match_id` | `bigint` | да |  | текущий или последний матч комнаты |
+| `mode_key` | `varchar(20)` | нет |  | режим комнаты |
+| `owner_socket_id` | `varchar(100)` | да |  | сокет владельца комнаты |
+| `owner_user_key` | `varchar(128)` | да |  | стабильный ключ владельца: user id или guest id |
+| `settings` | `jsonb` | нет | `'{}'` | настройки матча: эффекты, спецблоки, тип матча |
+| `metadata` | `jsonb` | нет | `'{}'` | запас для будущих режимов, invite-настроек, tournament/party данных |
+| `created_at` | `timestamp` | нет | `now()` | дата создания |
+| `updated_at` | `timestamp` | нет | `now()` | дата обновления |
+
+Ограничения:
+
+- PK: `id`
+- CHECK `status`:
+  - `waiting`
+  - `playing`
+  - `closed`
+- CHECK `mode_key`:
+  - `1v1`
+  - `2v2`
+  - `5v5`
+  - `royale`
+
+Связи:
+
+- `match_id -> matches.id ON DELETE SET NULL`
+- на `game_rooms.id` ссылается `game_room_players.room_id`
+
+Индексы:
+
+- `idx_game_rooms_status` на `status`
+- `idx_game_rooms_mode_key` на `mode_key`
+- `idx_game_rooms_match_id` на `match_id`
+- `idx_game_rooms_updated_at` на `updated_at`
+
+### `game_room_players`
+
+Текущие участники игровых комнат. Хранит сокет, команду, готовность и актуальный игровой снапшот игрока.
+
+| Поле | Тип | Null | По умолчанию | Описание |
+|---|---|---|---|---|
+| `id` | `bigint` | нет | `nextval(...)` | PK участника комнаты |
+| `room_id` | `varchar(100)` | нет |  | комната |
+| `socket_id` | `varchar(100)` | нет |  | актуальный socket.io id игрока |
+| `user_key` | `varchar(128)` | нет |  | стабильный ключ игрока: user id или guest id |
+| `user_id` | `integer` | да |  | связанный пользователь, если зарегистрирован |
+| `is_registered` | `boolean` | нет | `false` | зарегистрированный ли игрок |
+| `username` | `varchar(100)` | нет |  | отображаемое имя в комнате |
+| `avatar_url` | `text` | да |  | аватар |
+| `rank_stats` | `jsonb` | да |  | ранговый снапшот на момент подключения |
+| `is_ready` | `boolean` | нет | `false` | готовность к старту |
+| `game_state` | `jsonb` | да |  | последний игровой снапшот: score, board, level, energy |
+| `team_id` | `bigint` | да |  | команда текущего матча |
+| `team_number` | `integer` | да |  | номер команды в комнате |
+| `team_slot` | `varchar(20)` | да |  | слот команды (`team_1`, `team_2`) |
+| `match_player_id` | `bigint` | да |  | участник текущего матча |
+| `metadata` | `jsonb` | нет | `'{}'` | запас под роли, loadout, party-id, spectator-флаги |
+| `joined_at` | `timestamp` | нет | `now()` | когда вошёл в комнату |
+| `updated_at` | `timestamp` | нет | `now()` | дата обновления |
+
+Ограничения:
+
+- PK: `id`
+- UNIQUE: `(room_id, user_key)`
+- UNIQUE: `socket_id`
+- CHECK `team_number`:
+  - `1`
+  - `2`
+- CHECK `team_slot`:
+  - `team_1`
+  - `team_2`
+
+Связи:
+
+- `room_id -> game_rooms.id ON DELETE CASCADE`
+- `user_id -> users.id ON DELETE SET NULL`
+- `team_id -> match_teams.id ON DELETE SET NULL`
+- `match_player_id -> match_players.id ON DELETE SET NULL`
+
+Индексы:
+
+- `idx_game_room_players_room_id` на `room_id`
+- `idx_game_room_players_socket_id` на `socket_id`
+- `idx_game_room_players_user_key` на `user_key`
+- `idx_game_room_players_user_id` на `user_id`
+- `idx_game_room_players_team` на `(room_id, team_number)`
+- `idx_game_room_players_updated_at` на `updated_at`
+
 ### `match_teams`
 
 Команды внутри матча.

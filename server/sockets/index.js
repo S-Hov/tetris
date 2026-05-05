@@ -44,12 +44,19 @@ export const registerSocketHandlers = (io) => {
         registerGameHandlers(io, socket)
         registerMatchmakingHandlers(io, socket)
 
-        socket.on('disconnect', () => {
+        socket.on('disconnect', async () => {
             console.log('Socket disconnected:', socket.id)
             removeSocketFromMatchmakingQueue(socket.id)
             removeSocketFromParties(io, socket.id)
 
-            const result = roomStore.removePlayerBySocketId(socket.id)
+            let result = null
+
+            try {
+                result = await roomStore.removePlayerBySocketId(socket.id)
+            } catch (error) {
+                console.error('disconnect room cleanup error', error)
+                return
+            }
 
             if (!result || !result.removedPlayer) {
                 return
@@ -97,7 +104,7 @@ export const registerSocketHandlers = (io) => {
                         })
 
                         if (result.previousRoom?.settings?.matchType && result.previousRoom.settings.matchType !== 'private') {
-                            roomStore.deleteRoom(result.roomId)
+                            await roomStore.deleteRoom(result.roomId)
                         }
                     }
                 } catch (error) {

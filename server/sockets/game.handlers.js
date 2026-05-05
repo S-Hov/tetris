@@ -57,14 +57,14 @@ const ABILITY_EFFECTS = {
 }
 
 export const registerGameHandlers = (io, socket) => {
-    socket.on('game:update', ({ roomId, payload }) => {
-        const room = roomStore.getRoom(roomId)
+    socket.on('game:update', async ({ roomId, payload }) => {
+        const room = await roomStore.getRoom(roomId)
 
         if (!isSocketRoomParticipant(room, socket)) {
             return
         }
 
-        roomStore.updatePlayer(roomId, socket.id, (player) => ({
+        await roomStore.updatePlayer(roomId, socket.id, (player) => ({
             ...player,
             gameState: payload,
         }))
@@ -76,7 +76,7 @@ export const registerGameHandlers = (io, socket) => {
     })
 
     socket.on('game:over', async ({ roomId, payload }) => {
-        const room = roomStore.getRoom(roomId)
+        const room = await roomStore.getRoom(roomId)
 
         if (!isSocketRoomParticipant(room, socket)) {
             return
@@ -86,7 +86,7 @@ export const registerGameHandlers = (io, socket) => {
             return
         }
 
-        const updatedRoom = roomStore.updateRoom(roomId, (currentRoom) => {
+        const updatedRoom = await roomStore.updateRoom(roomId, (currentRoom) => {
             if (!currentRoom) {
                 return currentRoom
             }
@@ -186,12 +186,12 @@ export const registerGameHandlers = (io, socket) => {
         })
 
         if (room.settings?.matchType && room.settings.matchType !== 'private') {
-            roomStore.deleteRoom(roomId)
+            await roomStore.deleteRoom(roomId)
         }
     })
 
     socket.on('ability:use', async ({ roomId, abilityId, targetSocketId }, callback) => {
-        const room = roomStore.getRoom(roomId)
+        const room = await roomStore.getRoom(roomId)
 
         if (!room) {
             callback?.({ success: false, message: 'Room not found' })

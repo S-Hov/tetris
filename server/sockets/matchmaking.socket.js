@@ -157,7 +157,7 @@ const createMatchedRoom = async ({ io, firstEntry, secondEntry }) => {
         players,
     }
 
-    const normalizedRoom = roomStore.createRoom(room)
+    const normalizedRoom = await roomStore.createRoom(room)
 
     for (const entry of [firstEntry, secondEntry]) {
         for (const player of entry.players) {
@@ -357,7 +357,7 @@ export const registerMatchmakingHandlers = (io, socket) => {
                 return
             }
 
-            if (roomStore.findRoomBySocketId(socket.id)) {
+            if (await roomStore.findRoomBySocketId(socket.id)) {
                 callback?.({
                     success: false,
                     message: 'Сначала завершите текущую комнату',

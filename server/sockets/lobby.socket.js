@@ -142,7 +142,7 @@ const bindRoomPlayersToFreshMatch = async (room) => {
             : player
     })
 
-    return roomStore.createRoom({
+    return await roomStore.createRoom({
         ...room,
         matchId: firstBinding.matchId,
         players: reboundPlayers,
@@ -184,7 +184,7 @@ const syncRemovedPlayerWithPersistence = async (io, result) => {
         })
 
         if (result.previousRoom?.settings?.matchType && result.previousRoom.settings.matchType !== 'private') {
-            roomStore.deleteRoom(result.roomId)
+            await roomStore.deleteRoom(result.roomId)
         }
 
         return
@@ -198,13 +198,13 @@ const syncRemovedPlayerWithPersistence = async (io, result) => {
 }
 
 const leavePreviousRoomIfNeeded = async (io, socket, nextRoomId = null) => {
-    const existingRoom = roomStore.findRoomBySocketId(socket.id)
+    const existingRoom = await roomStore.findRoomBySocketId(socket.id)
 
     if (!existingRoom || existingRoom.id === nextRoomId) {
         return
     }
 
-    const result = roomStore.removePlayerBySocketId(socket.id)
+    const result = await roomStore.removePlayerBySocketId(socket.id)
 
     socket.leave(existingRoom.id)
 
@@ -271,7 +271,7 @@ export const registerLobbyHandlers = (io, socket) => {
                 ],
             }
 
-            const normalizedRoom = roomStore.createRoom(room)
+            const normalizedRoom = await roomStore.createRoom(room)
             socket.join(roomId)
 
             callback?.({
@@ -303,7 +303,7 @@ export const registerLobbyHandlers = (io, socket) => {
             await leavePreviousRoomIfNeeded(io, socket, roomId)
 
             const user = socket.data.user
-            const room = roomStore.getRoom(roomId)
+            const room = await roomStore.getRoom(roomId)
 
             if (!room) {
                 callback?.({
@@ -338,7 +338,7 @@ export const registerLobbyHandlers = (io, socket) => {
                     )),
                 }
 
-                const normalizedRoom = roomStore.createRoom(rejoinedRoom)
+                const normalizedRoom = await roomStore.createRoom(rejoinedRoom)
                 socket.join(roomId)
 
                 callback?.({
@@ -399,7 +399,7 @@ export const registerLobbyHandlers = (io, socket) => {
                 ],
             }
 
-            const normalizedRoom = roomStore.createRoom(updatedRoom)
+            const normalizedRoom = await roomStore.createRoom(updatedRoom)
             socket.join(roomId)
 
             callback?.({
@@ -425,7 +425,7 @@ export const registerLobbyHandlers = (io, socket) => {
 
     socket.on('room:leave', async ({ roomId } = {}, callback) => {
         try {
-            const room = roomStore.getRoom(roomId)
+            const room = await roomStore.getRoom(roomId)
 
             if (!room) {
                 callback?.({ success: false, message: 'Room not found' })
@@ -437,7 +437,7 @@ export const registerLobbyHandlers = (io, socket) => {
                 return
             }
 
-            const result = roomStore.removePlayerBySocketId(socket.id)
+            const result = await roomStore.removePlayerBySocketId(socket.id)
             socket.leave(roomId)
 
             if (!result) {
@@ -475,7 +475,7 @@ export const registerLobbyHandlers = (io, socket) => {
 
     socket.on('player:ready', async ({ roomId }, callback) => {
         try {
-            const room = roomStore.getRoom(roomId)
+            const room = await roomStore.getRoom(roomId)
 
             if (!room) {
                 callback?.({ success: false, message: 'Room not found' })
@@ -500,7 +500,7 @@ export const registerLobbyHandlers = (io, socket) => {
                 }),
             }
 
-            const normalizedRoom = roomStore.createRoom(updatedRoom)
+            const normalizedRoom = await roomStore.createRoom(updatedRoom)
 
             const currentPlayer = getRoomPlayers(normalizedRoom).find((player) => player.socketId === socket.id)
             const allReady = canStartRoom(normalizedRoom)
@@ -512,7 +512,7 @@ export const registerLobbyHandlers = (io, socket) => {
                     status: 'playing',
                 }
 
-                roomStore.createRoom(playingRoom)
+                await roomStore.createRoom(playingRoom)
                 await startRoomMatchService({ roomId })
 
                 io.to(roomId).emit('room:state', playingRoom)
@@ -541,14 +541,14 @@ export const registerLobbyHandlers = (io, socket) => {
 
     socket.on('room:set-team', async ({ roomId, userId, teamId }, callback) => {
         try {
-            const room = roomStore.getRoom(roomId)
+            const room = await roomStore.getRoom(roomId)
 
             if (!room) {
                 callback?.({ success: false, message: 'Room not found' })
                 return
             }
 
-            if (room.ownerSocketId !== socket.id && room.ownerUserId !== socket.data.user?.id) {
+            if (room.ownerSocketId !== socket.id && String(room.ownerUserId) !== String(socket.data.user?.id)) {
                 callback?.({ success: false, message: 'Только создатель комнаты может менять команды' })
                 return
             }
@@ -599,7 +599,7 @@ export const registerLobbyHandlers = (io, socket) => {
                     isReady: false,
                 }
             })
-            const updatedRoom = roomStore.createRoom({
+            const updatedRoom = await roomStore.createRoom({
                 ...room,
                 status: 'waiting',
                 players: updatedPlayers,
