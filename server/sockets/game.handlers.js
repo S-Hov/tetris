@@ -186,7 +186,7 @@ export const registerGameHandlers = (io, socket) => {
         }
     })
 
-    socket.on('ability:use', async ({ roomId, abilityId }, callback) => {
+    socket.on('ability:use', async ({ roomId, abilityId, targetSocketId }, callback) => {
         const room = roomStore.getRoom(roomId)
 
         if (!room) {
@@ -206,12 +206,20 @@ export const registerGameHandlers = (io, socket) => {
             return
         }
 
-        const targetPlayer = getRoomPlayers(room).find((player) => (
+        const opponentPlayers = getRoomPlayers(room).filter((player) => (
             player.socketId !== socket.id && player.teamNumber !== sourcePlayer.teamNumber
         ))
+        const targetPlayer = targetSocketId
+            ? opponentPlayers.find((player) => player.socketId === targetSocketId)
+            : opponentPlayers[0] || null
 
         if (!targetPlayer) {
             callback?.({ success: false, message: 'Opponent not found' })
+            return
+        }
+
+        if (opponentPlayers.length > 1 && !targetSocketId) {
+            callback?.({ success: false, message: 'Target opponent is required' })
             return
         }
 

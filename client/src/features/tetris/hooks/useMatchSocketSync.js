@@ -18,6 +18,33 @@ const createOpponentState = () => ({
     abilityChoiceEndsAt: null,
 })
 
+const getRoomPlayers = (room) => {
+    if (!room) {
+        return []
+    }
+
+    if (Array.isArray(room.players)) {
+        return room.players
+    }
+
+    return (room.teams || []).flatMap((team) => team.players || [])
+}
+
+const mergePlayerGameState = (players, socketId, payload) => (
+    players.map((player) => (
+        player.socketId === socketId
+            ? {
+                ...player,
+                gameState: {
+                    ...(player.gameState || {}),
+                    ...payload,
+                    board: Array.isArray(payload?.board) ? payload.board : player.gameState?.board,
+                },
+            }
+            : player
+    ))
+)
+
 const emitWithAck = (eventName, payload) => {
     return new Promise((resolve) => {
         socket.emit(eventName, payload, (response) => {
@@ -38,6 +65,7 @@ export const useMatchSocketSync = ({
     user,
 } = {}) => {
     const [opponentState, setOpponentState] = useState(() => createOpponentState())
+    const [roomSnapshot, setRoomSnapshot] = useState(null)
 
     useEffect(() => {
         if (!enabled) {
@@ -62,6 +90,10 @@ export const useMatchSocketSync = ({
                 if (response.room?.settings) {
                     setRoomSettings(response.room.settings)
                 }
+
+                if (response.room) {
+                    setRoomSnapshot(response.room)
+                }
             } catch (error) {
                 notify(error.message || 'Не удалось восстановить подключение к матчу', 'error')
             }
@@ -77,18 +109,34 @@ export const useMatchSocketSync = ({
             return undefined
         }
 
-        const handleOpponentUpdate = ({ payload }) => {
+        const handleOpponentUpdate = ({ socketId, payload }) => {
             setOpponentState((prevState) => ({
                 ...prevState,
                 ...payload,
                 board: Array.isArray(payload?.board) ? payload.board : prevState.board,
             }))
+            setRoomSnapshot((currentRoom) => {
+                if (!currentRoom || !socketId) {
+                    return currentRoom
+                }
+
+                return {
+                    ...currentRoom,
+                    players: mergePlayerGameState(getRoomPlayers(currentRoom), socketId, payload),
+                }
+            })
+        }
+
+        const handleRoomState = (room) => {
+            setRoomSnapshot(room || null)
         }
 
         socket.on('opponent:update', handleOpponentUpdate)
+        socket.on('room:state', handleRoomState)
 
         return () => {
             socket.off('opponent:update', handleOpponentUpdate)
+            socket.off('room:state', handleRoomState)
         }
     }, [enabled])
 
@@ -181,28 +229,35 @@ export const useMatchSocketSync = ({
         }
     }, [enabled, setGameState])
 
-    const handleAbilityChoose = (ability) => {
+    const handleAbilityChoose = (ability, targetSocketId = null) => {
         if (!enabled || !roomId) {
             setGameState((prevState) => resolveAbilityChoice(prevState, ability, { randomPiece }))
-            return
+            return Promise.resolve(true)
         }
 
-        socket.emit('ability:use', {
-            roomId,
-            abilityId: ability.id,
-        }, (response) => {
-            if (!response?.success) {
-                notify(response?.message || 'Не удалось применить способность', 'error')
-                return
-            }
+        return new Promise((resolve) => {
+            socket.emit('ability:use', {
+                roomId,
+                abilityId: ability.id,
+                targetSocketId,
+            }, (response) => {
+                if (!response?.success) {
+                    notify(response?.message || 'Не удалось применить способность', 'error')
+                    resolve(false)
+                    return
+                }
 
-            notify(`${ability.title} activated`, 'success')
-            setGameState((prevState) => resolveAbilityChoice(prevState, ability, { randomPiece }))
+                notify(`${ability.title} activated`, 'success')
+                setGameState((prevState) => resolveAbilityChoice(prevState, ability, { randomPiece }))
+                resolve(true)
+            })
         })
     }
 
     return {
         handleAbilityChoose,
         opponentState,
+        roomPlayers: getRoomPlayers(roomSnapshot),
+        roomSnapshot,
     }
 }

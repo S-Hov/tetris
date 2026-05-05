@@ -8,6 +8,7 @@ import { useMatchSocketSync } from '@/features/tetris/hooks/useMatchSocketSync.j
 import { useSoloDebuffTimer } from '@/features/tetris/hooks/useSoloDebuffTimer.js'
 import { useTetrisControls } from '@/features/tetris/hooks/useTetrisControls.js'
 import { useTetrisGameLoop } from '@/features/tetris/hooks/useTetrisGameLoop.js'
+import { createBoard } from '@/features/tetris/model/createBoard.js'
 import { GAME_MODE_REGISTRY, GAME_MODE_TYPES } from '@/features/tetris/model/gameModes.js'
 import { MATCH_PLAY_MODES } from '@/features/tetris/model/matchPlayModes.js'
 import {
@@ -15,8 +16,9 @@ import {
     getRandomPieceGeneratorForSettings,
     normalizeMatchSettings,
 } from '@/features/tetris/model/matchSettings.js'
+import { ABILITY_CHOICE_DURATION_MS } from '@/features/tetris/model/abilities.data.js'
 import { EFFECT_TYPES, hasEffect } from '@/features/tetris/model/effects.js'
-import { togglePause } from '@/features/tetris/model/tetrisEngine.js'
+import { resolveAbilityChoice, togglePause } from '@/features/tetris/model/tetrisEngine.js'
 import AbilityOverlay from '@/features/tetris/ui/AbilityOverlay.jsx'
 import ActionsPanel from '@/features/tetris/ui/ActionsPanel.jsx'
 import EnergyPanel from '@/features/tetris/ui/EnergyPanel.jsx'
@@ -31,12 +33,14 @@ import TetrisBoard from '@/features/tetris/ui/TetrisBoard.jsx'
 import { useAuth } from '@/shared/hooks/useAuth.js'
 import { socket } from '@/shared/api/socket'
 import { matchesAPI } from '@/shared/api/matches'
+import notify from '@/utils/Notifications'
 
 import './MatchPage.css'
 
 const DANGER_ZONE_ROWS = 7
 const DEFAULT_ONLINE_MODE_KEY = '1v1'
 const MATCH_INTRO_DURATION_MS = 5000
+const EMPTY_OPPONENT_BOARD = createBoard()
 
 const modeByPlayMode = {
     [MATCH_PLAY_MODES.ONLINE]: GAME_MODE_REGISTRY[GAME_MODE_TYPES.VERSUS_1V1_EFFECTS],
@@ -60,6 +64,18 @@ const getBoardDangerLevel = (board) => {
     const rawDanger = (DANGER_ZONE_ROWS - rowsLeftToLose) / DANGER_ZONE_ROWS
 
     return clamp(rawDanger, 0, 1)
+}
+
+const getRoomPlayers = (room) => {
+    if (!room) {
+        return []
+    }
+
+    if (Array.isArray(room.players)) {
+        return room.players
+    }
+
+    return (room.teams || []).flatMap((team) => team.players || [])
 }
 
 const getInitialSettings = ({ initialSettings, locationState, playMode }) => {
@@ -154,6 +170,8 @@ const MatchPageGame = ({
     const [isIntroVisible, setIsIntroVisible] = useState(() => Boolean(isOnline && matchRoom?.players?.length))
     const [introSecondsLeft, setIntroSecondsLeft] = useState(() => Math.ceil(MATCH_INTRO_DURATION_MS / 1000))
     const [countdownStartedAt, setCountdownStartedAt] = useState(() => Date.now())
+    const [targetChoice, setTargetChoice] = useState(null)
+    const [targetSecondsLeft, setTargetSecondsLeft] = useState(0)
     const [soloRecord, setSoloRecord] = useState(() => Number(user?.rankStats?.bestSoloScore) || 0)
     const soloResultSubmittedRef = useRef(false)
     const { countdownValue, isCountingDown } = useGameCountdown({
@@ -178,7 +196,11 @@ const MatchPageGame = ({
         paused: isIntroVisible || isCountingDown || isMatchFinished,
         randomPiece: randomPieceGenerator,
     })
-    const { handleAbilityChoose, opponentState } = useMatchSocketSync({
+    const {
+        handleAbilityChoose: submitAbilityChoice,
+        opponentState,
+        roomPlayers,
+    } = useMatchSocketSync({
         boardWithPiece,
         derivedState,
         enabled: isOnline,
@@ -191,7 +213,7 @@ const MatchPageGame = ({
     })
     const abilitySecondsLeft = useAbilityTimer({
         abilityChoiceEndsAt: derivedState.abilityChoiceEndsAt,
-        isChoosingAbility: derivedState.isChoosingAbility,
+        isChoosingAbility: derivedState.isChoosingAbility && !targetChoice,
         randomPiece: randomPieceGenerator,
         setGameState,
     })
@@ -204,12 +226,13 @@ const MatchPageGame = ({
             derivedState.isGameOver ||
             derivedState.isPaused ||
             derivedState.isClearing ||
-            derivedState.isChoosingAbility,
+            derivedState.isChoosingAbility ||
+            Boolean(targetChoice),
         setGameState,
     })
 
     useTetrisControls({
-        disabled: isIntroVisible || isMatchFinished || isCountingDown,
+        disabled: isIntroVisible || isMatchFinished || isCountingDown || Boolean(targetChoice),
         randomPiece: randomPieceGenerator,
         setGameState,
     })
@@ -220,6 +243,18 @@ const MatchPageGame = ({
     const hasScreenShake = hasEffect(derivedState, EFFECT_TYPES.SCREEN_SHAKE)
     const hasInvisibleCells = hasEffect(derivedState, EFFECT_TYPES.INVISIBLE_CELLS)
     const isSoloGameOver = !isOnline && derivedState.isGameOver
+    const currentRoomPlayers = roomPlayers.length > 0 ? roomPlayers : getRoomPlayers(matchRoom)
+    const selfPlayer = currentRoomPlayers.find((player) => player.socketId === socket.id) || null
+    const selfTeamNumber = selfPlayer?.teamNumber || null
+    const targetablePlayers = isOnline
+        ? currentRoomPlayers.filter((player) => (
+            selfTeamNumber &&
+            player.socketId !== socket.id &&
+            player.teamNumber !== selfTeamNumber &&
+            !player.gameState?.isGameOver
+        ))
+        : []
+    const shouldPickTarget = isOnline && modeKey !== '1v1' && targetablePlayers.length > 1
     const isDefeated = matchResult === 'lose' || isSoloGameOver
     const boardShellClassName = [
         'player-board-shell',
@@ -243,9 +278,38 @@ const MatchPageGame = ({
 
     const handleRestart = () => {
         resetGame()
+        setTargetChoice(null)
         setIsIntroVisible(false)
         soloResultSubmittedRef.current = false
         setCountdownStartedAt(Date.now())
+    }
+
+    const handleAbilityPick = (ability) => {
+        if (shouldPickTarget) {
+            const endsAt = Date.now() + ABILITY_CHOICE_DURATION_MS
+
+            setTargetChoice({
+                ability,
+                endsAt,
+            })
+            setTargetSecondsLeft(Math.ceil(ABILITY_CHOICE_DURATION_MS / 1000))
+            return
+        }
+
+        submitAbilityChoice(ability)
+    }
+
+    const handleTargetPick = async (targetPlayer) => {
+        if (!targetChoice?.ability || !targetPlayer?.socketId) {
+            return
+        }
+
+        const success = await submitAbilityChoice(targetChoice.ability, targetPlayer.socketId)
+
+        if (success) {
+            setTargetChoice(null)
+            setTargetSecondsLeft(0)
+        }
     }
 
     useEffect(() => {
@@ -332,6 +396,46 @@ const MatchPageGame = ({
         }
     }, [isIntroVisible])
 
+    useEffect(() => {
+        if (!targetChoice) {
+            return undefined
+        }
+
+        const intervalId = setInterval(() => {
+            setTargetSecondsLeft(Math.max(0, Math.ceil(((targetChoice.endsAt ?? 0) - Date.now()) / 1000)))
+        }, 250)
+        const timeoutId = setTimeout(() => {
+            notify('Target window expired', 'warning')
+            setTargetChoice(null)
+            setTargetSecondsLeft(0)
+            setGameState((prevState) => resolveAbilityChoice(prevState, null, { randomPiece: randomPieceGenerator }))
+        }, Math.max(0, (targetChoice.endsAt ?? Date.now()) - Date.now()))
+
+        return () => {
+            clearInterval(intervalId)
+            clearTimeout(timeoutId)
+        }
+    }, [randomPieceGenerator, setGameState, targetChoice])
+
+    useEffect(() => {
+        if (!targetChoice) {
+            return undefined
+        }
+
+        if (targetablePlayers.length === 0) {
+            const timeoutId = setTimeout(() => {
+                notify('Нет доступной цели для эффекта', 'warning')
+                setTargetChoice(null)
+                setTargetSecondsLeft(0)
+                setGameState((prevState) => resolveAbilityChoice(prevState, null, { randomPiece: randomPieceGenerator }))
+            }, 0)
+
+            return () => clearTimeout(timeoutId)
+        }
+
+        return undefined
+    }, [randomPieceGenerator, setGameState, targetChoice, targetablePlayers.length])
+
     const introPlayers = getIntroPlayers(matchRoom)
 
     const handleBackToModeSelect = () => {
@@ -409,9 +513,22 @@ const MatchPageGame = ({
 
     const secondaryColumn = isOnline ? (
         <>
-            <h2 className="game-layout__secondary-title">Opponent Board</h2>
-            <div className="game-layout__secondary-board">
-                <TetrisBoard board={opponentState.board} clearingRows={[]} compact />
+            <h2 className="game-layout__secondary-title">
+                {targetablePlayers.length > 1 ? 'Opponent Boards' : 'Opponent Board'}
+            </h2>
+            <div className="game-layout__secondary-stack">
+                {(targetablePlayers.length > 0 ? targetablePlayers : [{ socketId: 'opponent', gameState: opponentState }]).map((player) => (
+                    <div className="game-layout__secondary-board" key={player.socketId}>
+                        {targetablePlayers.length > 1 ? (
+                            <span className="game-layout__secondary-name">{player.username || 'Opponent'}</span>
+                        ) : null}
+                        <TetrisBoard
+                            board={player.gameState?.board || (targetablePlayers.length > 0 ? EMPTY_OPPONENT_BOARD : opponentState.board)}
+                            clearingRows={[]}
+                            compact
+                        />
+                    </div>
+                ))}
             </div>
         </>
     ) : null
@@ -473,13 +590,21 @@ const MatchPageGame = ({
 
     const overlay = (
         <>
-            {roomSettings.abilitiesEnabled && derivedState.isChoosingAbility ? (
+            {roomSettings.abilitiesEnabled && derivedState.isChoosingAbility && !targetChoice ? (
                 <AbilityOverlay
                     eyebrow="Time stopped"
                     title="Choose a debuff"
                     secondsLeft={abilitySecondsLeft}
                     options={derivedState.abilityOptions}
-                    onChoose={handleAbilityChoose}
+                    onChoose={handleAbilityPick}
+                />
+            ) : null}
+            {targetChoice ? (
+                <TargetOverlay
+                    ability={targetChoice.ability}
+                    secondsLeft={targetSecondsLeft}
+                    targets={targetablePlayers}
+                    onChoose={handleTargetPick}
                 />
             ) : null}
             {isIntroVisible ? (
@@ -533,6 +658,46 @@ const MatchIntroOverlay = ({ self, opponent, secondsLeft }) => (
             <div className="match-intro__footer">
                 <i className="fas fa-bolt"></i>
                 Старт через <strong>{secondsLeft}</strong> сек.
+            </div>
+        </div>
+    </div>
+)
+
+const TargetOverlay = ({ ability, secondsLeft, targets, onChoose }) => (
+    <div className="game-overlay" role="dialog" aria-modal="true" aria-labelledby="target-title">
+        <div className="game-overlay__panel target-overlay__panel">
+            <div className="game-overlay__header">
+                <span className="game-overlay__eyebrow">Time stopped</span>
+                <h3 className="game-overlay__title" id="target-title">Choose a target</h3>
+                <p className="game-overlay__description">
+                    {ability?.title || 'Debuff'} ready - {secondsLeft}s left
+                </p>
+            </div>
+
+            <div className="target-overlay__options">
+                {targets.map((player) => (
+                    <button
+                        type="button"
+                        className="target-overlay__card"
+                        key={player.socketId}
+                        onClick={() => onChoose(player)}
+                    >
+                        <span className="target-overlay__avatar">
+                            {player.avatarUrl ? (
+                                renderAvatarMedia(getAssetUrl(player.avatarUrl), player.username)
+                            ) : (
+                                <i className="fas fa-user-astronaut"></i>
+                            )}
+                        </span>
+                        <span className="target-overlay__body">
+                            <span className="target-overlay__label">Team {player.teamNumber || '?'}</span>
+                            <strong>{player.username || 'Opponent'}</strong>
+                            <small>
+                                Score {Number(player.gameState?.score) || 0} - Lines {Number(player.gameState?.linesCleared) || 0}
+                            </small>
+                        </span>
+                    </button>
+                ))}
             </div>
         </div>
     </div>
