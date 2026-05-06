@@ -1,21 +1,79 @@
 import nodemailer from 'nodemailer'
 import dns from 'node:dns'
-import nodemailer from 'nodemailer'
+import net from 'node:net'
+import { promises as dnsPromises } from 'node:dns'
 
 dns.setDefaultResultOrder('ipv4first')
 
-const smtpHost = process.env.EMAIL_HOST || 'smtp.mail.ru'
-const smtpPort = Number(process.env.EMAIL_PORT || 465)
+const smtpHost = process.env.EMAIL_HOST || 'smtp.gmail.com'
+const smtpPort = Number(process.env.EMAIL_PORT || 587)
 const smtpSecure = process.env.EMAIL_SECURE
     ? process.env.EMAIL_SECURE === 'true'
     : smtpPort === 465
+const smtpRequireTls = process.env.EMAIL_REQUIRE_TLS
+    ? process.env.EMAIL_REQUIRE_TLS === 'true'
+    : !smtpSecure
+const smtpFrom = process.env.EMAIL_FROM || process.env.EMAIL_USER
+
+const resolveIpv4Host = async (host) => {
+    if (net.isIPv4(host)) {
+        return host
+    }
+
+    const addresses = await dnsPromises.resolve4(host)
+
+    if (!addresses.length) {
+        throw new Error(`No IPv4 addresses found for SMTP host ${host}`)
+    }
+
+    return addresses[0]
+}
+
+const getIpv4Socket = async (options, callback) => {
+    try {
+        const address = await resolveIpv4Host(options.host)
+        let settled = false
+        const socket = net.connect({
+            host: address,
+            port: options.port,
+            family: 4,
+            localAddress: options.localAddress,
+        })
+
+        const done = (error, socketOptions) => {
+            if (settled) {
+                return
+            }
+
+            settled = true
+            socket.removeAllListeners('timeout')
+            callback(error, socketOptions)
+        }
+
+        socket.setTimeout(options.connectionTimeout || 30000, () => {
+            socket.destroy()
+            done(new Error(`SMTP connection timeout to ${options.host}:${options.port}`))
+        })
+        socket.once('connect', () => {
+            done(null, {
+                connection: socket,
+                host: address,
+                servername: options.host,
+            })
+        })
+        socket.once('error', done)
+    } catch (error) {
+        callback(error)
+    }
+}
 
 export const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT || 587),
-    secure: process.env.EMAIL_SECURE === 'true',
-    requireTLS: true,
+    host: smtpHost,
+    port: smtpPort,
+    secure: smtpSecure,
+    requireTLS: smtpRequireTls,
     family: 4,
+    getSocket: getIpv4Socket,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -27,7 +85,7 @@ export const transporter = nodemailer.createTransport({
 
 export const sendVerificationEmail = async (to, code) => {
     const mailOptions = {
-        from: `"PVP Tetris" <${process.env.EMAIL_USER}>`,
+        from: `"PVP Tetris" <${smtpFrom}>`,
         to,
         subject: 'Подтверждение почты',
         html: getVerificationTemplate(code),
@@ -38,7 +96,7 @@ export const sendVerificationEmail = async (to, code) => {
 
 export const sendTemporaryPasswordEmail = async (to, password) => {
     const mailOptions = {
-        from: `"PVP Tetris" <${process.env.EMAIL_USER}>`,
+        from: `"PVP Tetris" <${smtpFrom}>`,
         to,
         subject: 'Новый пароль PVP Tetris',
         html: getTemporaryPasswordTemplate(password),
