@@ -13,7 +13,32 @@ const smtpSecure = process.env.EMAIL_SECURE
 const smtpRequireTls = process.env.EMAIL_REQUIRE_TLS
     ? process.env.EMAIL_REQUIRE_TLS === 'true'
     : !smtpSecure
-const smtpFrom = process.env.EMAIL_FROM || process.env.EMAIL_USER
+const emailProvider = (process.env.EMAIL_PROVIDER || '').toLowerCase()
+    || (process.env.RESEND_API_KEY ? 'resend' : process.env.BREVO_API_KEY ? 'brevo' : 'smtp')
+const emailFromName = process.env.EMAIL_FROM_NAME || 'PVP Tetris'
+const emailFromAddress = extractEmailAddress(process.env.EMAIL_FROM || process.env.EMAIL_USER)
+const emailFrom = process.env.EMAIL_FROM?.includes('<')
+    ? process.env.EMAIL_FROM
+    : `"${emailFromName}" <${emailFromAddress}>`
+
+function extractEmailAddress(value) {
+    const email = String(value || '').trim()
+    const match = email.match(/<([^>]+)>/)
+
+    return (match ? match[1] : email).trim()
+}
+
+const ensureEmailFrom = () => {
+    if (!emailFromAddress) {
+        throw new Error('Email sender is not configured. Set EMAIL_FROM or EMAIL_USER.')
+    }
+}
+
+const readResponseBody = async (response) => {
+    const text = await response.text()
+
+    return text.slice(0, 500)
+}
 
 const resolveIpv4Host = async (host) => {
     if (net.isIPv4(host)) {
@@ -84,25 +109,92 @@ export const transporter = nodemailer.createTransport({
 })
 
 export const sendVerificationEmail = async (to, code) => {
-    const mailOptions = {
-        from: `"PVP Tetris" <${smtpFrom}>`,
+    await sendEmail({
         to,
         subject: 'Подтверждение почты',
         html: getVerificationTemplate(code),
-    }
-
-    await transporter.sendMail(mailOptions)
+    })
 }
 
 export const sendTemporaryPasswordEmail = async (to, password) => {
-    const mailOptions = {
-        from: `"PVP Tetris" <${smtpFrom}>`,
+    await sendEmail({
         to,
         subject: 'Новый пароль PVP Tetris',
         html: getTemporaryPasswordTemplate(password),
+    })
+}
+
+const sendEmail = async ({ to, subject, html }) => {
+    ensureEmailFrom()
+
+    if (emailProvider === 'resend') {
+        await sendViaResend({ to, subject, html })
+        return
     }
 
-    await transporter.sendMail(mailOptions)
+    if (emailProvider === 'brevo') {
+        await sendViaBrevo({ to, subject, html })
+        return
+    }
+
+    await transporter.sendMail({
+        from: emailFrom,
+        to,
+        subject,
+        html,
+    })
+}
+
+const sendViaResend = async ({ to, subject, html }) => {
+    if (!process.env.RESEND_API_KEY) {
+        throw new Error('RESEND_API_KEY is required when EMAIL_PROVIDER=resend.')
+    }
+
+    const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            from: emailFrom,
+            to: [to],
+            subject,
+            html,
+        }),
+    })
+
+    if (!response.ok) {
+        throw new Error(`Resend email API error ${response.status}: ${await readResponseBody(response)}`)
+    }
+}
+
+const sendViaBrevo = async ({ to, subject, html }) => {
+    if (!process.env.BREVO_API_KEY) {
+        throw new Error('BREVO_API_KEY is required when EMAIL_PROVIDER=brevo.')
+    }
+
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+            'api-key': process.env.BREVO_API_KEY,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        },
+        body: JSON.stringify({
+            sender: {
+                name: emailFromName,
+                email: emailFromAddress,
+            },
+            to: [{ email: to }],
+            subject,
+            htmlContent: html,
+        }),
+    })
+
+    if (!response.ok) {
+        throw new Error(`Brevo email API error ${response.status}: ${await readResponseBody(response)}`)
+    }
 }
 
 const getVerificationTemplate = (code) => `
