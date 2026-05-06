@@ -17,17 +17,22 @@ import GamePage from '@/pages/GamePage/GamePage.jsx'
 import LobbyPage from '@/pages/Lobby/LobbyPage.jsx'
 import MatchPage from '@/pages/Match/MatchPage.jsx'
 import TeamQueuePage from '@/pages/TeamQueue/TeamQueuePage.jsx'
+import { getModeSelectionConfig } from '@/shared/config/gameModes.js'
+
+const getModeTitle = (modeKey) => getModeSelectionConfig(modeKey).title
 
 export const routes = [
     {
         key: 'home',
         path: '/',
+        title: 'Главная',
         component: HomePage,
         layout: MainLayout,
     },
     {
         key: 'login',
         path: '/login',
+        title: 'Вход',
         component: LoginPage,
         layout: InnerPageLayout,
         guard: GuestRoute,
@@ -35,6 +40,7 @@ export const routes = [
     {
         key: 'register',
         path: '/register',
+        title: 'Регистрация',
         component: RegisterPage,
         layout: InnerPageLayout,
         guard: GuestRoute,
@@ -42,6 +48,7 @@ export const routes = [
     {
         key: 'profile',
         path: '/profile',
+        title: 'Профиль',
         component: ProfilePage,
         layout: MainLayout,
         guard: ProtectedRoute,
@@ -49,6 +56,7 @@ export const routes = [
     {
         key: 'matches',
         path: '/matches',
+        title: 'История матчей',
         component: MatchesPage,
         layout: InnerPageLayout,
         guard: ProtectedRoute,
@@ -56,12 +64,14 @@ export const routes = [
     {
         key: 'rating',
         path: '/rating',
+        title: 'Рейтинг',
         component: RatingPage,
         layout: MainLayout,
     },
     {
         key: 'match-details',
         path: '/matches/:matchId',
+        title: ({ matchId }) => `Матч #${matchId}`,
         component: MatchDetailsPage,
         layout: InnerPageLayout,
         guard: ProtectedRoute,
@@ -69,6 +79,7 @@ export const routes = [
     {
         key: 'Email Verification',
         path: '/verify-email/:email',
+        title: 'Подтверждение почты',
         component: VerifyEmailPage,
         layout: InnerPageLayout,
         guard: GuestRoute,
@@ -76,30 +87,35 @@ export const routes = [
     {
         key: 'solo-play',
         path: '/game/solo/play',
+        title: 'Одиночная игра',
         component: GamePage,
         layout: MainLayout,
     },
     {
         key: 'mode-select',
         path: '/game/:mode',
+        title: ({ mode }) => getModeTitle(mode),
         component: ModeSelectPage,
         layout: MainLayout,
     },
     {
         key: 'Lobby',
         path: '/game/:mode/lobby',
+        title: ({ mode }) => `Лобби: ${getModeTitle(mode)}`,
         component: LobbyPage,
         layout: InnerPageLayout,
     },
     {
         key: 'TeamQueue',
         path: '/game/:mode/party',
+        title: ({ mode }) => `Команда: ${getModeTitle(mode)}`,
         component: TeamQueuePage,
         layout: InnerPageLayout,
     },
     {
         key: 'Match',
         path: '/match/:roomId',
+        title: ({ roomId }) => `Игра #${roomId}`,
         component: MatchPage,
         layout: MainLayout,
     },
