@@ -1,4 +1,8 @@
 import nodemailer from 'nodemailer'
+import dns from 'node:dns'
+import nodemailer from 'nodemailer'
+
+dns.setDefaultResultOrder('ipv4first')
 
 const smtpHost = process.env.EMAIL_HOST || 'smtp.mail.ru'
 const smtpPort = Number(process.env.EMAIL_PORT || 465)
