@@ -150,6 +150,10 @@
     margin-bottom: 1.5rem;
 }
 
+.profile-history-card-glow-bg{
+    min-height: 100%;
+}
+
 .profile-card .glow-effect,
 .profile-history-card .glow-effect,
 .profile-settings-card .glow-effect {

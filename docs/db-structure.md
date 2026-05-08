@@ -6,7 +6,7 @@
 
 ## Общая картина
 
-База состоит из 12 таблиц:
+База состоит из 16 таблиц:
 
 1. `roles`
 2. `users`
@@ -20,6 +20,10 @@
 10. `rating_history`
 11. `game_rooms`
 12. `game_room_players`
+13. `support_requests`
+14. `donation_wallets`
+15. `donations`
+16. `donation_verification_events`
 
 По смыслу схема делится на 3 зоны:
 
@@ -27,6 +31,7 @@
 - матчи и игровая телеметрия: `matches`, `match_teams`, `match_players`, `match_events`
 - рейтинг и ранговая статистика: `user_rank_stats`, `rating_history`
 - runtime-состояние комнат: `game_rooms`, `game_room_players`
+- поддержка и пожертвования: `support_requests`, `donation_wallets`, `donations`, `donation_verification_events`
 
 ## Карта связей
 
@@ -37,6 +42,8 @@ roles
        ├─< email_verifications
        ├─1 user_rank_stats
        ├─< rating_history
+       ├─< support_requests
+       ├─< donations
        └─< match_players
 
 matches
@@ -54,6 +61,12 @@ match_events.source_player_id
 
 match_events.target_player_id
   └─> match_players.id
+
+donation_wallets
+  └─< donations
+
+donations
+  └─< donation_verification_events
 ```
 
 ## Таблицы
@@ -520,6 +533,103 @@ match_events.target_player_id
 - хранит и состояние до, и состояние после, поэтому пригодна для аудита и восстановления динамики рейтинга
 - `reason` не ограничен `CHECK`-констрейнтом
 
+### `support_requests`
+
+Заявки пользователей: баги, идеи, пожелания по режимам и балансу. Таблица рассчитана на будущую админку и модерацию.
+
+| Поле | Тип | Null | По умолчанию | Описание |
+|---|---|---|---|---|
+| `id` | `bigint` | нет | `nextval(...)` | PK заявки |
+| `user_id` | `integer` | да |  | связанный пользователь, если авторизован |
+| `category` | `varchar(50)` | нет |  | `bug`, `idea`, `mode`, `balance`, `other` |
+| `status` | `varchar(30)` | нет | `'new'` | `new`, `triaged`, `in_progress`, `closed`, `spam` |
+| `priority` | `varchar(20)` | нет | `'normal'` | `low`, `normal`, `high`, `critical` |
+| `contact_name` | `varchar(120)` | да |  | ник или имя для связи |
+| `contact_email` | `varchar(255)` | да |  | email для ответа |
+| `title` | `varchar(180)` | да |  | короткая тема |
+| `message` | `text` | нет |  | текст обращения |
+| `page_url` | `text` | да |  | страница, откуда отправили заявку |
+| `attachment_url` | `text` | да |  | ссылка на файл/скриншот после появления загрузок |
+| `client_context` | `jsonb` | нет | `'{}'` | браузер, версия клиента, доп. диагностика |
+| `admin_notes` | `text` | да |  | внутренние заметки |
+| `resolved_at` | `timestamp` | да |  | когда закрыто |
+| `created_at` | `timestamp` | нет | `now()` | дата создания |
+| `updated_at` | `timestamp` | нет | `now()` | дата обновления |
+
+Индексы: `user_id`, `category`, `status`, `created_at`.
+
+### `donation_wallets`
+
+Справочник адресов, на которые проект принимает пожертвования. Валюта и сеть разделены, чтобы один актив можно было принимать в разных сетях.
+
+| Поле | Тип | Null | По умолчанию | Описание |
+|---|---|---|---|---|
+| `id` | `bigint` | нет | `nextval(...)` | PK кошелька |
+| `currency_code` | `varchar(20)` | нет |  | `TON`, `USDT`, `BTC`, `ETH` и т.п. |
+| `network_key` | `varchar(50)` | нет |  | машинный ключ сети: `ton`, `trc20`, `bitcoin`, `erc20` |
+| `network_name` | `varchar(100)` | нет |  | человекочитаемое имя сети |
+| `address` | `text` | нет |  | адрес кошелька |
+| `address_label` | `varchar(120)` | да |  | подпись для UI |
+| `memo_tag` | `text` | да |  | memo/tag/comment, если нужен сети |
+| `status` | `varchar(30)` | нет | `'active'` | `active`, `inactive`, `test` |
+| `sort_order` | `integer` | нет | `0` | порядок показа |
+| `metadata` | `jsonb` | нет | `'{}'` | расширение под провайдеры и лимиты |
+| `created_at` | `timestamp` | нет | `now()` | дата создания |
+| `updated_at` | `timestamp` | нет | `now()` | дата обновления |
+
+Ограничения: уникальность `(currency_code, network_key, address)`.
+Индексы: `(currency_code, network_key)`, `status`.
+
+### `donations`
+
+Заявка/запись о пожертвовании. Факт оплаты считается подтвержденным только после привязки транзакции и перевода статуса в `confirmed`.
+
+| Поле | Тип | Null | По умолчанию | Описание |
+|---|---|---|---|---|
+| `id` | `bigint` | нет | `nextval(...)` | PK доната |
+| `user_id` | `integer` | да |  | пользователь, если авторизован |
+| `wallet_id` | `bigint` | да |  | адрес приема |
+| `donor_name` | `varchar(120)` | да |  | имя/ник отправителя |
+| `donor_contact` | `varchar(255)` | да |  | контакт отправителя |
+| `currency_code` | `varchar(20)` | нет |  | валюта платежа |
+| `network_key` | `varchar(50)` | нет |  | сеть платежа |
+| `expected_amount` | `numeric(36,18)` | да |  | сумма, которую пользователь планировал отправить |
+| `received_amount` | `numeric(36,18)` | да |  | фактически найденная сумма |
+| `amount_usd` | `numeric(14,2)` | да |  | оценка в USD для аналитики |
+| `status` | `varchar(40)` | нет | `'created'` | `created`, `waiting_payment`, `pending_verification`, `confirmed`, `failed`, `expired`, `refunded` |
+| `tx_hash` | `text` | да |  | хеш транзакции |
+| `tx_confirmations` | `integer` | нет | `0` | количество подтверждений сети |
+| `verification_source` | `varchar(80)` | да |  | провайдер проверки: node, explorer, manual |
+| `verification_payload` | `jsonb` | нет | `'{}'` | сырой ответ проверки |
+| `note` | `text` | да |  | комментарий пользователя |
+| `paid_at` | `timestamp` | да |  | когда пользователь сообщил/система увидела платеж |
+| `confirmed_at` | `timestamp` | да |  | когда платеж подтвержден |
+| `expires_at` | `timestamp` | да |  | срок ожидания оплаты |
+| `created_at` | `timestamp` | нет | `now()` | дата создания |
+| `updated_at` | `timestamp` | нет | `now()` | дата обновления |
+
+Индексы: `user_id`, `wallet_id`, `status`, `(currency_code, network_key)`, `created_at`.
+Уникальный частичный индекс: `(network_key, tx_hash) WHERE tx_hash IS NOT NULL`, чтобы один on-chain платеж не засчитался дважды.
+
+### `donation_verification_events`
+
+Журнал проверок платежа. Нужен для аудита: кто/что сменило статус, сколько было подтверждений и какой ответ пришел от провайдера.
+
+| Поле | Тип | Null | По умолчанию | Описание |
+|---|---|---|---|---|
+| `id` | `bigint` | нет | `nextval(...)` | PK события |
+| `donation_id` | `bigint` | нет |  | связанный донат |
+| `event_type` | `varchar(50)` | нет |  | `created`, `submitted_tx`, `chain_check`, `confirmed`, `failed`, `expired`, `manual_review` |
+| `status_from` | `varchar(40)` | да |  | предыдущий статус |
+| `status_to` | `varchar(40)` | да |  | новый статус |
+| `tx_hash` | `text` | да |  | хеш, который проверяли |
+| `confirmations` | `integer` | да |  | подтверждения на момент события |
+| `verification_source` | `varchar(80)` | да |  | источник проверки |
+| `payload` | `jsonb` | нет | `'{}'` | сырой ответ/контекст |
+| `created_at` | `timestamp` | нет | `now()` | дата события |
+
+Индексы: `donation_id`, `event_type`, `created_at`.
+
 ## Политика удаления по связям
 
 Что происходит при удалении родительских сущностей:
@@ -528,6 +638,8 @@ match_events.target_player_id
   - удаляются `email_verifications`
   - удаляются `user_rank_stats`
   - удаляются `rating_history`
+  - в `support_requests.user_id` ставится `NULL`
+  - в `donations.user_id` ставится `NULL`
   - в `auth_logs.user_id` ставится `NULL`
   - в `match_players.user_id` ставится `NULL`
 - удаление `matches`:
@@ -541,6 +653,10 @@ match_events.target_player_id
 - удаление `match_players`:
   - в `match_events.source_player_id` ставится `NULL`
   - в `match_events.target_player_id` ставится `NULL`
+- удаление `donation_wallets`:
+  - в `donations.wallet_id` ставится `NULL`
+- удаление `donations`:
+  - удаляются `donation_verification_events`
 
 ## Важные доменные правила, уже зашитые в схему
 
@@ -571,6 +687,10 @@ match_events.target_player_id
 - `match_events` это поток игровых событий и телеметрии
 - `user_rank_stats` это текущий снимок рейтинга
 - `rating_history` это журнал изменения рейтинга
+- `support_requests` хранит заявки игроков по багам, идеям, режимам и балансу
+- `donation_wallets` хранит адреса приема пожертвований по валютам и сетям
+- `donations` хранит заявки на пожертвования, суммы, сеть, транзакцию и статус подтверждения
+- `donation_verification_events` хранит аудит проверок платежей и смен статусов
 
 ## Рекомендация по использованию этого файла
 

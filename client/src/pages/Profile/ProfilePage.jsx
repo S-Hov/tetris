@@ -391,7 +391,7 @@ const ProfilePage = () => {
                     </section>
 
                     <section className="profile-history-card">
-                        <GlowEffect>
+                        <GlowEffect className={'profile-history-card-glow-bg'}>
                             <div className="glow-effect">
                                 <div className="profile-section-heading">
                                     <div className="profile-section-title">

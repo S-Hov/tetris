@@ -6,6 +6,8 @@ import MatchesPage from '@/pages/Matches/MatchesPage.jsx'
 import MatchDetailsPage from '@/pages/MatchDetails/MatchDetailsPage.jsx'
 import ModeSelectPage from '@/pages/ModeSelect/ModeSelectPage.jsx'
 import RatingPage from '@/pages/Rating/RatingPage.jsx'
+import AboutPage from '@/pages/About/AboutPage.jsx'
+import SupportPage from '@/pages/Support/SupportPage.jsx'
 
 import MainLayout from '../layouts/MainLayout.jsx'
 import InnerPageLayout from '../layouts/InnerPageLayout.jsx'
@@ -66,6 +68,20 @@ export const routes = [
         path: '/rating',
         title: 'Рейтинг',
         component: RatingPage,
+        layout: MainLayout,
+    },
+    {
+        key: 'about',
+        path: '/about',
+        title: 'О нас',
+        component: AboutPage,
+        layout: MainLayout,
+    },
+    {
+        key: 'support',
+        path: '/support',
+        title: 'Поддержка',
+        component: SupportPage,
         layout: MainLayout,
     },
     {

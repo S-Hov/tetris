@@ -203,9 +203,35 @@ const HomePage = () => {
                     </GlowEffect>
                 </section>
 
+                <section className="home-about-card">
+                    <GlowEffect>
+                        <div className="glow-effect home-about-content">
+                            <div>
+                                <p className="home-about-eyebrow">О проекте</p>
+                                <h2>Бесплатная PvP-арена, которую делает 20-летний студент</h2>
+                                <p>
+                                    PvP Tetris берет классический тетрис и превращает его в дуэли, командные матчи
+                                    и честную гонку за каждую линию. Проект развивается без pay-to-win: донаты не
+                                    дают преимущества, а помогают оплачивать сервер, домен и время на новые режимы.
+                                </p>
+                            </div>
+                            <div className="home-about-actions">
+                                <Link to="/about" className="button home-secondary-button">
+                                    Узнать больше
+                                </Link>
+                                <Link to="/about#donate" className="button home-cta-button">
+                                    <i className="fas fa-wallet"></i>
+                                    Поддержать автора
+                                </Link>
+                            </div>
+                        </div>
+                    </GlowEffect>
+                </section>
+                
                 <footer className="home-footer">
                     <span>PVP Tetris - Кибер-арена будущего</span>
                     <nav>
+                        <Link to="/about">О нас</Link>
                         <Link to="/support">Поддержка</Link>
                         <Link to="/rating">Рейтинг</Link>
                         <Link to="/profile">Профиль</Link>

@@ -36,6 +36,7 @@ npm run db:migrate
 | `004_add_matches_room_id.sql` | эволюционное поле `matches.room_id` и индекс |
 | `005_rating_schema.sql` | `user_rank_stats`, `rating_history` |
 | `006_game_rooms_schema.sql` | `game_rooms`, `game_room_players` и индексы |
+| `007_support_and_donations_schema.sql` | `support_requests`, `donation_wallets`, `donations`, `donation_verification_events` |
 
 Миграции используют `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`
 и `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, поэтому baseline можно применить

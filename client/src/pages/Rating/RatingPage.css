@@ -142,6 +142,7 @@
     background: var(--btn-gradient-1);
     border-color: rgba(255, 255, 255, 0.35);
     box-shadow: var(--lite-shadow);
+    border: none;
 }
 
 .rating-sort-panel {
