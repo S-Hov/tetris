@@ -9,11 +9,21 @@ export const authenticationAPI = {
         })
     },
 
-    login(data) {
-        return apiClient('/api/authentication/login', {
+    async login(data) {
+        const response = await apiClient('/api/authentication/login', {
             method: 'POST',
             body: JSON.stringify(data)
         })
+
+        return {
+            ...response,
+            user: response.user || {
+                id: response.id,
+                username: response.username,
+                email: response.email,
+                status: response.status,
+            },
+        }
     },
 
     async me() {

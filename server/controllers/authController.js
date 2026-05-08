@@ -21,10 +21,21 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import { sendTemporaryPasswordEmail, sendVerificationEmail } from "../services/emailService.js"
 
-const authCookieOptions = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+const getAuthCookieOptions = () => {
+    const isProduction = process.env.NODE_ENV === 'production'
+    const sameSite = (process.env.COOKIE_SAME_SITE || (isProduction ? 'none' : 'lax')).toLowerCase()
+    const secure = process.env.COOKIE_SECURE
+        ? process.env.COOKIE_SECURE === 'true'
+        : isProduction || sameSite === 'none'
+    const domain = process.env.COOKIE_DOMAIN || undefined
+
+    return {
+        httpOnly: true,
+        secure,
+        sameSite,
+        path: '/',
+        ...(domain ? { domain } : {}),
+    }
 }
 
 const getRequestMeta = (req) => ({
@@ -134,7 +145,7 @@ export const login = asyncHandler(async (req, res) => {
     )
 
     res.cookie('token', token, {
-        ...authCookieOptions,
+        ...getAuthCookieOptions(),
         maxAge: 1000 * 60 * 60 * 24 * parseInt(process.env.TOKEN_LIFETIME)
     })
 
@@ -243,7 +254,7 @@ export const logout = (req, res) => {
         })
     }
 
-    res.clearCookie('token', authCookieOptions)
+    res.clearCookie('token', getAuthCookieOptions())
 
     res.json({
         success: true,

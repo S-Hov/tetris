@@ -20,7 +20,7 @@ const app = express()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const allowedOrigins = [
+const defaultAllowedOrigins = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'http://localhost:5174',
@@ -29,6 +29,17 @@ const allowedOrigins = [
     'https://www.pvp-tetris.online',
     'https://pvp-tetris.vercel.app',
 ]
+
+const allowedOrigins = (process.env.CORS_ORIGINS || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+
+if (allowedOrigins.length === 0) {
+    allowedOrigins.push(...defaultAllowedOrigins)
+}
+
+app.set('trust proxy', 1)
 
 app.use(cors({
     origin(origin, callback) {

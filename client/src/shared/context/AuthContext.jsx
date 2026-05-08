@@ -41,12 +41,14 @@ export const AuthProvider = ({ children }) => {
     }, [checkAuth])
 
     const login = useCallback(async (credentials) => {
-        const currentUser = await authenticationAPI.login(credentials)
+        const response = await authenticationAPI.login(credentials)
+        const currentUser = response.user
+
         authRequestIdRef.current += 1
         setUser(currentUser)
         setIsLoading(false)
 
-        return currentUser
+        return response
     }, [])
 
     const logout = useCallback(async () => {
