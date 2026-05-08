@@ -10,6 +10,7 @@ const CustomSelect = ({
     options = [],
     placeholder = 'Выберите значение',
     value,
+    menuPlacement = 'bottom',
 }) => {
     const generatedId = useId()
     const selectRef = useRef(null)
@@ -76,7 +77,7 @@ const CustomSelect = ({
     return (
         <div
             ref={selectRef}
-            className={`custom-select ${isOpen ? 'custom-select--open' : ''} ${disabled ? 'custom-select--disabled' : ''} ${className}`}
+            className={`custom-select custom-select--${menuPlacement} ${isOpen ? 'custom-select--open' : ''} ${disabled ? 'custom-select--disabled' : ''} ${className}`}
         >
             {name && <input type="hidden" name={name} value={selectedValue} />}
             <button

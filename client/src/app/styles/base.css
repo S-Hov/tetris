@@ -81,6 +81,10 @@ main {
     .container {
         padding: 0 10px;
     }
+
+    main {
+        padding-bottom: 88px;
+    }
 }
 
 @media (max-width: 768px) {

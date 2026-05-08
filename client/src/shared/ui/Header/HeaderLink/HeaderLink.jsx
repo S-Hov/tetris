@@ -17,8 +17,9 @@ const HeaderLink = ({ item, type = 'nav' }) => {
         : `mode-btn header-nav-btn btn-hover-shine button ${isActive ? 'active-page' : ''}`
 
     return (
-        <NavLink to={item.to} className={className}>
-            <i className={item.icon}></i> {item.label}
+        <NavLink to={item.to} className={className} aria-label={item.label} title={item.label}>
+            <i className={item.icon} aria-hidden="true"></i>
+            <span className="header-nav-label">{item.label}</span>
         </NavLink>
     )
 }

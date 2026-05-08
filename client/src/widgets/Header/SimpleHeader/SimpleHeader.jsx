@@ -23,11 +23,11 @@ export default function SimpleHeader() {
 
     return (
         <GlowEffect>
-            <header className="header">
+            <header className="header simple-header">
                 <div className="header-border-glow"></div>
 
-                <div className="header-content">
-                    <HeaderBrand description={false} />
+                <div className="header-content simple-header-content">
+                    <HeaderBrand description={false} title={false} />
                     <nav className="simple-header-nav">
                         <Link to={primaryTo} className="back-link button">
                             <i className="fas fa-arrow-left"></i> {currentConfig.backLabel}

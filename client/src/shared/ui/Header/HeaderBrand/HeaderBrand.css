@@ -1,12 +1,35 @@
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-shrink: 0;
+.brand-link {
+    display: inline-flex;
+    flex: 0 0 auto;
+    text-decoration: none;
+}
 
-    & .description {
-        padding-left: 50px;
-    }
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    flex-shrink: 0;
+    min-width: 0;
+}
+
+.brand-logo {
+    display: block;
+    flex: 0 0 auto;
+    width: clamp(48px, 3.7vw, 68px);
+    height: 100%;
+    filter: drop-shadow(0 0 10px var(--turquoise)) drop-shadow(0 0 18px rgba(255, 0, 255, 0.55));
+}
+
+.brand-logo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.brand .description {
+    padding-left: 0;
+    white-space: nowrap;
 }
 
 .tetris-icon {
@@ -23,12 +46,25 @@
 
 .logo-text h1 {
     font-family: var(--font-1);
-    font-size: 1.8rem;
+    font-size: clamp(1.35rem, 1.2vw, 1.8rem);
     font-weight: 800;
+    line-height: 1;
+    white-space: nowrap;
 }
 
 @media (max-width: 1100px) {
     .brand {
         justify-content: center;
+    }
+}
+
+@media (max-width: 700px) {
+    .brand-logo {
+        width: 46px;
+        height: 46px;
+    }
+
+    .brand .logo-text {
+        display: none;
     }
 }
