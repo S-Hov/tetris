@@ -22,15 +22,16 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const defaultAllowedOrigins = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://localhost:5174',
-    'http://127.0.0.1:5174',
-    'http://localhost:5175',
-    'http://127.0.0.1:5175',
+    // 'http://localhost:5173',
+    // 'http://127.0.0.1:5173',
+    // 'http://localhost:5174',
+    // 'http://127.0.0.1:5174',
+    // 'http://localhost:5175',
+    // 'http://127.0.0.1:5175',
     'https://pvp-tetris.online',
     'https://www.pvp-tetris.online',
-    'https://pvp-tetris.vercel.app',
+    // 'https://pvp-tetris.vercel.app',
+    'https://admin.pvp-tetris.online'
 ]
 
 const allowedOrigins = (process.env.CORS_ORIGINS || '')
