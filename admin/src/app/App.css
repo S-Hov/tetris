@@ -1,0 +1,8 @@
+.route-loader {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  color: #475467;
+  background: #f5f7fb;
+  font-weight: 700;
+}

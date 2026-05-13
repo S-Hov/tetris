@@ -1,0 +1,141 @@
+.admin-data-table {
+  display: grid;
+  min-height: 0;
+  border: 1px solid #d7dee8;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 16px 42px rgba(15, 23, 42, 0.06);
+}
+
+.admin-data-table__scroll {
+  width: 100%;
+  overflow: auto;
+}
+
+.admin-data-table table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.admin-data-table th,
+.admin-data-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e6ebf2;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.admin-data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f8fafc;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.admin-data-table td {
+  color: #344054;
+  font-size: 14px;
+}
+
+.admin-data-table td.is-truncated {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-data-table code {
+  display: inline-block;
+  max-width: 260px;
+  overflow: hidden;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: #f1f5f9;
+  color: #475467;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-data-table__state {
+  height: 220px;
+  color: #667085;
+  text-align: center;
+}
+
+.admin-data-table__footer {
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 14px;
+  color: #667085;
+  font-size: 14px;
+}
+
+.admin-data-table__footer div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-data-table__footer button {
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid #d7dee8;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #344054;
+  cursor: pointer;
+}
+
+.admin-data-table__footer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.cell-muted {
+  color: #98a2b3;
+}
+
+.cell-badge,
+.cell-bool {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.cell-badge {
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.cell-bool--yes {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.cell-bool--no {
+  background: #f1f5f9;
+  color: #475467;
+}
+
+@media (max-width: 760px) {
+  .admin-data-table {
+    border-radius: 7px;
+  }
+
+  .admin-data-table__footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

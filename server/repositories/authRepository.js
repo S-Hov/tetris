@@ -36,9 +36,20 @@ export const loginUserRepo = async (email) => {
 export const getUserRepo = async (id) => {
     const result = await pool.query(
         `
-        SELECT id, username, email, avatar_url, status, role_id, created_at, last_login_at
+        SELECT
+            users.id,
+            users.username,
+            users.email,
+            users.avatar_url,
+            users.status,
+            users.role_id,
+            roles.key AS role,
+            roles.name AS role_name,
+            users.created_at,
+            users.last_login_at
         FROM users
-        WHERE id = $1
+        JOIN roles ON roles.id = users.role_id
+        WHERE users.id = $1
         `,
         [id]
     )
