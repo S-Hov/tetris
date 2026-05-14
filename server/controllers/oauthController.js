@@ -39,6 +39,9 @@ const AUTHENTICATE_OPTIONS = {
     vk: {
         scope: ['email'],
     },
+    github: {
+        scope: ['user:email'],
+    },
 }
 
 const ensureProviderReady = (provider) => {

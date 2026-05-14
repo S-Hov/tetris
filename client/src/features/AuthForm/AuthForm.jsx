@@ -7,10 +7,11 @@ import './AuthForm.css'
 
 const oauthProviders = [
     { provider: 'google', label: 'Google', icon: 'fab fa-google' },
-    { provider: 'discord', label: 'Discord', icon: 'fab fa-discord' },
+    // { provider: 'discord', label: 'Discord', icon: 'fab fa-discord' },
     { provider: 'steam', label: 'Steam', icon: 'fab fa-steam' },
     { provider: 'yandex', label: 'Yandex', icon: 'fab fa-yandex' },
-    { provider: 'vk', label: 'VK', icon: 'fab fa-vk' },
+    // { provider: 'vk', label: 'VK', icon: 'fab fa-vk' },
+    { provider: 'github', label: 'GitHub', icon: 'fab fa-github' },
 ]
 
 const AuthForm = ({ type = 'login' }) => {

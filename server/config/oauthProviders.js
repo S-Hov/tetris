@@ -1,4 +1,4 @@
-export const OAUTH_PROVIDERS = ['google', 'discord', 'steam', 'yandex', 'vk']
+export const OAUTH_PROVIDERS = ['google', 'discord', 'steam', 'yandex', 'vk', 'github']
 
 export const OAUTH_PROVIDER_LABELS = {
     google: 'Google',
@@ -6,6 +6,7 @@ export const OAUTH_PROVIDER_LABELS = {
     steam: 'Steam',
     yandex: 'Yandex',
     vk: 'VK',
+    github: 'GitHub',
 }
 
 const PROVIDER_ENV = {
@@ -14,6 +15,7 @@ const PROVIDER_ENV = {
     steam: ['STEAM_API_KEY'],
     yandex: ['YANDEX_CLIENT_ID', 'YANDEX_CLIENT_SECRET'],
     vk: ['VK_CLIENT_ID', 'VK_CLIENT_SECRET'],
+    github: ['GITHUB_CLIENT_ID', 'GITHUB_CLIENT_SECRET'],
 }
 
 export const isSupportedOAuthProvider = (provider) => {

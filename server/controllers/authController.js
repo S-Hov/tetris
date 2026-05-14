@@ -84,7 +84,7 @@ export const login = asyncHandler(async (req, res) => {
             ...requestMeta,
         })
 
-        const error = new Error("Этот аккаунт создан через внешний вход. Войдите через Google/Discord/Steam/Yandex/VK или установите пароль.")
+        const error = new Error("Этот аккаунт создан через внешний вход. Войдите через Google/GitHub/Discord/Steam/Yandex/VK или установите пароль.")
         error.statusCode = 403
         throw error
     }

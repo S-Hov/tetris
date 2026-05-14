@@ -9,6 +9,7 @@ Providers:
 - Steam: `/api/authentication/steam`
 - Yandex: `/api/authentication/yandex`
 - VK: `/api/authentication/vk`
+- GitHub: `/api/authentication/github`
 
 Callbacks use `/api/authentication/:provider/callback`.
 
@@ -19,6 +20,7 @@ Required environment variables:
 - `STEAM_API_KEY`, optional `STEAM_RETURN_URL`
 - `YANDEX_CLIENT_ID`, `YANDEX_CLIENT_SECRET`
 - `VK_CLIENT_ID`, `VK_CLIENT_SECRET`
+- `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`
 - `JWT_SECRET`, `CLIENT_URL`, `SERVER_URL`
 - Optional `OAUTH_REDIRECT_WHITELIST`
 - Optional `OAUTH_STORE_TOKENS=true` when provider tokens are actually needed later

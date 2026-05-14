@@ -4,12 +4,14 @@ import DiscordPkg from 'passport-discord'
 import SteamPkg from 'passport-steam'
 import YandexPkg from 'passport-yandex'
 import VKPkg from 'passport-vkontakte'
+import GitHubPkg from 'passport-github2'
 import { getOAuthCallbackUrl, getServerUrl, isOAuthProviderEnabled } from './oauthProviders.js'
 
 const { Strategy: DiscordStrategy } = DiscordPkg
 const { Strategy: SteamStrategy } = SteamPkg
 const { Strategy: YandexStrategy } = YandexPkg
 const { Strategy: VKStrategy } = VKPkg
+const { Strategy: GitHubStrategy } = GitHubPkg
 
 const firstValue = (...values) => {
     return values.find((value) => typeof value === 'string' && value.trim().length > 0)?.trim() || null
@@ -46,6 +48,16 @@ const displayName = (profile, fallback) => {
             : null,
         fallback
     )
+}
+
+const getVerifiedGitHubEmail = (profile) => {
+    if (!Array.isArray(profile?.emails)) {
+        return null
+    }
+
+    return profile.emails.find((email) => email.verified && email.primary)
+        || profile.emails.find((email) => email.verified)
+        || null
 }
 
 const fetchSteamProfile = async (steamId) => {
@@ -208,6 +220,26 @@ export const configurePassport = () => {
                 refreshToken,
                 email: params?.email || firstEmail(profile),
                 emailVerified: false,
+            }))
+        }))
+    }
+
+    if (isOAuthProviderEnabled('github')) {
+        passport.use('github', new GitHubStrategy({
+            clientID: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+            callbackURL: getOAuthCallbackUrl('github'),
+            allRawEmails: true,
+        }, (accessToken, refreshToken, profile, done) => {
+            const verifiedEmail = getVerifiedGitHubEmail(profile)
+
+            done(null, buildOAuthProfile({
+                provider: 'github',
+                profile,
+                accessToken,
+                refreshToken,
+                email: verifiedEmail?.value || null,
+                emailVerified: Boolean(verifiedEmail),
             }))
         }))
     }
