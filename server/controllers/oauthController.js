@@ -34,7 +34,7 @@ const AUTHENTICATE_OPTIONS = {
     },
     steam: {},
     yandex: {
-        scope: ['login:email', 'login:info', 'login:avatar'],
+        scope: ['login:email', 'login:info'],
     },
     vk: {
         scope: ['email'],
