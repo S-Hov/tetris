@@ -78,7 +78,7 @@ export const socketAuthMiddleware = async (socket, next) => {
     if (token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            const user = await getSocketUserRepo(decoded.id)
+            const user = await getSocketUserRepo(decoded.userId || decoded.id)
 
             if (!user) {
                 next(new Error('User not found'))

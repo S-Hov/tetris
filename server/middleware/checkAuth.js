@@ -10,7 +10,10 @@ export const checkAuth = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        req.user = decoded
+        req.user = {
+            ...decoded,
+            id: decoded.userId || decoded.id,
+        }
         next()
     } catch (error) {
         return next(unauthorized("Invalid or expired token"))
@@ -26,7 +29,11 @@ export const optionalAuth = (req, res, next) => {
     }
 
     try {
-        req.user = jwt.verify(token, process.env.JWT_SECRET)
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        req.user = {
+            ...decoded,
+            id: decoded.userId || decoded.id,
+        }
     } catch {
         req.user = null
     }

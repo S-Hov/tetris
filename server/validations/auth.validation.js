@@ -22,6 +22,19 @@ export const registerSchema = z.object({
     path: ["confirmPassword"],
 })
 
+export const setPasswordSchema = z.object({
+    newPassword: z.string()
+        .min(8, "РџР°СЂРѕР»СЊ РјРёРЅРёРјСѓРј 8 СЃРёРјРІРѕР»РѕРІ")
+        .max(16, "РџР°СЂРѕР»СЊ РјР°РєСЃРёРјСѓРј 16 СЃРёРјРІРѕР»РѕРІ")
+        .regex(/[A-Z]/, "РќСѓР¶РЅР° Р·Р°РіР»Р°РІРЅР°СЏ Р±СѓРєРІР°")
+        .regex(/[a-z]/, "РќСѓР¶РЅР° СЃС‚СЂРѕС‡РЅР°СЏ Р±СѓРєРІР°")
+        .regex(/[0-9]/, "РќСѓР¶РЅР° С†РёС„СЂР°"),
+    confirmPassword: z.string(),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+    message: "РџР°СЂРѕР»Рё РЅРµ СЃРѕРІРїР°РґР°СЋС‚",
+    path: ["confirmPassword"],
+})
+
 export const loginSchema = z.object({
     email: z.string()
         .email("Неверный формат email"),

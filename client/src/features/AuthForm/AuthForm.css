@@ -110,6 +110,7 @@
 }
 
 .social-icon {
+    text-decoration: none;
     background: var(--elem-bg);
     width: 45px;
     aspect-ratio: 1;

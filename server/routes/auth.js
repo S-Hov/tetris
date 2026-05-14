@@ -11,11 +11,16 @@ import {
     register,
     requestPasswordReset,
     resendVerificationEmail,
+    setPassword,
     updateAvatar,
     updateMe,
     updatePassword,
     verifyEmail,
 } from '../controllers/authController.js'
+import {
+    handleOAuthCallback,
+    startOAuthLogin,
+} from '../controllers/oauthController.js'
 import { validate } from '../middleware/validateAuth.js'
 import {
     changeUnverifiedEmailSchema,
@@ -23,6 +28,7 @@ import {
     registerSchema,
     requestPasswordResetSchema,
     resendVerificationEmailSchema,
+    setPasswordSchema,
     updatePasswordSchema,
     verifyEmailSchema,
 } from '../validations/auth.validation.js'
@@ -34,11 +40,15 @@ authRouter.post('/register', checkNotAuth, validate(registerSchema), register)
 
 authRouter.post('/login', checkNotAuth, validate(loginSchema), login)
 
+authRouter.post('/password/login', checkNotAuth, validate(loginSchema), login)
+
 authRouter.get('/me', optionalAuth, getMe)
 
 authRouter.patch('/me', checkAuth, updateMe)
 
 authRouter.patch('/me/password', checkAuth, validate(updatePasswordSchema), updatePassword)
+
+authRouter.post('/password/set', checkAuth, validate(setPasswordSchema), setPassword)
 
 authRouter.put(
     '/me/avatar',
@@ -51,6 +61,10 @@ authRouter.put(
 )
 
 authRouter.post('/logout', optionalAuth, logout)
+
+authRouter.get('/:provider/callback', handleOAuthCallback)
+
+authRouter.get('/:provider', startOAuthLogin)
 
 authRouter.post('/verify-email/:email', checkNotAuth, validate(verifyEmailSchema), verifyEmail)
 

@@ -16,27 +16,13 @@ import {
     verifyEmailService,
     loginConfirmationService,
 } from "../services/authService.js"
+import {
+    setInitialPasswordService,
+} from '../services/oauthService.js'
 import { asyncHandler } from "../utils/asyncHandler.js"
-import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import { sendTemporaryPasswordEmail, sendVerificationEmail } from "../services/emailService.js"
-
-const getAuthCookieOptions = () => {
-    const isProduction = process.env.NODE_ENV === 'production'
-    const sameSite = (process.env.COOKIE_SAME_SITE || (isProduction ? 'none' : 'lax')).toLowerCase()
-    const secure = process.env.COOKIE_SECURE
-        ? process.env.COOKIE_SECURE === 'true'
-        : isProduction || sameSite === 'none'
-    const domain = process.env.COOKIE_DOMAIN || undefined
-
-    return {
-        httpOnly: true,
-        secure,
-        sameSite,
-        path: '/',
-        ...(domain ? { domain } : {}),
-    }
-}
+import { getAuthCookieOptions, setAuthCookie } from "../utils/authCookie.js"
 
 const getRequestMeta = (req) => ({
     ipAddress: req.ip || req.socket?.remoteAddress || null,
@@ -91,6 +77,18 @@ export const login = asyncHandler(async (req, res) => {
         throw error
     }
 
+    if (!user.password_hash) {
+        await createAuthLogService({
+            userId: user.id,
+            eventType: 'login_password_missing',
+            ...requestMeta,
+        })
+
+        const error = new Error("Этот аккаунт создан через внешний вход. Войдите через Google/Discord/Steam/Yandex/VK или установите пароль.")
+        error.statusCode = 403
+        throw error
+    }
+
     const isMatch = await bcrypt.compare(password, user.password_hash)
 
     if (!isMatch) {
@@ -138,16 +136,7 @@ export const login = asyncHandler(async (req, res) => {
         ...requestMeta,
     })
 
-    const token = jwt.sign(
-        { id: user.id, roleId: user.role_id },
-        process.env.JWT_SECRET,
-        { expiresIn: `${parseInt(process.env.TOKEN_LIFETIME)}d` }
-    )
-
-    res.cookie('token', token, {
-        ...getAuthCookieOptions(),
-        maxAge: 1000 * 60 * 60 * 24 * parseInt(process.env.TOKEN_LIFETIME)
-    })
+    setAuthCookie(res, user)
 
     res.json({
         success: true,
@@ -235,6 +224,28 @@ export const updatePassword = asyncHandler(async (req, res) => {
     res.json({
         success: true,
         message: 'Пароль обновлён',
+        data: {
+            user,
+        },
+    })
+})
+
+export const setPassword = asyncHandler(async (req, res) => {
+    const user = await setInitialPasswordService({
+        userId: req.user.id,
+        nextPassword: req.body.newPassword || req.body.password,
+    })
+    const requestMeta = getRequestMeta(req)
+
+    await createAuthLogService({
+        userId: req.user.id,
+        eventType: 'password_set',
+        ...requestMeta,
+    })
+
+    res.json({
+        success: true,
+        message: 'Пароль установлен',
         data: {
             user,
         },

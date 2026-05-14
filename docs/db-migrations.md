@@ -37,6 +37,8 @@ npm run db:migrate
 | `005_rating_schema.sql` | `user_rank_stats`, `rating_history` |
 | `006_game_rooms_schema.sql` | `game_rooms`, `game_room_players` и индексы |
 | `007_support_and_donations_schema.sql` | `support_requests`, `donation_wallets`, `donations`, `donation_verification_events` |
+| `008_admin_analytics_schema.sql` | admin analytics schema |
+| `009_oauth_accounts_schema.sql` | nullable `users.email`, nullable `users.password_hash`, `accounts` for OAuth providers |
 
 Миграции используют `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`
 и `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, поэтому baseline можно применить

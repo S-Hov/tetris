@@ -77,7 +77,7 @@ export const getUserMatchStatsRepo = async (userId) => {
             COUNT(*) FILTER (WHERE matches.status IN ('finished', 'abandoned'))::int AS total_games,
             COUNT(*) FILTER (
                 WHERE matches.status IN ('finished', 'abandoned')
-                  AND match_players.result = 'win'
+                    AND match_players.result = 'win'
             )::int AS wins
         FROM match_players
         JOIN matches ON matches.id = match_players.match_id
@@ -131,11 +131,11 @@ export const getRecentUserMatchesRepo = async (userId, limit = 6) => {
             LEFT JOIN match_teams AS opponent_team
                 ON opponent_team.id = opponent_player.team_id
             WHERE opponent_player.match_id = self_player.match_id
-              AND opponent_player.id <> self_player.id
-              AND opponent_player.team_id IS DISTINCT FROM self_player.team_id
+                AND opponent_player.id <> self_player.id
+                AND opponent_player.team_id IS DISTINCT FROM self_player.team_id
         ) AS opponent_data ON TRUE
         WHERE self_player.user_id = $1
-          AND matches.status IN ('finished', 'abandoned')
+            AND matches.status IN ('finished', 'abandoned')
         ORDER BY COALESCE(matches.ended_at, matches.created_at) DESC, matches.id DESC
         LIMIT $2
         `,

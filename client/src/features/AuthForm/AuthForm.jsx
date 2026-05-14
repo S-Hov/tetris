@@ -1,8 +1,17 @@
 import AuthRedirect from '@/shared/ui/Auth/AuthRedirect/index.js'
 import GlowEffect from '@/shared/ui/GlowEffect/index.js'
 import AUTH_VIEWS from './AuthViews.config.js'
+import { getBaseUrl } from '@/shared/api/apiClient.js'
 
 import './AuthForm.css'
+
+const oauthProviders = [
+    { provider: 'google', label: 'Google', icon: 'fab fa-google' },
+    { provider: 'discord', label: 'Discord', icon: 'fab fa-discord' },
+    { provider: 'steam', label: 'Steam', icon: 'fab fa-steam' },
+    { provider: 'yandex', label: 'Yandex', icon: 'fab fa-yandex' },
+    { provider: 'vk', label: 'VK', icon: 'fab fa-vk' },
+]
 
 const AuthForm = ({ type = 'login' }) => {
     const normalizedType = type.toLowerCase()
@@ -25,10 +34,17 @@ const AuthForm = ({ type = 'login' }) => {
                                 <div className="alternative">
                                     <p><i className="fas fa-globe"></i> Или войти через</p>
                                     <div className="social-icons">
-                                        <div className="social-icon"><i className="fab fa-discord"></i></div>
-                                        <div className="social-icon"><i className="fab fa-google"></i></div>
-                                        <div className="social-icon"><i className="fab fa-steam"></i></div>
-                                        <div className="social-icon"><i className="fab fa-twitch"></i></div>
+                                        {oauthProviders.map((item) => (
+                                            <a
+                                                key={item.provider}
+                                                className="social-icon"
+                                                href={`${getBaseUrl()}/api/authentication/${item.provider}`}
+                                                aria-label={`Войти через ${item.label}`}
+                                                title={`Войти через ${item.label}`}
+                                            >
+                                                <i className={item.icon}></i>
+                                            </a>
+                                        ))}
                                     </div>
                                 </div>
                                 <AuthRedirect type={normalizedType} />

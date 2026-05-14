@@ -500,8 +500,8 @@ export const getUserSoloRecordRepo = async ({ userId }) => {
         FROM match_players
         JOIN matches ON matches.id = match_players.match_id
         WHERE match_players.user_id = $1
-          AND matches.mode = $2
-          AND matches.status = 'finished'
+            AND matches.mode = $2
+            AND matches.status = 'finished'
         `,
         [userId, SOLO_MATCH_MODE]
     )
@@ -542,8 +542,8 @@ export const createSoloRecordMatchRepo = async ({ userId, username, stats }) => 
             FROM match_players
             JOIN matches ON matches.id = match_players.match_id
             WHERE match_players.user_id = $1
-              AND matches.mode = $2
-              AND matches.status = 'finished'
+                AND matches.mode = $2
+                AND matches.status = 'finished'
             `,
             [userId, SOLO_MATCH_MODE]
         )

@@ -419,6 +419,10 @@ export const updateUserPasswordService = async ({ userId, currentPassword, nextP
         throw badRequest(PASSWORD_RULE_MESSAGE)
     }
 
+    if (!user.password_hash) {
+        throw badRequest('Пароль еще не установлен. Используйте установку пароля')
+    }
+
     const isCurrentPasswordValid = await bcrypt.compare(String(currentPassword || ''), user.password_hash)
 
     if (!isCurrentPasswordValid) {

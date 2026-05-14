@@ -9,6 +9,8 @@ import authRouter from './routes/auth.js'
 import matchesRouter from './routes/matches.js'
 import leaderboardRouter from './routes/leaderboard.js'
 import adminRouter from './routes/admin.js'
+import settingsRouter from './routes/settings.js'
+import passport, { configurePassport } from './config/passport.js'
 
 import { logger } from './middleware/logger.js'
 import { errorHandler } from './middleware/errorHandler.js'
@@ -60,6 +62,8 @@ app.use(cors({
 
 app.use(express.json())
 app.use(cookieParser())
+configurePassport()
+app.use(passport.initialize())
 
 
 const APP_NAME = process.env.APP_NAME || "App"
@@ -73,6 +77,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 }))
 
 app.use("/api/authentication", authRouter)
+app.use("/api/settings", settingsRouter)
 app.use("/api/matches", matchesRouter)
 app.use("/api/leaderboard", leaderboardRouter)
 app.use("/api/admin", adminRouter)
