@@ -43,6 +43,173 @@ const getAppliedMigrationNames = async (client) => {
     return new Set(result.rows.map((row) => row.name))
 }
 
+const tableExists = async (client, tableName) => {
+    const result = await client.query(
+        `
+        SELECT EXISTS (
+            SELECT 1
+            FROM information_schema.tables
+            WHERE table_schema = 'public' AND table_name = $1
+        ) AS exists
+        `,
+        [tableName]
+    )
+
+    return Boolean(result.rows[0]?.exists)
+}
+
+const columnExists = async (client, tableName, columnName) => {
+    const result = await client.query(
+        `
+        SELECT EXISTS (
+            SELECT 1
+            FROM information_schema.columns
+            WHERE table_schema = 'public'
+              AND table_name = $1
+              AND column_name = $2
+        ) AS exists
+        `,
+        [tableName, columnName]
+    )
+
+    return Boolean(result.rows[0]?.exists)
+}
+
+const isColumnNullable = async (client, tableName, columnName) => {
+    const result = await client.query(
+        `
+        SELECT is_nullable
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = $1
+          AND column_name = $2
+        LIMIT 1
+        `,
+        [tableName, columnName]
+    )
+
+    return result.rows[0]?.is_nullable === 'YES'
+}
+
+const hasRoleKeys = async (client, keys) => {
+    const result = await client.query(
+        `
+        SELECT key
+        FROM roles
+        WHERE key = ANY($1::text[])
+        `,
+        [keys]
+    )
+
+    return keys.every((key) => result.rows.some((row) => row.key === key))
+}
+
+const MIGRATION_BASELINE_CHECKS = {
+    '001_auth_schema.sql': async (client) => {
+        const requiredTables = ['roles', 'users', 'email_verifications', 'auth_logs']
+        const results = await Promise.all(requiredTables.map((tableName) => tableExists(client, tableName)))
+
+        return results.every(Boolean)
+    },
+    '002_seed_roles.sql': async (client) => {
+        if (!(await tableExists(client, 'roles'))) {
+            return false
+        }
+
+        return hasRoleKeys(client, ['user', 'admin'])
+    },
+    '003_match_schema.sql': async (client) => {
+        const requiredTables = ['matches', 'match_teams', 'match_players', 'match_events']
+        const results = await Promise.all(requiredTables.map((tableName) => tableExists(client, tableName)))
+
+        return results.every(Boolean)
+    },
+    '004_add_matches_room_id.sql': async (client) => {
+        return columnExists(client, 'matches', 'room_id')
+    },
+    '005_rating_schema.sql': async (client) => {
+        const requiredTables = ['user_rank_stats', 'rating_history']
+        const results = await Promise.all(requiredTables.map((tableName) => tableExists(client, tableName)))
+
+        return results.every(Boolean)
+    },
+    '006_game_rooms_schema.sql': async (client) => {
+        const requiredTables = ['game_rooms', 'game_room_players']
+        const results = await Promise.all(requiredTables.map((tableName) => tableExists(client, tableName)))
+
+        return results.every(Boolean)
+    },
+    '007_support_and_donations_schema.sql': async (client) => {
+        const requiredTables = ['support_requests', 'donation_wallets', 'donations', 'donation_verification_events']
+        const results = await Promise.all(requiredTables.map((tableName) => tableExists(client, tableName)))
+
+        return results.every(Boolean)
+    },
+    '008_admin_analytics_schema.sql': async (client) => {
+        const requiredTables = ['site_visit_events', 'user_sessions', 'game_activity_events', 'admin_audit_logs']
+        const results = await Promise.all(requiredTables.map((tableName) => tableExists(client, tableName)))
+
+        return results.every(Boolean)
+    },
+    '009_oauth_accounts_schema.sql': async (client) => {
+        const [accountsExists, emailNullable, passwordHashNullable] = await Promise.all([
+            tableExists(client, 'accounts'),
+            isColumnNullable(client, 'users', 'email'),
+            isColumnNullable(client, 'users', 'password_hash'),
+        ])
+
+        return accountsExists && emailNullable && passwordHashNullable
+    },
+}
+
+const detectBaselineMigrations = async (client, files) => {
+    const detected = []
+
+    for (const file of files) {
+        const check = MIGRATION_BASELINE_CHECKS[file]
+
+        if (!check) {
+            break
+        }
+
+        const matchesSchema = await check(client)
+
+        if (!matchesSchema) {
+            break
+        }
+
+        detected.push(file)
+    }
+
+    return detected
+}
+
+const recordAppliedMigrations = async (client, names) => {
+    if (names.length === 0) {
+        return
+    }
+
+    await client.query('BEGIN')
+
+    try {
+        for (const name of names) {
+            await client.query(
+                `
+                INSERT INTO ${MIGRATIONS_TABLE} (name)
+                VALUES ($1)
+                ON CONFLICT (name) DO NOTHING
+                `,
+                [name]
+            )
+        }
+
+        await client.query('COMMIT')
+    } catch (error) {
+        await client.query('ROLLBACK')
+        throw error
+    }
+}
+
 const runMigration = async (client, name) => {
     const filePath = path.join(migrationsDir, name)
     const sql = await readFile(filePath, 'utf8')
@@ -77,7 +244,19 @@ const migrate = async () => {
         hasMigrationLock = true
 
         const files = await getMigrationFiles()
-        const appliedMigrationNames = await getAppliedMigrationNames(client)
+        let appliedMigrationNames = await getAppliedMigrationNames(client)
+
+        if (appliedMigrationNames.size === 0) {
+            const detectedBaseline = await detectBaselineMigrations(client, files)
+
+            if (detectedBaseline.length > 0) {
+                console.log(`Detected existing baseline schema: ${detectedBaseline.join(', ')}`)
+                await recordAppliedMigrations(client, detectedBaseline)
+                appliedMigrationNames = await getAppliedMigrationNames(client)
+                console.log(`Recorded ${detectedBaseline.length} baseline migration(s) in ${MIGRATIONS_TABLE}.`)
+            }
+        }
+
         const pendingFiles = files.filter((file) => !appliedMigrationNames.has(file))
 
         if (pendingFiles.length === 0) {
