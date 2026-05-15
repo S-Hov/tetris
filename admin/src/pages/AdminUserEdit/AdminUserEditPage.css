@@ -1,0 +1,175 @@
+.admin-user-edit__state {
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.admin-user-edit__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.admin-user-edit__avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.admin-user-edit__avatar {
+  width: 88px;
+  aspect-ratio: 1;
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid #d7dee8;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #475467;
+  font-size: 32px;
+  font-weight: 900;
+}
+
+.admin-user-edit__avatar img,
+.admin-user-edit__avatar video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-user-edit__upload {
+  display: grid;
+  gap: 5px;
+  color: #344054;
+  cursor: pointer;
+}
+
+.admin-user-edit__upload input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.admin-user-edit__upload span {
+  width: fit-content;
+  padding: 9px 12px;
+  border: 1px solid #d7dee8;
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.admin-user-edit__upload small,
+.admin-user-edit__account span,
+.admin-user-edit__account small {
+  color: #667085;
+  font-size: 13px;
+}
+
+.admin-user-edit__field {
+  display: grid;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.admin-user-edit__field span {
+  color: #667085;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.admin-user-edit__field input,
+.admin-user-edit__field select {
+  height: 42px;
+  min-width: 0;
+  padding: 0 12px;
+  border: 1px solid #d7dee8;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #344054;
+  font: inherit;
+}
+
+.admin-user-edit__field input:focus,
+.admin-user-edit__field select:focus {
+  border-color: #0f766e;
+  outline: 2px solid rgba(15, 118, 110, 0.14);
+}
+
+.admin-user-edit__rank-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 12px;
+}
+
+.admin-user-edit__accounts {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.admin-user-edit__account {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e6ebf2;
+  border-radius: 14px;
+}
+
+.admin-user-edit__account div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.admin-user-edit__account strong {
+  color: #101828;
+}
+
+.admin-user-edit__account span {
+  overflow-wrap: anywhere;
+}
+
+.admin-user-edit__account button,
+.admin-user-edit__danger button {
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.admin-user-edit__danger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-color: #fecaca;
+  background: #fff7f7;
+}
+
+@media (max-width: 920px) {
+  .admin-user-edit__grid,
+  .admin-user-edit__rank-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-user-edit__avatar-row,
+  .admin-user-edit__danger,
+  .admin-user-edit__account {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -1,5 +1,7 @@
 import express from 'express'
 import {
+    deleteUserAccount,
+    deleteUser,
     getActiveSessions,
     getAdminAuditLogs,
     getAdminMe,
@@ -27,6 +29,9 @@ import {
     getUserDetails,
     getUsers,
     getVisitAnalytics,
+    manageUser,
+    updateUserAvatar,
+    updateUser,
 } from '../controllers/adminController.js'
 import { checkAuth } from '../middleware/checkAuth.js'
 import { checkAdmin } from '../middleware/checkAdmin.js'
@@ -47,6 +52,18 @@ adminRouter.get('/resources/:resourceKey', getResourceByKey)
 
 adminRouter.get('/users', getUsers)
 adminRouter.get('/users/:userId', getUserDetails)
+adminRouter.patch('/users/:userId/manage', manageUser)
+adminRouter.put(
+    '/users/:userId/avatar',
+    express.raw({
+        type: ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/avif', 'video/webm'],
+        limit: '2mb',
+    }),
+    updateUserAvatar
+)
+adminRouter.delete('/users/:userId/accounts/:accountId', deleteUserAccount)
+adminRouter.put('/users/:userId', updateUser)
+adminRouter.delete('/users/:userId', deleteUser)
 adminRouter.get('/roles', getRoles)
 adminRouter.get('/auth/logs', getAuthLogs)
 adminRouter.get('/email-verifications', getEmailVerifications)

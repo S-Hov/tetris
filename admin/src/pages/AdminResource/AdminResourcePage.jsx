@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AdminDataTable } from '@/entities/adminTable/ui/AdminDataTable.jsx'
+import { AdminUsersTable } from '@/entities/adminTable/ui/AdminUsersTable.jsx'
 import { resourcesAPI } from '@/shared/api/resources'
 import { adminResourceConfigs } from '@/shared/config/adminResources.js'
 import { notify } from '@/shared/lib/notify.js'
@@ -117,14 +118,25 @@ export function AdminResourcePage({ route }) {
         </button>
       </div>
 
-      <AdminDataTable
-        config={config}
-        error={error}
-        isLoading={isLoading}
-        pagination={data.pagination}
-        rows={data.items || []}
-        onPageChange={handlePageChange}
-      />
+      {config.key === 'users' ? (
+        <AdminUsersTable
+          error={error}
+          isLoading={isLoading}
+          pagination={data.pagination}
+          rows={data.items || []}
+          onChanged={() => setRefreshToken((value) => value + 1)}
+          onPageChange={handlePageChange}
+        />
+      ) : (
+        <AdminDataTable
+          config={config}
+          error={error}
+          isLoading={isLoading}
+          pagination={data.pagination}
+          rows={data.items || []}
+          onPageChange={handlePageChange}
+        />
+      )}
     </section>
   )
 }

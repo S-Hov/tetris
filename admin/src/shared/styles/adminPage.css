@@ -102,6 +102,9 @@
   font-size: 14px;
   font-weight: 800;
   cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
 
   &.admin-button--primary {
     border-color: #101828;
@@ -388,6 +391,132 @@
     background: #f1f5f9;
     color: #475467;
   }
+}
+
+.admin-users-table table {
+  min-width: 1280px;
+}
+
+.admin-user-link,
+.admin-user-field-link {
+  color: #0f766e;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.admin-user-link:hover,
+.admin-user-field-link:hover {
+  color: #0d9488;
+}
+
+.admin-user-field-link {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 6px;
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-user-avatar {
+  width: 42px;
+  aspect-ratio: 1;
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid #d7dee8;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #475467;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.admin-user-avatar img,
+.admin-user-avatar video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-table-input {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid #d7dee8;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #344054;
+  font: inherit;
+  font-size: 13px;
+}
+
+.admin-table-input:focus {
+  border-color: #0f766e;
+  outline: 2px solid rgba(15, 118, 110, 0.14);
+}
+
+.admin-user-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-user-actions button,
+.admin-confirm button {
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #d7dee8;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #344054;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.admin-user-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.admin-user-actions__danger,
+.admin-confirm .admin-confirm__danger {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.admin-confirm {
+  width: min(360px, calc(100vw - 32px));
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid #fecaca;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.18);
+}
+
+.admin-confirm strong {
+  color: #101828;
+  font-size: 16px;
+}
+
+.admin-confirm p {
+  margin: 0;
+  color: #667085;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.admin-confirm div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 @media (max-width: 1200px) {

@@ -1,5 +1,6 @@
 import { pool } from '../db/index.js'
 import { getActiveSessionWindowMinutes } from './analyticsRepository.js'
+import { getRankTier } from '../services/rankRules.js'
 
 const DEFAULT_LIMIT = 25
 const MAX_LIMIT = 100
@@ -7,7 +8,7 @@ const MAX_LIMIT = 100
 const RESOURCE_CONFIGS = {
     users: {
         table: 'users',
-        columns: ['id', 'username', 'email', 'status', 'role_id', 'created_at', 'last_login_at'],
+        columns: ['id', 'username', 'email', 'avatar_url', 'status', 'role_id', 'created_at', 'last_login_at'],
         searchable: ['username', 'email'],
         filters: ['status', 'role_id'],
         orderBy: 'created_at',
@@ -338,6 +339,326 @@ export const getAdminResourceRepo = async (resourceKey, params = {}, forcedFilte
             total: countResult.rows[0]?.total || 0,
         },
     }
+}
+
+export const getAdminUserDetailsRepo = async (userId) => {
+    const { rows } = await pool.query(
+        `
+        SELECT
+            users.id,
+            users.username,
+            users.email,
+            users.avatar_url,
+            users.status,
+            users.role_id,
+            roles.key AS role,
+            roles.name AS role_name,
+            users.email_verified_at,
+            users.password_hash IS NOT NULL AS has_password,
+            users.created_at,
+            users.updated_at,
+            users.last_login_at,
+            COALESCE(user_rank_stats.rank_points, 0) AS rank_points,
+            COALESCE(user_rank_stats.mmr, 1000) AS mmr,
+            COALESCE(user_rank_stats.wins, 0) AS wins,
+            COALESCE(user_rank_stats.losses, 0) AS losses,
+            COALESCE(user_rank_stats.draws, 0) AS draws,
+            COALESCE(user_rank_stats.best_solo_score, 0) AS best_solo_score,
+            COALESCE(user_rank_stats.total_matches, 0) AS total_matches
+        FROM users
+        JOIN roles ON roles.id = users.role_id
+        LEFT JOIN user_rank_stats ON user_rank_stats.user_id = users.id
+        WHERE users.id = $1
+        LIMIT 1
+        `,
+        [userId]
+    )
+
+    const user = rows[0] || null
+
+    if (!user) {
+        return null
+    }
+
+    const [summaryResult, matchesResult, ratingHistoryResult, authLogsResult, accountsResult] = await Promise.all([
+        pool.query(
+            `
+            SELECT
+                COUNT(*) FILTER (WHERE matches.status IN ('finished', 'abandoned'))::int AS total_games,
+                COUNT(*) FILTER (
+                    WHERE matches.status IN ('finished', 'abandoned')
+                        AND match_players.result = 'win'
+                )::int AS wins,
+                COUNT(*) FILTER (
+                    WHERE matches.status IN ('finished', 'abandoned')
+                        AND match_players.result = 'lose'
+                )::int AS losses,
+                COALESCE(ROUND(AVG(match_players.score)), 0)::int AS avg_score,
+                COALESCE(SUM(match_players.lines_cleared), 0)::int AS lines_cleared
+            FROM match_players
+            JOIN matches ON matches.id = match_players.match_id
+            WHERE match_players.user_id = $1
+            `,
+            [userId]
+        ),
+        pool.query(
+            `
+            SELECT
+                matches.id,
+                matches.room_id,
+                matches.mode,
+                matches.match_type,
+                matches.status,
+                matches.counts_for_rating,
+                COALESCE(matches.ended_at, matches.created_at) AS played_at,
+                match_players.result,
+                match_players.score,
+                match_players.lines_cleared,
+                match_players.level_reached,
+                self_team.team_number AS player_team_number,
+                self_team.team_score AS player_team_score,
+                opponent_data.opponent_label,
+                opponent_data.opponent_team_number,
+                opponent_data.opponent_team_score
+            FROM match_players
+            JOIN matches ON matches.id = match_players.match_id
+            LEFT JOIN match_teams AS self_team ON self_team.id = match_players.team_id
+            LEFT JOIN LATERAL (
+                SELECT
+                    CASE
+                        WHEN COUNT(*) FILTER (WHERE opponent_player.team_id IS DISTINCT FROM match_players.team_id) > 1
+                            THEN CONCAT('Команда ', COALESCE(MAX(opponent_team.team_number), 2))
+                        ELSE COALESCE(MAX(opponent_user.username), MAX(opponent_player.nickname), 'Неизвестный соперник')
+                    END AS opponent_label,
+                    COALESCE(MAX(opponent_team.team_number), 2) AS opponent_team_number,
+                    COALESCE(MAX(opponent_team.team_score), 0) AS opponent_team_score
+                FROM match_players AS opponent_player
+                LEFT JOIN users AS opponent_user ON opponent_user.id = opponent_player.user_id
+                LEFT JOIN match_teams AS opponent_team ON opponent_team.id = opponent_player.team_id
+                WHERE opponent_player.match_id = match_players.match_id
+                    AND opponent_player.id <> match_players.id
+                    AND opponent_player.team_id IS DISTINCT FROM match_players.team_id
+            ) AS opponent_data ON TRUE
+            WHERE match_players.user_id = $1
+            ORDER BY COALESCE(matches.ended_at, matches.created_at) DESC, matches.id DESC
+            LIMIT 20
+            `,
+            [userId]
+        ),
+        pool.query(
+            `
+            SELECT id, match_id, old_rank_points, new_rank_points, rank_delta, old_mmr, new_mmr, mmr_delta, reason, created_at
+            FROM rating_history
+            WHERE user_id = $1
+            ORDER BY created_at DESC
+            LIMIT 12
+            `,
+            [userId]
+        ),
+        pool.query(
+            `
+            SELECT id, event_type, ip_address, user_agent, created_at
+            FROM auth_logs
+            WHERE user_id = $1
+            ORDER BY created_at DESC
+            LIMIT 20
+            `,
+            [userId]
+        ),
+        pool.query(
+            `
+            SELECT id, provider, provider_account_id, created_at, updated_at
+            FROM accounts
+            WHERE user_id = $1
+            ORDER BY provider ASC, created_at DESC
+            `,
+            [userId]
+        ),
+    ])
+
+    const totalMatches = Number(user.total_matches) || 0
+    const wins = Number(user.wins) || 0
+    const summary = summaryResult.rows[0] || {}
+
+    return {
+        user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            avatar_url: user.avatar_url,
+            status: user.status,
+            role_id: user.role_id,
+            role: user.role,
+            role_name: user.role_name,
+            email_verified_at: user.email_verified_at,
+            has_password: Boolean(user.has_password),
+            created_at: user.created_at,
+            updated_at: user.updated_at,
+            last_login_at: user.last_login_at,
+        },
+        stats: {
+            totalGames: Number(summary.total_games) || 0,
+            wins: Number(summary.wins) || 0,
+            losses: Number(summary.losses) || 0,
+            winRate: totalMatches > 0 ? Math.round((wins / totalMatches) * 100) : 0,
+            avgScore: Number(summary.avg_score) || 0,
+            linesCleared: Number(summary.lines_cleared) || 0,
+        },
+        rankStats: {
+            rankPoints: Number(user.rank_points) || 0,
+            mmr: Number(user.mmr) || 1000,
+            wins,
+            losses: Number(user.losses) || 0,
+            draws: Number(user.draws) || 0,
+            totalMatches,
+            winRate: totalMatches > 0 ? Math.round((wins / totalMatches) * 100) : 0,
+            bestSoloScore: Number(user.best_solo_score) || 0,
+            rank: getRankTier(Number(user.rank_points) || 0),
+        },
+        matches: matchesResult.rows.map((match) => ({
+            id: match.id,
+            roomId: match.room_id,
+            mode: match.mode,
+            matchType: match.match_type,
+            status: match.status,
+            countsForRating: Boolean(match.counts_for_rating),
+            playedAt: match.played_at,
+            result: match.result === 'win' ? 'win' : (match.result === 'draw' ? 'draw' : 'loss'),
+            score: Number(match.player_team_score ?? match.score) || 0,
+            linesCleared: Number(match.lines_cleared) || 0,
+            levelReached: Number(match.level_reached) || 1,
+            opponent: match.opponent_label || 'Неизвестный соперник',
+            opponentTeamNumber: Number(match.opponent_team_number) || null,
+            opponentScore: Number(match.opponent_team_score) || 0,
+        })),
+        ratingHistory: ratingHistoryResult.rows,
+        authLogs: authLogsResult.rows,
+        accounts: accountsResult.rows,
+    }
+}
+
+export const updateAdminUserRepo = async ({ userId, username, email, status }) => {
+    const { rows } = await pool.query(
+        `
+        UPDATE users
+        SET
+            username = $2,
+            email = $3,
+            status = $4,
+            updated_at = NOW()
+        WHERE id = $1
+        RETURNING id, username, email, avatar_url, status, role_id, created_at, last_login_at
+        `,
+        [userId, username, email, status]
+    )
+
+    return rows[0] || null
+}
+
+export const manageAdminUserRepo = async ({
+    userId,
+    username,
+    email,
+    status,
+    roleId,
+    passwordHash = null,
+    rankPoints,
+    mmr,
+    wins,
+    losses,
+    draws,
+    bestSoloScore,
+    totalMatches,
+}) => {
+    const client = await pool.connect()
+
+    try {
+        await client.query('BEGIN')
+
+        const userResult = await client.query(
+            `
+            UPDATE users
+            SET
+                username = $2,
+                email = $3,
+                status = $4,
+                role_id = $5,
+                password_hash = COALESCE($6, password_hash),
+                updated_at = NOW()
+            WHERE id = $1
+            RETURNING id, username, email, avatar_url, status, role_id, created_at, last_login_at
+            `,
+            [userId, username, email, status, roleId, passwordHash]
+        )
+        const user = userResult.rows[0] || null
+
+        if (!user) {
+            await client.query('ROLLBACK')
+            return null
+        }
+
+        await client.query(
+            `
+            INSERT INTO user_rank_stats (
+                user_id,
+                rank_points,
+                mmr,
+                wins,
+                losses,
+                draws,
+                best_solo_score,
+                total_matches
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            ON CONFLICT (user_id) DO UPDATE
+            SET
+                rank_points = EXCLUDED.rank_points,
+                mmr = EXCLUDED.mmr,
+                wins = EXCLUDED.wins,
+                losses = EXCLUDED.losses,
+                draws = EXCLUDED.draws,
+                best_solo_score = EXCLUDED.best_solo_score,
+                total_matches = EXCLUDED.total_matches,
+                updated_at = NOW()
+            `,
+            [userId, rankPoints, mmr, wins, losses, draws, bestSoloScore, totalMatches]
+        )
+
+        await client.query('COMMIT')
+
+        return user
+    } catch (error) {
+        await client.query('ROLLBACK')
+        throw error
+    } finally {
+        client.release()
+    }
+}
+
+export const deleteAdminUserAccountRepo = async ({ userId, accountId }) => {
+    const { rows } = await pool.query(
+        `
+        DELETE FROM accounts
+        WHERE user_id = $1 AND id = $2
+        RETURNING id, user_id, provider, provider_account_id
+        `,
+        [userId, accountId]
+    )
+
+    return rows[0] || null
+}
+
+export const deleteAdminUserRepo = async (userId) => {
+    const { rows } = await pool.query(
+        `
+        DELETE FROM users
+        WHERE id = $1
+        RETURNING id, username, email
+        `,
+        [userId]
+    )
+
+    return rows[0] || null
 }
 
 async function getDashboardMetrics(range) {

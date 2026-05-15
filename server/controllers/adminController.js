@@ -1,10 +1,18 @@
 import { asyncHandler } from '../utils/asyncHandler.js'
+import bcrypt from 'bcrypt'
 import {
+    deleteAdminUserAccountRepo,
+    deleteAdminUserRepo,
     getAdminDashboardRepo,
     getAdminNavigationRepo,
     getAdminResourceRepo,
     getAdminUserRepo,
+    getAdminUserDetailsRepo,
+    manageAdminUserRepo,
+    updateAdminUserRepo,
 } from '../repositories/adminRepository.js'
+import { badRequest } from '../helpers/error.helper.js'
+import { updateUserAvatarService } from '../services/authService.js'
 
 const sendAdminResponse = (res, message, data) => {
     res.json({
@@ -105,9 +113,187 @@ export const getUsers = asyncHandler(async (req, res) => {
 })
 
 export const getUserDetails = asyncHandler(async (req, res) => {
-    sendAdminResponse(res, 'User details loaded', await getAdminResourceRepo('users', req.query, {
-        id: req.params.userId,
-    }))
+    const data = await getAdminUserDetailsRepo(req.params.userId)
+
+    if (!data) {
+        res.status(404).json({
+            success: false,
+            message: 'Пользователь не найден',
+            data: null,
+        })
+        return
+    }
+
+    sendAdminResponse(res, 'User details loaded', data)
+})
+
+export const updateUser = asyncHandler(async (req, res) => {
+    const username = normalizeUsername(req.body?.username)
+    const email = normalizeEmail(req.body?.email)
+    const status = normalizeStatus(req.body?.status)
+
+    if (!username) {
+        throw badRequest('Введите корректный ник от 2 до 100 символов')
+    }
+
+    if (!email) {
+        throw badRequest('Введите корректную почту')
+    }
+
+    if (!status) {
+        throw badRequest('Выберите корректный статус пользователя')
+    }
+
+    let user
+
+    try {
+        user = await updateAdminUserRepo({
+            userId: req.params.userId,
+            username,
+            email,
+            status,
+        })
+    } catch (error) {
+        if (error.code === '23505') {
+            throw badRequest('Пользователь с такой почтой уже существует')
+        }
+
+        throw error
+    }
+
+    if (!user) {
+        res.status(404).json({
+            success: false,
+            message: 'Пользователь не найден',
+            data: null,
+        })
+        return
+    }
+
+    sendAdminResponse(res, 'Пользователь обновлён', { user })
+})
+
+export const manageUser = asyncHandler(async (req, res) => {
+    const username = normalizeUsername(req.body?.username)
+    const email = normalizeEmail(req.body?.email)
+    const status = normalizeStatus(req.body?.status)
+    const roleId = normalizePositiveInteger(req.body?.role_id || req.body?.roleId, 0)
+    const password = String(req.body?.newPassword || req.body?.password || '')
+    const confirmPassword = String(req.body?.confirmPassword || '')
+
+    if (!username) {
+        throw badRequest('Введите корректный ник от 2 до 100 символов')
+    }
+
+    if (!email) {
+        throw badRequest('Введите корректную почту')
+    }
+
+    if (!status) {
+        throw badRequest('Выберите корректный статус пользователя')
+    }
+
+    if (!roleId) {
+        throw badRequest('Укажите корректную роль')
+    }
+
+    if (password && password !== confirmPassword) {
+        throw badRequest('Новый пароль и подтверждение не совпадают')
+    }
+
+    if (password && !isStrongPassword(password)) {
+        throw badRequest('Пароль должен быть 8-16 символов, с заглавной, строчной буквой и цифрой')
+    }
+
+    const passwordHash = password ? await bcrypt.hash(password, 10) : null
+
+    let user
+
+    try {
+        user = await manageAdminUserRepo({
+            userId: req.params.userId,
+            username,
+            email,
+            status,
+            roleId,
+            passwordHash,
+            rankPoints: normalizeNonNegativeInteger(req.body?.rankPoints ?? req.body?.rank_points, 0),
+            mmr: normalizeNonNegativeInteger(req.body?.mmr, 1000),
+            wins: normalizeNonNegativeInteger(req.body?.wins, 0),
+            losses: normalizeNonNegativeInteger(req.body?.losses, 0),
+            draws: normalizeNonNegativeInteger(req.body?.draws, 0),
+            bestSoloScore: normalizeNonNegativeInteger(req.body?.bestSoloScore ?? req.body?.best_solo_score, 0),
+            totalMatches: normalizeNonNegativeInteger(req.body?.totalMatches ?? req.body?.total_matches, 0),
+        })
+    } catch (error) {
+        if (error.code === '23505') {
+            throw badRequest('Пользователь с такой почтой уже существует')
+        }
+
+        if (error.code === '23503') {
+            throw badRequest('Указанная роль не найдена')
+        }
+
+        throw error
+    }
+
+    if (!user) {
+        res.status(404).json({
+            success: false,
+            message: 'Пользователь не найден',
+            data: null,
+        })
+        return
+    }
+
+    sendAdminResponse(res, 'Пользователь сохранён', { user })
+})
+
+export const updateUserAvatar = asyncHandler(async (req, res) => {
+    const user = await updateUserAvatarService({
+        userId: req.params.userId,
+        contentType: req.get('content-type'),
+        buffer: req.body,
+    })
+
+    sendAdminResponse(res, 'Аватар пользователя обновлён', { user })
+})
+
+export const deleteUserAccount = asyncHandler(async (req, res) => {
+    const account = await deleteAdminUserAccountRepo({
+        userId: req.params.userId,
+        accountId: req.params.accountId,
+    })
+
+    if (!account) {
+        res.status(404).json({
+            success: false,
+            message: 'Способ входа не найден',
+            data: null,
+        })
+        return
+    }
+
+    sendAdminResponse(res, 'Способ входа удалён', { account })
+})
+
+export const deleteUser = asyncHandler(async (req, res) => {
+    if (Number(req.params.userId) === Number(req.user.id)) {
+        throw badRequest('Нельзя удалить собственный админский аккаунт')
+    }
+
+    const user = await deleteAdminUserRepo(req.params.userId)
+
+    if (!user) {
+        res.status(404).json({
+            success: false,
+            message: 'Пользователь не найден',
+            data: null,
+        })
+        return
+    }
+
+    sendAdminResponse(res, 'Пользователь удалён', { user })
 })
 
 export const getRoles = asyncHandler(async (req, res) => {
@@ -191,3 +377,61 @@ export const getAdminAuditLogs = asyncHandler(async (req, res) => {
 export const getMigrations = asyncHandler(async (req, res) => {
     sendAdminResponse(res, 'Migrations loaded', await getAdminResourceRepo('migrations', req.query))
 })
+
+function normalizeUsername(value) {
+    const username = String(value || '').trim().replace(/\s+/g, ' ')
+
+    if (username.length < 2 || username.length > 100) {
+        return null
+    }
+
+    return username
+}
+
+function normalizeEmail(value) {
+    const email = String(value || '').trim().toLowerCase()
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return null
+    }
+
+    return email
+}
+
+function normalizeStatus(value) {
+    const status = String(value || '').trim()
+    const allowedStatuses = new Set(['active', 'pending_verification', 'blocked', 'disabled'])
+
+    return allowedStatuses.has(status) ? status : null
+}
+
+function normalizePositiveInteger(value, fallback) {
+    const parsed = Number(value)
+
+    if (!Number.isInteger(parsed) || parsed <= 0) {
+        return fallback
+    }
+
+    return parsed
+}
+
+function normalizeNonNegativeInteger(value, fallback) {
+    const parsed = Number(value)
+
+    if (!Number.isFinite(parsed)) {
+        return fallback
+    }
+
+    return Math.max(0, Math.floor(parsed))
+}
+
+function isStrongPassword(password) {
+    return (
+        typeof password === 'string' &&
+        password.length >= 8 &&
+        password.length <= 16 &&
+        /[A-Z]/.test(password) &&
+        /[a-z]/.test(password) &&
+        /[0-9]/.test(password)
+    )
+}

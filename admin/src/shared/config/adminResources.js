@@ -2,7 +2,7 @@ const commonFilters = {
   status: {
     label: 'Статус',
     key: 'status',
-    options: ['active', 'pending_verification', 'created', 'playing', 'finished', 'waiting', 'closed', 'new', 'confirmed', 'failed'],
+    options: ['active', 'pending_verification', 'blocked', 'disabled', 'created', 'playing', 'finished', 'waiting', 'closed', 'new', 'confirmed', 'failed'],
   },
   mode: {
     label: 'Режим',
@@ -72,6 +72,7 @@ export const adminResourceConfigs = {
     filters: [commonFilters.status],
     columns: [
       { key: 'id', label: 'ID', width: '72px' },
+      { key: 'avatar_url', label: 'Аватар', type: 'avatar', width: '86px' },
       { key: 'username', label: 'Игрок' },
       { key: 'email', label: 'Email' },
       { key: 'status', label: 'Статус', type: 'badge' },
