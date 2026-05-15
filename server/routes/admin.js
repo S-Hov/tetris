@@ -18,6 +18,7 @@ import {
     getMatchDetails,
     getMatchEvents,
     getMatchPlayers,
+    getMatchTeamDetails,
     getMatches,
     getMigrations,
     getMatchTeams,
@@ -69,6 +70,7 @@ adminRouter.get('/auth/logs', getAuthLogs)
 adminRouter.get('/email-verifications', getEmailVerifications)
 
 adminRouter.get('/matches', getMatches)
+adminRouter.get('/match-teams/:teamId', getMatchTeamDetails)
 adminRouter.get('/matches/:matchId', getMatchDetails)
 adminRouter.get('/matches/:matchId/teams', getMatchTeams)
 adminRouter.get('/matches/:matchId/players', getMatchPlayers)

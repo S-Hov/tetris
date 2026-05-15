@@ -8,6 +8,7 @@ import {
     getAdminResourceRepo,
     getAdminUserRepo,
     getAdminUserDetailsRepo,
+    getAdminMatchTeamDetailsRepo,
     manageAdminUserRepo,
     updateAdminUserRepo,
 } from '../repositories/adminRepository.js'
@@ -322,6 +323,21 @@ export const getMatchTeams = asyncHandler(async (req, res) => {
     sendAdminResponse(res, 'Match teams loaded', await getAdminResourceRepo('matchTeams', req.query, {
         match_id: req.params.matchId,
     }))
+})
+
+export const getMatchTeamDetails = asyncHandler(async (req, res) => {
+    const data = await getAdminMatchTeamDetailsRepo(req.params.teamId)
+
+    if (!data) {
+        res.status(404).json({
+            success: false,
+            message: 'Команда матча не найдена',
+            data: null,
+        })
+        return
+    }
+
+    sendAdminResponse(res, 'Match team details loaded', data)
 })
 
 export const getMatchPlayers = asyncHandler(async (req, res) => {

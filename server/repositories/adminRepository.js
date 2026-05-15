@@ -26,7 +26,9 @@ const RESOURCE_CONFIGS = {
         table: 'auth_logs',
         columns: ['id', 'user_id', 'event_type', 'ip_address', 'user_agent', 'created_at'],
         searchable: ['event_type', 'user_agent'],
-        filters: ['user_id', 'event_type'],
+        filters: ['id', 'user_id', 'event_type', 'ip_address'],
+        fuzzyFilters: ['event_type'],
+        dateRangeColumn: 'created_at',
         orderBy: 'created_at',
         orderDirection: 'DESC',
     },
@@ -34,7 +36,9 @@ const RESOURCE_CONFIGS = {
         table: 'email_verifications',
         columns: ['id', 'user_id', 'email', 'status', 'attempts_count', 'expires_at', 'verified_at', 'created_at'],
         searchable: ['email', 'status'],
-        filters: ['user_id', 'status'],
+        filters: ['id', 'user_id', 'email', 'status'],
+        fuzzyFilters: ['email'],
+        dateRangeColumn: 'created_at',
         orderBy: 'created_at',
         orderDirection: 'DESC',
     },
@@ -42,7 +46,8 @@ const RESOURCE_CONFIGS = {
         table: 'matches',
         columns: ['id', 'room_id', 'mode', 'match_type', 'status', 'is_online', 'counts_for_rating', 'winner_team_id', 'started_at', 'ended_at', 'created_at'],
         searchable: ['room_id', 'mode', 'match_type', 'status'],
-        filters: ['mode', 'match_type', 'status', 'counts_for_rating'],
+        filters: ['id', 'room_id', 'mode', 'match_type', 'status', 'counts_for_rating'],
+        dateRangeColumn: 'created_at',
         orderBy: 'created_at',
         orderDirection: 'DESC',
     },
@@ -50,7 +55,8 @@ const RESOURCE_CONFIGS = {
         table: 'match_teams',
         columns: ['id', 'match_id', 'team_number', 'team_score', 'result', 'created_at'],
         searchable: ['result'],
-        filters: ['match_id', 'result'],
+        filters: ['id', 'match_id', 'team_number', 'result'],
+        dateRangeColumn: 'created_at',
         orderBy: 'id',
         orderDirection: 'DESC',
     },
@@ -294,10 +300,27 @@ export const getAdminResourceRepo = async (resourceKey, params = {}, forcedFilte
         const value = mergedFilters[column]
 
         if (value !== undefined && value !== null && value !== '') {
-            values.push(value)
-            where.push(`${column} = $${values.length}`)
+            if (config.fuzzyFilters?.includes(column)) {
+                values.push(`%${String(value).trim()}%`)
+                where.push(`${column}::text ILIKE $${values.length}`)
+            } else {
+                values.push(value)
+                where.push(`${column} = $${values.length}`)
+            }
         }
     })
+
+    if (config.dateRangeColumn) {
+        if (params.created_from) {
+            values.push(params.created_from)
+            where.push(`${config.dateRangeColumn} >= $${values.length}`)
+        }
+
+        if (params.created_to) {
+            values.push(params.created_to)
+            where.push(`${config.dateRangeColumn} <= $${values.length}`)
+        }
+    }
 
     if (params.search && config.searchable.length > 0) {
         values.push(`%${String(params.search).trim()}%`)
@@ -534,6 +557,103 @@ export const getAdminUserDetailsRepo = async (userId) => {
         ratingHistory: ratingHistoryResult.rows,
         authLogs: authLogsResult.rows,
         accounts: accountsResult.rows,
+    }
+}
+
+export const getAdminMatchTeamDetailsRepo = async (teamId) => {
+    const [teamResult, playersResult] = await Promise.all([
+        pool.query(
+            `
+            SELECT
+                match_teams.id,
+                match_teams.match_id,
+                match_teams.team_number,
+                match_teams.team_score,
+                match_teams.result,
+                match_teams.created_at,
+                matches.room_id,
+                matches.mode,
+                matches.match_type,
+                matches.status AS match_status,
+                matches.winner_team_id,
+                matches.created_at AS match_created_at,
+                matches.ended_at AS match_ended_at
+            FROM match_teams
+            JOIN matches ON matches.id = match_teams.match_id
+            WHERE match_teams.id = $1
+            LIMIT 1
+            `,
+            [teamId]
+        ),
+        pool.query(
+            `
+            SELECT
+                match_players.id,
+                match_players.match_id,
+                match_players.team_id,
+                match_players.user_id,
+                match_players.is_registered,
+                match_players.nickname,
+                match_players.score,
+                match_players.lines_cleared,
+                match_players.level_reached,
+                match_players.result,
+                match_players.joined_at,
+                match_players.left_at,
+                users.username,
+                users.email,
+                users.avatar_url
+            FROM match_players
+            LEFT JOIN users ON users.id = match_players.user_id
+            WHERE match_players.team_id = $1
+            ORDER BY match_players.score DESC, match_players.id ASC
+            `,
+            [teamId]
+        ),
+    ])
+
+    const team = teamResult.rows[0] || null
+
+    if (!team) {
+        return null
+    }
+
+    return {
+        team: {
+            id: team.id,
+            match_id: team.match_id,
+            team_number: team.team_number,
+            team_score: Number(team.team_score) || 0,
+            result: team.result,
+            created_at: team.created_at,
+            is_winner: team.winner_team_id === team.id,
+        },
+        match: {
+            id: team.match_id,
+            room_id: team.room_id,
+            mode: team.mode,
+            match_type: team.match_type,
+            status: team.match_status,
+            created_at: team.match_created_at,
+            ended_at: team.match_ended_at,
+        },
+        players: playersResult.rows.map((player) => ({
+            id: player.id,
+            match_id: player.match_id,
+            team_id: player.team_id,
+            user_id: player.user_id,
+            is_registered: Boolean(player.is_registered),
+            nickname: player.username || player.nickname || 'Guest',
+            original_nickname: player.nickname,
+            email: player.email,
+            avatar_url: player.avatar_url,
+            score: Number(player.score) || 0,
+            lines_cleared: Number(player.lines_cleared) || 0,
+            level_reached: Number(player.level_reached) || 1,
+            result: player.result,
+            joined_at: player.joined_at,
+            left_at: player.left_at,
+        })),
     }
 }
 

@@ -1,0 +1,132 @@
+.admin-team-details__state {
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.admin-team-details__header-meta {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+  color: #667085;
+}
+
+.admin-team-details__header-meta strong {
+  color: #101828;
+  font-size: 18px;
+}
+
+.admin-team-details__players {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-team-details__player {
+  display: grid;
+  grid-template-columns: 48px minmax(220px, 1fr) 120px 120px 180px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e6ebf2;
+  border-radius: 14px;
+}
+
+.admin-team-details__avatar {
+  width: 44px;
+  aspect-ratio: 1;
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid #d7dee8;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #475467;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.admin-team-details__avatar img,
+.admin-team-details__avatar video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-team-details__player-main {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.admin-team-details__player-main div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-team-details__player-main a {
+  color: #0f766e;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.admin-team-details__player-main a:hover {
+  color: #0d9488;
+}
+
+.admin-team-details__player-main small,
+.admin-team-details__player > small {
+  color: #667085;
+  font-size: 13px;
+}
+
+.admin-team-details__player > strong {
+  color: #101828;
+  font-size: 18px;
+}
+
+.admin-team-details__result {
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.admin-team-details__result--win {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.admin-team-details__result--lose {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.admin-team-details__result--draw {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.admin-team-details__result--none {
+  background: #f1f5f9;
+  color: #475467;
+}
+
+@media (max-width: 980px) {
+  .admin-team-details__header-meta {
+    justify-items: start;
+  }
+
+  .admin-team-details__player {
+    grid-template-columns: 48px 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .admin-team-details__player {
+    grid-template-columns: 1fr;
+  }
+}

@@ -38,6 +38,14 @@
   line-height: 1.15;
 }
 
+.admin-page__description {
+  max-width: 760px;
+  margin: 8px 0 0;
+  color: #667085;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 .admin-page__actions {
   display: flex;
   flex-wrap: wrap;
@@ -134,7 +142,7 @@
     font-size: 13px;
     font-weight: 700;
   }
-
+  
   & strong {
     color: #101828;
     font-size: 28px;
@@ -398,14 +406,16 @@
 }
 
 .admin-user-link,
-.admin-user-field-link {
+.admin-user-field-link,
+.admin-table-link {
   color: #0f766e;
   font-weight: 800;
   text-decoration: none;
 }
 
 .admin-user-link:hover,
-.admin-user-field-link:hover {
+.admin-user-field-link:hover,
+.admin-table-link:hover {
   color: #0d9488;
 }
 

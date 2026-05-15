@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export function AdminDataTable({
   config,
   rows,
@@ -34,7 +36,7 @@ export function AdminDataTable({
                 <tr key={row.id ?? row.name ?? `${config.key}-${index}`}>
                   {config.columns.map((column) => (
                     <td key={column.key} className={column.truncate ? 'is-truncated' : ''}>
-                      {formatCell(row[column.key], column)}
+                      {formatCell(row[column.key], column, row, config)}
                     </td>
                   ))}
                 </tr>
@@ -78,9 +80,27 @@ function TableState({ colSpan, text }) {
   )
 }
 
-function formatCell(value, column) {
+function formatCell(value, column, row, config) {
   if (value === null || value === undefined || value === '') {
     return <span className="cell-muted">-</span>
+  }
+
+  if (column.type === 'userLink') {
+    return <Link className="admin-table-link" to={`/users/${value}`}>#{value}</Link>
+  }
+
+  if (column.type === 'userEmailLink') {
+    return row.user_id
+      ? <Link className="admin-table-link" to={`/users/${row.user_id}`}>{String(value)}</Link>
+      : String(value)
+  }
+
+  if (column.type === 'matchLink' || column.key === 'match_id' || (config.key === 'matches' && column.key === 'id')) {
+    return <Link className="admin-table-link" to={`/matches/${value}`}>#{value}</Link>
+  }
+
+  if (column.type === 'matchTeamLink' || (config.key === 'matchTeams' && column.key === 'id')) {
+    return <Link className="admin-table-link" to={`/matches/teams/${value}`}>#{value}</Link>
   }
 
   if (column.type === 'datetime') {

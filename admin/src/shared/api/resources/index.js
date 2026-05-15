@@ -21,6 +21,12 @@ export const resourcesAPI = {
     })
   },
 
+  getMatchTeamDetails(teamId) {
+    return apiClient(`/api/admin/match-teams/${teamId}`, {
+      method: 'GET',
+    })
+  },
+
   updateUser(userId, payload) {
     return apiClient(`/api/admin/users/${userId}`, {
       method: 'PUT',

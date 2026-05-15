@@ -71,6 +71,15 @@ export function AdminResourcePage({ route }) {
     setSearchParams(nextParams)
   }
 
+  const clearAdvancedFilters = () => {
+    const nextParams = new URLSearchParams(searchParams)
+
+    ;(config.advancedFilters || []).forEach((filter) => nextParams.delete(filter.key))
+    nextParams.delete('search')
+    nextParams.set('page', '1')
+    setSearchParams(nextParams)
+  }
+
   const handlePageChange = (page) => {
     const nextParams = new URLSearchParams(searchParams)
     nextParams.set('page', String(page))
@@ -83,10 +92,23 @@ export function AdminResourcePage({ route }) {
         <div>
           <p className="admin-page__eyebrow">{config.section}</p>
           <h1 className="admin-page__title">{config.title}</h1>
+          <p className="admin-page__description">
+            {config.description || `Раздел показывает записи ресурса «${config.title}» и помогает быстро искать, фильтровать и проверять данные.`}
+          </p>
         </div>
         <span>/api/admin/resources/{config.key}</span>
       </header>
 
+      {config.advancedFilters ? (
+        <AdvancedFilters
+          filters={config.advancedFilters}
+          isLoading={isLoading}
+          searchParams={searchParams}
+          onClear={clearAdvancedFilters}
+          onRefresh={() => setRefreshToken((value) => value + 1)}
+          onSetParam={setParam}
+        />
+      ) : (
       <div className="admin-toolbar">
         <input
           aria-label="Поиск"
@@ -117,6 +139,7 @@ export function AdminResourcePage({ route }) {
           Обновить данные
         </button>
       </div>
+      )}
 
       {config.key === 'users' ? (
         <AdminUsersTable
@@ -137,6 +160,52 @@ export function AdminResourcePage({ route }) {
           onPageChange={handlePageChange}
         />
       )}
+    </section>
+  )
+}
+
+function AdvancedFilters({ filters, isLoading, searchParams, onClear, onRefresh, onSetParam }) {
+  const activeCount = filters.filter((filter) => searchParams.get(filter.key)).length
+
+  return (
+    <section className="admin-advanced-filters">
+      <div className="admin-advanced-filters__header">
+        <div>
+          <strong>Фильтры</strong>
+          <span>{activeCount ? `Активно: ${activeCount}` : 'Можно комбинировать несколько условий'}</span>
+        </div>
+        <div>
+          <button type="button" onClick={onClear}>Сбросить</button>
+          <button className="admin-button--primary" disabled={isLoading} type="button" onClick={onRefresh}>
+            Обновить
+          </button>
+        </div>
+      </div>
+      <div className="admin-advanced-filters__grid">
+        {filters.map((filter) => (
+          <label className="admin-advanced-filters__field" key={filter.key}>
+            <span>{filter.label}</span>
+            {filter.type === 'select' ? (
+              <select
+                value={searchParams.get(filter.key) || ''}
+                onChange={(event) => onSetParam(filter.key, event.target.value)}
+              >
+                <option value="">Все</option>
+                {filter.options.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+            ) : (
+              <input
+                placeholder={filter.placeholder || ''}
+                type={filter.type || 'text'}
+                value={searchParams.get(filter.key) || ''}
+                onChange={(event) => onSetParam(filter.key, event.target.value)}
+              />
+            )}
+          </label>
+        ))}
+      </div>
     </section>
   )
 }
