@@ -18,6 +18,7 @@ import {
     markRoomPlayerLeftService,
     startRoomMatchService,
 } from '../services/matchService.js'
+import { recordGameActivityEventRepo } from '../repositories/analyticsRepository.js'
 
 const createRoomPlayer = (socket) => {
     const user = socket.data.user
@@ -35,6 +36,21 @@ const createRoomPlayer = (socket) => {
         teamNumber: null,
         matchPlayerId: null,
     }
+}
+
+const trackRoomEvent = (eventType, { room, socket, player = null, metadata = {} }) => {
+    void recordGameActivityEventRepo({
+        matchId: room?.matchId || null,
+        roomId: room?.id || null,
+        userId: player?.userId ?? socket?.data.user?.id,
+        sessionKey: socket?.data.analyticsSessionKey || null,
+        mode: room?.modeKey || null,
+        matchType: room?.settings?.matchType || null,
+        eventType,
+        metadata,
+    }).catch((error) => {
+        console.error(`game activity tracking error: ${eventType}`, error)
+    })
 }
 
 const normalizeRoomSettings = (settings = {}) => ({
@@ -273,6 +289,11 @@ export const registerLobbyHandlers = (io, socket) => {
 
             const normalizedRoom = await roomStore.createRoom(room)
             socket.join(roomId)
+            trackRoomEvent('room_created', {
+                room: normalizedRoom,
+                socket,
+                player,
+            })
 
             callback?.({
                 success: true,
@@ -340,6 +361,12 @@ export const registerLobbyHandlers = (io, socket) => {
 
                 const normalizedRoom = await roomStore.createRoom(rejoinedRoom)
                 socket.join(roomId)
+                trackRoomEvent('room_joined', {
+                    room: normalizedRoom,
+                    socket,
+                    player: existingPlayer,
+                    metadata: { rejoined: true },
+                })
 
                 callback?.({
                     success: true,
@@ -401,6 +428,11 @@ export const registerLobbyHandlers = (io, socket) => {
 
             const normalizedRoom = await roomStore.createRoom(updatedRoom)
             socket.join(roomId)
+            trackRoomEvent('room_joined', {
+                room: normalizedRoom,
+                socket,
+                player: boundPlayer,
+            })
 
             callback?.({
                 success: true,
@@ -446,6 +478,11 @@ export const registerLobbyHandlers = (io, socket) => {
             }
 
             await syncRemovedPlayerWithPersistence(io, result)
+            trackRoomEvent('room_left', {
+                room: result.previousRoom,
+                socket,
+                player: result.removedPlayer,
+            })
 
             callback?.({
                 success: true,
@@ -514,6 +551,11 @@ export const registerLobbyHandlers = (io, socket) => {
 
                 await roomStore.createRoom(playingRoom)
                 await startRoomMatchService({ roomId })
+                trackRoomEvent('match_started', {
+                    room: playingRoom,
+                    socket,
+                    metadata: { source: 'ready' },
+                })
 
                 io.to(roomId).emit('room:state', playingRoom)
                 io.to(roomId).emit('match:start', {

@@ -1,11 +1,20 @@
 import { useEffect } from 'react'
-import { Routes, Route, useParams } from 'react-router-dom'
+import { Routes, Route, useLocation, useParams } from 'react-router-dom'
 import { routes } from './routes.js'
 import NotFoundPage from '@/pages/NotFound/NotFoundPage.jsx'
+import { trackPageView } from '@/shared/api/analytics'
 
 const APP_TITLE = 'PVP Tetris'
 
 const AppRouter = () => {
+    const location = useLocation()
+
+    useEffect(() => {
+        trackPageView({
+            path: `${location.pathname}${location.search}`,
+        })
+    }, [location.pathname, location.search])
+
     return (
         <Routes>
             {routes.map((route) => {

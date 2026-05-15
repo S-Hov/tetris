@@ -7,7 +7,7 @@ export function AdminSidebar() {
   return (
     <aside className="admin-sidebar" aria-label="Админ-навигация">
       <NavLink className="admin-sidebar__brand" to="/dashboard" title="PVP Tetris Admin">
-        <span className="admin-sidebar__mark">T</span>
+        <img className='admin-sidebar__mark' src="https://www.pvp-tetris.online/assets/logo-CsS2scSw.png" alt="Logo" />
         <span className="admin-sidebar__brand-text">PVP Tetris</span>
       </NavLink>
 

@@ -1,18 +1,27 @@
 .admin-sidebar {
   position: fixed;
   inset: 0 auto 0 0;
-  z-index: 30;
+  z-index: 300;
   width: 72px;
   padding: 14px 10px;
   border-right: 1px solid #d7dee8;
   background: #ffffff;
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
   transition: width 180ms ease;
+  left: 5px;
+  top: 5px;
+  bottom: 5px;
+  border-radius: 22px;
 }
 
 .admin-sidebar:hover,
 .admin-sidebar:focus-within {
   width: 252px;
+}
+
+.admin-sidebar:hover .admin-sidebar__section,
+.admin-sidebar:focus-within .admin-sidebar__section {
+  border-radius: 8px;
 }
 
 .admin-sidebar__brand {
@@ -31,13 +40,7 @@
 .admin-sidebar__mark {
   width: 38px;
   height: 38px;
-  display: grid;
-  flex: 0 0 38px;
-  place-items: center;
-  border-radius: 8px;
-  background: #101828;
-  color: #54e3c2;
-  font-weight: 800;
+  
 }
 
 .admin-sidebar__brand-text,
@@ -70,6 +73,11 @@
 
 .admin-sidebar__group {
   position: relative;
+  transition: .1s ease;
+}
+
+.admin-sidebar__group:hover {
+  transform: translateX(10px);
 }
 
 .admin-sidebar__section {
@@ -78,14 +86,14 @@
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr) 18px;
   align-items: center;
-  border-radius: 8px;
+  border-radius: 8px 0px 0 8px;
   color: #475467;
   text-decoration: none;
 }
 
 .admin-sidebar__section:hover,
 .admin-sidebar__section.is-active {
-  background: #edf4f8;
+  background: #eceff3;
   color: #101828;
 }
 
@@ -114,7 +122,7 @@
 
 .admin-sidebar__submenu {
   position: absolute;
-  left: calc(100% + 10px);
+  left: 100%;
   top: 0;
   min-width: 240px;
   display: none;

@@ -1,5 +1,3 @@
-import './AdminDataTable.css'
-
 export function AdminDataTable({
   config,
   rows,

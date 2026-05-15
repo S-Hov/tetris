@@ -2,6 +2,11 @@ import pkg from 'pg'
 
 const { Pool } = pkg
 
+const DATABASE_MODE = {
+    LOCAL: 'local',
+    PRODUCTION: 'production',
+}
+
 const normalizeBoolean = (value) => {
     if (!value) {
         return null
@@ -20,32 +25,70 @@ const normalizeBoolean = (value) => {
     return null
 }
 
+const normalizeDatabaseMode = (value) => {
+    const normalizedValue = value?.trim().toLowerCase()
+
+    if (['local', 'development', 'dev'].includes(normalizedValue)) {
+        return DATABASE_MODE.LOCAL
+    }
+
+    return DATABASE_MODE.PRODUCTION
+}
+
+const getDatabaseMode = () => normalizeDatabaseMode(process.env.DATABASE_MODE)
+
+const getDatabaseUrl = () => {
+    if (getDatabaseMode() === DATABASE_MODE.LOCAL) {
+        return process.env.LOCAL_DATABASE_URL || null
+    }
+
+    return process.env.DATABASE_URL || null
+}
+
+const getLocalDatabaseValue = (name) => {
+    return process.env[`LOCAL_${name}`] || process.env[name]
+}
+
+const getExplicitSslValue = () => {
+    if (getDatabaseMode() === DATABASE_MODE.LOCAL) {
+        return process.env.LOCAL_DB_SSL || process.env.DB_SSL || process.env.PGSSLMODE
+    }
+
+    return process.env.DB_SSL || process.env.PGSSLMODE
+}
+
 const getDatabaseHost = () => {
-    if (!process.env.DATABASE_URL) {
-        return process.env.DB_HOST
+    const databaseUrl = getDatabaseUrl()
+
+    if (!databaseUrl) {
+        return getDatabaseMode() === DATABASE_MODE.LOCAL
+            ? getLocalDatabaseValue('DB_HOST')
+            : process.env.DB_HOST
     }
 
     try {
-        return new URL(process.env.DATABASE_URL).hostname
+        return new URL(databaseUrl).hostname
     } catch {
         return null
     }
 }
 
 const getDatabaseSslMode = () => {
-    if (!process.env.DATABASE_URL) {
+    const databaseUrl = getDatabaseUrl()
+
+    if (!databaseUrl) {
         return null
     }
 
     try {
-        return new URL(process.env.DATABASE_URL).searchParams.get('sslmode')
+        return new URL(databaseUrl).searchParams.get('sslmode')
     } catch {
         return null
     }
 }
 
 const shouldUseSsl = () => {
-    const explicitSsl = normalizeBoolean(process.env.DB_SSL || process.env.PGSSLMODE)
+    const explicitSsl = normalizeBoolean(getExplicitSslValue())
 
     if (explicitSsl !== null) {
         return explicitSsl
@@ -64,13 +107,26 @@ const shouldUseSsl = () => {
 }
 
 const getPoolConfig = () => {
+    const databaseMode = getDatabaseMode()
+    const databaseUrl = getDatabaseUrl()
     const ssl = shouldUseSsl()
         ? { rejectUnauthorized: false }
         : false
 
-    if (process.env.DATABASE_URL) {
+    if (databaseUrl) {
         return {
-            connectionString: process.env.DATABASE_URL,
+            connectionString: databaseUrl,
+            ssl,
+        }
+    }
+
+    if (databaseMode === DATABASE_MODE.LOCAL) {
+        return {
+            user: getLocalDatabaseValue('DB_USERNAME'),
+            host: getLocalDatabaseValue('DB_HOST'),
+            database: getLocalDatabaseValue('DB_DATABASE'),
+            password: getLocalDatabaseValue('DB_PASSWORD'),
+            port: getLocalDatabaseValue('DB_PORT') ? Number(getLocalDatabaseValue('DB_PORT')) : undefined,
             ssl,
         }
     }

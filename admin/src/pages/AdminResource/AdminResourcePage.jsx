@@ -14,8 +14,10 @@ export function AdminResourcePage({ route }) {
   const [data, setData] = useState({ items: [], pagination: { page: 1, limit: DEFAULT_LIMIT, total: 0 } })
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+  const [refreshToken, setRefreshToken] = useState(0)
 
-  const query = useMemo(() => Object.fromEntries(searchParams.entries()), [searchParams])
+  const queryString = searchParams.toString()
+  const query = useMemo(() => Object.fromEntries(new URLSearchParams(queryString).entries()), [queryString])
 
   useEffect(() => {
     let isActive = true
@@ -53,7 +55,7 @@ export function AdminResourcePage({ route }) {
     return () => {
       isActive = false
     }
-  }, [config.key, query])
+  }, [config.key, query, refreshToken])
 
   const setParam = (key, value) => {
     const nextParams = new URLSearchParams(searchParams)
@@ -75,16 +77,16 @@ export function AdminResourcePage({ route }) {
   }
 
   return (
-    <section className="admin-resource-page">
-      <header className="admin-resource-page__header">
+    <section className="admin-page admin-resource-page">
+      <header className="admin-page__header">
         <div>
-          <p>{config.section}</p>
-          <h1>{config.title}</h1>
+          <p className="admin-page__eyebrow">{config.section}</p>
+          <h1 className="admin-page__title">{config.title}</h1>
         </div>
         <span>/api/admin/resources/{config.key}</span>
       </header>
 
-      <div className="admin-resource-page__toolbar">
+      <div className="admin-toolbar">
         <input
           aria-label="Поиск"
           onChange={(event) => setParam('search', event.target.value)}
@@ -105,6 +107,14 @@ export function AdminResourcePage({ route }) {
             ))}
           </select>
         ))}
+        <button
+          className="admin-button admin-button--primary"
+          disabled={isLoading}
+          type="button"
+          onClick={() => setRefreshToken((value) => value + 1)}
+        >
+          Обновить данные
+        </button>
       </div>
 
       <AdminDataTable

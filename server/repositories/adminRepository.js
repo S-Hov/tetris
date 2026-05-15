@@ -1,4 +1,5 @@
 import { pool } from '../db/index.js'
+import { getActiveSessionWindowMinutes } from './analyticsRepository.js'
 
 const DEFAULT_LIMIT = 25
 const MAX_LIMIT = 100
@@ -226,11 +227,17 @@ export const getAdminDashboardRepo = async ({ period = 'week', from = null, to =
         visits,
         games,
         modes,
+        seoSources,
+        seoPages,
+        activeRooms,
     ] = await Promise.all([
         getDashboardMetrics(range),
         getVisitSeries(range, bucketExpression),
         getGameSeries(range, bucketExpression),
         getModeStats(range),
+        getSeoTrafficSources(range),
+        getSeoPopularPages(range),
+        getActiveRoomsSnapshot(),
     ])
 
     return {
@@ -245,6 +252,13 @@ export const getAdminDashboardRepo = async ({ period = 'week', from = null, to =
             visits,
             games,
             modes,
+        },
+        seo: {
+            sources: seoSources,
+            pages: seoPages,
+        },
+        live: {
+            rooms: activeRooms,
         },
     }
 }
@@ -352,7 +366,10 @@ async function getDashboardMetrics(range) {
             FROM game_rooms
             `
         ),
-        getOptionalCountQuery('user_sessions', "status IN ('active', 'idle')"),
+        getOptionalCountQuery(
+            'user_sessions',
+            `status IN ('active', 'idle') AND last_seen_at >= NOW() - INTERVAL '${getActiveSessionWindowMinutes()} minutes'`
+        ),
     ])
 
     const visits = await getOptionalCountQuery('site_visit_events', 'occurred_at >= $1 AND occurred_at < $2', [range.from, range.to])
@@ -366,6 +383,76 @@ async function getDashboardMetrics(range) {
         playedGames: matchesResult.rows[0]?.played_games || 0,
         totalUsers: usersResult.rows[0]?.total_users || 0,
     }
+}
+
+async function getSeoTrafficSources(range) {
+    if (!(await tableExists('site_visit_events'))) {
+        return []
+    }
+
+    const { rows } = await pool.query(
+        `
+        SELECT
+            COALESCE(NULLIF(source, ''), 'direct') AS source,
+            COUNT(*)::int AS visits,
+            COUNT(DISTINCT session_key)::int AS sessions
+        FROM site_visit_events
+        WHERE occurred_at >= $1 AND occurred_at < $2
+        GROUP BY COALESCE(NULLIF(source, ''), 'direct')
+        ORDER BY visits DESC, source ASC
+        LIMIT 8
+        `,
+        [range.from, range.to]
+    )
+
+    return rows
+}
+
+async function getSeoPopularPages(range) {
+    if (!(await tableExists('site_visit_events'))) {
+        return []
+    }
+
+    const { rows } = await pool.query(
+        `
+        SELECT
+            split_part(path, '?', 1) AS path,
+            COUNT(*)::int AS visits,
+            COUNT(DISTINCT session_key)::int AS sessions
+        FROM site_visit_events
+        WHERE occurred_at >= $1 AND occurred_at < $2
+        GROUP BY split_part(path, '?', 1)
+        ORDER BY visits DESC, path ASC
+        LIMIT 8
+        `,
+        [range.from, range.to]
+    )
+
+    return rows
+}
+
+async function getActiveRoomsSnapshot() {
+    const { rows } = await pool.query(
+        `
+        SELECT
+            game_rooms.id,
+            game_rooms.mode_key,
+            game_rooms.status,
+            game_rooms.match_id,
+            game_rooms.created_at,
+            game_rooms.updated_at,
+            COUNT(game_room_players.id)::int AS players_count,
+            EXTRACT(EPOCH FROM (NOW() - game_rooms.created_at))::int AS duration_seconds
+        FROM game_rooms
+        LEFT JOIN game_room_players ON game_room_players.room_id = game_rooms.id
+        WHERE game_rooms.status <> 'closed'
+        GROUP BY game_rooms.id
+        ORDER BY game_rooms.updated_at DESC
+        LIMIT 8
+        `
+    )
+
+    return rows
 }
 
 async function getVisitSeries(range, bucketExpression) {

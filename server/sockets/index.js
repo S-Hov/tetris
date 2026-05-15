@@ -12,6 +12,7 @@ import {
     cancelRoomMatchService,
     markRoomPlayerLeftService,
 } from '../services/matchService.js'
+import { upsertUserSessionRepo } from '../repositories/analyticsRepository.js'
 
 const getWinnerAfterPlayerLeft = (room, removedPlayer) => {
     const players = getRoomPlayers(room)
@@ -39,6 +40,21 @@ export const registerSocketHandlers = (io) => {
 
     io.on('connection', (socket) => {
         console.log('Socket connected:', socket.id, socket.data.user?.id)
+        socket.data.analyticsSessionKey = socket.handshake.auth?.analyticsSessionKey || `socket:${socket.id}`
+
+        void upsertUserSessionRepo({
+            userId: socket.data.user?.id,
+            sessionKey: socket.data.analyticsSessionKey,
+            socketId: socket.id,
+            ipAddress: socket.handshake.address,
+            userAgent: socket.handshake.headers?.['user-agent'],
+            metadata: {
+                transport: 'socket',
+                role: socket.data.user?.role || null,
+            },
+        }).catch((error) => {
+            console.error('socket session tracking error', error)
+        })
 
         registerLobbyHandlers(io, socket)
         registerGameHandlers(io, socket)

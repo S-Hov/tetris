@@ -8,6 +8,7 @@ import {
     createRoomMatchService,
     startRoomMatchService,
 } from '../services/matchService.js'
+import { recordGameActivityEventRepo } from '../repositories/analyticsRepository.js'
 
 const queue = []
 const parties = new Map()
@@ -48,6 +49,21 @@ const createQueuePlayer = (socket) => {
         teamNumber: null,
         matchPlayerId: null,
     }
+}
+
+const trackMatchmakingEvent = (eventType, { room, player = null, socket = null, metadata = {} }) => {
+    void recordGameActivityEventRepo({
+        matchId: room?.matchId || null,
+        roomId: room?.id || null,
+        userId: player?.userId ?? socket?.data.user?.id,
+        sessionKey: socket?.data.analyticsSessionKey || null,
+        mode: room?.modeKey || null,
+        matchType: room?.settings?.matchType || null,
+        eventType,
+        metadata,
+    }).catch((error) => {
+        console.error(`game activity tracking error: ${eventType}`, error)
+    })
 }
 
 const getEntrySocketIds = (entry) => entry.players.map((player) => player.socketId)
@@ -162,6 +178,12 @@ const createMatchedRoom = async ({ io, firstEntry, secondEntry }) => {
     for (const entry of [firstEntry, secondEntry]) {
         for (const player of entry.players) {
             player.socket.join(roomId)
+            trackMatchmakingEvent('match_started', {
+                room: normalizedRoom,
+                player,
+                socket: player.socket,
+                metadata: { source: 'matchmaking' },
+            })
         }
     }
 

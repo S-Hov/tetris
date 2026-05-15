@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { dashboardAPI } from '@/shared/api/dashboard'
-import { dashboardMetrics as fallbackMetrics, liveRooms, modeStats as fallbackModes, visitSeries as fallbackSeries } from '@/shared/config/dashboardMock.js'
 import { notify } from '@/shared/lib/notify.js'
 import './DashboardPage.css'
 
@@ -15,6 +14,7 @@ export function DashboardPage() {
   const [range, setRange] = useState({ from: '', to: '' })
   const [dashboard, setDashboard] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [refreshToken, setRefreshToken] = useState(0)
 
   const activePeriod = periodOptions.find((option) => option.key === period) || periodOptions[1]
 
@@ -49,11 +49,14 @@ export function DashboardPage() {
     return () => {
       isActive = false
     }
-  }, [activePeriod.groupBy, period, range.from, range.to])
+  }, [activePeriod.groupBy, period, range.from, range.to, refreshToken])
 
   const metrics = useMemo(() => buildMetrics(dashboard?.metrics), [dashboard])
   const visitSeries = useMemo(() => buildVisitSeries(dashboard), [dashboard])
   const modeStats = useMemo(() => buildModeStats(dashboard), [dashboard])
+  const seoSources = useMemo(() => dashboard?.seo?.sources || [], [dashboard])
+  const seoPages = useMemo(() => dashboard?.seo?.pages || [], [dashboard])
+  const activeRooms = useMemo(() => buildActiveRooms(dashboard?.live?.rooms), [dashboard])
   const maxVisits = Math.max(1, ...visitSeries.map((item) => item.visits))
   const maxGames = Math.max(1, ...visitSeries.map((item) => item.games))
 
@@ -65,129 +68,169 @@ export function DashboardPage() {
   }
 
   return (
-    <section className="dashboard-page">
-      <header className="dashboard-page__header">
+    <section className="admin-page dashboard-page">
+      <header className="admin-page__header">
         <div>
-          <p className="dashboard-page__eyebrow">Администрирование</p>
-          <h1>Операционный дашборд</h1>
+          <p className="admin-page__eyebrow">Администрирование</p>
+          <h1 className="admin-page__title">Операционный дашборд</h1>
         </div>
-        <div className="dashboard-page__filters" aria-label="Период статистики">
-          {periodOptions.map((option) => (
-            <button
-              className={period === option.key ? 'is-active' : ''}
-              key={option.key}
-              type="button"
-              onClick={() => setPeriod(option.key)}
-            >
-              {option.label}
-            </button>
-          ))}
-          <input
-            aria-label="Дата начала"
-            onChange={(event) => handleRangeChange('from', event.target.value)}
-            type="date"
-            value={range.from}
-          />
-          <input
-            aria-label="Дата окончания"
-            onChange={(event) => handleRangeChange('to', event.target.value)}
-            type="date"
-            value={range.to}
-          />
+        <div className="admin-page__actions">
+          <div className="admin-toolbar dashboard-page__filters" aria-label="Период статистики">
+            {periodOptions.map((option) => (
+              <button
+                className={period === option.key ? 'is-active' : ''}
+                key={option.key}
+                type="button"
+                onClick={() => setPeriod(option.key)}
+              >
+                {option.label}
+              </button>
+            ))}
+            <input
+              aria-label="Дата начала"
+              onChange={(event) => handleRangeChange('from', event.target.value)}
+              type="date"
+              value={range.from}
+            />
+            <input
+              aria-label="Дата окончания"
+              onChange={(event) => handleRangeChange('to', event.target.value)}
+              type="date"
+              value={range.to}
+            />
+          </div>
+          <button
+            className="admin-button admin-button--primary"
+            disabled={isLoading}
+            type="button"
+            onClick={() => setRefreshToken((value) => value + 1)}
+          >
+            Обновить данные
+          </button>
         </div>
       </header>
 
-      <div className="dashboard-page__metrics">
+      <div className="admin-stats-grid">
         {metrics.map((metric) => (
-          <article className="metric-card" key={metric.key}>
+          <article className="admin-stat-card" key={metric.key}>
             <span>{metric.label}</span>
             <strong>{isLoading ? '...' : metric.value}</strong>
-            <small className={`metric-card__trend metric-card__trend--${metric.tone}`}>{metric.trend}</small>
+            <small className={`admin-stat-card__trend admin-stat-card__trend--${metric.tone}`}>{metric.trend}</small>
           </article>
         ))}
       </div>
 
       <div className="dashboard-page__grid">
-        <section className="analytics-panel analytics-panel--wide">
-          <div className="analytics-panel__header">
+        <section className="admin-panel admin-panel--wide">
+          <div className="admin-panel__header">
             <div>
-              <h2>Посещения и игры</h2>
-              <p>Группировка переключается по месяцу, неделе или диапазону дат.</p>
+              <h2 className="admin-panel__title">Посещения и игры</h2>
+              <p className="admin-panel__caption">Динамика визитов и созданных матчей за выбранный период.</p>
             </div>
             <span>/api/admin/dashboard</span>
           </div>
-          <div className="dual-chart" aria-label="График посещений и игр">
-            {visitSeries.map((point) => (
-              <div className="dual-chart__column" key={point.label}>
-                <div className="dual-chart__bars">
-                  <span
-                    className="dual-chart__bar dual-chart__bar--visits"
-                    style={{ height: `${(point.visits / maxVisits) * 100}%` }}
-                    title={`${point.visits} посещений`}
-                  />
-                  <span
-                    className="dual-chart__bar dual-chart__bar--games"
-                    style={{ height: `${(point.games / maxGames) * 100}%` }}
-                    title={`${point.games} игр`}
-                  />
-                </div>
-                <span className="dual-chart__label">{point.label}</span>
+          {visitSeries.length > 0 ? (
+            <>
+              <div className="dual-chart" aria-label="График посещений и игр">
+                {visitSeries.map((point) => (
+                  <div className="dual-chart__column" key={point.label}>
+                    <div className="dual-chart__bars">
+                      <span
+                        className="dual-chart__bar dual-chart__bar--visits"
+                        style={{ height: `${(point.visits / maxVisits) * 100}%` }}
+                        title={`${point.visits} посещений`}
+                      />
+                      <span
+                        className="dual-chart__bar dual-chart__bar--games"
+                        style={{ height: `${(point.games / maxGames) * 100}%` }}
+                        title={`${point.games} игр`}
+                      />
+                    </div>
+                    <span className="dual-chart__label">{point.label}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div className="chart-legend">
-            <span><i className="chart-legend__visits" />Посещения</span>
-            <span><i className="chart-legend__games" />Игры</span>
-          </div>
+              <div className="chart-legend">
+                <span><i className="chart-legend__visits" />Посещения</span>
+                <span><i className="chart-legend__games" />Игры</span>
+              </div>
+            </>
+          ) : (
+            <EmptyState text="За выбранный период данных пока нет" />
+          )}
         </section>
 
-        <section className="analytics-panel">
-          <div className="analytics-panel__header">
+        <section className="admin-panel">
+          <div className="admin-panel__header">
             <div>
-              <h2>Режимы</h2>
-              <p>Доля сыгранных матчей за период.</p>
+              <h2 className="admin-panel__title">Режимы</h2>
+              <p className="admin-panel__caption">Доля сыгранных матчей за период.</p>
             </div>
           </div>
-          <div className="mode-list">
-            {modeStats.map((mode) => (
-              <div className="mode-list__row" key={mode.label}>
-                <div>
-                  <strong>{mode.label}</strong>
-                  <span>{mode.games.toLocaleString('ru-RU')} игр</span>
+          {modeStats.length > 0 ? (
+            <div className="mode-list">
+              {modeStats.map((mode) => (
+                <div className="mode-list__row" key={mode.label}>
+                  <div>
+                    <strong>{mode.label}</strong>
+                    <span>{mode.games.toLocaleString('ru-RU')} игр</span>
+                  </div>
+                  <div className="mode-list__track">
+                    <span style={{ width: `${mode.value}%` }} />
+                  </div>
+                  <b>{mode.value}%</b>
                 </div>
-                <div className="mode-list__track">
-                  <span style={{ width: `${mode.value}%` }} />
-                </div>
-                <b>{mode.value}%</b>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState text="Матчи пока не найдены" />
+          )}
         </section>
 
-        <section className="analytics-panel analytics-panel--wide">
-          <div className="analytics-panel__header">
+        <RankingPanel
+          title="SEO: источники трафика"
+          caption="Каналы и рефереры, которые привели пользователей."
+          items={seoSources}
+          labelKey="source"
+          emptyText="Источники появятся после первых посещений"
+        />
+
+        <RankingPanel
+          title="SEO: популярные страницы"
+          caption="Страницы с наибольшим числом визитов."
+          items={seoPages}
+          labelKey="path"
+          emptyText="Популярные страницы пока не определены"
+        />
+
+        <section className="admin-panel admin-panel--wide">
+          <div className="admin-panel__header">
             <div>
-              <h2>Активные комнаты</h2>
-              <p>Оперативный срез комнат и игр. Табличные разделы ниже уже подключены к API.</p>
+              <h2 className="admin-panel__title">Активные комнаты</h2>
+              <p className="admin-panel__caption">Живой срез комнат, игроков и текущих матчей.</p>
             </div>
           </div>
-          <div className="admin-table">
-            <div className="admin-table__head">
+          <div className="admin-inline-table">
+            <div className="admin-inline-table__head">
               <span>Комната</span>
               <span>Режим</span>
               <span>Статус</span>
               <span>Игроки</span>
               <span>Длительность</span>
             </div>
-            {liveRooms.map((room) => (
-              <div className="admin-table__row" key={room.room}>
-                <span>{room.room}</span>
-                <span>{room.mode}</span>
-                <span className={`status-pill status-pill--${room.status}`}>{room.status}</span>
-                <span>{room.players}</span>
-                <span>{room.duration}</span>
-              </div>
-            ))}
+            {activeRooms.length > 0 ? (
+              activeRooms.map((room) => (
+                <div className="admin-inline-table__row" key={room.id}>
+                  <span>{room.id}</span>
+                  <span>{room.mode}</span>
+                  <span className={`admin-status-pill admin-status-pill--${room.status}`}>{room.status}</span>
+                  <span>{room.players}</span>
+                  <span>{room.duration}</span>
+                </div>
+              ))
+            ) : (
+              <div className="admin-inline-table__empty">Активных комнат сейчас нет</div>
+            )}
           </div>
         </section>
       </div>
@@ -195,17 +238,61 @@ export function DashboardPage() {
   )
 }
 
-function buildMetrics(metrics) {
-  if (!metrics) {
-    return fallbackMetrics
+function RankingPanel({ title, caption, items, labelKey, emptyText }) {
+  const maxValue = Math.max(1, ...items.map((item) => Number(item.visits || 0)))
+
+  return (
+    <section className="admin-panel">
+      <div className="admin-panel__header">
+        <div>
+          <h2 className="admin-panel__title">{title}</h2>
+          <p className="admin-panel__caption">{caption}</p>
+        </div>
+      </div>
+      {items.length > 0 ? (
+        <div className="ranking-list">
+          {items.map((item) => (
+            <div className="ranking-list__row" key={item[labelKey]}>
+              <div>
+                <strong title={item[labelKey]}>{item[labelKey]}</strong>
+                <span>{Number(item.sessions || 0).toLocaleString('ru-RU')} сеансов</span>
+              </div>
+              <div className="ranking-list__track">
+                <span style={{ width: `${(Number(item.visits || 0) / maxValue) * 100}%` }} />
+              </div>
+              <b>{Number(item.visits || 0).toLocaleString('ru-RU')}</b>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <EmptyState text={emptyText} />
+      )}
+    </section>
+  )
+}
+
+function EmptyState({ text }) {
+  return <div className="admin-panel__empty">{text}</div>
+}
+
+function buildMetrics(metrics = {}) {
+  const normalizedMetrics = {
+    visits: 0,
+    activePlayers: 0,
+    activeSessions: 0,
+    activeRooms: 0,
+    activeGames: 0,
+    playedGames: 0,
+    totalUsers: 0,
+    ...metrics,
   }
 
   return [
-    { key: 'visits', label: 'Посещения', value: metrics.visits.toLocaleString('ru-RU'), trend: 'за период', tone: 'neutral' },
-    { key: 'activePlayers', label: 'Активные игроки', value: metrics.activePlayers.toLocaleString('ru-RU'), trend: `${metrics.totalUsers} всего`, tone: 'good' },
-    { key: 'sessions', label: 'Активные сеансы', value: metrics.activeSessions.toLocaleString('ru-RU'), trend: 'онлайн', tone: 'neutral' },
-    { key: 'rooms', label: 'Активные комнаты', value: metrics.activeRooms.toLocaleString('ru-RU'), trend: `${metrics.activeGames} игр`, tone: 'neutral' },
-    { key: 'games', label: 'Игр за период', value: metrics.playedGames.toLocaleString('ru-RU'), trend: 'создано', tone: 'good' },
+    { key: 'visits', label: 'Посещения', value: normalizedMetrics.visits.toLocaleString('ru-RU'), trend: 'за период', tone: 'neutral' },
+    { key: 'activePlayers', label: 'Активные игроки', value: normalizedMetrics.activePlayers.toLocaleString('ru-RU'), trend: `${normalizedMetrics.totalUsers} всего`, tone: 'good' },
+    { key: 'sessions', label: 'Активные сеансы', value: normalizedMetrics.activeSessions.toLocaleString('ru-RU'), trend: 'за 15 минут', tone: 'neutral' },
+    { key: 'rooms', label: 'Активные комнаты', value: normalizedMetrics.activeRooms.toLocaleString('ru-RU'), trend: `${normalizedMetrics.activeGames} игр`, tone: 'neutral' },
+    { key: 'games', label: 'Игр за период', value: normalizedMetrics.playedGames.toLocaleString('ru-RU'), trend: 'создано', tone: 'good' },
   ]
 }
 
@@ -214,7 +301,7 @@ function buildVisitSeries(dashboard) {
   const visits = dashboard?.charts?.visits || []
 
   if (visits.length === 0 && (dashboard?.charts?.games || []).length === 0) {
-    return fallbackSeries
+    return []
   }
 
   const buckets = visits.length > 0 ? visits : dashboard.charts.games
@@ -231,13 +318,23 @@ function buildModeStats(dashboard) {
   const total = modes.reduce((sum, item) => sum + Number(item.games || 0), 0)
 
   if (total === 0) {
-    return fallbackModes
+    return []
   }
 
   return modes.map((item) => ({
     label: item.mode,
     games: Number(item.games || 0),
     value: Math.round((Number(item.games || 0) / total) * 100),
+  }))
+}
+
+function buildActiveRooms(rooms = []) {
+  return rooms.map((room) => ({
+    id: room.id,
+    mode: room.mode_key || '-',
+    status: room.status || 'waiting',
+    players: Number(room.players_count || 0).toLocaleString('ru-RU'),
+    duration: formatDuration(Number(room.duration_seconds || 0)),
   }))
 }
 
@@ -250,4 +347,15 @@ function formatBucket(value) {
     day: '2-digit',
     month: '2-digit',
   }).format(new Date(value))
+}
+
+function formatDuration(seconds) {
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+
+  if (hours > 0) {
+    return `${hours} ч ${minutes % 60} мин`
+  }
+
+  return `${Math.max(1, minutes)} мин`
 }

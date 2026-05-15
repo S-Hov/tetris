@@ -1,13 +1,10 @@
 .admin-layout {
-  min-height: 100svh;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
   background: #f5f7fb;
 }
 
 .admin-layout__body {
   min-width: 0;
-  padding-left: 72px;
+  padding-left: 76px;
 }
 
 .admin-layout__topbar {

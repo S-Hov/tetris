@@ -10,6 +10,7 @@ import matchesRouter from './routes/matches.js'
 import leaderboardRouter from './routes/leaderboard.js'
 import adminRouter from './routes/admin.js'
 import settingsRouter from './routes/settings.js'
+import analyticsRouter from './routes/analytics.js'
 import passport, { configurePassport } from './config/passport.js'
 
 import { logger } from './middleware/logger.js'
@@ -24,12 +25,12 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const defaultAllowedOrigins = [
-    // 'http://localhost:5173',
-    // 'http://127.0.0.1:5173',
-    // 'http://localhost:5174',
-    // 'http://127.0.0.1:5174',
-    // 'http://localhost:5175',
-    // 'http://127.0.0.1:5175',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:5174',
+    'http://127.0.0.1:5174',
+    'http://localhost:5175',
+    'http://127.0.0.1:5175',
     'https://pvp-tetris.online',
     'https://www.pvp-tetris.online',
     // 'https://pvp-tetris.vercel.app',
@@ -80,6 +81,7 @@ app.use("/api/authentication", authRouter)
 app.use("/api/settings", settingsRouter)
 app.use("/api/matches", matchesRouter)
 app.use("/api/leaderboard", leaderboardRouter)
+app.use("/api/analytics", analyticsRouter)
 app.use("/api/admin", adminRouter)
 
 app.use(errorHandler)

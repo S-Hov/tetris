@@ -1,4 +1,5 @@
 import { io } from 'socket.io-client'
+import { getAnalyticsSessionKey } from '@/shared/api/analytics'
 
 const GUEST_SESSION_STORAGE_KEY = 'tetris.guest-session'
 const GUEST_NICKNAME_MIN_LENGTH = 2
@@ -86,8 +87,10 @@ export const saveGuestSession = (nickname) => {
 }
 
 const getSocketAuthPayload = ({ user, nickname } = {}) => {
+    const analyticsSessionKey = getAnalyticsSessionKey()
+
     if (user?.id) {
-        return { mode: 'authenticated' }
+        return { mode: 'authenticated', analyticsSessionKey }
     }
 
     const guestSession = nickname
@@ -102,6 +105,7 @@ const getSocketAuthPayload = ({ user, nickname } = {}) => {
         mode: 'guest',
         guestId: guestSession.id,
         nickname: guestSession.nickname,
+        analyticsSessionKey,
     }
 }
 
