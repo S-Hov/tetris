@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
+import AppSwitch from '@/shared/ui/AppSwitch'
 import notify from '@/utils/Notifications'
 import { useAuth } from '@/shared/hooks/useAuth'
 import {
@@ -459,9 +460,7 @@ const SettingToggle = ({ title, description, checked, onToggle }) => (
             <strong>{title}</strong>
             <small>{description}</small>
         </span>
-        <span className={`mode-toggle ${checked ? 'mode-toggle--active' : ''}`}>
-            <span></span>
-        </span>
+        <AppSwitch checked={checked} />
     </button>
 )
 

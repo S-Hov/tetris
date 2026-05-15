@@ -1,9 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { useAuth } from '@/shared/hooks/useAuth'
-import { authenticationAPI } from '@/shared/api/auth'
-import notify from '@/utils/Notifications'
 import {
     formatMatchDate,
     formatMatchResultLabel,
@@ -20,67 +18,16 @@ const fallbackProfile = {
     rating: 0,
 }
 
-const defaultSettings = [
-    {
-        key: 'matchNotifications',
-        title: 'Уведомления о матчах',
-        description: 'Получать оповещения о новых играх и турнирах',
-        enabled: false,
-    },
-    {
-        key: 'twoFactor',
-        title: 'Двухфакторная аутентификация',
-        description: 'Дополнительная защита аккаунта',
-        enabled: false,
-    },
-    {
-        key: 'publicStats',
-        title: 'Показывать статистику в профиле',
-        description: 'Другие игроки видят ваши достижения',
-        enabled: true,
-    },
-]
-
-const AVATAR_MAX_SIZE = 2 * 1024 * 1024
-const AVATAR_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/avif', 'video/webm']
-
 const ProfilePage = () => {
     const navigate = useNavigate()
-    const { checkAuth, logout, setUser, user } = useAuth()
-    const [settings, setSettings] = useState(defaultSettings)
-    const [isRefreshing, setIsRefreshing] = useState(false)
-    const [isProfileEditing, setIsProfileEditing] = useState(false)
-    const [profileForm, setProfileForm] = useState({ username: '' })
-    const [avatarFile, setAvatarFile] = useState(null)
-    const [avatarPreview, setAvatarPreview] = useState('')
-    const [isSavingProfile, setIsSavingProfile] = useState(false)
-    const [passwordForm, setPasswordForm] = useState({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-    })
-    const [isSavingPassword, setIsSavingPassword] = useState(false)
+    const { checkAuth, logout, user } = useAuth()
 
     useEffect(() => {
-        let ignore = false
-
         const refreshProfile = async () => {
-            setIsRefreshing(true)
-
-            try {
-                await checkAuth({ silent: true })
-            } finally {
-                if (!ignore) {
-                    setIsRefreshing(false)
-                }
-            }
+            await checkAuth({ silent: true })
         }
 
         refreshProfile()
-
-        return () => {
-            ignore = true
-        }
     }, [checkAuth])
 
     const profile = useMemo(() => {
@@ -105,24 +52,6 @@ const ProfilePage = () => {
             recentMatches: Array.isArray(user?.recentMatches) ? user.recentMatches : [],
         }
     }, [user])
-
-    useEffect(() => {
-        setProfileForm({
-            username: profile.name,
-        })
-    }, [profile.name])
-
-    useEffect(() => {
-        if (!avatarFile) {
-            setAvatarPreview('')
-            return undefined
-        }
-
-        const previewUrl = URL.createObjectURL(avatarFile)
-        setAvatarPreview(previewUrl)
-
-        return () => URL.revokeObjectURL(previewUrl)
-    }, [avatarFile])
 
     const playerStats = useMemo(() => {
         const totalGames = profile.rankStats?.totalMatches || profile.stats.totalGames
@@ -178,101 +107,6 @@ const ProfilePage = () => {
         navigate('/login', { replace: true })
     }
 
-    const toggleSetting = (settingKey) => {
-        setSettings((currentSettings) =>
-            currentSettings.map((setting) =>
-                setting.key === settingKey
-                    ? { ...setting, enabled: !setting.enabled }
-                    : setting
-            )
-        )
-    }
-
-    const handleAvatarChange = (event) => {
-        const file = event.target.files?.[0]
-
-        if (!file) {
-            return
-        }
-
-        if (!AVATAR_TYPES.includes(file.type)) {
-            notify('Поддерживаются PNG, JPG, GIF, WEBP, AVIF и WEBM', 'error')
-            event.target.value = ''
-            return
-        }
-
-        if (file.size > AVATAR_MAX_SIZE) {
-            notify('Аватарка не должна быть больше 2 МБ', 'error')
-            event.target.value = ''
-            return
-        }
-
-        setAvatarFile(file)
-    }
-
-    const handleProfileSave = async () => {
-        setIsSavingProfile(true)
-
-        try {
-            let nextUser = null
-
-            if (profileForm.username.trim() && profileForm.username.trim() !== profile.name) {
-                const response = await authenticationAPI.updateProfile({
-                    username: profileForm.username,
-                })
-                nextUser = response.user
-            }
-
-            if (avatarFile) {
-                const response = await authenticationAPI.updateAvatar(avatarFile)
-                nextUser = response.user
-            }
-
-            if (nextUser) {
-                setUser(nextUser)
-            }
-
-            setAvatarFile(null)
-            setIsProfileEditing(false)
-            notify('Профиль обновлён', 'success')
-        } catch (error) {
-            notify(error.message || 'Не удалось сохранить профиль', 'error')
-        } finally {
-            setIsSavingProfile(false)
-        }
-    }
-
-    const handlePasswordFormChange = (field, value) => {
-        setPasswordForm((currentValue) => ({
-            ...currentValue,
-            [field]: value,
-        }))
-    }
-
-    const handlePasswordSave = async (event) => {
-        event.preventDefault()
-        setIsSavingPassword(true)
-
-        try {
-            const response = await authenticationAPI.updatePassword(passwordForm)
-
-            if (response.user) {
-                setUser(response.user)
-            }
-
-            setPasswordForm({
-                currentPassword: '',
-                newPassword: '',
-                confirmPassword: '',
-            })
-            notify('Пароль обновлён', 'success')
-        } catch (error) {
-            notify(error.message || 'Не удалось обновить пароль', 'error')
-        } finally {
-            setIsSavingPassword(false)
-        }
-    }
-
     return (
         <section className="section profile-page">
             <div className="container profile-container">
@@ -285,12 +119,18 @@ const ProfilePage = () => {
                                 <p>Ваша статистика и достижения на PvP арене</p>
                             </div>
 
-                            <div className="profile-rank-badge">
-                                <i className="fas fa-trophy"></i>
-                                <span>{profile.rank}</span>
-                                <i className="fas fa-chevron-right"></i>
-                                <strong>{profile.rating}</strong>
-                                <small>очков</small>
+                            <div className="profile-welcome-actions">
+                                <Link to="/account-settings" className="button profile-settings-shortcut">
+                                    <i className="fas fa-gear"></i>
+                                    Настройки
+                                </Link>
+                                <div className="profile-rank-badge">
+                                    <i className="fas fa-trophy"></i>
+                                    <span>{profile.rank}</span>
+                                    <i className="fas fa-chevron-right"></i>
+                                    <strong>{profile.rating}</strong>
+                                    <small>очков</small>
+                                </div>
                             </div>
                         </div>
                     </GlowEffect>
@@ -318,12 +158,12 @@ const ProfilePage = () => {
 
                 <div className="profile-main-grid">
                     <section className="profile-card">
-                        <GlowEffect className='profile-card-glow'>
+                        <GlowEffect className="profile-card-glow">
                             <div className="glow-effect">
                                 <div className="profile-card-header">
                                     <div className="profile-avatar">
-                                        {avatarPreview || profile.avatarUrl ? (
-                                            profileAvatarMedia(avatarPreview || profile.avatarUrl, profile.name)
+                                        {profile.avatarUrl ? (
+                                            profileAvatarMedia(profile.avatarUrl, profile.name)
                                         ) : (
                                             <i className="fas fa-user-astronaut"></i>
                                         )}
@@ -340,58 +180,21 @@ const ProfilePage = () => {
                                 </div>
 
                                 <div className="profile-card-actions">
-                                    <button type="button" className="button" onClick={() => setIsProfileEditing((value) => !value)}>
+                                    <Link to="/account-settings" className="button">
                                         <i className="fas fa-pen"></i>
                                         Редактировать профиль
-                                    </button>
+                                    </Link>
                                     <button type="button" className="button profile-logout-button" onClick={handleLogout}>
                                         <i className="fas fa-sign-out-alt"></i>
                                         Выйти
                                     </button>
                                 </div>
-
-                                {isProfileEditing && (
-                                    <div className="profile-edit-panel">
-                                        <label className="profile-edit-field">
-                                            <span>Имя игрока</span>
-                                            <input
-                                                type="text"
-                                                value={profileForm.username}
-                                                maxLength={32}
-                                                onChange={(event) => setProfileForm({ username: event.target.value })}
-                                            />
-                                        </label>
-
-                                        <label className="profile-avatar-upload">
-                                            <input
-                                                type="file"
-                                                accept="image/png,image/jpeg,image/gif,image/webp,image/avif,video/webm"
-                                                onChange={handleAvatarChange}
-                                            />
-                                            <span>
-                                                <i className="fas fa-image"></i>
-                                                {avatarFile ? avatarFile.name : 'Выбрать аватар'}
-                                            </span>
-                                            <small>PNG, JPG, GIF, WEBP, AVIF, WEBM до 2 МБ</small>
-                                        </label>
-
-                                        <div className="profile-edit-actions">
-                                            <button type="button" className="button" onClick={handleProfileSave} disabled={isSavingProfile}>
-                                                <i className="fas fa-save"></i>
-                                                {isSavingProfile ? 'Сохраняем...' : 'Сохранить'}
-                                            </button>
-                                            <button type="button" className="button profile-edit-cancel" onClick={() => setIsProfileEditing(false)}>
-                                                Отмена
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
                             </div>
                         </GlowEffect>
                     </section>
 
                     <section className="profile-history-card">
-                        <GlowEffect className={'profile-history-card-glow-bg'}>
+                        <GlowEffect className="profile-history-card-glow-bg">
                             <div className="glow-effect">
                                 <div className="profile-section-heading">
                                     <div className="profile-section-title">
@@ -438,90 +241,6 @@ const ProfilePage = () => {
                         </GlowEffect>
                     </section>
                 </div>
-
-                <section className="profile-settings-card">
-                    <GlowEffect>
-                        <div className="glow-effect">
-                            <div className="profile-section-title">
-                                <i className="fas fa-sliders-h"></i>
-                                Настройки аккаунта
-                            </div>
-
-                            <div className="profile-settings-list">
-                                {settings.map((setting) => (
-                                    <button
-                                        key={setting.key}
-                                        type="button"
-                                        className="profile-setting-item"
-                                        onClick={() => toggleSetting(setting.key)}
-                                    >
-                                        <span>
-                                            <strong>{setting.title}</strong>
-                                            <small>{setting.description}</small>
-                                        </span>
-                                        <span className={`profile-toggle ${setting.enabled ? 'profile-toggle--active' : ''}`}>
-                                            <span></span>
-                                        </span>
-                                    </button>
-                                ))}
-                            </div>
-
-                            <form className="profile-password-form" onSubmit={handlePasswordSave}>
-                                <div className="profile-section-title profile-password-title">
-                                    <i className="fas fa-key"></i>
-                                    Смена пароля
-                                </div>
-
-                                <label className="profile-edit-field">
-                                    <span>Текущий пароль</span>
-                                    <input
-                                        type="password"
-                                        value={passwordForm.currentPassword}
-                                        onChange={(event) => handlePasswordFormChange('currentPassword', event.target.value)}
-                                        autoComplete="current-password"
-                                        required
-                                    />
-                                </label>
-
-                                <label className="profile-edit-field">
-                                    <span>Новый пароль</span>
-                                    <input
-                                        type="password"
-                                        value={passwordForm.newPassword}
-                                        onChange={(event) => handlePasswordFormChange('newPassword', event.target.value)}
-                                        autoComplete="new-password"
-                                        required
-                                    />
-                                </label>
-
-                                <label className="profile-edit-field">
-                                    <span>Повторите новый пароль</span>
-                                    <input
-                                        type="password"
-                                        value={passwordForm.confirmPassword}
-                                        onChange={(event) => handlePasswordFormChange('confirmPassword', event.target.value)}
-                                        autoComplete="new-password"
-                                        required
-                                    />
-                                </label>
-
-                                <button type="submit" className="button profile-password-submit" disabled={isSavingPassword}>
-                                    <i className="fas fa-save"></i>
-                                    {isSavingPassword ? 'Обновляем...' : 'Обновить пароль'}
-                                </button>
-                            </form>
-                        </div>
-                    </GlowEffect>
-                </section>
-
-                <footer className="profile-footer">
-                    <span>{isRefreshing ? 'Обновляем данные профиля...' : 'Данные аккаунта загружены с сервера'}</span>
-                    <nav>
-                        <Link to="/">Главная</Link>
-                        <Link to="/rating">Рейтинг</Link>
-                        <Link to="/support">Поддержка</Link>
-                    </nav>
-                </footer>
             </div>
         </section>
     )

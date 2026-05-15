@@ -1,12 +1,16 @@
 import CyberBg from '@/features/CyberBg'
 import HeroHeader from '@/widgets/Header/HeroHeader'
+import SiteFooter from '@/shared/ui/SiteFooter'
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children, hideFooter = false }) => {
     return (
         <>
             <CyberBg />
             <HeroHeader />
-            <main>{children}</main>
+            <main>
+                {children}
+                {!hideFooter && <SiteFooter />}
+            </main>
         </>
     )
 }

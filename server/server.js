@@ -11,6 +11,7 @@ import leaderboardRouter from './routes/leaderboard.js'
 import adminRouter from './routes/admin.js'
 import settingsRouter from './routes/settings.js'
 import analyticsRouter from './routes/analytics.js'
+import supportRouter from './routes/support.js'
 import passport, { configurePassport } from './config/passport.js'
 
 import { logger } from './middleware/logger.js'
@@ -82,6 +83,7 @@ app.use("/api/settings", settingsRouter)
 app.use("/api/matches", matchesRouter)
 app.use("/api/leaderboard", leaderboardRouter)
 app.use("/api/analytics", analyticsRouter)
+app.use("/api/support", supportRouter)
 app.use("/api/admin", adminRouter)
 
 app.use(errorHandler)

@@ -308,7 +308,8 @@
     }
 
     & input,
-    & select {
+    & select,
+    & textarea {
         min-height: 48px;
         width: 100%;
         padding: 0.85rem 0.95rem;
@@ -316,14 +317,22 @@
         border-radius: 16px;
         background: rgba(0, 0, 0, 0.28);
         color: var(--text-active-color);
+        font: inherit;
         outline: none;
+        resize: vertical;
         transition: var(--transition);
     }
 
     & input:focus,
-    & select:focus {
+    & select:focus,
+    & textarea:focus {
         border-color: rgba(0, 255, 255, 0.4);
         box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.12);
+    }
+
+    & small {
+        color: rgba(204, 244, 255, 0.72);
+        overflow-wrap: anywhere;
     }
 }
 

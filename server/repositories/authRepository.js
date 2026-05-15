@@ -200,6 +200,65 @@ export const updateUserAvatarRepo = async ({ userId, avatarUrl }) => {
     return result.rows[0] || null
 }
 
+export const requestUserEmailChangeRepo = async ({
+    userId,
+    nextEmail,
+    verificationCodeHash,
+    expiresAt,
+}) => {
+    const client = await pool.connect()
+
+    try {
+        await client.query('BEGIN')
+
+        const userResult = await client.query(
+            `
+            UPDATE users
+            SET email = $2,
+                status = 'pending_verification',
+                email_verified_at = NULL,
+                updated_at = NOW()
+            WHERE id = $1
+            RETURNING id, username, email, status
+            `,
+            [userId, nextEmail]
+        )
+
+        const user = userResult.rows[0]
+
+        if (!user) {
+            await client.query('ROLLBACK')
+            return null
+        }
+
+        await client.query(
+            `
+            UPDATE email_verifications
+            SET status = 'expired'
+            WHERE user_id = $1 AND status = 'pending'
+            `,
+            [userId]
+        )
+
+        await client.query(
+            `
+            INSERT INTO email_verifications (user_id, email, code_hash, status, expires_at)
+            VALUES ($1, $2, $3, $4, $5)
+            `,
+            [userId, nextEmail, verificationCodeHash, 'pending', expiresAt]
+        )
+
+        await client.query('COMMIT')
+
+        return user
+    } catch (error) {
+        await client.query('ROLLBACK')
+        throw error
+    } finally {
+        client.release()
+    }
+}
+
 export const registerUserWithVerificationRepo = async ({
     username,
     email,
@@ -498,4 +557,22 @@ export const createAuthLogRepo = async ({
     )
 
     return result.rows[0]
+}
+
+export const getRecentLoginHistoryRepo = async (userId, limit = 5) => {
+    const normalizedLimit = Number.isInteger(limit) && limit > 0 ? limit : 5
+
+    const result = await pool.query(
+        `
+        SELECT id, event_type, ip_address::text AS ip_address, user_agent, created_at
+        FROM auth_logs
+        WHERE user_id = $1
+            AND event_type IN ('login_success', 'oauth_login_success')
+        ORDER BY created_at DESC, id DESC
+        LIMIT $2
+        `,
+        [userId, normalizedLimit]
+    )
+
+    return result.rows
 }

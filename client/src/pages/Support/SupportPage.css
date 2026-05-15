@@ -278,34 +278,6 @@
     font-weight: 800;
 }
 
-.support-footer {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-    padding: 1.25rem 0 0;
-    border-top: 1px solid rgba(0, 255, 255, 0.18);
-    color: rgba(204, 244, 255, 0.72);
-    font-size: 0.8rem;
-
-    & nav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    & a {
-        color: var(--turquoise-lite);
-        text-decoration: none;
-        transition: var(--transition);
-
-        &:hover {
-            color: var(--turquoise);
-            text-shadow: var(--text-shadow);
-        }
-    }
-}
-
 @media (max-width: 1080px) {
     .support-hero-content,
     .support-form-content,

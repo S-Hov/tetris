@@ -331,33 +331,6 @@
     line-height: 1.45;
 }
 
-.mode-toggle {
-    width: 52px;
-    height: 30px;
-    display: inline-flex;
-    align-items: center;
-    padding: 4px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.12);
-    transition: var(--transition);
-}
-
-.mode-toggle span {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: white;
-    transition: var(--transition);
-}
-
-.mode-toggle--active {
-    background: rgba(0, 255, 255, 0.32);
-}
-
-.mode-toggle--active span {
-    transform: translateX(22px);
-}
-
 .mode-select-summary {
     display: flex;
     justify-content: space-between;

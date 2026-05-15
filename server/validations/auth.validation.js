@@ -61,6 +61,11 @@ export const changeUnverifiedEmailSchema = z.object({
         .email("Неверный формат новой почты"),
 })
 
+export const requestAccountEmailChangeSchema = z.object({
+    email: z.string()
+        .email("Неверный формат новой почты"),
+})
+
 export const requestPasswordResetSchema = z.object({
     email: z.string()
         .email("Неверный формат email"),

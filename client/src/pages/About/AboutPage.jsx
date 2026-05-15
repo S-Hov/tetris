@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
+import { supportAPI } from '@/shared/api/support'
+import notify from '@/utils/Notifications'
 import './AboutPage.css'
 
 const projectFacts = [
@@ -22,44 +24,6 @@ const projectFacts = [
     },
 ]
 
-const donationWallets = [
-    {
-        id: 'ton-ton',
-        currency: 'TON',
-        network: 'TON',
-        label: 'TON в сети TON',
-        address: 'Адрес TON будет добавлен в админке',
-    },
-    {
-        id: 'usdt-trc20',
-        currency: 'USDT',
-        network: 'TRC20',
-        label: 'USDT в сети TRON TRC20',
-        address: 'Адрес USDT TRC20 будет добавлен в админке',
-    },
-    {
-        id: 'btc-bitcoin',
-        currency: 'BTC',
-        network: 'Bitcoin',
-        label: 'Bitcoin',
-        address: 'BTC-адрес будет добавлен в админке',
-    },
-    {
-        id: 'eth-erc20',
-        currency: 'ETH',
-        network: 'Ethereum',
-        label: 'ETH в сети Ethereum',
-        address: 'ETH-адрес будет добавлен в админке',
-    },
-]
-
-const cryptoOptions = donationWallets.map((wallet) => ({
-    value: wallet.id,
-    label: wallet.label,
-    description: `${wallet.currency} | ${wallet.network}`,
-    icon: 'fas fa-coins',
-}))
-
 const roadmapItems = [
     'честный матчмейкинг без pay-to-win',
     'режимы 1v1 и командные бои',
@@ -69,8 +33,17 @@ const roadmapItems = [
 
 const AboutPage = () => {
     const location = useLocation()
-    const [selectedWalletId, setSelectedWalletId] = useState(donationWallets[0].id)
-    const selectedWallet = donationWallets.find((wallet) => wallet.id === selectedWalletId) || donationWallets[0]
+    const [donationWallets, setDonationWallets] = useState([])
+    const [selectedWalletId, setSelectedWalletId] = useState('')
+    const [isWalletsLoading, setIsWalletsLoading] = useState(true)
+    const [isDonationSubmitting, setIsDonationSubmitting] = useState(false)
+    const selectedWallet = donationWallets.find((wallet) => String(wallet.id) === String(selectedWalletId)) || donationWallets[0]
+    const cryptoOptions = donationWallets.map((wallet) => ({
+        value: String(wallet.id),
+        label: wallet.addressLabel || `${wallet.currencyCode} в сети ${wallet.networkName}`,
+        description: `${wallet.currencyCode} | ${wallet.networkName}`,
+        icon: 'fas fa-coins',
+    }))
 
     useEffect(() => {
         if (!location.hash) {
@@ -81,8 +54,66 @@ const AboutPage = () => {
         target?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, [location.hash])
 
-    const handleDonateSubmit = (event) => {
+    useEffect(() => {
+        let ignore = false
+
+        const loadWallets = async () => {
+            setIsWalletsLoading(true)
+
+            try {
+                const response = await supportAPI.getDonationWallets()
+                const wallets = Array.isArray(response.wallets) ? response.wallets : []
+
+                if (!ignore) {
+                    setDonationWallets(wallets)
+                    setSelectedWalletId(wallets[0] ? String(wallets[0].id) : '')
+                }
+            } catch (error) {
+                if (!ignore) {
+                    notify(error.message || 'Не удалось загрузить кошельки для донатов', 'error')
+                }
+            } finally {
+                if (!ignore) {
+                    setIsWalletsLoading(false)
+                }
+            }
+        }
+
+        loadWallets()
+
+        return () => {
+            ignore = true
+        }
+    }, [])
+
+    const handleDonateSubmit = async (event) => {
         event.preventDefault()
+
+        if (!selectedWallet) {
+            notify('Сейчас нет активного кошелька для доната', 'error')
+            return
+        }
+
+        const formData = new FormData(event.currentTarget)
+
+        setIsDonationSubmitting(true)
+
+        try {
+            await supportAPI.createDonation({
+                walletId: selectedWallet.id,
+                expectedAmount: formData.get('expectedAmount'),
+                donorName: formData.get('donorName'),
+                donorContact: formData.get('donorContact'),
+                note: formData.get('note'),
+            })
+
+            event.currentTarget.reset()
+            notify('Донат создан. Спасибо за поддержку!', 'success')
+        } catch (error) {
+            notify(error.message || 'Не удалось создать донат', 'error')
+        } finally {
+            setIsDonationSubmitting(false)
+        }
     }
 
     return (
@@ -185,9 +216,8 @@ const AboutPage = () => {
                                 <h2>Если игра зашла, можно кинуть пару блоков в копилку</h2>
                                 <p>
                                     Проект бесплатный и таким должен оставаться. Донаты не дают преимущества в матчах:
-                                    они помогают оплатить сервер, домен, кофе и время на новые режимы. Сейчас форма
-                                    работает как фронтовой макет без бекенда, а реальные кошельки будут добавлены
-                                    владельцем проекта перед релизом страницы.
+                                    они помогают оплатить сервер, домен, кофе и время на новые режимы. Заявка на донат
+                                    сохраняется на сервере, а активные кошельки берутся из базы проекта.
                                 </p>
                             </div>
 
@@ -199,22 +229,40 @@ const AboutPage = () => {
                                         value={selectedWalletId}
                                         options={cryptoOptions}
                                         onChange={setSelectedWalletId}
+                                        disabled={isWalletsLoading || cryptoOptions.length === 0}
+                                        placeholder={isWalletsLoading ? 'Загружаем кошельки' : 'Нет активных кошельков'}
                                     />
                                 </label>
 
                                 <label className="about-field">
                                     <span>Сумма</span>
-                                    <input type="number" min="1" placeholder="Например, 5" />
+                                    <input name="expectedAmount" type="number" min="0.000000000000000001" step="any" placeholder="Например, 5" required />
+                                </label>
+
+                                <label className="about-field">
+                                    <span>Имя или ник</span>
+                                    <input name="donorName" type="text" maxLength="120" placeholder="NeonStack" />
+                                </label>
+
+                                <label className="about-field">
+                                    <span>Контакт</span>
+                                    <input name="donorContact" type="text" maxLength="255" placeholder="Email или Telegram" />
                                 </label>
 
                                 <label className="about-field about-field--wide">
                                     <span>Кошелек</span>
-                                    <input type="text" value={selectedWallet.address} readOnly />
+                                    <input type="text" value={selectedWallet?.address || ''} readOnly />
+                                    {selectedWallet?.memoTag && <small>Memo/tag: {selectedWallet.memoTag}</small>}
                                 </label>
 
-                                <button type="submit" className="button about-primary-button">
+                                <label className="about-field about-field--wide">
+                                    <span>Комментарий</span>
+                                    <textarea name="note" rows="3" placeholder="Можно оставить пару слов автору"></textarea>
+                                </label>
+
+                                <button type="submit" className="button about-primary-button" disabled={isDonationSubmitting || !selectedWallet}>
                                     <i className="fas fa-wallet"></i>
-                                    Поддержать позже
+                                    {isDonationSubmitting ? 'Сохраняем...' : 'Создать донат'}
                                 </button>
                             </form>
                         </div>

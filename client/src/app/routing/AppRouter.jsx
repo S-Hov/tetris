@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, useParams } from 'react-router-dom'
 import { routes } from './routes.js'
 import NotFoundPage from '@/pages/NotFound/NotFoundPage.jsx'
 import { trackPageView } from '@/shared/api/analytics'
+import InnerPageLayout from '../layouts/InnerPageLayout.jsx'
 
 const APP_TITLE = 'PVP Tetris'
 
@@ -29,7 +30,7 @@ const AppRouter = () => {
                         element={
                             <Guard>
                                 <DocumentTitle title={route.title} />
-                                <Layout>
+                                <Layout hideFooter={route.hideFooter}>
                                     <PageComponent />
                                 </Layout>
                             </Guard>
@@ -41,10 +42,10 @@ const AppRouter = () => {
             <Route
                 path="*"
                 element={
-                    <>
+                    <InnerPageLayout>
                         <DocumentTitle title="Страница не найдена" />
                         <NotFoundPage />
-                    </>
+                    </InnerPageLayout>
                 }
             />
         </Routes>

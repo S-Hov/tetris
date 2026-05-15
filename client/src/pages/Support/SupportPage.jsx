@@ -1,6 +1,8 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
+import { supportAPI } from '@/shared/api/support'
+import notify from '@/utils/Notifications'
 import './SupportPage.css'
 
 const feedbackTypes = [
@@ -30,8 +32,40 @@ const supportCards = [
 ]
 
 const SupportPage = () => {
-    const handleSupportSubmit = (event) => {
+    const [category, setCategory] = useState(feedbackTypes[0].value)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const handleSupportSubmit = async (event) => {
         event.preventDefault()
+
+        const formData = new FormData(event.currentTarget)
+        const contact = String(formData.get('contact') || '').trim()
+        const message = String(formData.get('message') || '').trim()
+
+        setIsSubmitting(true)
+
+        try {
+            await supportAPI.createRequest({
+                category,
+                contactName: contact.includes('@') ? '' : contact,
+                contactEmail: contact.includes('@') ? contact : '',
+                message,
+                attachmentUrl: formData.get('attachmentUrl'),
+                pageUrl: window.location.href,
+                clientContext: {
+                    language: navigator.language,
+                    viewport: `${window.innerWidth}x${window.innerHeight}`,
+                },
+            })
+
+            event.currentTarget.reset()
+            setCategory(feedbackTypes[0].value)
+            notify('Обращение отправлено. Спасибо, что помогаете проекту!', 'success')
+        } catch (error) {
+            notify(error.message || 'Не удалось отправить обращение', 'error')
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     return (
@@ -42,22 +76,20 @@ const SupportPage = () => {
                         <div className="glow-effect support-hero-content">
                             <div>
                                 <p className="support-eyebrow">Поддержка</p>
-                                <h1>Это пока честная заглушка, а не волшебная кнопка спасения</h1>
+                                <h1>Расскажите, что сломалось или чего не хватает арене</h1>
                                 <p>
-                                    Страница поддержки уже выглядит как часть сайта, но настоящей отправки обращений
-                                    пока нет. Мы не хотим делать вид, что ваши сообщения улетают в идеальную службу
-                                    заботы о пользователях. Сейчас это макет: форму можно заполнить, но без бекенда
-                                    она никуда не отправится.
+                                    Сообщения из формы сохраняются в базе проекта и попадают в админский раздел поддержки.
+                                    Чем конкретнее описание, тем быстрее получится разобраться с багом, балансом или новой идеей.
                                 </p>
                             </div>
 
                             <div className="support-status-panel">
                                 <span className="support-status-chip">
-                                    <i className="fas fa-tools"></i>
-                                    Макет без бекенда
+                                    <i className="fas fa-database"></i>
+                                    Подключено к базе
                                 </span>
-                                <strong>0</strong>
-                                <small>обращений будет реально сохранено сейчас</small>
+                                <strong>24/7</strong>
+                                <small>форма принимает обращения и сохраняет их для админки</small>
                             </div>
                         </div>
                     </GlowEffect>
@@ -66,12 +98,12 @@ const SupportPage = () => {
                 <section className="support-note">
                     <GlowEffect>
                         <div className="glow-effect support-note-content">
-                            <i className="fas fa-exclamation-circle"></i>
+                            <i className="fas fa-circle-check"></i>
                             <div>
-                                <h2>Главное: мы вас не обманываем</h2>
+                                <h2>Пишите сразу по делу</h2>
                                 <p>
-                                    Кнопка ниже пока не связывается с сервером. Когда появится бекенд, здесь будет
-                                    нормальная отправка багрепортов, идей и пожеланий автору проекта.
+                                    Для багов полезны шаги воспроизведения, ссылка на матч или скриншот. Для идей хватит
+                                    короткого описания и того, почему это сделает игру лучше.
                                 </p>
                             </div>
                         </div>
@@ -103,7 +135,7 @@ const SupportPage = () => {
                                 </div>
                                 <p>
                                     Пишите живым языком: что сломалось, что бесит, чего не хватает, какой режим хочется
-                                    увидеть. Даже когда форма станет рабочей, короткие конкретные сообщения будут
+                                    увидеть. Короткие конкретные сообщения будут
                                     помогать сильнее всего.
                                 </p>
                             </div>
@@ -113,29 +145,30 @@ const SupportPage = () => {
                                     <span>Тема</span>
                                     <CustomSelect
                                         name="category"
-                                        defaultValue={feedbackTypes[0].value}
+                                        value={category}
                                         options={feedbackTypes}
+                                        onChange={setCategory}
                                     />
                                 </label>
 
                                 <label className="support-field">
                                     <span>Ваш ник или email</span>
-                                    <input type="text" placeholder="Например, NeonStack" />
+                                    <input name="contact" type="text" placeholder="Например, NeonStack" />
                                 </label>
 
                                 <label className="support-field support-field--wide">
                                     <span>Что произошло или что добавить</span>
-                                    <textarea placeholder="Опишите ситуацию, шаги, ожидание и результат..." rows="7"></textarea>
+                                    <textarea name="message" placeholder="Опишите ситуацию, шаги, ожидание и результат..." rows="7" required></textarea>
                                 </label>
 
                                 <label className="support-field support-field--wide">
                                     <span>Ссылка на матч или скриншот</span>
-                                    <input type="text" placeholder="Пока просто текстовое поле без загрузки файлов" />
+                                    <input name="attachmentUrl" type="text" placeholder="https://..." />
                                 </label>
 
-                                <button type="submit" className="button support-primary-button">
-                                    <i className="fas fa-lock"></i>
-                                    Пока не отправлять
+                                <button type="submit" className="button support-primary-button" disabled={isSubmitting}>
+                                    <i className="fas fa-paper-plane"></i>
+                                    {isSubmitting ? 'Отправляем...' : 'Отправить обращение'}
                                 </button>
                             </form>
                         </div>
@@ -144,14 +177,6 @@ const SupportPage = () => {
                     </div>
                 </section>
 
-                <footer className="support-footer">
-                    <span>Настоящая поддержка появится после подключения бекенда.</span>
-                    <nav>
-                        <Link to="/">Главная</Link>
-                        <Link to="/about">О нас</Link>
-                        <Link to="/rating">Рейтинг</Link>
-                    </nav>
-                </footer>
             </div>
         </section>
     )

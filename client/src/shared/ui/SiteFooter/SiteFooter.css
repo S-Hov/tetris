@@ -1,0 +1,91 @@
+.site-footer {
+    position: relative;
+    z-index: 1;
+    padding: 1rem 0 1.35rem;
+    
+    & .site-footer__container {
+        display: grid;
+        grid-template-columns: minmax(220px, 1fr) auto auto;
+        align-items: center;
+        gap: 1.2rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(0, 255, 255, 0.18);
+        color: rgba(204, 244, 255, 0.72);
+        font-size: 0.82rem;
+        background: none;
+    }
+    
+    & .site-footer__brand {
+        display: grid;
+        gap: 0.25rem;
+        
+        & strong {
+            color: var(--text-active-color);
+            font-family: var(--font-1);
+            letter-spacing: 0;
+            text-shadow: var(--text-shadow);
+        }
+    }
+    
+    & .site-footer__nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    & a {
+        color: var(--turquoise-lite);
+        text-decoration: none;
+        transition: var(--transition);
+        
+        &:hover,
+        &:focus-visible {
+            color: var(--turquoise);
+            text-shadow: var(--text-shadow);
+        }
+    }
+    
+    & .site-footer__donate {
+        min-height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        padding: 0.72rem 1rem;
+        border: var(--border);
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.28);
+        font-family: var(--font-1);
+        font-weight: 800;
+        white-space: nowrap;
+        
+        & i {
+            color: var(--turquoise);
+        }
+    }
+}
+
+@media (max-width: 900px) {
+    .site-footer{
+
+        & .site-footer__container {
+            grid-template-columns: 1fr;
+            justify-items: start;
+        }
+    
+        & .site-footer__nav {
+            justify-content: flex-start;
+        }
+    }
+}
+
+@media (max-width: 520px) {
+    .site-footer{
+
+        & .site-footer__container,
+        & .site-footer__donate {
+            width: 100%;
+        }
+    }
+}

@@ -11,6 +11,7 @@ import {
     createEmailVerificationRepo,
     expireEmailVerificationRepo,
     getRecentUserMatchesRepo,
+    getRecentLoginHistoryRepo,
     getLatestPendingVerificationByEmailRepo,
     getUserMatchStatsRepo,
     getUserRankStatsRepo,
@@ -24,6 +25,7 @@ import {
     updateUserAvatarRepo,
     updateUserLastLoginRepo,
     updateUserProfileRepo,
+    requestUserEmailChangeRepo,
 } from '../repositories/authRepository.js'
 import { getRoleByKeyRepo } from '../repositories/helper.js'
 import { getRankTier } from './rankRules.js'
@@ -195,6 +197,47 @@ export const updateUserAvatarService = async ({ userId, contentType, buffer }) =
     }
 
     return await getUserService(userId)
+}
+
+export const requestAccountEmailChangeService = async ({ userId, nextEmail }) => {
+    const normalizedNextEmail = normalizeEmail(nextEmail)
+
+    if (!normalizedNextEmail) {
+        throw badRequest('Введите корректный email')
+    }
+
+    const currentUser = await getUserRepo(userId)
+
+    if (!currentUser) {
+        throw badRequest('Пользователь не найден')
+    }
+
+    if (normalizeEmail(currentUser.email) === normalizedNextEmail) {
+        throw badRequest('Новая почта совпадает с текущей')
+    }
+
+    if (await checkEmailRepo(normalizedNextEmail)) {
+        throw badRequest('Пользователь с таким email уже существует')
+    }
+
+    const verificationCode = createVerificationCode()
+    const verificationCodeHash = hashVerificationCode(verificationCode)
+
+    const user = await requestUserEmailChangeRepo({
+        userId,
+        nextEmail: normalizedNextEmail,
+        verificationCodeHash,
+        expiresAt: createVerificationExpiresAt(),
+    })
+
+    if (!user) {
+        throw badRequest('Не удалось обновить почту')
+    }
+
+    return {
+        user,
+        verificationCode,
+    }
 }
 
 export const changeUnverifiedEmailService = async ({ currentEmail, nextEmail }) => {
@@ -518,6 +561,20 @@ export const createAuthLogService = async (payload) => {
     return await createAuthLogRepo(payload)
 }
 
+export const getLoginHistoryService = async (userId, limit = 5) => {
+    const rows = await getRecentLoginHistoryRepo(userId, limit)
+
+    return rows.map((row) => ({
+        id: row.id,
+        eventType: row.event_type,
+        ipAddress: row.ip_address,
+        location: formatLoginLocation(row.ip_address),
+        device: formatDevice(row.user_agent),
+        userAgent: row.user_agent,
+        createdAt: row.created_at,
+    }))
+}
+
 export const getVerificationCodeLength = () => {
     const codeLength = Number(process.env.EMAIL_VERIFICATION_CODE_LENGTH || 6)
 
@@ -592,6 +649,58 @@ const normalizeUsername = (value) => {
     }
 
     return username
+}
+
+const formatLoginLocation = (ipAddress) => {
+    if (!ipAddress) {
+        return 'Адрес не определен'
+    }
+
+    const normalizedIp = String(ipAddress).replace(/^::ffff:/, '')
+
+    if (
+        normalizedIp === '::1' ||
+        normalizedIp === '127.0.0.1' ||
+        normalizedIp.startsWith('10.') ||
+        normalizedIp.startsWith('192.168.') ||
+        /^172\.(1[6-9]|2\d|3[0-1])\./.test(normalizedIp)
+    ) {
+        return 'Локальная сеть'
+    }
+
+    return `IP ${normalizedIp}`
+}
+
+const formatDevice = (userAgent) => {
+    const value = String(userAgent || '')
+
+    if (!value) {
+        return 'Неизвестное устройство'
+    }
+
+    const browser = value.includes('Edg/')
+        ? 'Edge'
+        : value.includes('Chrome/')
+            ? 'Chrome'
+            : value.includes('Firefox/')
+                ? 'Firefox'
+                : value.includes('Safari/')
+                    ? 'Safari'
+                    : 'Браузер'
+
+    const os = value.includes('Windows')
+        ? 'Windows'
+        : value.includes('Mac OS')
+            ? 'macOS'
+            : value.includes('Android')
+                ? 'Android'
+                : value.includes('iPhone') || value.includes('iPad')
+                    ? 'iOS'
+                    : value.includes('Linux')
+                        ? 'Linux'
+                        : 'Устройство'
+
+    return `${browser} на ${os}`
 }
 
 const getRemainingSeconds = (expiresAt) => {

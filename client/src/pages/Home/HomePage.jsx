@@ -227,16 +227,6 @@ const HomePage = () => {
                         </div>
                     </GlowEffect>
                 </section>
-                
-                <footer className="home-footer">
-                    <span>PVP Tetris - Кибер-арена будущего</span>
-                    <nav>
-                        <Link to="/about">О нас</Link>
-                        <Link to="/support">Поддержка</Link>
-                        <Link to="/rating">Рейтинг</Link>
-                        <Link to="/profile">Профиль</Link>
-                    </nav>
-                </footer>
             </div>
         </section>
     )

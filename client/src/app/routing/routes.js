@@ -2,6 +2,7 @@ import HomePage from '@/pages/Home/HomePage.jsx'
 import LoginPage from '@/pages/Login/LoginPage.jsx'
 import RegisterPage from '@/pages/Register/RegisterPage.jsx'
 import ProfilePage from '@/pages/Profile/ProfilePage.jsx'
+import AccountSettingsPage from '@/pages/AccountSettings/AccountSettingsPage.jsx'
 import MatchesPage from '@/pages/Matches/MatchesPage.jsx'
 import MatchDetailsPage from '@/pages/MatchDetails/MatchDetailsPage.jsx'
 import ModeSelectPage from '@/pages/ModeSelect/ModeSelectPage.jsx'
@@ -56,6 +57,14 @@ export const routes = [
         guard: ProtectedRoute,
     },
     {
+        key: 'account-settings',
+        path: '/account-settings',
+        title: 'Настройки аккаунта',
+        component: AccountSettingsPage,
+        layout: MainLayout,
+        guard: ProtectedRoute,
+    },
+    {
         key: 'matches',
         path: '/matches',
         title: 'История матчей',
@@ -106,6 +115,7 @@ export const routes = [
         title: 'Одиночная игра',
         component: GamePage,
         layout: MainLayout,
+        hideFooter: true,
     },
     {
         key: 'mode-select',
@@ -134,5 +144,6 @@ export const routes = [
         title: ({ roomId }) => `Игра #${roomId}`,
         component: MatchPage,
         layout: MainLayout,
+        hideFooter: true,
     },
 ]
