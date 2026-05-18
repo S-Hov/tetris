@@ -90,6 +90,71 @@ export const getActiveSupportBlockRepo = async (userId) => {
     return result.rows[0] || null
 }
 
+export const getSupportRequestByIdRepo = async (ticketId) => {
+    const result = await pool.query(
+        `
+        SELECT
+            id,
+            user_id,
+            category,
+            status,
+            priority,
+            preferred_channel,
+            contact_name,
+            contact_email,
+            title,
+            message,
+            telegram_token,
+            telegram_url,
+            admin_notes,
+            resolved_at,
+            created_at,
+            updated_at
+        FROM support_requests
+        WHERE id = $1
+        LIMIT 1
+        `,
+        [ticketId]
+    )
+
+    return result.rows[0] || null
+}
+
+export const appendSupportAdminReplyRepo = async ({
+    ticketId,
+    adminTelegramId,
+    replyText,
+}) => {
+    const result = await pool.query(
+        `
+        UPDATE support_requests
+        SET
+            admin_notes = CONCAT_WS(
+                E'\n\n',
+                NULLIF(admin_notes, ''),
+                CONCAT(
+                    '[',
+                    TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS'),
+                    '] Telegram admin ',
+                    $2,
+                    ': ',
+                    $3
+                )
+            ),
+            status = CASE
+                WHEN status IN ('new', 'triaged') THEN 'in_progress'
+                ELSE status
+            END,
+            updated_at = NOW()
+        WHERE id = $1
+        RETURNING id, status, admin_notes, updated_at
+        `,
+        [ticketId, adminTelegramId, replyText]
+    )
+
+    return result.rows[0] || null
+}
+
 export const getActiveDonationWalletsRepo = async () => {
     const result = await pool.query(
         `

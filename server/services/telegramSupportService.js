@@ -9,15 +9,60 @@ export const sendSupportRequestTelegramNotification = async ({
     preferredChannel,
 }) => {
     const botToken = normalizeString(process.env.TELEGRAM_BOT_TOKEN)
-    const chatId = parseAdminTelegramUserIds(process.env.ADMIN_TELEGRAM_CHAT_ID)
+    const adminChatIds = Array.from(parseAdminTelegramUserIds())
 
-    if (!botToken || !chatId) {
+    if (!botToken || adminChatIds.length === 0) {
         return
     }
 
     const ticketId = request?.id
     const adminUrl = createAdminTicketUrl(ticketId)
+    const text = createSupportMessage({
+        ticketId,
+        preferredChannel,
+        contactName,
+        contactEmail,
+        message,
+    })
 
+    const results = await Promise.allSettled(
+        adminChatIds.map((chatId) => sendTelegramMessage({
+            botToken,
+            chatId,
+            text,
+            adminUrl,
+            ticketId,
+        }))
+    )
+    const failedResults = results.filter((result) => result.status === 'rejected')
+
+    if (failedResults.length > 0) {
+        const errorText = failedResults
+            .map((result) => result.reason?.message || 'Unknown Telegram error')
+            .join('; ')
+
+        throw new Error(`Telegram notification failed for ${failedResults.length} admin chat(s): ${errorText}`)
+    }
+}
+
+export const parseAdminTelegramUserIds = () => {
+    const raw = process.env.ADMIN_TELEGRAM_CHAT_ID || ''
+
+    return new Set(
+        raw
+            .split(',')
+            .map((id) => id.trim())
+            .filter(Boolean)
+    )
+}
+
+const sendTelegramMessage = async ({
+    botToken,
+    chatId,
+    text,
+    adminUrl,
+    ticketId,
+}) => {
     const response = await fetch(`${TELEGRAM_API_BASE_URL}/bot${botToken}/sendMessage`, {
         method: 'POST',
         headers: {
@@ -25,13 +70,7 @@ export const sendSupportRequestTelegramNotification = async ({
         },
         body: JSON.stringify({
             chat_id: chatId,
-            text: createSupportMessage({
-                ticketId,
-                preferredChannel,
-                contactName,
-                contactEmail,
-                message,
-            }),
+            text,
             parse_mode: 'HTML',
             disable_web_page_preview: true,
             reply_markup: {
@@ -47,19 +86,8 @@ export const sendSupportRequestTelegramNotification = async ({
 
     if (!response.ok) {
         const errorText = await response.text().catch(() => '')
-        throw new Error(`Telegram notification failed: ${response.status} ${errorText}`)
+        throw new Error(`chat ${chatId}: ${response.status} ${errorText}`)
     }
-}
-
-export const parseAdminTelegramUserIds = () => {
-    const raw = process.env.ADMIN_TELEGRAM_CHAT_ID || ''
-
-    return new Set(
-        raw
-            .split(',')
-            .map((id) => id.trim())
-            .filter(Boolean)
-    )
 }
 
 const createSupportMessage = ({
@@ -78,10 +106,10 @@ const createSupportMessage = ({
         `Клиент: ${escapeHtml(contactName || 'Не указан')}`,
         contactEmail ? `Email: ${escapeHtml(contactEmail)}` : null,
         '',
-        `<b>Сообщение:</b>`,
+        '<b>Сообщение:</b>',
         escapeHtml(safeMessage),
         '',
-        `<i>Чтобы ответить, нажми Reply/Ответить на это сообщение в Telegram.</i>`,
+        '<i>Чтобы ответить, используйте Reply на это сообщение в Telegram.</i>',
     ].filter((line) => line !== null).join('\n')
 }
 
@@ -99,7 +127,7 @@ const truncateText = (value, maxLength) => {
         return text
     }
 
-    return `${text.slice(0, maxLength - 1)}…`
+    return `${text.slice(0, maxLength - 1)}...`
 }
 
 const escapeHtml = (value) => String(value ?? '')
