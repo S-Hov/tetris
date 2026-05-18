@@ -9,7 +9,7 @@ export const sendSupportRequestTelegramNotification = async ({
     preferredChannel,
 }) => {
     const botToken = normalizeString(process.env.TELEGRAM_BOT_TOKEN)
-    const chatId = normalizeString(process.env.ADMIN_TELEGRAM_CHAT_ID)
+    const chatId = parseAdminTelegramUserIds(process.env.ADMIN_TELEGRAM_CHAT_ID)
 
     if (!botToken || !chatId) {
         return
@@ -52,7 +52,7 @@ export const sendSupportRequestTelegramNotification = async ({
 }
 
 export const parseAdminTelegramUserIds = () => {
-    const raw = process.env.ADMIN_TELEGRAM_USER_IDS || ''
+    const raw = process.env.ADMIN_TELEGRAM_CHAT_ID || ''
 
     return new Set(
         raw
