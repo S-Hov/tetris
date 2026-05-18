@@ -1,5 +1,11 @@
+import {
+    getSupportRequestByTelegramTokenRepo,
+    linkSupportRequestTelegramRepo,
+} from '../repositories/supportRepository.js'
+
 const TELEGRAM_API_BASE_URL = 'https://api.telegram.org'
 const DEFAULT_ADMIN_URL = 'https://admin.pvp-tetris.online'
+const TELEGRAM_LINKED_MESSAGE = 'Спасибо! Ваше обращение отправлено в поддержку. Мы ответим вам здесь.'
 
 export const sendSupportRequestTelegramNotification = async ({
     request,
@@ -26,12 +32,20 @@ export const sendSupportRequestTelegramNotification = async ({
     })
 
     const results = await Promise.allSettled(
-        adminChatIds.map((chatId) => sendTelegramMessage({
+        adminChatIds.map((chatId) => sendTelegramBotMessage({
             botToken,
             chatId,
             text,
-            adminUrl,
-            ticketId,
+            parseMode: 'HTML',
+            disableWebPagePreview: true,
+            replyMarkup: {
+                inline_keyboard: [
+                    [
+                        { text: 'Открыть в админке', url: adminUrl },
+                        { text: 'Закрыть', callback_data: `support_close:${ticketId}` },
+                    ],
+                ],
+            },
         }))
     )
     const failedResults = results.filter((result) => result.status === 'rejected')
@@ -42,6 +56,88 @@ export const sendSupportRequestTelegramNotification = async ({
             .join('; ')
 
         throw new Error(`Telegram notification failed for ${failedResults.length} admin chat(s): ${errorText}`)
+    }
+}
+
+export const linkSupportRequestTelegramChat = async ({
+    token,
+    telegramUserId,
+    telegramChatId,
+    telegramUsername,
+}) => {
+    const normalizedToken = normalizeString(token)
+    const normalizedUserId = normalizeTelegramId(telegramUserId)
+    const normalizedChatId = normalizeTelegramId(telegramChatId)
+    const normalizedUsername = normalizeString(telegramUsername).replace(/^@/, '')
+
+    if (!normalizedToken) {
+        return {
+            linked: false,
+            message: 'Telegram token is required',
+        }
+    }
+
+    if (!normalizedUserId || !normalizedChatId) {
+        return {
+            linked: false,
+            message: 'Telegram user or chat id is missing',
+        }
+    }
+
+    const supportRequest = await getSupportRequestByTelegramTokenRepo(normalizedToken)
+
+    if (!supportRequest) {
+        return {
+            linked: false,
+            message: 'Telegram token was not found',
+        }
+    }
+
+    if (supportRequest.preferred_channel !== 'telegram') {
+        return {
+            linked: false,
+            message: 'Support request does not use Telegram',
+        }
+    }
+
+    if (supportRequest.telegram_user_id && supportRequest.telegram_user_id !== normalizedUserId) {
+        return {
+            linked: false,
+            message: 'Support request is already linked to another Telegram user',
+        }
+    }
+
+    if (supportRequest.telegram_linked_at || supportRequest.telegram_user_id) {
+        return {
+            linked: false,
+            message: 'Support request is already linked',
+        }
+    }
+
+    const linkedRequest = await linkSupportRequestTelegramRepo({
+        ticketId: supportRequest.id,
+        telegramToken: normalizedToken,
+        telegramUserId: normalizedUserId,
+        telegramChatId: normalizedChatId,
+        telegramUsername: normalizedUsername,
+    })
+
+    if (!linkedRequest) {
+        return {
+            linked: false,
+            message: 'Support request could not be linked',
+        }
+    }
+
+    await sendTelegramBotMessage({
+        chatId: normalizedChatId,
+        text: TELEGRAM_LINKED_MESSAGE,
+    })
+
+    return {
+        linked: true,
+        message: 'Telegram support request linked',
+        ticketId: linkedRequest.id,
     }
 }
 
@@ -56,32 +152,45 @@ export const parseAdminTelegramUserIds = () => {
     )
 }
 
-const sendTelegramMessage = async ({
-    botToken,
+export const sendTelegramBotMessage = async ({
+    botToken = normalizeString(process.env.TELEGRAM_BOT_TOKEN),
     chatId,
     text,
-    adminUrl,
-    ticketId,
+    parseMode = null,
+    disableWebPagePreview = false,
+    replyMarkup = null,
 }) => {
+    if (!botToken) {
+        throw new Error('Telegram bot token is not configured')
+    }
+
+    if (!chatId) {
+        throw new Error('Telegram chat id is required')
+    }
+
+    const body = {
+        chat_id: chatId,
+        text,
+    }
+
+    if (parseMode) {
+        body.parse_mode = parseMode
+    }
+
+    if (disableWebPagePreview) {
+        body.disable_web_page_preview = true
+    }
+
+    if (replyMarkup) {
+        body.reply_markup = replyMarkup
+    }
+
     const response = await fetch(`${TELEGRAM_API_BASE_URL}/bot${botToken}/sendMessage`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            chat_id: chatId,
-            text,
-            parse_mode: 'HTML',
-            disable_web_page_preview: true,
-            reply_markup: {
-                inline_keyboard: [
-                    [
-                        { text: 'Открыть в админке', url: adminUrl },
-                        { text: 'Закрыть', callback_data: `support_close:${ticketId}` },
-                    ],
-                ],
-            },
-        }),
+        body: JSON.stringify(body),
     })
 
     if (!response.ok) {
@@ -141,4 +250,12 @@ const normalizeString = (value) => {
     }
 
     return value.trim()
+}
+
+const normalizeTelegramId = (value) => {
+    if (value === undefined || value === null) {
+        return ''
+    }
+
+    return String(value).trim()
 }

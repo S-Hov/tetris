@@ -1,5 +1,8 @@
 import { asyncHandler } from '../utils/asyncHandler.js'
-import { parseAdminTelegramUserIds } from '../services/telegramSupportService.js'
+import {
+    linkSupportRequestTelegramChat,
+    parseAdminTelegramUserIds,
+} from '../services/telegramSupportService.js'
 import { replyToSupportRequest } from '../services/supportReplyService.js'
 
 const extractTicketIdFromText = (text = '') => {
@@ -7,11 +10,36 @@ const extractTicketIdFromText = (text = '') => {
     return match ? Number(match[1]) : null
 }
 
+const extractStartTokenFromText = (text = '') => {
+    const match = text.trim().match(/^\/start(?:@\w+)?\s+(.+)$/i)
+    return match ? match[1].trim().split(/\s+/)[0] : null
+}
+
 export const handleTelegramWebhook = asyncHandler(async (req, res) => {
     const update = req.body
     const message = update?.message
 
-    if (!message?.text || !message?.reply_to_message?.text) {
+    if (!message?.text) {
+        return sendWebhookResponse(res, 'Telegram update ignored')
+    }
+
+    const startToken = extractStartTokenFromText(message.text)
+
+    if (startToken) {
+        const linkResult = await linkSupportRequestTelegramChat({
+            token: startToken,
+            telegramUserId: message.from?.id,
+            telegramChatId: message.chat?.id,
+            telegramUsername: message.from?.username,
+        })
+
+        return sendWebhookResponse(res, linkResult.message, {
+            linked: linkResult.linked,
+            ticketId: linkResult.ticketId || null,
+        })
+    }
+
+    if (!message.reply_to_message?.text) {
         return sendWebhookResponse(res, 'Telegram update ignored')
     }
 
@@ -43,8 +71,8 @@ export const handleTelegramWebhook = asyncHandler(async (req, res) => {
     return sendWebhookResponse(res, 'Telegram reply processed')
 })
 
-const sendWebhookResponse = (res, message) => res.json({
+const sendWebhookResponse = (res, message, data = null) => res.json({
     success: true,
     message,
-    data: null,
+    data,
 })

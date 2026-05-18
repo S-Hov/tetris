@@ -106,6 +106,10 @@ export const getSupportRequestByIdRepo = async (ticketId) => {
             message,
             telegram_token,
             telegram_url,
+            telegram_user_id,
+            telegram_chat_id,
+            telegram_username,
+            telegram_linked_at,
             admin_notes,
             resolved_at,
             created_at,
@@ -115,6 +119,68 @@ export const getSupportRequestByIdRepo = async (ticketId) => {
         LIMIT 1
         `,
         [ticketId]
+    )
+
+    return result.rows[0] || null
+}
+
+export const getSupportRequestByTelegramTokenRepo = async (telegramToken) => {
+    const result = await pool.query(
+        `
+        SELECT
+            id,
+            preferred_channel,
+            telegram_token,
+            telegram_user_id,
+            telegram_chat_id,
+            telegram_username,
+            telegram_linked_at
+        FROM support_requests
+        WHERE telegram_token = $1
+        LIMIT 1
+        `,
+        [telegramToken]
+    )
+
+    return result.rows[0] || null
+}
+
+export const linkSupportRequestTelegramRepo = async ({
+    ticketId,
+    telegramToken,
+    telegramUserId,
+    telegramChatId,
+    telegramUsername,
+}) => {
+    const result = await pool.query(
+        `
+        UPDATE support_requests
+        SET
+            telegram_user_id = $3,
+            telegram_chat_id = $4,
+            telegram_username = $5,
+            telegram_linked_at = NOW(),
+            telegram_token = NULL,
+            updated_at = NOW()
+        WHERE id = $1
+            AND telegram_token = $2
+            AND telegram_linked_at IS NULL
+            AND telegram_user_id IS NULL
+        RETURNING
+            id,
+            preferred_channel,
+            telegram_user_id,
+            telegram_chat_id,
+            telegram_username,
+            telegram_linked_at
+        `,
+        [
+            ticketId,
+            telegramToken,
+            telegramUserId,
+            telegramChatId,
+            telegramUsername || null,
+        ]
     )
 
     return result.rows[0] || null

@@ -579,6 +579,10 @@ Additional feedback channel fields added by migration `012_feedback_channels_and
 | `preferred_channel` | `varchar(20)` | no | `'email'` | Reply channel: `email` or `telegram` |
 | `telegram_token` | `text` | yes |  | Backend-generated token used in Telegram bot start URL |
 | `telegram_url` | `text` | yes |  | Full Telegram bot URL returned to frontend |
+| `telegram_user_id` | `text` | yes |  | Telegram user id captured from `/start TOKEN` |
+| `telegram_chat_id` | `text` | yes |  | Telegram chat id used for support replies |
+| `telegram_username` | `text` | yes |  | Telegram username captured during linking |
+| `telegram_linked_at` | `timestamp` | yes |  | Time when the support request was linked to Telegram |
 
 ### `support_user_blocks`
 

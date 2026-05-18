@@ -4,6 +4,7 @@ import {
     getSupportRequestByIdRepo,
 } from '../repositories/supportRepository.js'
 import { sendSupportReplyEmail } from './emailService.js'
+import { sendTelegramBotMessage } from './telegramSupportService.js'
 
 export const replyToSupportRequest = async ({
     ticketId,
@@ -34,7 +35,16 @@ export const replyToSupportRequest = async ({
         throw badRequest(`Support request #${ticketId} is already ${supportRequest.status}`)
     }
 
-    if (supportRequest.preferred_channel === 'email') {
+    if (supportRequest.preferred_channel === 'telegram') {
+        if (!supportRequest.telegram_chat_id || !supportRequest.telegram_linked_at) {
+            throw badRequest(`Support request #${ticketId} is not linked to Telegram`)
+        }
+
+        await sendTelegramBotMessage({
+            chatId: supportRequest.telegram_chat_id,
+            text: normalizedReplyText,
+        })
+    } else if (supportRequest.preferred_channel === 'email') {
         if (!supportRequest.contact_email) {
             throw badRequest(`Support request #${ticketId} does not have a contact email`)
         }

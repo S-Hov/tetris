@@ -316,6 +316,8 @@ export const adminResourceConfigs = {
       { key: 'preferred_channel', label: 'Канал', type: 'badge' },
       { key: 'title', label: 'Тема' },
       { key: 'contact_email', label: 'Email' },
+      { key: 'telegram_username', label: 'Telegram' },
+      { key: 'telegram_linked_at', label: 'TG linked', type: 'datetime' },
       { key: 'created_at', label: 'Создано', type: 'datetime' },
     ],
   },

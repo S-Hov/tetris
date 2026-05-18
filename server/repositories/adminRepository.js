@@ -125,7 +125,7 @@ const RESOURCE_CONFIGS = {
     },
     supportRequests: {
         table: 'support_requests',
-        columns: ['id', 'user_id', 'category', 'status', 'priority', 'preferred_channel', 'contact_name', 'contact_email', 'title', 'telegram_url', 'page_url', 'resolved_at', 'created_at', 'updated_at'],
+        columns: ['id', 'user_id', 'category', 'status', 'priority', 'preferred_channel', 'contact_name', 'contact_email', 'title', 'telegram_url', 'telegram_user_id', 'telegram_chat_id', 'telegram_username', 'telegram_linked_at', 'page_url', 'resolved_at', 'created_at', 'updated_at'],
         searchable: ['contact_name', 'contact_email', 'title', 'message'],
         filters: ['user_id', 'category', 'status', 'priority', 'preferred_channel'],
         orderBy: 'created_at',
