@@ -8,6 +8,7 @@ const extractTicketIdFromText = (text = '') => {
 }
 
 export const handleTelegramWebhook = asyncHandler(async (req, res) => {
+    console.log('TELEGRAM WEBHOOK BODY:', JSON.stringify(req.body, null, 2))
     const update = req.body
     const message = update?.message
 
