@@ -136,9 +136,9 @@ export const appendSupportAdminReplyRepo = async ({
                     '[',
                     TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS'),
                     '] Telegram admin ',
-                    $2,
+                    $2::text,
                     ': ',
-                    $3
+                    $3::text
                 )
             ),
             status = CASE
