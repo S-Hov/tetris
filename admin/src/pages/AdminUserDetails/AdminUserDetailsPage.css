@@ -148,6 +148,61 @@
   white-space: nowrap;
 }
 
+.admin-user-details__auth-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 165px 165px auto;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.admin-user-details__auth-filters select,
+.admin-user-details__auth-filters input,
+.admin-user-details__auth-filters button,
+.admin-user-details__auth-pagination button {
+  height: 38px;
+  border: 1px solid #d7dee8;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #344054;
+  font: inherit;
+  font-size: 13px;
+}
+
+.admin-user-details__auth-filters select,
+.admin-user-details__auth-filters input {
+  min-width: 0;
+  padding: 0 10px;
+}
+
+.admin-user-details__auth-filters button,
+.admin-user-details__auth-pagination button {
+  padding: 0 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.admin-user-details__auth-pagination {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 10px;
+  color: #667085;
+  font-size: 13px;
+}
+
+.admin-user-details__auth-pagination div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-user-details__auth-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
 .admin-user-details__row span,
 .admin-user-details__rating-item span,
 .admin-match-details__player small {
@@ -248,5 +303,14 @@
   .admin-user-details__login-item,
   .admin-user-details__auth-item {
     grid-template-columns: 1fr;
+  }
+
+  .admin-user-details__auth-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-user-details__auth-pagination {
+    align-items: stretch;
+    flex-direction: column;
   }
 }

@@ -1,6 +1,8 @@
 import express from 'express'
 import {
+    createResourceByKey,
     deleteUserAccount,
+    deleteResourceByKey,
     deleteUser,
     getActiveSessions,
     getAdminAuditLogs,
@@ -32,6 +34,8 @@ import {
     getVisitAnalytics,
     manageUser,
     updateUserAvatar,
+    updateResourceByKey,
+    updateResourceStatusByKey,
     updateUser,
 } from '../controllers/adminController.js'
 import { checkAuth } from '../middleware/checkAuth.js'
@@ -50,6 +54,10 @@ adminRouter.get('/sessions', getActiveSessions)
 adminRouter.get('/audit', getAdminAuditLogs)
 adminRouter.get('/migrations', getMigrations)
 adminRouter.get('/resources/:resourceKey', getResourceByKey)
+adminRouter.post('/resources/:resourceKey', createResourceByKey)
+adminRouter.patch('/resources/:resourceKey/:resourceId/status', updateResourceStatusByKey)
+adminRouter.put('/resources/:resourceKey/:resourceId', updateResourceByKey)
+adminRouter.delete('/resources/:resourceKey/:resourceId', deleteResourceByKey)
 
 adminRouter.get('/users', getUsers)
 adminRouter.get('/users/:userId', getUserDetails)

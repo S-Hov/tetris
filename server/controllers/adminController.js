@@ -1,7 +1,9 @@
 import { asyncHandler } from '../utils/asyncHandler.js'
 import bcrypt from 'bcrypt'
 import {
+    createAdminResourceRepo,
     deleteAdminUserAccountRepo,
+    deleteAdminResourceRepo,
     deleteAdminUserRepo,
     getAdminDashboardRepo,
     getAdminNavigationRepo,
@@ -10,6 +12,8 @@ import {
     getAdminUserDetailsRepo,
     getAdminMatchTeamDetailsRepo,
     manageAdminUserRepo,
+    updateAdminResourceRepo,
+    updateAdminResourceStatusRepo,
     updateAdminUserRepo,
 } from '../repositories/adminRepository.js'
 import { badRequest } from '../helpers/error.helper.js'
@@ -65,7 +69,7 @@ export const getAdminNavigation = asyncHandler(async (req, res) => {
             {
                 key: 'donations',
                 label: 'Донаты',
-                children: ['Платежи', 'Кошельки', 'Проверки транзакций'],
+                children: ['Платежи', 'Валюты', 'Сети', 'Валюты и сети', 'Кошельки', 'Проверки транзакций'],
             },
             {
                 key: 'system',
@@ -109,12 +113,99 @@ export const getResourceByKey = asyncHandler(async (req, res) => {
     sendAdminResponse(res, 'Admin resource loaded', data)
 })
 
+export const createResourceByKey = asyncHandler(async (req, res) => {
+    try {
+        const item = await createAdminResourceRepo(req.params.resourceKey, req.body || {})
+
+        sendAdminResponse(res, 'Admin resource item created', { item })
+    } catch (error) {
+        if (error.code === '23505') {
+            throw badRequest('Такая запись уже существует')
+        }
+
+        if (error.code === '23503') {
+            throw badRequest('Связанная запись не найдена')
+        }
+
+        throw badRequest(error.message || 'Не удалось создать запись')
+    }
+})
+
+export const updateResourceByKey = asyncHandler(async (req, res) => {
+    try {
+        const item = await updateAdminResourceRepo(req.params.resourceKey, req.params.resourceId, req.body || {})
+
+        if (!item) {
+            res.status(404).json({
+                success: false,
+                message: 'Запись не найдена',
+                data: null,
+            })
+            return
+        }
+
+        sendAdminResponse(res, 'Admin resource item updated', { item })
+    } catch (error) {
+        if (error.code === '23505') {
+            throw badRequest('Такая запись уже существует')
+        }
+
+        if (error.code === '23503') {
+            throw badRequest('Связанная запись не найдена')
+        }
+
+        throw badRequest(error.message || 'Не удалось обновить запись')
+    }
+})
+
+export const updateResourceStatusByKey = asyncHandler(async (req, res) => {
+    try {
+        const item = await updateAdminResourceStatusRepo(req.params.resourceKey, req.params.resourceId, req.body?.status)
+
+        if (!item) {
+            res.status(404).json({
+                success: false,
+                message: 'Запись не найдена',
+                data: null,
+            })
+            return
+        }
+
+        sendAdminResponse(res, 'Admin resource item status updated', { item })
+    } catch (error) {
+        throw badRequest(error.message || 'Не удалось изменить статус')
+    }
+})
+
+export const deleteResourceByKey = asyncHandler(async (req, res) => {
+    try {
+        const item = await deleteAdminResourceRepo(req.params.resourceKey, req.params.resourceId)
+
+        if (!item) {
+            res.status(404).json({
+                success: false,
+                message: 'Запись не найдена',
+                data: null,
+            })
+            return
+        }
+
+        sendAdminResponse(res, 'Admin resource item deleted', { item })
+    } catch (error) {
+        if (error.code === '23503') {
+            throw badRequest('Нельзя удалить запись, пока на неё ссылаются другие данные')
+        }
+
+        throw badRequest(error.message || 'Не удалось удалить запись')
+    }
+})
+
 export const getUsers = asyncHandler(async (req, res) => {
     sendAdminResponse(res, 'Users loaded', await getAdminResourceRepo('users', req.query))
 })
 
 export const getUserDetails = asyncHandler(async (req, res) => {
-    const data = await getAdminUserDetailsRepo(req.params.userId)
+    const data = await getAdminUserDetailsRepo(req.params.userId, req.query)
 
     if (!data) {
         res.status(404).json({

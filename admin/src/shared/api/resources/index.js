@@ -9,8 +9,10 @@ export const resourcesAPI = {
     })
   },
 
-  getUserDetails(userId) {
-    return apiClient(`/api/admin/users/${userId}`, {
+  getUserDetails(userId, params = {}) {
+    const query = buildQuery(params)
+
+    return apiClient(`/api/admin/users/${userId}${query ? `?${query}` : ''}`, {
       method: 'GET',
     })
   },
@@ -24,6 +26,33 @@ export const resourcesAPI = {
   getMatchTeamDetails(teamId) {
     return apiClient(`/api/admin/match-teams/${teamId}`, {
       method: 'GET',
+    })
+  },
+
+  createItem(resourceKey, payload) {
+    return apiClient(`/api/admin/resources/${resourceKey}`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
+  },
+
+  updateItem(resourceKey, resourceId, payload) {
+    return apiClient(`/api/admin/resources/${resourceKey}/${encodeURIComponent(resourceId)}`, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    })
+  },
+
+  updateItemStatus(resourceKey, resourceId, status) {
+    return apiClient(`/api/admin/resources/${resourceKey}/${encodeURIComponent(resourceId)}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    })
+  },
+
+  deleteItem(resourceKey, resourceId) {
+    return apiClient(`/api/admin/resources/${resourceKey}/${encodeURIComponent(resourceId)}`, {
+      method: 'DELETE',
     })
   },
 

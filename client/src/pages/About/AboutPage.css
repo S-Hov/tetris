@@ -340,6 +340,31 @@
     grid-column: 1 / -1;
 }
 
+.about-field--check {
+    align-self: end;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.85rem 0.95rem;
+    border: var(--border);
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.28);
+
+    & input {
+        width: 20px;
+        min-height: 20px;
+        padding: 0;
+        accent-color: var(--turquoise);
+    }
+
+    & > span {
+        color: var(--text-active-color);
+        letter-spacing: 0;
+        text-transform: none;
+    }
+}
+
 .about-donate-form .about-primary-button {
     grid-column: 1 / -1;
 }

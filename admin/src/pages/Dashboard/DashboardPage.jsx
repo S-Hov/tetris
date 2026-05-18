@@ -200,6 +200,7 @@ export function DashboardPage() {
           caption="Страницы с наибольшим числом визитов."
           items={seoPages}
           labelKey="path"
+          linkItems
           emptyText="Популярные страницы пока не определены"
         />
 
@@ -238,7 +239,7 @@ export function DashboardPage() {
   )
 }
 
-function RankingPanel({ title, caption, items, labelKey, emptyText }) {
+function RankingPanel({ title, caption, items, labelKey, emptyText, linkItems = false }) {
   const maxValue = Math.max(1, ...items.map((item) => Number(item.visits || 0)))
 
   return (
@@ -254,7 +255,19 @@ function RankingPanel({ title, caption, items, labelKey, emptyText }) {
           {items.map((item) => (
             <div className="ranking-list__row" key={item[labelKey]}>
               <div>
-                <strong title={item[labelKey]}>{item[labelKey]}</strong>
+                {linkItems ? (
+                  <a
+                    className="admin-table-link"
+                    href={normalizePageHref(item[labelKey])}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={item[labelKey]}
+                  >
+                    {item[labelKey]}
+                  </a>
+                ) : (
+                  <strong title={item[labelKey]}>{item[labelKey]}</strong>
+                )}
                 <span>{Number(item.sessions || 0).toLocaleString('ru-RU')} сеансов</span>
               </div>
               <div className="ranking-list__track">
@@ -269,6 +282,35 @@ function RankingPanel({ title, caption, items, labelKey, emptyText }) {
       )}
     </section>
   )
+}
+
+function normalizePageHref(value) {
+  const path = String(value || '/')
+
+  if (/^https?:\/\//i.test(path)) {
+    return path
+  }
+
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`
+  const clientOrigin = getClientOrigin()
+
+  return clientOrigin ? `${clientOrigin}${normalizedPath}` : normalizedPath
+}
+
+function getClientOrigin() {
+  if (import.meta.env.VITE_CLIENT_URL) {
+    return import.meta.env.VITE_CLIENT_URL.replace(/\/+$/, '')
+  }
+
+  if (typeof window === 'undefined') {
+    return ''
+  }
+
+  if (window.location.port === '5174') {
+    return `${window.location.protocol}//${window.location.hostname}:5173`
+  }
+
+  return window.location.origin
 }
 
 function EmptyState({ text }) {

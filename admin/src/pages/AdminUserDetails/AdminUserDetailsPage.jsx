@@ -1,14 +1,25 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { resourcesAPI } from '@/shared/api/resources'
 import { notify } from '@/shared/lib/notify.js'
 import './AdminUserDetailsPage.css'
 
+const AUTH_LOGS_LIMIT = 10
+
 export function AdminUserDetailsPage() {
   const { userId } = useParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [data, setData] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+
+  const authQuery = useMemo(() => ({
+    auth_page: searchParams.get('auth_page') || '1',
+    auth_limit: AUTH_LOGS_LIMIT,
+    auth_event_type: searchParams.get('auth_event_type') || '',
+    auth_created_from: searchParams.get('auth_created_from') || '',
+    auth_created_to: searchParams.get('auth_created_to') || '',
+  }), [searchParams])
 
   useEffect(() => {
     let isActive = true
@@ -18,7 +29,7 @@ export function AdminUserDetailsPage() {
       setError('')
 
       try {
-        const response = await resourcesAPI.getUserDetails(userId)
+        const response = await resourcesAPI.getUserDetails(userId, authQuery)
 
         if (isActive) {
           setData(response)
@@ -43,7 +54,35 @@ export function AdminUserDetailsPage() {
     return () => {
       isActive = false
     }
-  }, [userId])
+  }, [authQuery, userId])
+
+  const setAuthParam = (key, value) => {
+    const nextParams = new URLSearchParams(searchParams)
+
+    if (value) {
+      nextParams.set(key, value)
+    } else {
+      nextParams.delete(key)
+    }
+
+    nextParams.set('auth_page', '1')
+    setSearchParams(nextParams)
+  }
+
+  const setAuthPage = (page) => {
+    const nextParams = new URLSearchParams(searchParams)
+    nextParams.set('auth_page', String(page))
+    setSearchParams(nextParams)
+  }
+
+  const clearAuthFilters = () => {
+    const nextParams = new URLSearchParams(searchParams)
+    nextParams.delete('auth_event_type')
+    nextParams.delete('auth_created_from')
+    nextParams.delete('auth_created_to')
+    nextParams.set('auth_page', '1')
+    setSearchParams(nextParams)
+  }
 
   const cards = useMemo(() => {
     const rankStats = data?.rankStats || {}
@@ -79,7 +118,7 @@ export function AdminUserDetailsPage() {
     )
   }
 
-  const { user, rankStats, stats, matches, ratingHistory } = data
+  const { user, rankStats, stats, matches, ratingHistory, authLogsPagination } = data
 
   return (
     <section className="admin-page admin-user-details">
@@ -172,6 +211,31 @@ export function AdminUserDetailsPage() {
               <p className="admin-panel__caption">Последние входы, выходы и события безопасности.</p>
             </div>
           </div>
+          <div className="admin-user-details__auth-filters">
+            <select
+              aria-label="Тип auth события"
+              value={searchParams.get('auth_event_type') || ''}
+              onChange={(event) => setAuthParam('auth_event_type', event.target.value)}
+            >
+              <option value="">Все события</option>
+              {(data.authEventTypes || []).map((eventType) => (
+                <option key={eventType} value={eventType}>{eventType}</option>
+              ))}
+            </select>
+            <input
+              aria-label="Auth события с"
+              type="datetime-local"
+              value={searchParams.get('auth_created_from') || ''}
+              onChange={(event) => setAuthParam('auth_created_from', event.target.value)}
+            />
+            <input
+              aria-label="Auth события по"
+              type="datetime-local"
+              value={searchParams.get('auth_created_to') || ''}
+              onChange={(event) => setAuthParam('auth_created_to', event.target.value)}
+            />
+            <button type="button" onClick={clearAuthFilters}>Сбросить</button>
+          </div>
           <div className="admin-user-details__auth-list">
             {data.authLogs?.length ? data.authLogs.map((log) => (
               <article className="admin-user-details__auth-item" key={log.id}>
@@ -186,6 +250,7 @@ export function AdminUserDetailsPage() {
               <p className="admin-panel__empty">Auth события пока не записаны</p>
             )}
           </div>
+          <AuthPagination pagination={authLogsPagination} onPageChange={setAuthPage} />
         </article>
       </section>
 
@@ -245,6 +310,38 @@ function UserAvatar({ src, name }) {
     <span className="admin-user-details__avatar">
       <img src={url} alt={name || 'Аватар'} />
     </span>
+  )
+}
+
+function AuthPagination({ pagination, onPageChange }) {
+  if (!pagination) {
+    return null
+  }
+
+  const totalPages = Math.max(1, Math.ceil((pagination.total || 0) / (pagination.limit || AUTH_LOGS_LIMIT)))
+  const currentPage = pagination.page || 1
+
+  return (
+    <footer className="admin-user-details__auth-pagination">
+      <span>{pagination.total || 0} записей</span>
+      <div>
+        <button
+          disabled={currentPage <= 1}
+          type="button"
+          onClick={() => onPageChange(currentPage - 1)}
+        >
+          Назад
+        </button>
+        <strong>{currentPage} / {totalPages}</strong>
+        <button
+          disabled={currentPage >= totalPages}
+          type="button"
+          onClick={() => onPageChange(currentPage + 1)}
+        >
+          Вперед
+        </button>
+      </div>
+    </footer>
   )
 }
 

@@ -6,7 +6,7 @@
 
 ## Общая картина
 
-База состоит из 16 таблиц:
+База состоит из 19 основных таблиц:
 
 1. `roles`
 2. `users`
@@ -24,6 +24,9 @@
 14. `donation_wallets`
 15. `donations`
 16. `donation_verification_events`
+17. `donation_currencies`
+18. `donation_networks`
+19. `donation_currency_networks`
 
 По смыслу схема делится на 3 зоны:
 
@@ -31,7 +34,7 @@
 - матчи и игровая телеметрия: `matches`, `match_teams`, `match_players`, `match_events`
 - рейтинг и ранговая статистика: `user_rank_stats`, `rating_history`
 - runtime-состояние комнат: `game_rooms`, `game_room_players`
-- поддержка и пожертвования: `support_requests`, `donation_wallets`, `donations`, `donation_verification_events`
+- поддержка и пожертвования: `support_requests`, `donation_currencies`, `donation_networks`, `donation_currency_networks`, `donation_wallets`, `donations`, `donation_verification_events`
 
 ## Карта связей
 
@@ -61,6 +64,15 @@ match_events.source_player_id
 
 match_events.target_player_id
   └─> match_players.id
+
+donation_currencies
+  └─< donation_currency_networks
+
+donation_networks
+  └─< donation_currency_networks
+
+donation_currency_networks
+  └─< donation_wallets
 
 donation_wallets
   └─< donations
@@ -558,6 +570,65 @@ donations
 
 Индексы: `user_id`, `category`, `status`, `created_at`.
 
+### `donation_currencies`
+
+Справочник валют, которые можно использовать в донатах.
+
+| Поле | Тип | Null | По умолчанию | Описание |
+|---|---|---|---|---|
+| `code` | `varchar(20)` | нет |  | PK, тикер валюты: `USDT`, `BTC`, `TON` |
+| `name` | `varchar(100)` | нет |  | человекочитаемое название |
+| `symbol` | `varchar(20)` | да |  | короткий символ/тикер |
+| `icon_url` | `text` | да |  | URL иконки |
+| `icon_symbol` | `varchar(20)` | да |  | текстовая иконка для UI |
+| `decimals` | `integer` | нет | `8` | количество знаков после запятой |
+| `status` | `varchar(30)` | нет | `'active'` | `active`, `inactive` |
+| `sort_order` | `integer` | нет | `0` | порядок показа |
+| `metadata` | `jsonb` | нет | `'{}'` | расширение под провайдеры |
+| `created_at` | `timestamp` | нет | `now()` | дата создания |
+| `updated_at` | `timestamp` | нет | `now()` | дата обновления |
+
+### `donation_networks`
+
+Справочник сетей, в которых можно принимать валюты.
+
+| Поле | Тип | Null | По умолчанию | Описание |
+|---|---|---|---|---|
+| `key` | `varchar(50)` | нет |  | PK, машинный ключ сети |
+| `name` | `varchar(100)` | нет |  | человекочитаемое название |
+| `native_currency_code` | `varchar(20)` | да |  | нативная валюта сети |
+| `chain_id` | `varchar(50)` | да |  | chain id для EVM-сетей |
+| `explorer_url` | `text` | да |  | ссылка на explorer |
+| `icon_url` | `text` | да |  | URL иконки |
+| `icon_symbol` | `varchar(20)` | да |  | текстовая иконка |
+| `status` | `varchar(30)` | нет | `'active'` | `active`, `inactive` |
+| `sort_order` | `integer` | нет | `0` | порядок показа |
+| `metadata` | `jsonb` | нет | `'{}'` | расширение под провайдеры |
+| `created_at` | `timestamp` | нет | `now()` | дата создания |
+| `updated_at` | `timestamp` | нет | `now()` | дата обновления |
+
+### `donation_currency_networks`
+
+Связь валют и сетей: один актив может ходить в нескольких сетях, а сеть может поддерживать несколько активов.
+
+| Поле | Тип | Null | По умолчанию | Описание |
+|---|---|---|---|---|
+| `id` | `bigint` | нет | `nextval(...)` | PK связи |
+| `currency_code` | `varchar(20)` | нет |  | валюта |
+| `network_key` | `varchar(50)` | нет |  | сеть |
+| `token_standard` | `varchar(50)` | да |  | `native`, `ERC20`, `TRC20`, `SPL` и т.п. |
+| `contract_address` | `text` | да |  | адрес контракта токена |
+| `min_confirmations` | `integer` | нет | `1` | минимум подтверждений |
+| `memo_required` | `boolean` | нет | `false` | нужен ли memo/tag/comment |
+| `deposit_enabled` | `boolean` | нет | `true` | включён ли приём |
+| `status` | `varchar(30)` | нет | `'active'` | `active`, `inactive` |
+| `sort_order` | `integer` | нет | `0` | порядок показа |
+| `metadata` | `jsonb` | нет | `'{}'` | расширение под провайдеры |
+| `created_at` | `timestamp` | нет | `now()` | дата создания |
+| `updated_at` | `timestamp` | нет | `now()` | дата обновления |
+
+Ограничения: уникальность `(currency_code, network_key)`.
+
 ### `donation_wallets`
 
 Справочник адресов, на которые проект принимает пожертвования. Валюта и сеть разделены, чтобы один актив можно было принимать в разных сетях.
@@ -565,6 +636,7 @@ donations
 | Поле | Тип | Null | По умолчанию | Описание |
 |---|---|---|---|---|
 | `id` | `bigint` | нет | `nextval(...)` | PK кошелька |
+| `currency_network_id` | `bigint` | да |  | связь валюты и сети |
 | `currency_code` | `varchar(20)` | нет |  | `TON`, `USDT`, `BTC`, `ETH` и т.п. |
 | `network_key` | `varchar(50)` | нет |  | машинный ключ сети: `ton`, `trc20`, `bitcoin`, `erc20` |
 | `network_name` | `varchar(100)` | нет |  | человекочитаемое имя сети |

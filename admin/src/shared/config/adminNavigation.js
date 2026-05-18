@@ -61,6 +61,9 @@ export const adminNavigation = [
     icon: 'wallet',
     items: [
       resource('donations'),
+      resource('donationCurrencies'),
+      resource('donationNetworks'),
+      resource('donationCurrencyNetworks'),
       resource('donationWallets'),
       resource('donationVerificationEvents'),
     ],

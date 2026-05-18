@@ -51,6 +51,12 @@ export const getDonationWalletsService = async () => {
             address: wallet.address,
             addressLabel: wallet.address_label,
             memoTag: wallet.memo_tag,
+            currencyName: wallet.currency_name || wallet.currency_code,
+            currencyIconUrl: wallet.currency_icon_url,
+            currencyIconSymbol: wallet.currency_icon_symbol,
+            networkIconUrl: wallet.network_icon_url,
+            networkIconSymbol: wallet.network_icon_symbol,
+            memoRequired: Boolean(wallet.memo_required),
             metadata: wallet.metadata || {},
         })),
     }
@@ -70,12 +76,18 @@ export const createDonationService = async ({ userId, body }) => {
     }
 
     const expectedAmount = normalizeAmount(body.expectedAmount, { required: true })
+    const isAnonymous = body.isAnonymous === true || body.isAnonymous === 'true'
+    const donorName = normalizeString(body.donorName)
+
+    if ((isAnonymous || !userId) && donorName.length < 2) {
+        throw badRequest('Donation nickname is required')
+    }
 
     const donation = await createDonationRepo({
-        userId,
+        userId: isAnonymous ? null : userId,
         wallet,
-        donorName: normalizeString(body.donorName),
-        donorContact: normalizeString(body.donorContact),
+        donorName,
+        donorContact: null,
         expectedAmount,
         note: normalizeString(body.note),
     })

@@ -94,7 +94,22 @@ const RESOURCE_CONFIGS = {
     },
     rankStats: {
         table: 'user_rank_stats',
-        columns: ['user_id', 'rank_points', 'mmr', 'wins', 'losses', 'draws', 'best_solo_score', 'total_matches', 'created_at', 'updated_at'],
+        fromSql: 'user_rank_stats LEFT JOIN users ON users.id = user_rank_stats.user_id',
+        columns: ['user_id', 'username', 'avatar_url', 'rank_points', 'mmr', 'wins', 'losses', 'draws', 'best_solo_score', 'total_matches', 'created_at', 'updated_at'],
+        selectColumns: [
+            'user_rank_stats.user_id',
+            'users.username',
+            'users.avatar_url',
+            'user_rank_stats.rank_points',
+            'user_rank_stats.mmr',
+            'user_rank_stats.wins',
+            'user_rank_stats.losses',
+            'user_rank_stats.draws',
+            'user_rank_stats.best_solo_score',
+            'user_rank_stats.total_matches',
+            'user_rank_stats.created_at',
+            'user_rank_stats.updated_at',
+        ],
         searchable: [],
         filters: ['user_id'],
         orderBy: 'rank_points',
@@ -126,11 +141,80 @@ const RESOURCE_CONFIGS = {
     },
     donationWallets: {
         table: 'donation_wallets',
-        columns: ['id', 'currency_code', 'network_key', 'network_name', 'address', 'address_label', 'memo_tag', 'status', 'sort_order', 'created_at', 'updated_at'],
+        columns: ['id', 'currency_network_id', 'currency_code', 'network_key', 'network_name', 'address', 'address_label', 'memo_tag', 'status', 'sort_order', 'created_at', 'updated_at'],
         searchable: ['currency_code', 'network_key', 'network_name', 'address', 'address_label'],
         filters: ['currency_code', 'network_key', 'status'],
+        editable: true,
+        mutableFields: ['currency_network_id', 'currency_code', 'network_key', 'network_name', 'address', 'address_label', 'memo_tag', 'status', 'sort_order', 'metadata'],
+        requiredFields: ['currency_code', 'network_key', 'network_name', 'address', 'status'],
+        statusField: 'status',
+        statusValues: ['active', 'inactive', 'test'],
         orderBy: 'sort_order',
         orderDirection: 'ASC',
+    },
+    donationCurrencies: {
+        table: 'donation_currencies',
+        primaryKey: 'code',
+        columns: ['code', 'name', 'symbol', 'icon_url', 'icon_symbol', 'decimals', 'status', 'sort_order', 'created_at', 'updated_at'],
+        searchable: ['code', 'name', 'symbol'],
+        filters: ['code', 'status'],
+        editable: true,
+        mutableFields: ['code', 'name', 'symbol', 'icon_url', 'icon_symbol', 'decimals', 'status', 'sort_order', 'metadata'],
+        requiredFields: ['code', 'name', 'status'],
+        statusField: 'status',
+        statusValues: ['active', 'inactive'],
+        orderBy: 'sort_order',
+        orderDirection: 'ASC',
+        optional: true,
+    },
+    donationNetworks: {
+        table: 'donation_networks',
+        primaryKey: 'key',
+        columns: ['key', 'name', 'native_currency_code', 'chain_id', 'explorer_url', 'icon_url', 'icon_symbol', 'status', 'sort_order', 'created_at', 'updated_at'],
+        searchable: ['key', 'name', 'native_currency_code', 'chain_id'],
+        filters: ['key', 'native_currency_code', 'status'],
+        editable: true,
+        mutableFields: ['key', 'name', 'native_currency_code', 'chain_id', 'explorer_url', 'icon_url', 'icon_symbol', 'status', 'sort_order', 'metadata'],
+        requiredFields: ['key', 'name', 'status'],
+        statusField: 'status',
+        statusValues: ['active', 'inactive'],
+        orderBy: 'sort_order',
+        orderDirection: 'ASC',
+        optional: true,
+    },
+    donationCurrencyNetworks: {
+        table: 'donation_currency_networks',
+        fromSql: `(
+            SELECT
+                donation_currency_networks.id,
+                donation_currency_networks.currency_code,
+                donation_currencies.name AS currency_name,
+                donation_currency_networks.network_key,
+                donation_networks.name AS network_name,
+                donation_currency_networks.token_standard,
+                donation_currency_networks.contract_address,
+                donation_currency_networks.min_confirmations,
+                donation_currency_networks.memo_required,
+                donation_currency_networks.deposit_enabled,
+                donation_currency_networks.status,
+                donation_currency_networks.sort_order,
+                donation_currency_networks.created_at,
+                donation_currency_networks.updated_at
+            FROM donation_currency_networks
+            LEFT JOIN donation_currencies ON donation_currencies.code = donation_currency_networks.currency_code
+            LEFT JOIN donation_networks ON donation_networks.key = donation_currency_networks.network_key
+        ) AS donation_currency_networks_view`,
+        columns: ['id', 'currency_code', 'currency_name', 'network_key', 'network_name', 'token_standard', 'contract_address', 'min_confirmations', 'memo_required', 'deposit_enabled', 'status', 'sort_order', 'created_at', 'updated_at'],
+        searchable: ['currency_code', 'network_key', 'token_standard', 'contract_address'],
+        filters: ['currency_code', 'network_key', 'status', 'deposit_enabled'],
+        editable: true,
+        mutableFields: ['currency_code', 'network_key', 'token_standard', 'contract_address', 'min_confirmations', 'memo_required', 'deposit_enabled', 'status', 'sort_order', 'metadata'],
+        requiredFields: ['currency_code', 'network_key', 'status'],
+        statusField: 'status',
+        statusValues: ['active', 'inactive'],
+        orderBy: 'sort_order',
+        orderDirection: 'ASC',
+        optional: true,
     },
     donationVerificationEvents: {
         table: 'donation_verification_events',
@@ -151,18 +235,26 @@ const RESOURCE_CONFIGS = {
     },
     sessions: {
         table: 'user_sessions',
-        columns: ['id', 'user_id', 'session_key', 'socket_id', 'ip_address', 'status', 'started_at', 'last_seen_at', 'ended_at'],
+        columns: ['id', 'user_id', 'session_key', 'socket_id', 'ip_address', 'user_agent', 'status', 'started_at', 'last_seen_at', 'ended_at'],
         searchable: ['session_key', 'socket_id', 'user_agent', 'status'],
         filters: ['user_id', 'status'],
+        dateRanges: [
+            { column: 'started_at', from: 'started_from', to: 'started_to' },
+            { column: 'last_seen_at', from: 'last_seen_from', to: 'last_seen_to' },
+        ],
         orderBy: 'last_seen_at',
         orderDirection: 'DESC',
         optional: true,
     },
     visits: {
         table: 'site_visit_events',
-        columns: ['id', 'user_id', 'session_key', 'ip_address', 'path', 'referrer', 'source', 'device_type', 'occurred_at'],
+        columns: ['id', 'user_id', 'session_key', 'ip_address', 'user_agent', 'path', 'referrer', 'source', 'device_type', 'occurred_at'],
         searchable: ['session_key', 'path', 'referrer', 'source', 'device_type'],
         filters: ['user_id', 'path', 'source', 'device_type'],
+        fuzzyFilters: ['path', 'source'],
+        dateRanges: [
+            { column: 'occurred_at', from: 'occurred_from', to: 'occurred_to' },
+        ],
         orderBy: 'occurred_at',
         orderDirection: 'DESC',
         optional: true,
@@ -185,6 +277,119 @@ const RESOURCE_CONFIGS = {
         orderDirection: 'DESC',
         optional: true,
     },
+}
+
+export const createAdminResourceRepo = async (resourceKey, payload = {}) => {
+    const config = getMutableResourceConfig(resourceKey)
+    const primaryKey = config.primaryKey || 'id'
+    const valuesByField = await normalizeMutablePayload(config, payload, { isCreate: true })
+    const fields = config.mutableFields.filter((field) => valuesByField[field] !== undefined)
+
+    if (fields.length === 0) {
+        throw new Error('No fields to create')
+    }
+
+    const values = fields.map((field) => valuesByField[field])
+    const columnsSql = fields.join(', ')
+    const placeholdersSql = fields.map((_, index) => `$${index + 1}`).join(', ')
+
+    const { rows } = await pool.query(
+        `
+        INSERT INTO ${config.table} (${columnsSql})
+        VALUES (${placeholdersSql})
+        RETURNING ${primaryKey}
+        `,
+        values
+    )
+
+    return rows[0]?.[primaryKey] ? await getAdminResourceItemRepo(resourceKey, rows[0][primaryKey]) : null
+}
+
+export const updateAdminResourceRepo = async (resourceKey, id, payload = {}) => {
+    const config = getMutableResourceConfig(resourceKey)
+    const primaryKey = config.primaryKey || 'id'
+    const valuesByField = await normalizeMutablePayload(config, payload, { id, isCreate: false })
+    const fields = config.mutableFields
+        .filter((field) => field !== primaryKey)
+        .filter((field) => valuesByField[field] !== undefined)
+
+    if (fields.length === 0) {
+        return await getAdminResourceItemRepo(resourceKey, id)
+    }
+
+    const values = fields.map((field) => valuesByField[field])
+    const setSql = fields.map((field, index) => `${field} = $${index + 1}`).join(', ')
+
+    values.push(id)
+
+    const { rows } = await pool.query(
+        `
+        UPDATE ${config.table}
+        SET ${setSql}, updated_at = NOW()
+        WHERE ${primaryKey} = $${values.length}
+        RETURNING ${primaryKey}
+        `,
+        values
+    )
+
+    return rows[0]?.[primaryKey] ? await getAdminResourceItemRepo(resourceKey, rows[0][primaryKey]) : null
+}
+
+export const updateAdminResourceStatusRepo = async (resourceKey, id, status) => {
+    const config = getMutableResourceConfig(resourceKey)
+    const primaryKey = config.primaryKey || 'id'
+    const statusField = config.statusField
+
+    if (!statusField || !config.statusValues?.includes(status)) {
+        throw new Error('Invalid status')
+    }
+
+    const { rows } = await pool.query(
+        `
+        UPDATE ${config.table}
+        SET ${statusField} = $1, updated_at = NOW()
+        WHERE ${primaryKey} = $2
+        RETURNING ${primaryKey}
+        `,
+        [status, id]
+    )
+
+    return rows[0]?.[primaryKey] ? await getAdminResourceItemRepo(resourceKey, rows[0][primaryKey]) : null
+}
+
+export const deleteAdminResourceRepo = async (resourceKey, id) => {
+    const config = getMutableResourceConfig(resourceKey)
+    const primaryKey = config.primaryKey || 'id'
+
+    const { rows } = await pool.query(
+        `
+        DELETE FROM ${config.table}
+        WHERE ${primaryKey} = $1
+        RETURNING ${primaryKey}
+        `,
+        [id]
+    )
+
+    return rows[0] || null
+}
+
+export const getAdminResourceItemRepo = async (resourceKey, id) => {
+    const config = getMutableResourceConfig(resourceKey)
+    const primaryKey = config.primaryKey || 'id'
+    const columnsSql = (config.selectColumns || config.columns).join(', ')
+    const fromSql = config.fromSql || config.table
+
+    const { rows } = await pool.query(
+        `
+        SELECT ${columnsSql}
+        FROM ${fromSql}
+        WHERE ${primaryKey} = $1
+        LIMIT 1
+        `,
+        [id]
+    )
+
+    return rows[0] || null
 }
 
 export const getAdminUserRepo = async (userId) => {
@@ -310,17 +515,22 @@ export const getAdminResourceRepo = async (resourceKey, params = {}, forcedFilte
         }
     })
 
-    if (config.dateRangeColumn) {
-        if (params.created_from) {
-            values.push(params.created_from)
-            where.push(`${config.dateRangeColumn} >= $${values.length}`)
+    const dateRanges = [
+        ...(config.dateRangeColumn ? [{ column: config.dateRangeColumn, from: 'created_from', to: 'created_to' }] : []),
+        ...(config.dateRanges || []),
+    ]
+
+    dateRanges.forEach((dateRange) => {
+        if (params[dateRange.from]) {
+            values.push(params[dateRange.from])
+            where.push(`${dateRange.column} >= $${values.length}`)
         }
 
-        if (params.created_to) {
-            values.push(params.created_to)
-            where.push(`${config.dateRangeColumn} <= $${values.length}`)
+        if (params[dateRange.to]) {
+            values.push(params[dateRange.to])
+            where.push(`${dateRange.column} <= $${values.length}`)
         }
-    }
+    })
 
     if (params.search && config.searchable.length > 0) {
         values.push(`%${String(params.search).trim()}%`)
@@ -329,12 +539,13 @@ export const getAdminResourceRepo = async (resourceKey, params = {}, forcedFilte
     }
 
     const whereSql = where.length > 0 ? `WHERE ${where.join(' AND ')}` : ''
-    const columnsSql = config.columns.join(', ')
+    const columnsSql = (config.selectColumns || config.columns).join(', ')
+    const fromSql = config.fromSql || config.table
     const orderSql = `${config.orderBy} ${config.orderDirection}`
 
     const dataQuery = `
         SELECT ${columnsSql}
-        FROM ${config.table}
+        FROM ${fromSql}
         ${whereSql}
         ORDER BY ${orderSql}
         LIMIT $${values.length + 1}
@@ -342,7 +553,7 @@ export const getAdminResourceRepo = async (resourceKey, params = {}, forcedFilte
     `
     const countQuery = `
         SELECT COUNT(*)::int AS total
-        FROM ${config.table}
+        FROM ${fromSql}
         ${whereSql}
     `
 
@@ -364,7 +575,7 @@ export const getAdminResourceRepo = async (resourceKey, params = {}, forcedFilte
     }
 }
 
-export const getAdminUserDetailsRepo = async (userId) => {
+export const getAdminUserDetailsRepo = async (userId, params = {}) => {
     const { rows } = await pool.query(
         `
         SELECT
@@ -403,7 +614,30 @@ export const getAdminUserDetailsRepo = async (userId) => {
         return null
     }
 
-    const [summaryResult, matchesResult, ratingHistoryResult, authLogsResult, accountsResult] = await Promise.all([
+    const authPage = normalizePositiveInteger(params.auth_page, 1)
+    const authLimit = Math.min(normalizePositiveInteger(params.auth_limit, 10), 50)
+    const authOffset = (authPage - 1) * authLimit
+    const authValues = [userId]
+    const authWhere = ['user_id = $1']
+
+    if (params.auth_event_type) {
+        authValues.push(params.auth_event_type)
+        authWhere.push(`event_type = $${authValues.length}`)
+    }
+
+    if (params.auth_created_from) {
+        authValues.push(params.auth_created_from)
+        authWhere.push(`created_at >= $${authValues.length}`)
+    }
+
+    if (params.auth_created_to) {
+        authValues.push(params.auth_created_to)
+        authWhere.push(`created_at <= $${authValues.length}`)
+    }
+
+    const authWhereSql = authWhere.join(' AND ')
+
+    const [summaryResult, matchesResult, ratingHistoryResult, authLogsResult, authLogsCountResult, authEventTypesResult, accountsResult] = await Promise.all([
         pool.query(
             `
             SELECT
@@ -482,9 +716,27 @@ export const getAdminUserDetailsRepo = async (userId) => {
             `
             SELECT id, event_type, ip_address, user_agent, created_at
             FROM auth_logs
-            WHERE user_id = $1
+            WHERE ${authWhereSql}
             ORDER BY created_at DESC
-            LIMIT 20
+            LIMIT $${authValues.length + 1}
+            OFFSET $${authValues.length + 2}
+            `,
+            [...authValues, authLimit, authOffset]
+        ),
+        pool.query(
+            `
+            SELECT COUNT(*)::int AS total
+            FROM auth_logs
+            WHERE ${authWhereSql}
+            `,
+            authValues
+        ),
+        pool.query(
+            `
+            SELECT DISTINCT event_type
+            FROM auth_logs
+            WHERE user_id = $1
+            ORDER BY event_type ASC
             `,
             [userId]
         ),
@@ -556,6 +808,12 @@ export const getAdminUserDetailsRepo = async (userId) => {
         })),
         ratingHistory: ratingHistoryResult.rows,
         authLogs: authLogsResult.rows,
+        authLogsPagination: {
+            page: authPage,
+            limit: authLimit,
+            total: authLogsCountResult.rows[0]?.total || 0,
+        },
+        authEventTypes: authEventTypesResult.rows.map((row) => row.event_type).filter(Boolean),
         accounts: accountsResult.rows,
     }
 }
@@ -990,6 +1248,111 @@ function normalizePositiveInteger(value, fallback) {
     }
 
     return parsed
+}
+
+function getMutableResourceConfig(resourceKey) {
+    const config = RESOURCE_CONFIGS[resourceKey]
+
+    if (!config || !config.editable) {
+        throw new Error('Resource is not editable')
+    }
+
+    return config
+}
+
+async function normalizeMutablePayload(config, payload = {}, { isCreate = false } = {}) {
+    const normalized = {}
+
+    for (const field of config.mutableFields) {
+        if (!Object.prototype.hasOwnProperty.call(payload, field)) {
+            continue
+        }
+
+        normalized[field] = normalizeMutableValue(field, payload[field])
+    }
+
+    if (config.table === 'donation_wallets') {
+        await hydrateDonationWalletPayload(normalized)
+    }
+
+    if (config.statusField && normalized[config.statusField] !== undefined && !config.statusValues.includes(normalized[config.statusField])) {
+        throw new Error(`Invalid ${config.statusField}`)
+    }
+
+    if (isCreate) {
+        for (const field of config.requiredFields || []) {
+            if (normalized[field] === undefined || normalized[field] === null || normalized[field] === '') {
+                throw new Error(`Field ${field} is required`)
+            }
+        }
+    }
+
+    return normalized
+}
+
+function normalizeMutableValue(field, value) {
+    if (field === 'metadata') {
+        if (!value) return '{}'
+        if (typeof value === 'string') {
+            JSON.parse(value)
+            return value
+        }
+
+        return JSON.stringify(value)
+    }
+
+    if (['sort_order', 'decimals', 'min_confirmations', 'currency_network_id'].includes(field)) {
+        if (value === '' || value === null || value === undefined) {
+            return null
+        }
+
+        return Number.parseInt(value, 10)
+    }
+
+    if (['memo_required', 'deposit_enabled'].includes(field)) {
+        return value === true || value === 'true' || value === '1' || value === 1
+    }
+
+    if (value === '') {
+        return null
+    }
+
+    if (typeof value === 'string') {
+        return value.trim()
+    }
+
+    return value
+}
+
+async function hydrateDonationWalletPayload(payload) {
+    if (!payload.currency_network_id) {
+        return
+    }
+
+    const { rows } = await pool.query(
+        `
+        SELECT
+            donation_currency_networks.id,
+            donation_currency_networks.currency_code,
+            donation_currency_networks.network_key,
+            donation_networks.name AS network_name
+        FROM donation_currency_networks
+        JOIN donation_networks ON donation_networks.key = donation_currency_networks.network_key
+        WHERE donation_currency_networks.id = $1
+        LIMIT 1
+        `,
+        [payload.currency_network_id]
+    )
+
+    const pair = rows[0]
+
+    if (!pair) {
+        throw new Error('Currency-network pair not found')
+    }
+
+    payload.currency_code = pair.currency_code
+    payload.network_key = pair.network_key
+    payload.network_name = pair.network_name
 }
 
 function normalizeRange({ period, from, to }) {

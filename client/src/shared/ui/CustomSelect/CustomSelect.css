@@ -133,6 +133,27 @@
     }
 }
 
+.custom-select__icon-text {
+    min-width: 1.35rem;
+    height: 1.35rem;
+    display: inline-grid;
+    place-items: center;
+    border: 1px solid rgba(0, 255, 255, 0.22);
+    border-radius: 50%;
+    background: rgba(0, 255, 255, 0.08);
+    color: var(--turquoise);
+    font-size: 0.82rem;
+    line-height: 1;
+    text-shadow: var(--text-shadow);
+}
+
+.custom-select__icon-image {
+    width: 1.35rem;
+    height: 1.35rem;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
 .custom-select__option--active {
     border-color: rgba(0, 255, 255, 0.34);
     background: linear-gradient(135deg, rgba(0, 255, 255, 0.18), rgba(255, 0, 255, 0.1));

@@ -389,6 +389,30 @@
   color: #3730a3;
 }
 
+.admin-inline-status {
+  max-width: 140px;
+  height: 30px;
+  border: 1px solid #d7dee8;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #344054;
+  font: inherit;
+  font-size: 13px;
+}
+
+.admin-icon-symbol {
+  width: 34px;
+  aspect-ratio: 1;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid #d7dee8;
+  border-radius: 50%;
+  background: #f8fafc;
+  color: #101828;
+  font-size: 17px;
+  font-weight: 900;
+}
+
 .cell-bool {
   &.cell-bool--yes {
     background: #dcfce7;
@@ -448,6 +472,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.admin-device-cell {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .admin-table-input {

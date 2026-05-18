@@ -47,17 +47,30 @@ export const getActiveDonationWalletsRepo = async () => {
     const result = await pool.query(
         `
         SELECT
-            id,
-            currency_code,
-            network_key,
-            network_name,
-            address,
-            address_label,
-            memo_tag,
-            metadata
+            donation_wallets.id,
+            donation_wallets.currency_code,
+            donation_wallets.network_key,
+            donation_wallets.network_name,
+            donation_wallets.address,
+            donation_wallets.address_label,
+            donation_wallets.memo_tag,
+            donation_wallets.metadata,
+            donation_currencies.name AS currency_name,
+            donation_currencies.icon_url AS currency_icon_url,
+            donation_currencies.icon_symbol AS currency_icon_symbol,
+            donation_networks.icon_url AS network_icon_url,
+            donation_networks.icon_symbol AS network_icon_symbol,
+            donation_currency_networks.memo_required
         FROM donation_wallets
-        WHERE status = 'active'
-        ORDER BY sort_order ASC, currency_code ASC, network_name ASC, id ASC
+        LEFT JOIN donation_currency_networks ON donation_currency_networks.id = donation_wallets.currency_network_id
+        LEFT JOIN donation_currencies ON donation_currencies.code = donation_wallets.currency_code
+        LEFT JOIN donation_networks ON donation_networks.key = donation_wallets.network_key
+        WHERE donation_wallets.status = 'active'
+            AND COALESCE(donation_currencies.status, 'active') = 'active'
+            AND COALESCE(donation_networks.status, 'active') = 'active'
+            AND COALESCE(donation_currency_networks.status, 'active') = 'active'
+            AND COALESCE(donation_currency_networks.deposit_enabled, TRUE) = TRUE
+        ORDER BY donation_wallets.sort_order ASC, donation_wallets.currency_code ASC, donation_wallets.network_name ASC, donation_wallets.id ASC
         `
     )
 
@@ -67,9 +80,17 @@ export const getActiveDonationWalletsRepo = async () => {
 export const getDonationWalletByIdRepo = async (id) => {
     const result = await pool.query(
         `
-        SELECT id, currency_code, network_key, network_name, address, address_label, memo_tag
+        SELECT donation_wallets.id, donation_wallets.currency_code, donation_wallets.network_key, donation_wallets.network_name, donation_wallets.address, donation_wallets.address_label, donation_wallets.memo_tag
         FROM donation_wallets
-        WHERE id = $1 AND status = 'active'
+        LEFT JOIN donation_currency_networks ON donation_currency_networks.id = donation_wallets.currency_network_id
+        LEFT JOIN donation_currencies ON donation_currencies.code = donation_wallets.currency_code
+        LEFT JOIN donation_networks ON donation_networks.key = donation_wallets.network_key
+        WHERE donation_wallets.id = $1
+            AND donation_wallets.status = 'active'
+            AND COALESCE(donation_currencies.status, 'active') = 'active'
+            AND COALESCE(donation_networks.status, 'active') = 'active'
+            AND COALESCE(donation_currency_networks.status, 'active') = 'active'
+            AND COALESCE(donation_currency_networks.deposit_enabled, TRUE) = TRUE
         `,
         [id]
     )

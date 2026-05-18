@@ -92,6 +92,8 @@ const CustomSelect = ({
             >
                 <span>
                     {selectedOption?.icon && <i className={selectedOption.icon}></i>}
+                    {selectedOption?.iconImage && <img className="custom-select__icon-image" src={selectedOption.iconImage} alt="" />}
+                    {selectedOption?.iconText && !selectedOption?.iconImage && <b className="custom-select__icon-text">{selectedOption.iconText}</b>}
                     {selectedOption?.label || placeholder}
                 </span>
                 <i className="fas fa-chevron-down custom-select__chevron"></i>
@@ -111,6 +113,8 @@ const CustomSelect = ({
                         >
                             <span>
                                 {option.icon && <i className={option.icon}></i>}
+                                {option.iconImage && <img className="custom-select__icon-image" src={option.iconImage} alt="" />}
+                                {option.iconText && !option.iconImage && <b className="custom-select__icon-text">{option.iconText}</b>}
                                 {option.label}
                             </span>
                             {option.description && <small>{option.description}</small>}

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
 import { supportAPI } from '@/shared/api/support'
+import { useAuth } from '@/shared/hooks/useAuth'
 import notify from '@/utils/Notifications'
 import './AboutPage.css'
 
@@ -33,16 +34,19 @@ const roadmapItems = [
 
 const AboutPage = () => {
     const location = useLocation()
+    const { isAuth, user } = useAuth()
     const [donationWallets, setDonationWallets] = useState([])
     const [selectedWalletId, setSelectedWalletId] = useState('')
+    const [isAnonymousDonation, setIsAnonymousDonation] = useState(false)
     const [isWalletsLoading, setIsWalletsLoading] = useState(true)
     const [isDonationSubmitting, setIsDonationSubmitting] = useState(false)
     const selectedWallet = donationWallets.find((wallet) => String(wallet.id) === String(selectedWalletId)) || donationWallets[0]
     const cryptoOptions = donationWallets.map((wallet) => ({
         value: String(wallet.id),
         label: wallet.addressLabel || `${wallet.currencyCode} в сети ${wallet.networkName}`,
-        description: `${wallet.currencyCode} | ${wallet.networkName}`,
-        icon: 'fas fa-coins',
+        description: `${wallet.currencyName || wallet.currencyCode} | ${wallet.networkName}`,
+        iconImage: wallet.currencyIconUrl || wallet.networkIconUrl,
+        iconText: wallet.currencyIconSymbol || wallet.networkIconSymbol || wallet.currencyCode?.slice(0, 2),
     }))
 
     useEffect(() => {
@@ -101,9 +105,9 @@ const AboutPage = () => {
         try {
             await supportAPI.createDonation({
                 walletId: selectedWallet.id,
+                isAnonymous: !isAuth || isAnonymousDonation,
                 expectedAmount: formData.get('expectedAmount'),
-                donorName: formData.get('donorName'),
-                donorContact: formData.get('donorContact'),
+                donorName: formData.get('donorName') || (isAuth && !isAnonymousDonation ? user?.username : ''),
                 note: formData.get('note'),
             })
 
@@ -239,20 +243,34 @@ const AboutPage = () => {
                                     <input name="expectedAmount" type="number" min="0.000000000000000001" step="any" placeholder="Например, 5" required />
                                 </label>
 
-                                <label className="about-field">
-                                    <span>Имя или ник</span>
-                                    <input name="donorName" type="text" maxLength="120" placeholder="NeonStack" />
-                                </label>
+                                {isAuth ? (
+                                    <label className="about-field about-field--check">
+                                        <input
+                                            checked={isAnonymousDonation}
+                                            type="checkbox"
+                                            onChange={(event) => setIsAnonymousDonation(event.target.checked)}
+                                        />
+                                        <span>Анонимная поддержка</span>
+                                    </label>
+                                ) : null}
 
-                                <label className="about-field">
-                                    <span>Контакт</span>
-                                    <input name="donorContact" type="text" maxLength="255" placeholder="Email или Telegram" />
-                                </label>
+                                {(!isAuth || isAnonymousDonation) ? (
+                                    <label className="about-field">
+                                        <span>Псевдоним</span>
+                                        <input name="donorName" type="text" maxLength="120" placeholder="NeonStack" required />
+                                    </label>
+                                ) : (
+                                    <label className="about-field">
+                                        <span>От кого</span>
+                                        <input type="text" value={user?.username || 'Ваш аккаунт'} readOnly />
+                                    </label>
+                                )}
 
                                 <label className="about-field about-field--wide">
                                     <span>Кошелек</span>
                                     <input type="text" value={selectedWallet?.address || ''} readOnly />
                                     {selectedWallet?.memoTag && <small>Memo/tag: {selectedWallet.memoTag}</small>}
+                                    {selectedWallet?.memoRequired && !selectedWallet?.memoTag && <small>Для этой сети нужен memo/tag. Укажите его в админке кошелька.</small>}
                                 </label>
 
                                 <label className="about-field about-field--wide">
