@@ -27,6 +27,12 @@ import {
     sendVerificationEmail,
 } from "../services/emailService.js"
 import { getAuthCookieOptions, setAuthCookie } from "../utils/authCookie.js"
+import { verifyTurnstile, turnstileErrorResponse } from "../utils/turnstile.js"
+import {
+    clearLoginFailures,
+    recordLoginFailure,
+    requiresLoginTurnstile,
+} from "../utils/loginTurnstile.js"
 
 const getRequestMeta = (req) => ({
     ipAddress: req.ip || req.socket?.remoteAddress || null,
@@ -64,21 +70,40 @@ export const register = asyncHandler(async (req, res) => {
 })
 
 export const login = asyncHandler(async (req, res) => {
-    const { email, password } = req.body
+    const { email, password, turnstileToken } = req.body
     const requestMeta = getRequestMeta(req)
+    const needsTurnstile = requiresLoginTurnstile(email, req.ip)
 
-    const user = await loginUserService(email)
+    if (needsTurnstile) {
+        const isTurnstileValid = await verifyTurnstile(turnstileToken, req.ip)
 
-    if (!user) {
+        if (!isTurnstileValid) {
+            return turnstileErrorResponse(res)
+        }
+    }
+
+    const sendInvalidCredentials = async (userId = null) => {
+        const requiresTurnstile = recordLoginFailure(email, req.ip)
+
         await createAuthLogService({
-            userId: null,
+            userId,
             eventType: 'login_invalid_credentials',
             ...requestMeta,
         })
 
-        const error = new Error("Неверный Email или пароль")
-        error.statusCode = 401
-        throw error
+        return res.status(401).json({
+            success: false,
+            message: 'Неверный Email или пароль',
+            data: {
+                requiresTurnstile,
+            },
+        })
+    }
+
+    const user = await loginUserService(email)
+
+    if (!user) {
+        return sendInvalidCredentials()
     }
 
     if (!user.password_hash) {
@@ -88,7 +113,7 @@ export const login = asyncHandler(async (req, res) => {
             ...requestMeta,
         })
 
-        const error = new Error("Этот аккаунт создан через внешний вход. Войдите через Google/GitHub/Discord/Steam/Yandex/VK или установите пароль.")
+        const error = new Error('Этот аккаунт создан через внешний вход. Войдите через Google/GitHub/Discord/Steam/Yandex/VK или установите пароль.')
         error.statusCode = 403
         throw error
     }
@@ -96,15 +121,7 @@ export const login = asyncHandler(async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password_hash)
 
     if (!isMatch) {
-        await createAuthLogService({
-            userId: user.id,
-            eventType: 'login_invalid_credentials',
-            ...requestMeta,
-        })
-
-        const error = new Error("Неверный Email или пароль")
-        error.statusCode = 401
-        throw error
+        return sendInvalidCredentials(user.id)
     }
 
     if (user.status !== 'active') {
@@ -134,6 +151,7 @@ export const login = asyncHandler(async (req, res) => {
     }
 
     await loginConfirmationService(user.id)
+    clearLoginFailures(email, req.ip)
     await createAuthLogService({
         userId: user.id,
         eventType: 'login_success',
@@ -144,7 +162,7 @@ export const login = asyncHandler(async (req, res) => {
 
     res.json({
         success: true,
-        message: "Вы успешно вошли в аккаунт",
+        message: 'Вы успешно вошли в аккаунт',
         data: {
             id: user.id,
             username: user.username,
@@ -153,7 +171,6 @@ export const login = asyncHandler(async (req, res) => {
         }
     })
 })
-
 export const getMe = asyncHandler(async (req, res) => {
     if (!req.user) {
         return res.json({
@@ -402,3 +419,4 @@ export const resendVerificationEmail = asyncHandler(async (req, res) => {
         data: meta,
     })
 })
+

@@ -22,6 +22,7 @@ import {
     startOAuthLogin,
 } from '../controllers/oauthController.js'
 import { validate } from '../middleware/validateAuth.js'
+import { requireTurnstile } from '../middleware/requireTurnstile.js'
 import {
     changeUnverifiedEmailSchema,
     loginSchema,
@@ -36,7 +37,7 @@ import {
 
 const authRouter = express.Router()
 
-authRouter.post('/register', checkNotAuth, validate(registerSchema), register)
+authRouter.post('/register', checkNotAuth, requireTurnstile, validate(registerSchema), register)
 
 authRouter.post('/login', checkNotAuth, validate(loginSchema), login)
 

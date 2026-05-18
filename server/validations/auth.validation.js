@@ -16,7 +16,8 @@ export const registerSchema = z.object({
         .regex(/[a-z]/, "Нужна строчная буква")
         .regex(/[0-9]/, "Нужна цифра"),
     
-    confirmPassword: z.string()
+    confirmPassword: z.string(),
+    turnstileToken: z.string().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
     message: "Пароли не совпадают",
     path: ["confirmPassword"],
@@ -24,14 +25,14 @@ export const registerSchema = z.object({
 
 export const setPasswordSchema = z.object({
     newPassword: z.string()
-        .min(8, "РџР°СЂРѕР»СЊ РјРёРЅРёРјСѓРј 8 СЃРёРјРІРѕР»РѕРІ")
-        .max(16, "РџР°СЂРѕР»СЊ РјР°РєСЃРёРјСѓРј 16 СЃРёРјРІРѕР»РѕРІ")
-        .regex(/[A-Z]/, "РќСѓР¶РЅР° Р·Р°РіР»Р°РІРЅР°СЏ Р±СѓРєРІР°")
-        .regex(/[a-z]/, "РќСѓР¶РЅР° СЃС‚СЂРѕС‡РЅР°СЏ Р±СѓРєРІР°")
-        .regex(/[0-9]/, "РќСѓР¶РЅР° С†РёС„СЂР°"),
+        .min(8, "Пароль минимум 8 символов")
+        .max(16, "Пароль максимум 16 символов")
+        .regex(/[A-Z]/, "Нужна заглавная буква")
+        .regex(/[a-z]/, "Нужна строчная буква")
+        .regex(/[0-9]/, "Нужна цифра"),
     confirmPassword: z.string(),
 }).refine((data) => data.newPassword === data.confirmPassword, {
-    message: "РџР°СЂРѕР»Рё РЅРµ СЃРѕРІРїР°РґР°СЋС‚",
+    message: "Пароли не совпадают",
     path: ["confirmPassword"],
 })
 
@@ -41,7 +42,7 @@ export const loginSchema = z.object({
 
     password: z.string()
         .min(1, "Введите пароль"),
-})
+}).passthrough()
 
 export const verifyEmailSchema = z.object({
     code: z.string()

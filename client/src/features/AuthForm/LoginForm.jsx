@@ -4,8 +4,9 @@ import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/shared/hooks/useAuth"
 import { authenticationAPI } from "@/shared/api/auth"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import notify from "@/utils/Notifications"
+import TurnstileWidget from "@/shared/ui/TurnstileWidget"
 
 const LoginForm = () => {
     const navigate = useNavigate()
@@ -15,6 +16,9 @@ const LoginForm = () => {
     const [isResetModalOpen, setIsResetModalOpen] = useState(false)
     const [resetEmail, setResetEmail] = useState('')
     const [isResetPending, setIsResetPending] = useState(false)
+    const [requiresTurnstile, setRequiresTurnstile] = useState(false)
+    const [turnstileToken, setTurnstileToken] = useState('')
+    const [turnstileResetSignal, setTurnstileResetSignal] = useState(0)
 
     const {
         register,
@@ -24,12 +28,29 @@ const LoginForm = () => {
         mode: "onChange",
     })
 
+    const handleTurnstileTokenChange = useCallback((token) => {
+        setTurnstileToken(token)
+    }, [])
+
+    const resetTurnstile = () => {
+        setTurnstileToken('')
+        setTurnstileResetSignal((value) => value + 1)
+    }
+
     const onSubmit = async (data) => {
+        if (requiresTurnstile && !turnstileToken) {
+            notify('Проверка безопасности не пройдена', 'error')
+            return
+        }
+
         setIsPending(true)
         setServerError(null)
 
         try {
-            const result = await login(data)
+            const result = await login({
+                ...data,
+                ...(requiresTurnstile ? { turnstileToken } : {}),
+            })
             if (result.success) {
                 notify(result.message || 'Вы успешно вошли')
                 navigate('/profile', { replace: true })
@@ -46,6 +67,8 @@ const LoginForm = () => {
 
             setServerError(error.message || 'Не удалось войти')
             notify(error.message || 'Не удалось войти', 'error')
+            setRequiresTurnstile((current) => current || responseData?.requiresTurnstile === true)
+            resetTurnstile()
         } finally {
             setIsPending(false)
         }
@@ -87,7 +110,11 @@ const LoginForm = () => {
 
                 {serverError && <div className="error-msg">{serverError}</div>}
 
-                <button type="submit" className="login-btn submit-btn" disabled={isPending}>
+                {requiresTurnstile && (
+                    <TurnstileWidget onTokenChange={handleTurnstileTokenChange} resetSignal={turnstileResetSignal} />
+                )}
+
+                <button type="submit" className="login-btn submit-btn" disabled={isPending || (requiresTurnstile && !turnstileToken)}>
                     {isPending ? 'ВХОДИМ...' : 'ВОЙТИ'}
                 </button>
 

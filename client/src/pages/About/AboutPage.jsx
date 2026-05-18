@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
+import TurnstileWidget from '@/shared/ui/TurnstileWidget'
 import { supportAPI } from '@/shared/api/support'
 import { useAuth } from '@/shared/hooks/useAuth'
 import notify from '@/utils/Notifications'
@@ -42,6 +43,8 @@ const AboutPage = () => {
     const [isQrOpen, setIsQrOpen] = useState(false)
     const [isWalletsLoading, setIsWalletsLoading] = useState(true)
     const [isDonationSubmitting, setIsDonationSubmitting] = useState(false)
+    const [turnstileToken, setTurnstileToken] = useState('')
+    const [turnstileResetSignal, setTurnstileResetSignal] = useState(0)
     const selectedWallet = donationWallets.find((wallet) => String(wallet.id) === String(selectedWalletId)) || donationWallets[0]
     const cryptoOptions = donationWallets.map((wallet) => ({
         value: String(wallet.id),
@@ -92,11 +95,25 @@ const AboutPage = () => {
         }
     }, [])
 
+    const handleTurnstileTokenChange = useCallback((token) => {
+        setTurnstileToken(token)
+    }, [])
+
+    const resetTurnstile = () => {
+        setTurnstileToken('')
+        setTurnstileResetSignal((value) => value + 1)
+    }
+
     const handleDonateSubmit = async (event) => {
         event.preventDefault()
 
         if (!selectedWallet) {
             notify('Сейчас нет активного кошелька для доната', 'error')
+            return
+        }
+
+        if (!turnstileToken) {
+            notify('Проверка безопасности не пройдена', 'error')
             return
         }
 
@@ -112,12 +129,14 @@ const AboutPage = () => {
                 expectedAmount: formData.get('expectedAmount'),
                 donorName: formData.get('donorName') || (isAuth && !isAnonymousDonation ? user?.username : ''),
                 note: formData.get('note'),
+                turnstileToken,
             })
 
             form.reset()
             notify('Донат создан. Спасибо за поддержку!', 'success')
         } catch (error) {
             notify(error.message || 'Не удалось создать донат', 'error')
+            resetTurnstile()
         } finally {
             setIsDonationSubmitting(false)
         }
@@ -326,7 +345,9 @@ const AboutPage = () => {
                                     <textarea name="note" rows="3" placeholder="Можно оставить пару слов автору"></textarea>
                                 </label>
 
-                                <button type="submit" className="button about-primary-button" disabled={isDonationSubmitting || !selectedWallet}>
+                                <TurnstileWidget onTokenChange={handleTurnstileTokenChange} resetSignal={turnstileResetSignal} />
+
+                                <button type="submit" className="button about-primary-button" disabled={isDonationSubmitting || !selectedWallet || !turnstileToken}>
                                     <i className="fas fa-wallet"></i>
                                     {isDonationSubmitting ? 'Сохраняем...' : 'Создать донат'}
                                 </button>

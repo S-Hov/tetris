@@ -1,0 +1,19 @@
+.turnstile-widget {
+    width: 100%;
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.turnstile-widget__error {
+    width: 100%;
+    color: #ffd8d8;
+    background: rgba(219, 56, 56, 0.18);
+    border: 1px solid rgba(219, 56, 56, 0.45);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    text-align: center;
+}

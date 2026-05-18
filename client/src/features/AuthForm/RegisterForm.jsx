@@ -1,9 +1,11 @@
 import { useForm, useWatch } from "react-hook-form"
+import { useCallback, useState } from "react"
 import AuthInput from "@/shared/ui/Auth/AuthInput"
 import { registerInputs } from "./AuthForm.data"
 import { useRegister } from "@/shared/hooks/useAuth"
 import { useNavigate } from "react-router-dom"
 import notify from "@/utils/Notifications"
+import TurnstileWidget from "@/shared/ui/TurnstileWidget"
 
 const RegisterForm = () => {
     const navigate = useNavigate()
@@ -17,19 +19,41 @@ const RegisterForm = () => {
     })
 
     const { mutate, isPending, error: serverError } = useRegister()
+    const [turnstileToken, setTurnstileToken] = useState('')
+    const [turnstileResetSignal, setTurnstileResetSignal] = useState(0)
+
+    const handleTurnstileTokenChange = useCallback((token) => {
+        setTurnstileToken(token)
+    }, [])
+
+    const resetTurnstile = () => {
+        setTurnstileToken('')
+        setTurnstileResetSignal((value) => value + 1)
+    }
 
     const onSubmit = async (data) => {
-        const response = await mutate(data)
-        if(!response.success) {
-            notify(response.message, "error")
+        if (!turnstileToken) {
+            notify('Проверка безопасности не пройдена', 'error')
             return
         }
-        
-        const redirectTo = response.redirectTo || `/verify-email/${encodeURIComponent(data.email)}`
 
-        notify(response.message)
+        try {
+            const response = await mutate({ ...data, turnstileToken })
+            if(!response.success) {
+                notify(response.message, "error")
+                resetTurnstile()
+                return
+            }
+            
+            const redirectTo = response.redirectTo || `/verify-email/${encodeURIComponent(data.email)}`
 
-        navigate(redirectTo)
+            notify(response.message)
+
+            navigate(redirectTo)
+        } catch (error) {
+            resetTurnstile()
+            notify(error.message || 'Проверка безопасности не пройдена', 'error')
+        }
     };
     
     const password = useWatch({ control, name: "password" })
@@ -70,7 +94,9 @@ const RegisterForm = () => {
             
             {serverError && <div className="error-msg">{serverError.message}</div>}
 
-            <button type="submit" className="register-btn submit-btn" disabled={isPending}>
+            <TurnstileWidget onTokenChange={handleTurnstileTokenChange} resetSignal={turnstileResetSignal} />
+
+            <button type="submit" className="register-btn submit-btn" disabled={isPending || !turnstileToken}>
                 {isPending ? "ЗАГРУЗКА..." : "СОЗДАТЬ АККАУНТ"}
             </button>
         </form>

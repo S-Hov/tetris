@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
+import TurnstileWidget from '@/shared/ui/TurnstileWidget'
 import { supportAPI } from '@/shared/api/support'
 import { useAuth } from '@/shared/hooks/useAuth'
 import notify from '@/utils/Notifications'
@@ -47,6 +48,8 @@ const SupportPage = () => {
     const [attachmentUrl, setAttachmentUrl] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [successState, setSuccessState] = useState(initialSuccessState)
+    const [turnstileToken, setTurnstileToken] = useState('')
+    const [turnstileResetSignal, setTurnstileResetSignal] = useState(0)
 
     const registeredName = useMemo(() => user?.username || '', [user?.username])
     const registeredEmail = useMemo(() => user?.email || '', [user?.email])
@@ -57,6 +60,15 @@ const SupportPage = () => {
             setEmail(registeredEmail)
         }
     }, [isAuth, registeredEmail, registeredName])
+
+    const handleTurnstileTokenChange = useCallback((token) => {
+        setTurnstileToken(token)
+    }, [])
+
+    const resetTurnstile = () => {
+        setTurnstileToken('')
+        setTurnstileResetSignal((value) => value + 1)
+    }
 
     const handleSupportSubmit = async (event) => {
         event.preventDefault()
@@ -80,6 +92,11 @@ const SupportPage = () => {
             return
         }
 
+        if (!turnstileToken) {
+            notify('Проверка безопасности не пройдена', 'error')
+            return
+        }
+
         setIsSubmitting(true)
         setSuccessState(initialSuccessState)
 
@@ -95,6 +112,7 @@ const SupportPage = () => {
                     language: navigator.language,
                     viewport: `${window.innerWidth}x${window.innerHeight}`,
                 },
+                turnstileToken,
             }
 
             if (preferredChannel === 'email') {
@@ -128,6 +146,7 @@ const SupportPage = () => {
             setCategory(feedbackTypes[0].value)
         } catch {
             notify('Не удалось отправить сообщение. Попробуйте ещё раз.', 'error')
+            resetTurnstile()
         } finally {
             setIsSubmitting(false)
         }
@@ -310,7 +329,9 @@ const SupportPage = () => {
                                         />
                                     </label>
 
-                                    <button type="submit" className="button support-primary-button" disabled={isSubmitting}>
+                                    <TurnstileWidget onTokenChange={handleTurnstileTokenChange} resetSignal={turnstileResetSignal} />
+
+                                    <button type="submit" className="button support-primary-button" disabled={isSubmitting || !turnstileToken}>
                                         <i className="fas fa-paper-plane"></i>
                                         {isSubmitting ? 'Отправляем...' : 'Отправить обращение'}
                                     </button>
