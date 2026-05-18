@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { QRCodeSVG } from 'qrcode.react'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
 import { supportAPI } from '@/shared/api/support'
@@ -38,6 +39,7 @@ const AboutPage = () => {
     const [donationWallets, setDonationWallets] = useState([])
     const [selectedWalletId, setSelectedWalletId] = useState('')
     const [isAnonymousDonation, setIsAnonymousDonation] = useState(false)
+    const [isQrOpen, setIsQrOpen] = useState(false)
     const [isWalletsLoading, setIsWalletsLoading] = useState(true)
     const [isDonationSubmitting, setIsDonationSubmitting] = useState(false)
     const selectedWallet = donationWallets.find((wallet) => String(wallet.id) === String(selectedWalletId)) || donationWallets[0]
@@ -98,7 +100,8 @@ const AboutPage = () => {
             return
         }
 
-        const formData = new FormData(event.currentTarget)
+        const form = event.currentTarget
+        const formData = new FormData(form)
 
         setIsDonationSubmitting(true)
 
@@ -111,12 +114,39 @@ const AboutPage = () => {
                 note: formData.get('note'),
             })
 
-            event.currentTarget.reset()
+            form.reset()
             notify('Донат создан. Спасибо за поддержку!', 'success')
         } catch (error) {
             notify(error.message || 'Не удалось создать донат', 'error')
         } finally {
             setIsDonationSubmitting(false)
+        }
+    }
+
+    const handleCopyAddress = async () => {
+        if (!selectedWallet?.address) {
+            notify('Адрес кошелька пока не выбран', 'error')
+            return
+        }
+
+        try {
+            if (navigator.clipboard?.writeText) {
+                await navigator.clipboard.writeText(selectedWallet.address)
+            } else {
+                const input = document.createElement('input')
+                input.value = selectedWallet.address
+                input.setAttribute('readonly', 'readonly')
+                input.style.position = 'fixed'
+                input.style.opacity = '0'
+                document.body.appendChild(input)
+                input.select()
+                document.execCommand('copy')
+                document.body.removeChild(input)
+            }
+
+            notify('Адрес скопирован', 'success')
+        } catch {
+            notify('Не удалось скопировать адрес', 'error')
         }
     }
 
@@ -268,7 +298,25 @@ const AboutPage = () => {
 
                                 <label className="about-field about-field--wide">
                                     <span>Кошелек</span>
-                                    <input type="text" value={selectedWallet?.address || ''} readOnly />
+                                    <div className="about-wallet-row">
+                                        <input type="text" value={selectedWallet?.address || ''} readOnly />
+                                        <button
+                                            aria-label="Скопировать адрес кошелька"
+                                            disabled={!selectedWallet?.address}
+                                            type="button"
+                                            onClick={handleCopyAddress}
+                                        >
+                                            <i className="fas fa-copy"></i>
+                                        </button>
+                                        <button
+                                            aria-label="Показать QR-код"
+                                            disabled={!selectedWallet?.address}
+                                            type="button"
+                                            onClick={() => setIsQrOpen(true)}
+                                        >
+                                            <i className="fas fa-qrcode"></i>
+                                        </button>
+                                    </div>
                                     {selectedWallet?.memoTag && <small>Memo/tag: {selectedWallet.memoTag}</small>}
                                     {selectedWallet?.memoRequired && !selectedWallet?.memoTag && <small>Для этой сети нужен memo/tag. Укажите его в админке кошелька.</small>}
                                 </label>
@@ -286,6 +334,40 @@ const AboutPage = () => {
                         </div>
                     </GlowEffect>
                 </section>
+
+                {isQrOpen && selectedWallet?.address ? (
+                    <div className="about-qr-modal" role="presentation" onMouseDown={() => setIsQrOpen(false)}>
+                        <section
+                            className="about-qr-modal__dialog"
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label="QR-код кошелька"
+                            onMouseDown={(event) => event.stopPropagation()}
+                        >
+                            <button
+                                className="about-qr-modal__close"
+                                aria-label="Закрыть QR-код"
+                                type="button"
+                                onClick={() => setIsQrOpen(false)}
+                            >
+                                <i className="fas fa-times"></i>
+                            </button>
+                            <div className="about-qr-modal__code">
+                                <QRCodeSVG
+                                    value={selectedWallet.address}
+                                    size={224}
+                                    bgColor="#ffffff"
+                                    fgColor="#07111f"
+                                    level="M"
+                                    includeMargin
+                                />
+                            </div>
+                            <strong>{selectedWallet.currencyCode} · {selectedWallet.networkName}</strong>
+                            <code>{selectedWallet.address}</code>
+                            {selectedWallet.memoTag && <small>Memo/tag: {selectedWallet.memoTag}</small>}
+                        </section>
+                    </div>
+                ) : null}
             </div>
         </section>
     )

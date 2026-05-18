@@ -340,6 +340,41 @@
     grid-column: 1 / -1;
 }
 
+.about-wallet-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 48px 48px;
+    gap: 0.55rem;
+
+    & input {
+        min-width: 0;
+    }
+
+    & button {
+        min-height: 48px;
+        display: inline-grid;
+        place-items: center;
+        border: var(--border);
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.28);
+        color: var(--turquoise);
+        font-size: 1rem;
+        cursor: pointer;
+        outline: none;
+        transition: var(--transition);
+    }
+
+    & button:hover,
+    & button:focus-visible {
+        border-color: rgba(0, 255, 255, 0.4);
+        box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.12);
+    }
+
+    & button:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+}
+
 .about-field--check {
     align-self: end;
     min-height: 48px;
@@ -367,6 +402,70 @@
 
 .about-donate-form .about-primary-button {
     grid-column: 1 / -1;
+}
+
+.about-qr-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgba(3, 8, 18, 0.72);
+    backdrop-filter: blur(10px);
+}
+
+.about-qr-modal__dialog {
+    position: relative;
+    width: min(360px, 100%);
+    display: grid;
+    justify-items: center;
+    gap: 0.85rem;
+    padding: 1.2rem;
+    border: var(--border);
+    border-radius: 26px;
+    background: rgba(7, 17, 31, 0.98);
+    box-shadow: var(--hover-shadow);
+    color: var(--text-active-color);
+    text-align: center;
+}
+
+.about-qr-modal__close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 36px;
+    aspect-ratio: 1;
+    display: inline-grid;
+    place-items: center;
+    border: var(--border);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.28);
+    color: var(--text-active-color);
+    cursor: pointer;
+}
+
+.about-qr-modal__code {
+    display: grid;
+    place-items: center;
+    padding: 0.65rem;
+    border-radius: 20px;
+    background: #ffffff;
+}
+
+.about-qr-modal__dialog code {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    padding: 0.55rem 0.65rem;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(204, 244, 255, 0.82);
+    font-size: 0.82rem;
+}
+
+.about-qr-modal__dialog small {
+    color: rgba(204, 244, 255, 0.72);
+    overflow-wrap: anywhere;
 }
 
 @media (max-width: 1080px) {

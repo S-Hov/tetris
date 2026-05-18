@@ -38,7 +38,8 @@ const SupportPage = () => {
     const handleSupportSubmit = async (event) => {
         event.preventDefault()
 
-        const formData = new FormData(event.currentTarget)
+        const form = event.currentTarget
+        const formData = new FormData(form)
         const contact = String(formData.get('contact') || '').trim()
         const message = String(formData.get('message') || '').trim()
 
@@ -58,7 +59,7 @@ const SupportPage = () => {
                 },
             })
 
-            event.currentTarget.reset()
+            form.reset()
             setCategory(feedbackTypes[0].value)
             notify('Обращение отправлено. Спасибо, что помогаете проекту!', 'success')
         } catch (error) {
