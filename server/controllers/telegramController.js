@@ -1,5 +1,6 @@
 import { asyncHandler } from '../utils/asyncHandler.js'
 import {
+    handleSupportClientTelegramMessage,
     linkSupportRequestTelegramChat,
     parseAdminTelegramUserIds,
 } from '../services/telegramSupportService.js'
@@ -39,15 +40,26 @@ export const handleTelegramWebhook = asyncHandler(async (req, res) => {
         })
     }
 
-    if (!message.reply_to_message?.text) {
-        return sendWebhookResponse(res, 'Telegram update ignored')
-    }
-
     const adminTelegramId = String(message.from?.id || '')
     const allowedAdminIds = parseAdminTelegramUserIds()
 
     if (!allowedAdminIds.has(adminTelegramId)) {
-        return sendWebhookResponse(res, 'Telegram admin is not allowed')
+        const clientMessageResult = await handleSupportClientTelegramMessage({
+            telegramUserId: message.from?.id,
+            telegramChatId: message.chat?.id,
+            telegramUsername: message.from?.username,
+            telegramMessageId: message.message_id,
+            messageText: message.text,
+        })
+
+        return sendWebhookResponse(res, clientMessageResult.message, {
+            processed: clientMessageResult.processed,
+            ticketId: clientMessageResult.ticketId || null,
+        })
+    }
+
+    if (!message.reply_to_message?.text) {
+        return sendWebhookResponse(res, 'Telegram update ignored')
     }
 
     const ticketId = extractTicketIdFromText(message.reply_to_message.text)

@@ -21,7 +21,11 @@ import {
 } from '../services/oauthService.js'
 import { asyncHandler } from "../utils/asyncHandler.js"
 import bcrypt from "bcrypt"
-import { sendTemporaryPasswordEmail, sendVerificationEmail } from "../services/emailService.js"
+import {
+    sendRegistrationVerificationEmail,
+    sendTemporaryPasswordEmail,
+    sendVerificationEmail,
+} from "../services/emailService.js"
 import { getAuthCookieOptions, setAuthCookie } from "../utils/authCookie.js"
 
 const getRequestMeta = (req) => ({
@@ -43,7 +47,7 @@ export const register = asyncHandler(async (req, res) => {
     })
 
     try {
-        await sendVerificationEmail(user.email, verificationCode)
+        await sendRegistrationVerificationEmail(user.email, verificationCode)
         console.log('письмо отправлено')
     } catch (error) {
         console.error('Email send error:', error)

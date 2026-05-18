@@ -3,6 +3,8 @@ import dns from 'node:dns'
 import net from 'node:net'
 import { promises as dnsPromises } from 'node:dns'
 import {
+    createRegistrationVerificationEmailTemplate,
+    createSupportRequestReceivedEmailTemplate,
     createSupportReplyEmailTemplate,
     createTemporaryPasswordEmailTemplate,
     createVerificationEmailTemplate,
@@ -122,11 +124,39 @@ export const sendVerificationEmail = async (to, code) => {
     })
 }
 
+export const sendRegistrationVerificationEmail = async (to, code) => {
+    await sendEmail({
+        to,
+        subject: 'Регистрация в PVP Tetris',
+        html: createRegistrationVerificationEmailTemplate(code),
+    })
+}
+
 export const sendTemporaryPasswordEmail = async (to, password) => {
     await sendEmail({
         to,
         subject: 'Новый пароль PVP Tetris',
         html: createTemporaryPasswordEmailTemplate(password),
+    })
+}
+
+export const sendSupportRequestReceivedEmail = async ({
+    to,
+    ticketId,
+    contactName,
+    preferredChannel,
+    title,
+}) => {
+    await sendEmail({
+        to,
+        subject: `Обращение #${ticketId} получено`,
+        html: createSupportRequestReceivedEmailTemplate({
+            ticketId,
+            contactName,
+            preferredChannel,
+            title,
+        }),
+        replyTo: defaultReplyTo,
     })
 }
 

@@ -43,6 +43,7 @@ npm run db:migrate
 | `011_donation_catalogs_schema.sql` | donation currency/network catalogs, currency-network pairs, wallet links, seeded common assets/networks |
 | `012_feedback_channels_and_support_blocks.sql` | feedback preferred channels, Telegram continuation tokens/URLs, support-only user blocks |
 | `013_support_request_telegram_link.sql` | Telegram user/chat link fields for support requests |
+| `014_support_request_messages.sql` | Message history for support requests across Telegram/email/admin replies |
 
 Миграции используют `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`
 и `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, поэтому baseline можно применить

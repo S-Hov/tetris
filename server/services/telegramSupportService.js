@@ -1,4 +1,7 @@
 import {
+    createSupportRequestMessageRepo,
+    getActiveSupportRequestByTelegramChatIdRepo,
+    getRecentSupportRequestMessagesRepo,
     getSupportRequestByTelegramTokenRepo,
     linkSupportRequestTelegramRepo,
 } from '../repositories/supportRepository.js'
@@ -6,6 +9,7 @@ import {
 const TELEGRAM_API_BASE_URL = 'https://api.telegram.org'
 const DEFAULT_ADMIN_URL = 'https://admin.pvp-tetris.online'
 const TELEGRAM_LINKED_MESSAGE = 'Спасибо! Ваше обращение отправлено в поддержку. Мы ответим вам здесь.'
+const NO_ACTIVE_TICKET_MESSAGE = 'У вас нет активного обращения. Пожалуйста, создайте новое обращение на сайте.'
 
 export const sendSupportRequestTelegramNotification = async ({
     request,
@@ -141,6 +145,120 @@ export const linkSupportRequestTelegramChat = async ({
     }
 }
 
+export const handleSupportClientTelegramMessage = async ({
+    telegramUserId,
+    telegramChatId,
+    telegramUsername,
+    telegramMessageId,
+    messageText,
+}) => {
+    const normalizedChatId = normalizeTelegramId(telegramChatId)
+    const normalizedUserId = normalizeTelegramId(telegramUserId)
+    const normalizedText = normalizeString(messageText)
+    const normalizedUsername = normalizeString(telegramUsername).replace(/^@/, '')
+
+    if (!normalizedChatId || !normalizedText) {
+        return {
+            processed: false,
+            message: 'Telegram client message ignored',
+        }
+    }
+
+    const supportRequest = await getActiveSupportRequestByTelegramChatIdRepo(normalizedChatId)
+
+    if (!supportRequest) {
+        await sendTelegramBotMessage({
+            chatId: normalizedChatId,
+            text: NO_ACTIVE_TICKET_MESSAGE,
+        })
+
+        return {
+            processed: false,
+            message: 'Active Telegram support request was not found',
+        }
+    }
+
+    const senderLabel = createClientLabel({
+        contactName: supportRequest.contact_name,
+        telegramUsername: normalizedUsername || supportRequest.telegram_username,
+        telegramUserId: normalizedUserId,
+    })
+
+    await createSupportRequestMessageRepo({
+        supportRequestId: supportRequest.id,
+        senderType: 'client',
+        senderLabel,
+        channel: 'telegram',
+        messageText: normalizedText,
+        telegramUserId: normalizedUserId,
+        telegramChatId: normalizedChatId,
+        telegramMessageId: normalizeTelegramId(telegramMessageId),
+    })
+
+    const recentMessages = await getRecentSupportRequestMessagesRepo(supportRequest.id, 5)
+
+    await sendSupportClientMessageTelegramNotification({
+        request: supportRequest,
+        senderLabel,
+        messageText: normalizedText,
+        recentMessages,
+    })
+
+    return {
+        processed: true,
+        message: 'Telegram client message processed',
+        ticketId: supportRequest.id,
+    }
+}
+
+export const sendSupportClientMessageTelegramNotification = async ({
+    request,
+    senderLabel,
+    messageText,
+    recentMessages = [],
+}) => {
+    const botToken = normalizeString(process.env.TELEGRAM_BOT_TOKEN)
+    const adminChatIds = Array.from(parseAdminTelegramUserIds())
+
+    if (!botToken || adminChatIds.length === 0) {
+        return
+    }
+
+    const adminUrl = createAdminTicketUrl(request.id)
+    const text = createClientMessageNotification({
+        request,
+        senderLabel,
+        messageText,
+        recentMessages,
+    })
+
+    const results = await Promise.allSettled(
+        adminChatIds.map((chatId) => sendTelegramBotMessage({
+            botToken,
+            chatId,
+            text,
+            parseMode: 'HTML',
+            disableWebPagePreview: true,
+            replyMarkup: {
+                inline_keyboard: [
+                    [
+                        { text: 'Открыть в админке', url: adminUrl },
+                    ],
+                ],
+            },
+        }))
+    )
+    const failedResults = results.filter((result) => result.status === 'rejected')
+
+    if (failedResults.length > 0) {
+        const errorText = failedResults
+            .map((result) => result.reason?.message || 'Unknown Telegram error')
+            .join('; ')
+
+        throw new Error(`Telegram client notification failed for ${failedResults.length} admin chat(s): ${errorText}`)
+    }
+}
+
 export const parseAdminTelegramUserIds = () => {
     const raw = process.env.ADMIN_TELEGRAM_CHAT_ID || ''
 
@@ -220,6 +338,59 @@ const createSupportMessage = ({
         '',
         '<i>Чтобы ответить, используйте Reply на это сообщение в Telegram.</i>',
     ].filter((line) => line !== null).join('\n')
+}
+
+const createClientMessageNotification = ({
+    request,
+    senderLabel,
+    messageText,
+    recentMessages,
+}) => {
+    const title = request.title ? `Тема: ${escapeHtml(request.title)}` : null
+    const contextLines = recentMessages.length > 0
+        ? recentMessages.map((message) => {
+            const author = message.sender_type === 'admin' ? 'Поддержка' : (message.sender_label || 'Клиент')
+            return `• <b>${escapeHtml(author)}:</b> ${escapeHtml(truncateText(message.message_text, 280))}`
+        })
+        : ['Пока нет сохраненной истории сообщений.']
+
+    return [
+        `<b>Новое сообщение по обращению #${escapeHtml(request.id)}</b>`,
+        `Клиент: ${escapeHtml(senderLabel || request.contact_name || 'Не указан')}`,
+        request.contact_email ? `Email: ${escapeHtml(request.contact_email)}` : null,
+        request.telegram_username ? `Telegram: @${escapeHtml(request.telegram_username)}` : null,
+        title,
+        '',
+        '<b>Новое сообщение:</b>',
+        escapeHtml(truncateText(messageText, 1000)),
+        '',
+        '<b>Последние сообщения:</b>',
+        ...contextLines,
+        '',
+        '<i>Ответьте Reply на это сообщение, в тексте есть номер обращения #ID.</i>',
+    ].filter((line) => line !== null).join('\n')
+}
+
+const createClientLabel = ({
+    contactName,
+    telegramUsername,
+    telegramUserId,
+}) => {
+    const parts = []
+
+    if (contactName) {
+        parts.push(contactName)
+    }
+
+    if (telegramUsername) {
+        parts.push(`@${telegramUsername}`)
+    }
+
+    if (telegramUserId) {
+        parts.push(`tg:${telegramUserId}`)
+    }
+
+    return parts.join(' · ') || 'Клиент Telegram'
 }
 
 const createAdminTicketUrl = (ticketId) => {

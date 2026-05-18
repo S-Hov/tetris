@@ -584,6 +584,23 @@ Additional feedback channel fields added by migration `012_feedback_channels_and
 | `telegram_username` | `text` | yes |  | Telegram username captured during linking |
 | `telegram_linked_at` | `timestamp` | yes |  | Time when the support request was linked to Telegram |
 
+### `support_request_messages`
+
+Support conversation history. Telegram client messages and admin replies are stored here so notifications can include recent context.
+
+| Field | Type | Null | Default | Description |
+|---|---|---|---|---|
+| `id` | `bigint` | no | `nextval(...)` | Message id |
+| `support_request_id` | `bigint` | no |  | FK to `support_requests.id` |
+| `sender_type` | `varchar(20)` | no |  | `client`, `admin`, or `system` |
+| `sender_label` | `text` | yes |  | Display name shown in admin context |
+| `channel` | `varchar(20)` | no |  | `email`, `telegram`, or `admin` |
+| `message_text` | `text` | no |  | Message body |
+| `telegram_user_id` | `text` | yes |  | Telegram user id, when available |
+| `telegram_chat_id` | `text` | yes |  | Telegram chat id, when available |
+| `telegram_message_id` | `text` | yes |  | Telegram message id, when available |
+| `created_at` | `timestamp` | no | `now()` | Message creation time |
+
 ### `support_user_blocks`
 
 Support-only blocks for registered users. Active rows prevent a user from creating new feedback/support tickets without disabling the whole account.

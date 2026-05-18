@@ -3,12 +3,14 @@ import { badRequest, forbidden, notFound } from '../helpers/error.helper.js'
 import {
     createDonationEventRepo,
     createDonationRepo,
+    createSupportRequestMessageRepo,
     createSupportRequestRepo,
     getActiveSupportBlockRepo,
     getActiveDonationWalletsRepo,
     getDonationWalletByIdRepo,
     getSupportUserContextRepo,
 } from '../repositories/supportRepository.js'
+import { sendSupportRequestReceivedEmail } from './emailService.js'
 import { sendSupportRequestTelegramNotification } from './telegramSupportService.js'
 
 const SUPPORT_CATEGORIES = new Set(['bug', 'idea', 'mode', 'balance', 'other'])
@@ -70,6 +72,26 @@ export const createSupportRequestService = async ({ userId, body, headers }) => 
             userAgent: headers['user-agent'] || null,
         },
     })
+
+    await createSupportRequestMessageRepo({
+        supportRequestId: request.id,
+        senderType: 'client',
+        senderLabel: contactName,
+        channel: preferredChannel,
+        messageText: message,
+    })
+
+    if (contactEmail) {
+        sendSupportRequestReceivedEmail({
+            to: contactEmail,
+            ticketId: request.id,
+            contactName,
+            preferredChannel,
+            title: request.title,
+        }).catch((error) => {
+            console.error('Support received email error:', error)
+        })
+    }
 
     sendSupportRequestTelegramNotification({
         request,

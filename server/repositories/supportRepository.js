@@ -145,6 +145,40 @@ export const getSupportRequestByTelegramTokenRepo = async (telegramToken) => {
     return result.rows[0] || null
 }
 
+export const getActiveSupportRequestByTelegramChatIdRepo = async (telegramChatId) => {
+    const result = await pool.query(
+        `
+        SELECT
+            id,
+            user_id,
+            category,
+            status,
+            priority,
+            preferred_channel,
+            contact_name,
+            contact_email,
+            title,
+            message,
+            telegram_user_id,
+            telegram_chat_id,
+            telegram_username,
+            telegram_linked_at,
+            created_at,
+            updated_at
+        FROM support_requests
+        WHERE telegram_chat_id = $1
+            AND preferred_channel = 'telegram'
+            AND telegram_linked_at IS NOT NULL
+            AND status NOT IN ('closed', 'spam')
+        ORDER BY created_at DESC
+        LIMIT 1
+        `,
+        [telegramChatId]
+    )
+
+    return result.rows[0] || null
+}
+
 export const linkSupportRequestTelegramRepo = async ({
     ticketId,
     telegramToken,
@@ -184,6 +218,61 @@ export const linkSupportRequestTelegramRepo = async ({
     )
 
     return result.rows[0] || null
+}
+
+export const createSupportRequestMessageRepo = async ({
+    supportRequestId,
+    senderType,
+    senderLabel,
+    channel,
+    messageText,
+    telegramUserId = null,
+    telegramChatId = null,
+    telegramMessageId = null,
+}) => {
+    const result = await pool.query(
+        `
+        INSERT INTO support_request_messages (
+            support_request_id,
+            sender_type,
+            sender_label,
+            channel,
+            message_text,
+            telegram_user_id,
+            telegram_chat_id,
+            telegram_message_id
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        RETURNING id, support_request_id, sender_type, sender_label, channel, message_text, created_at
+        `,
+        [
+            supportRequestId,
+            senderType,
+            senderLabel || null,
+            channel,
+            messageText,
+            telegramUserId,
+            telegramChatId,
+            telegramMessageId,
+        ]
+    )
+
+    return result.rows[0] || null
+}
+
+export const getRecentSupportRequestMessagesRepo = async (supportRequestId, limit = 5) => {
+    const result = await pool.query(
+        `
+        SELECT id, sender_type, sender_label, channel, message_text, created_at
+        FROM support_request_messages
+        WHERE support_request_id = $1
+        ORDER BY created_at DESC
+        LIMIT $2
+        `,
+        [supportRequestId, limit]
+    )
+
+    return result.rows.reverse()
 }
 
 export const appendSupportAdminReplyRepo = async ({

@@ -1,6 +1,7 @@
 import { badRequest, notFound } from '../helpers/error.helper.js'
 import {
     appendSupportAdminReplyRepo,
+    createSupportRequestMessageRepo,
     getSupportRequestByIdRepo,
 } from '../repositories/supportRepository.js'
 import { sendSupportReplyEmail } from './emailService.js'
@@ -61,6 +62,14 @@ export const replyToSupportRequest = async ({
         ticketId: supportRequest.id,
         adminTelegramId,
         replyText: normalizedReplyText,
+    })
+
+    await createSupportRequestMessageRepo({
+        supportRequestId: supportRequest.id,
+        senderType: 'admin',
+        senderLabel: `Telegram admin ${adminTelegramId}`,
+        channel: 'admin',
+        messageText: normalizedReplyText,
     })
 
     return {

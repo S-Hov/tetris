@@ -44,9 +44,9 @@ export const createEmailLayout = ({
 export const createVerificationEmailTemplate = (code) => createEmailLayout({
     title: 'Подтверждение почты',
     eyebrow: 'PVP Tetris',
-    intro: 'Для завершения регистрации и доступа к платформе используйте код подтверждения ниже.',
+    intro: 'Для завершения действия используйте код подтверждения ниже.',
     preheader: `Код подтверждения: ${code}`,
-    footerNote: 'Если вы не запрашивали регистрацию, просто проигнорируйте это письмо.',
+    footerNote: 'Если вы не запрашивали этот код, просто проигнорируйте письмо.',
     bodyHtml: `
         <div style="margin:0 0 24px;padding:20px 24px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;text-align:center;">
             <span style="font-family:Menlo,Monaco,Consolas,monospace;font-size:40px;font-weight:700;letter-spacing:8px;color:#1a3a4a;">${escapeHtml(code)}</span>
@@ -54,6 +54,49 @@ export const createVerificationEmailTemplate = (code) => createEmailLayout({
         <p style="margin:0;font-size:13px;line-height:1.6;color:#6c7a89;">Код действует 3 минуты.</p>
     `,
 })
+
+export const createRegistrationVerificationEmailTemplate = (code) => createEmailLayout({
+    title: 'Регистрация почти завершена',
+    eyebrow: 'PVP Tetris',
+    intro: 'Спасибо за регистрацию в PVP Tetris. Аккаунт успешно создан, осталось подтвердить почту кодом ниже.',
+    preheader: `Код подтверждения регистрации: ${code}`,
+    footerNote: 'Если вы не регистрировались в PVP Tetris, просто проигнорируйте это письмо.',
+    bodyHtml: `
+        <div style="margin:0 0 24px;padding:20px 24px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;text-align:center;">
+            <span style="font-family:Menlo,Monaco,Consolas,monospace;font-size:40px;font-weight:700;letter-spacing:8px;color:#1a3a4a;">${escapeHtml(code)}</span>
+        </div>
+        <p style="margin:0;font-size:13px;line-height:1.6;color:#6c7a89;">Код действует 3 минуты.</p>
+    `,
+})
+
+export const createSupportRequestReceivedEmailTemplate = ({
+    ticketId,
+    contactName,
+    preferredChannel,
+    title,
+}) => {
+    const isTelegram = preferredChannel === 'telegram'
+    const channelText = isTelegram
+        ? 'Мы получили ваше обращение. Вы выбрали Telegram, поэтому вся дальнейшая переписка по заявке будет идти там.'
+        : 'Мы получили ваше обращение. Ответ поддержки придет на эту почту.'
+
+    return createEmailLayout({
+        title: `Обращение #${ticketId} получено`,
+        eyebrow: 'Поддержка PVP Tetris',
+        intro: `${contactName || 'Здравствуйте'}! Спасибо, что написали нам. ${channelText}`,
+        preheader: `Мы получили обращение #${ticketId}`,
+        footerNote: isTelegram
+            ? 'Пожалуйста, откройте Telegram по ссылке с сайта и нажмите Start, если еще не сделали этого.'
+            : 'Пожалуйста, не удаляйте это письмо: номер обращения поможет быстрее найти вашу заявку.',
+        bodyHtml: `
+            <div style="margin:0 0 16px;padding:16px 18px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;">
+                <p style="margin:0 0 8px;font-size:13px;line-height:1.6;color:#6c7a89;">Номер обращения: #${escapeHtml(ticketId)}</p>
+                ${title ? `<p style="margin:0;font-size:13px;line-height:1.6;color:#6c7a89;">Тема: ${escapeHtml(title)}</p>` : ''}
+            </div>
+            <p style="margin:0;font-size:15px;line-height:1.7;color:#203040;">Мы уже передали заявку команде поддержки и ответим как можно скорее.</p>
+        `,
+    })
+}
 
 export const createTemporaryPasswordEmailTemplate = (password) => createEmailLayout({
     title: 'Новый временный пароль',
