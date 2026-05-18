@@ -5,6 +5,9 @@ export const createSupportRequestRepo = async ({
     category,
     contactName,
     contactEmail,
+    preferredChannel,
+    telegramToken,
+    telegramUrl,
     title,
     message,
     pageUrl,
@@ -18,20 +21,26 @@ export const createSupportRequestRepo = async ({
             category,
             contact_name,
             contact_email,
+            preferred_channel,
+            telegram_token,
+            telegram_url,
             title,
             message,
             page_url,
             attachment_url,
             client_context
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb)
-        RETURNING id, category, status, priority, title, created_at
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12::jsonb)
+        RETURNING id, category, status, priority, preferred_channel, telegram_url, title, created_at
         `,
         [
             userId || null,
             category,
             contactName || null,
             contactEmail || null,
+            preferredChannel,
+            telegramToken || null,
+            telegramUrl || null,
             title || null,
             message,
             pageUrl || null,
@@ -41,6 +50,44 @@ export const createSupportRequestRepo = async ({
     )
 
     return result.rows[0]
+}
+
+export const getSupportUserContextRepo = async (userId) => {
+    if (!userId) {
+        return null
+    }
+
+    const result = await pool.query(
+        `
+        SELECT id, username, email, status
+        FROM users
+        WHERE id = $1
+        LIMIT 1
+        `,
+        [userId]
+    )
+
+    return result.rows[0] || null
+}
+
+export const getActiveSupportBlockRepo = async (userId) => {
+    if (!userId) {
+        return null
+    }
+
+    const result = await pool.query(
+        `
+        SELECT id, user_id, reason, blocked_until, created_at
+        FROM support_user_blocks
+        WHERE user_id = $1
+            AND status = 'active'
+            AND (blocked_until IS NULL OR blocked_until > NOW())
+        LIMIT 1
+        `,
+        [userId]
+    )
+
+    return result.rows[0] || null
 }
 
 export const getActiveDonationWalletsRepo = async () => {

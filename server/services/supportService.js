@@ -1,31 +1,66 @@
-import { badRequest, notFound } from '../helpers/error.helper.js'
+import crypto from 'crypto'
+import { badRequest, forbidden, notFound } from '../helpers/error.helper.js'
 import {
     createDonationEventRepo,
     createDonationRepo,
     createSupportRequestRepo,
+    getActiveSupportBlockRepo,
     getActiveDonationWalletsRepo,
     getDonationWalletByIdRepo,
+    getSupportUserContextRepo,
 } from '../repositories/supportRepository.js'
+import { sendSupportRequestTelegramNotification } from './telegramSupportService.js'
 
 const SUPPORT_CATEGORIES = new Set(['bug', 'idea', 'mode', 'balance', 'other'])
+const SUPPORT_CHANNELS = new Set(['email', 'telegram'])
+const EMAIL_REGEXP = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export const createSupportRequestService = async ({ userId, body, headers }) => {
+    const user = await getSupportUserContextRepo(userId)
+    const supportBlock = await getActiveSupportBlockRepo(userId)
+
+    if (supportBlock || ['blocked', 'disabled'].includes(user?.status)) {
+        throw forbidden('Support requests are disabled for this account')
+    }
+
     const category = normalizeString(body.category) || 'other'
     const message = normalizeString(body.message)
+    const preferredChannel = normalizeString(body.preferredChannel || body.preferred_channel).toLowerCase()
 
     if (!SUPPORT_CATEGORIES.has(category)) {
         throw badRequest('Unsupported support category')
+    }
+
+    if (!SUPPORT_CHANNELS.has(preferredChannel)) {
+        throw badRequest('Preferred channel must be email or telegram')
     }
 
     if (!message || message.length < 10) {
         throw badRequest('Message must contain at least 10 characters')
     }
 
+    const contactName = normalizeString(body.name || body.contactName) || normalizeString(user?.username)
+    const contactEmail = normalizeEmail(body.email || body.contactEmail) || normalizeEmail(user?.email)
+
+    if (!contactName) {
+        throw badRequest('Name is required')
+    }
+
+    if (preferredChannel === 'email' && !contactEmail) {
+        throw badRequest('Valid email is required')
+    }
+
+    const telegramToken = preferredChannel === 'telegram' ? createTelegramToken() : null
+    const telegramUrl = telegramToken ? createTelegramUrl(telegramToken) : null
+
     const request = await createSupportRequestRepo({
         userId,
         category,
-        contactName: normalizeString(body.contactName),
-        contactEmail: normalizeString(body.contactEmail),
+        contactName,
+        contactEmail,
+        preferredChannel,
+        telegramToken,
+        telegramUrl,
         title: normalizeString(body.title),
         message,
         pageUrl: normalizeString(body.pageUrl),
@@ -36,7 +71,22 @@ export const createSupportRequestService = async ({ userId, body, headers }) => 
         },
     })
 
-    return { request }
+    sendSupportRequestTelegramNotification({
+        request,
+        contactName,
+        contactEmail,
+        message,
+        preferredChannel,
+        telegramUrl,
+    }).catch((error) => {
+        console.error('Support Telegram notification error:', error)
+    })
+
+    return {
+        request,
+        ticketId: request.id,
+        telegramUrl,
+    }
 }
 
 export const getDonationWalletsService = async () => {
@@ -131,6 +181,28 @@ const normalizeString = (value) => {
     }
 
     return value.trim()
+}
+
+const normalizeEmail = (value) => {
+    const email = normalizeString(value).toLowerCase()
+
+    return EMAIL_REGEXP.test(email) ? email : ''
+}
+
+const createTelegramToken = () => crypto.randomBytes(24).toString('base64url')
+
+const createTelegramUrl = (token) => {
+    const configuredUrl = normalizeString(process.env.TELEGRAM_BOT_URL)
+
+    if (configuredUrl) {
+        const separator = configuredUrl.includes('?') ? '&' : '?'
+
+        return `${configuredUrl}${separator}start=${encodeURIComponent(token)}`
+    }
+
+    const botName = normalizeString(process.env.TELEGRAM_BOT_USERNAME || process.env.TELEGRAM_BOT_NAME) || 'YOUR_BOT_NAME'
+
+    return `https://t.me/${botName.replace(/^@/, '')}?start=${encodeURIComponent(token)}`
 }
 
 const normalizeAmount = (value, { required = false } = {}) => {

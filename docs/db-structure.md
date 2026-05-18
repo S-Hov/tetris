@@ -6,7 +6,7 @@
 
 ## Общая картина
 
-База состоит из 19 основных таблиц:
+База состоит из 20 основных таблиц:
 
 1. `roles`
 2. `users`
@@ -21,12 +21,13 @@
 11. `game_rooms`
 12. `game_room_players`
 13. `support_requests`
-14. `donation_wallets`
-15. `donations`
-16. `donation_verification_events`
-17. `donation_currencies`
-18. `donation_networks`
-19. `donation_currency_networks`
+14. `support_user_blocks`
+15. `donation_wallets`
+16. `donations`
+17. `donation_verification_events`
+18. `donation_currencies`
+19. `donation_networks`
+20. `donation_currency_networks`
 
 По смыслу схема делится на 3 зоны:
 
@@ -34,7 +35,7 @@
 - матчи и игровая телеметрия: `matches`, `match_teams`, `match_players`, `match_events`
 - рейтинг и ранговая статистика: `user_rank_stats`, `rating_history`
 - runtime-состояние комнат: `game_rooms`, `game_room_players`
-- поддержка и пожертвования: `support_requests`, `donation_currencies`, `donation_networks`, `donation_currency_networks`, `donation_wallets`, `donations`, `donation_verification_events`
+- поддержка и пожертвования: `support_requests`, `support_user_blocks`, `donation_currencies`, `donation_networks`, `donation_currency_networks`, `donation_wallets`, `donations`, `donation_verification_events`
 
 ## Карта связей
 
@@ -46,6 +47,7 @@ roles
        ├─1 user_rank_stats
        ├─< rating_history
        ├─< support_requests
+       ├─< support_user_blocks
        ├─< donations
        └─< match_players
 
@@ -570,6 +572,29 @@ donations
 
 Индексы: `user_id`, `category`, `status`, `created_at`.
 
+Additional feedback channel fields added by migration `012_feedback_channels_and_support_blocks.sql`:
+
+| Field | Type | Null | Default | Description |
+|---|---|---|---|---|
+| `preferred_channel` | `varchar(20)` | no | `'email'` | Reply channel: `email` or `telegram` |
+| `telegram_token` | `text` | yes |  | Backend-generated token used in Telegram bot start URL |
+| `telegram_url` | `text` | yes |  | Full Telegram bot URL returned to frontend |
+
+### `support_user_blocks`
+
+Support-only blocks for registered users. Active rows prevent a user from creating new feedback/support tickets without disabling the whole account.
+
+| Field | Type | Null | Default | Description |
+|---|---|---|---|---|
+| `id` | `bigint` | no | `nextval(...)` | PK |
+| `user_id` | `integer` | no |  | Blocked user, unique |
+| `status` | `varchar(20)` | no | `'active'` | `active` or `inactive` |
+| `reason` | `text` | yes |  | Internal admin reason |
+| `blocked_by_user_id` | `integer` | yes |  | Admin who created/updated the block |
+| `blocked_until` | `timestamp` | yes |  | Optional expiry time |
+| `created_at` | `timestamp` | no | `now()` | Creation time |
+| `updated_at` | `timestamp` | no | `now()` | Update time |
+
 ### `donation_currencies`
 
 Справочник валют, которые можно использовать в донатах.
@@ -710,6 +735,7 @@ donations
   - удаляются `email_verifications`
   - удаляются `user_rank_stats`
   - удаляются `rating_history`
+  - удаляются `support_user_blocks`
   - в `support_requests.user_id` ставится `NULL`
   - в `donations.user_id` ставится `NULL`
   - в `auth_logs.user_id` ставится `NULL`
@@ -760,6 +786,7 @@ donations
 - `user_rank_stats` это текущий снимок рейтинга
 - `rating_history` это журнал изменения рейтинга
 - `support_requests` хранит заявки игроков по багам, идеям, режимам и балансу
+- `support_user_blocks` хранит блокировки создания обращений для конкретных пользователей
 - `donation_wallets` хранит адреса приема пожертвований по валютам и сетям
 - `donations` хранит заявки на пожертвования, суммы, сеть, транзакцию и статус подтверждения
 - `donation_verification_events` хранит аудит проверок платежей и смен статусов

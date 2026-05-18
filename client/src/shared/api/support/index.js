@@ -1,6 +1,13 @@
 import { apiClient } from '../apiClient.js'
 
 export const supportAPI = {
+    createFeedback(data) {
+        return apiClient('/api/feedback', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        })
+    },
+
     createRequest(data) {
         return apiClient('/api/support/requests', {
             method: 'POST',

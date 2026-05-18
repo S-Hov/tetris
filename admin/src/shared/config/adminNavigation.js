@@ -53,6 +53,7 @@ export const adminNavigation = [
     icon: 'support',
     items: [
       resource('supportRequests'),
+      resource('supportBlocks'),
     ],
   },
   {

@@ -12,6 +12,7 @@ import adminRouter from './routes/admin.js'
 import settingsRouter from './routes/settings.js'
 import analyticsRouter from './routes/analytics.js'
 import supportRouter from './routes/support.js'
+import feedbackRouter from './routes/feedback.js'
 import passport, { configurePassport } from './config/passport.js'
 
 import { logger } from './middleware/logger.js'
@@ -20,6 +21,7 @@ import { errorHandler } from './middleware/errorHandler.js'
 import http from 'http'
 import { Server } from 'socket.io'
 import { registerSocketHandlers } from './sockets/index.js'
+import telegramRouter from './routes/telegram.js'
 
 const app = express()
 const __filename = fileURLToPath(import.meta.url)
@@ -83,8 +85,10 @@ app.use("/api/settings", settingsRouter)
 app.use("/api/matches", matchesRouter)
 app.use("/api/leaderboard", leaderboardRouter)
 app.use("/api/analytics", analyticsRouter)
+app.use("/api/feedback", feedbackRouter)
 app.use("/api/support", supportRouter)
 app.use("/api/admin", adminRouter)
+app.use('/api/telegram', telegramRouter)
 
 app.use(errorHandler)
 

@@ -125,9 +125,37 @@ const RESOURCE_CONFIGS = {
     },
     supportRequests: {
         table: 'support_requests',
-        columns: ['id', 'user_id', 'category', 'status', 'priority', 'contact_name', 'contact_email', 'title', 'page_url', 'resolved_at', 'created_at', 'updated_at'],
+        columns: ['id', 'user_id', 'category', 'status', 'priority', 'preferred_channel', 'contact_name', 'contact_email', 'title', 'telegram_url', 'page_url', 'resolved_at', 'created_at', 'updated_at'],
         searchable: ['contact_name', 'contact_email', 'title', 'message'],
-        filters: ['user_id', 'category', 'status', 'priority'],
+        filters: ['user_id', 'category', 'status', 'priority', 'preferred_channel'],
+        orderBy: 'created_at',
+        orderDirection: 'DESC',
+    },
+    supportBlocks: {
+        table: 'support_user_blocks',
+        fromSql: `(
+            SELECT
+                support_user_blocks.id,
+                support_user_blocks.user_id,
+                users.username,
+                users.email,
+                support_user_blocks.status,
+                support_user_blocks.reason,
+                support_user_blocks.blocked_until,
+                support_user_blocks.blocked_by_user_id,
+                support_user_blocks.created_at,
+                support_user_blocks.updated_at
+            FROM support_user_blocks
+            LEFT JOIN users ON users.id = support_user_blocks.user_id
+        ) AS support_user_blocks_view`,
+        columns: ['id', 'user_id', 'username', 'email', 'status', 'reason', 'blocked_until', 'blocked_by_user_id', 'created_at', 'updated_at'],
+        searchable: ['reason', 'username', 'email'],
+        filters: ['user_id', 'status'],
+        editable: true,
+        mutableFields: ['user_id', 'status', 'reason', 'blocked_by_user_id', 'blocked_until'],
+        requiredFields: ['user_id', 'status'],
+        statusField: 'status',
+        statusValues: ['active', 'inactive'],
         orderBy: 'created_at',
         orderDirection: 'DESC',
     },

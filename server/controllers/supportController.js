@@ -15,6 +15,8 @@ export const createSupportRequest = asyncHandler(async (req, res) => {
     res.status(201).json({
         success: true,
         message: 'Support request created',
+        ticketId: data.ticketId,
+        telegramUrl: data.telegramUrl,
         data,
     })
 })
