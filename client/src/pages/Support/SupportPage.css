@@ -276,6 +276,12 @@
     gap: 0.75rem;
 }
 
+.support-channel-help {
+    margin: 0.1rem 0 0.85rem;
+    color: var(--text-color);
+    line-height: 1.55;
+}
+
 .support-channel-option {
     display: flex;
     align-items: flex-start;

@@ -10,6 +10,13 @@ const TELEGRAM_API_BASE_URL = 'https://api.telegram.org'
 const DEFAULT_ADMIN_URL = 'https://admin.pvp-tetris.online'
 const TELEGRAM_LINKED_MESSAGE = 'Спасибо! Ваше обращение отправлено в поддержку. Мы ответим вам здесь.'
 const NO_ACTIVE_TICKET_MESSAGE = 'У вас нет активного обращения. Пожалуйста, создайте новое обращение на сайте.'
+const SUPPORT_CATEGORY_LABELS = {
+    bug: 'Баг',
+    idea: 'Предложение',
+    mode: 'Режимы',
+    balance: 'Баланс',
+    other: 'Другое',
+}
 
 export const sendSupportRequestTelegramNotification = async ({
     request,
@@ -27,8 +34,16 @@ export const sendSupportRequestTelegramNotification = async ({
 
     const ticketId = request?.id
     const adminUrl = createAdminTicketUrl(ticketId)
+    const replyMarkup = createSupportNotificationReplyMarkup({
+        request: {
+            ...request,
+            contact_email: contactEmail || request?.contact_email,
+        },
+        adminUrl,
+        includeCloseButton: true,
+    })
     const text = createSupportMessage({
-        ticketId,
+        request,
         preferredChannel,
         contactName,
         contactEmail,
@@ -42,14 +57,7 @@ export const sendSupportRequestTelegramNotification = async ({
             text,
             parseMode: 'HTML',
             disableWebPagePreview: true,
-            replyMarkup: {
-                inline_keyboard: [
-                    [
-                        { text: 'Открыть в админке', url: adminUrl },
-                        { text: 'Закрыть', callback_data: `support_close:${ticketId}` },
-                    ],
-                ],
-            },
+            replyMarkup,
         }))
     )
     const failedResults = results.filter((result) => result.status === 'rejected')
@@ -225,6 +233,11 @@ export const sendSupportClientMessageTelegramNotification = async ({
     }
 
     const adminUrl = createAdminTicketUrl(request.id)
+    const replyMarkup = createSupportNotificationReplyMarkup({
+        request,
+        adminUrl,
+        includeCloseButton: false,
+    })
     const text = createClientMessageNotification({
         request,
         senderLabel,
@@ -239,13 +252,7 @@ export const sendSupportClientMessageTelegramNotification = async ({
             text,
             parseMode: 'HTML',
             disableWebPagePreview: true,
-            replyMarkup: {
-                inline_keyboard: [
-                    [
-                        { text: 'Открыть в админке', url: adminUrl },
-                    ],
-                ],
-            },
+            replyMarkup,
         }))
     )
     const failedResults = results.filter((result) => result.status === 'rejected')
@@ -318,19 +325,25 @@ export const sendTelegramBotMessage = async ({
 }
 
 const createSupportMessage = ({
-    ticketId,
+    request,
     preferredChannel,
     contactName,
     contactEmail,
     message,
 }) => {
+    const ticketId = request?.id
     const channelLabel = preferredChannel === 'telegram' ? 'Telegram' : 'Email'
     const safeMessage = truncateText(message, 1200)
+    const userLine = createAdminUserLine(request?.user_id)
+    const title = request?.title ? `Тема: ${escapeHtml(request.title)}` : null
 
     return [
-        `<b>Новое обращение #${escapeHtml(ticketId)}</b>`,
+        `🆕 <b>Новое обращение #${escapeHtml(ticketId)}</b>`,
+        `Категория: ${escapeHtml(getSupportCategoryLabel(request?.category))}`,
+        title,
         `Канал: ${escapeHtml(channelLabel)}`,
         `Клиент: ${escapeHtml(contactName || 'Не указан')}`,
+        userLine,
         contactEmail ? `Email: ${escapeHtml(contactEmail)}` : null,
         '',
         '<b>Сообщение:</b>',
@@ -347,16 +360,21 @@ const createClientMessageNotification = ({
     recentMessages,
 }) => {
     const title = request.title ? `Тема: ${escapeHtml(request.title)}` : null
+    const userLine = createAdminUserLine(request.user_id)
     const contextLines = recentMessages.length > 0
         ? recentMessages.map((message) => {
-            const author = message.sender_type === 'admin' ? 'Поддержка' : (message.sender_label || 'Клиент')
-            return `• <b>${escapeHtml(author)}:</b> ${escapeHtml(truncateText(message.message_text, 280))}`
+            const isAdmin = message.sender_type === 'admin'
+            const icon = isAdmin ? '🛠' : '👤'
+            const author = isAdmin ? 'Поддержка' : (message.sender_label || 'Клиент')
+            return `${icon} <b>${escapeHtml(author)}:</b> ${escapeHtml(truncateText(message.message_text, 280))}`
         })
         : ['Пока нет сохраненной истории сообщений.']
 
     return [
-        `<b>Новое сообщение по обращению #${escapeHtml(request.id)}</b>`,
+        `💬 <b>Новое сообщение по обращению #${escapeHtml(request.id)}</b>`,
+        `Категория: ${escapeHtml(getSupportCategoryLabel(request.category))}`,
         `Клиент: ${escapeHtml(senderLabel || request.contact_name || 'Не указан')}`,
+        userLine,
         request.contact_email ? `Email: ${escapeHtml(request.contact_email)}` : null,
         request.telegram_username ? `Telegram: @${escapeHtml(request.telegram_username)}` : null,
         title,
@@ -393,12 +411,81 @@ const createClientLabel = ({
     return parts.join(' · ') || 'Клиент Telegram'
 }
 
+const createSupportNotificationReplyMarkup = ({
+    request,
+    adminUrl,
+    includeCloseButton,
+}) => {
+    const keyboard = [
+        [
+            { text: 'Открыть в админке', url: adminUrl },
+        ],
+    ]
+
+    if (includeCloseButton) {
+        keyboard[0].push({ text: 'Закрыть', callback_data: `support_close:${request?.id}` })
+    }
+
+    const gmailUrl = createGmailComposeUrl(request)
+
+    if (gmailUrl) {
+        keyboard.push([
+            { text: 'Ответить через Gmail', url: gmailUrl },
+        ])
+    }
+
+    return {
+        inline_keyboard: keyboard,
+    }
+}
+
+const createGmailComposeUrl = (request) => {
+    if (request?.preferred_channel !== 'email' || !request?.contact_email) {
+        return null
+    }
+
+    const params = new URLSearchParams({
+        view: 'cm',
+        fs: '1',
+        to: request.contact_email,
+        su: `Re: Обращение #${request.id}`,
+        body: [
+            'Здравствуйте!',
+            '',
+            '',
+            '',
+            '',
+            '---',
+            `Обращение #${request.id}`,
+        ].join('\n'),
+    })
+
+    return `https://mail.google.com/mail/?${params.toString()}`
+}
+
 const createAdminTicketUrl = (ticketId) => {
     const baseUrl = normalizeString(process.env.ADMIN_URL || process.env.ADMIN_PANEL_URL) || DEFAULT_ADMIN_URL
     const normalizedBaseUrl = baseUrl.replace(/\/+$/, '')
 
     return `${normalizedBaseUrl}/support/requests?search=${encodeURIComponent(ticketId || '')}`
 }
+
+const createAdminUserLine = (userId) => {
+    if (!userId) {
+        return null
+    }
+
+    return `Пользователь: <a href="${createAdminUserUrl(userId)}">#${escapeHtml(userId)}</a>`
+}
+
+const createAdminUserUrl = (userId) => {
+    const baseUrl = normalizeString(process.env.ADMIN_URL || process.env.ADMIN_PANEL_URL) || DEFAULT_ADMIN_URL
+    const normalizedBaseUrl = baseUrl.replace(/\/+$/, '')
+
+    return `${normalizedBaseUrl}/users/${encodeURIComponent(userId)}`
+}
+
+const getSupportCategoryLabel = (category) => SUPPORT_CATEGORY_LABELS[category] || category || 'Другое'
 
 const truncateText = (value, maxLength) => {
     const text = normalizeString(value)

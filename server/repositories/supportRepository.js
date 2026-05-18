@@ -31,7 +31,18 @@ export const createSupportRequestRepo = async ({
             client_context
         )
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12::jsonb)
-        RETURNING id, category, status, priority, preferred_channel, telegram_url, title, created_at
+        RETURNING
+            id,
+            user_id,
+            category,
+            status,
+            priority,
+            preferred_channel,
+            contact_name,
+            contact_email,
+            telegram_url,
+            title,
+            created_at
         `,
         [
             userId || null,

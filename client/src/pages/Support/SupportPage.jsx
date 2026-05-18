@@ -253,6 +253,7 @@ const SupportPage = () => {
                                                 />
                                                 <span>
                                                     <strong><i className="fa-solid fa-envelope"></i> Email</strong>
+                                                    <small>Ответ придёт вам на почту. Дальнейшее общение продолжим там</small>
                                                 </span>
                                             </label>
 
