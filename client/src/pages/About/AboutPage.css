@@ -1,3 +1,13 @@
+:root,
+:root[data-theme="dark"] {
+    --bg-pvp: rgba(170, 240, 255, 0.18);
+}
+
+:root[data-theme="light"] {
+    --bg-pvp: rgb(0 157 191 / 18%);
+}
+
+
 .about-page {
     padding-top: 34px;
 }
@@ -33,7 +43,7 @@
 .about-hero-copy {
     & h1 {
         max-width: 840px;
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-family: var(--font-1);
         font-size: clamp(2rem, 4vw, 4rem);
         line-height: 1.06;
@@ -98,9 +108,8 @@
     border: var(--border);
     border-radius: 34px;
     background:
-        linear-gradient(rgba(0, 255, 255, 0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 255, 0.07) 1px, transparent 1px),
-        var(--elem-bg);
+        linear-gradient(rgba(0, 119, 119, 0.4) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 119, 119, 0.4) 1px, transparent 1px);
     background-size: 30px 30px;
     justify-content: center;
 
@@ -109,7 +118,7 @@
         position: absolute;
         right: 1.2rem;
         bottom: 1rem;
-        color: rgba(170, 240, 255, 0.18);
+        color: var(--bg-pvp);
         font-family: var(--font-1);
         font-size: clamp(2.5rem, 7vw, 6rem);
         font-weight: 900;
@@ -120,7 +129,7 @@
 .about-block {
     aspect-ratio: 1;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: var(--border);
     box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.12), 0 0 18px rgba(0, 255, 255, 0.18);
 
     &:nth-child(3n) {
@@ -175,7 +184,7 @@
     }
 
     & strong {
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-family: var(--font-1);
         font-size: clamp(2rem, 4vw, 3rem);
         line-height: 1;
@@ -204,7 +213,7 @@
     display: flex;
     align-items: center;
     gap: 0.55rem;
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     font-family: var(--font-1);
     font-size: 1.1rem;
     font-weight: 800;
@@ -227,7 +236,7 @@
         }
     }
 
-    & .about-card--story-full-glow-bg{
+    & .about-card--story-full-glow-bg {
         min-height: 100%;
     }
 }
@@ -257,8 +266,8 @@
 .about-donate-card {
     margin-bottom: 1.5rem;
     overflow: visible;
-    
-    & .about-donate-card-glow{
+
+    & .about-donate-card-glow {
         border-radius: 44px;
     }
 }
@@ -273,7 +282,7 @@
 
 .about-donate-copy {
     & h2 {
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-family: var(--font-1);
         font-size: clamp(1.45rem, 3vw, 2.2rem);
         line-height: 1.15;
@@ -300,7 +309,7 @@
     display: grid;
     gap: 0.45rem;
 
-    & > span {
+    &>span {
         color: var(--turquoise-lite);
         font-size: 0.78rem;
         letter-spacing: 0.07em;
@@ -315,8 +324,8 @@
         padding: 0.85rem 0.95rem;
         border: var(--border);
         border-radius: 16px;
-        background: rgba(0, 0, 0, 0.28);
-        color: var(--text-active-color);
+        background: var(--input-bg);
+        color: var(--text-color-1);
         font: inherit;
         outline: none;
         resize: vertical;
@@ -331,7 +340,7 @@
     }
 
     & small {
-        color: rgba(204, 244, 255, 0.72);
+        color: var(--turquoise);
         overflow-wrap: anywhere;
     }
 }
@@ -355,7 +364,7 @@
         place-items: center;
         border: var(--border);
         border-radius: 16px;
-        background: rgba(0, 0, 0, 0.28);
+        background: var(--input-bg);
         color: var(--turquoise);
         font-size: 1rem;
         cursor: pointer;
@@ -384,7 +393,7 @@
     padding: 0.85rem 0.95rem;
     border: var(--border);
     border-radius: 16px;
-    background: rgba(0, 0, 0, 0.28);
+    background: var(--input-bg);
 
     & input {
         width: 20px;
@@ -393,8 +402,8 @@
         accent-color: var(--turquoise);
     }
 
-    & > span {
-        color: var(--text-active-color);
+    &>span {
+        color: var(--text-color-1);
         letter-spacing: 0;
         text-transform: none;
     }
@@ -440,7 +449,7 @@
     place-items: center;
     border: var(--border);
     border-radius: 12px;
-    background: rgba(0, 0, 0, 0.28);
+    background: var(--input-bg);
     color: var(--text-active-color);
     cursor: pointer;
 }
@@ -469,6 +478,7 @@
 }
 
 @media (max-width: 1080px) {
+
     .about-hero-content,
     .about-grid,
     .about-donate-content {

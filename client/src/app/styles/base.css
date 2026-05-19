@@ -51,7 +51,7 @@ main {
 }
 
 .glass-card {
-    background: rgba(8, 16, 30, 0.2);
+    background: var(--glass-card-bg);
     backdrop-filter: var(--medium-blur);
     border-radius: 48px;
     border: var(--border);
@@ -69,7 +69,7 @@ main {
 }
 
 .description {
-    color: #aaf0ff;
+    color: var(--description-color);
     font-size: 0.7rem;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -154,7 +154,7 @@ body {
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-    -webkit-box-shadow: inset 20px 20px 0px 20px #000000!important;
+    -webkit-box-shadow: inset 20px 20px 0px 20px var(--input-autofill-bg)!important;
     -webkit-text-fill-color: var(--text-color);
 }
 

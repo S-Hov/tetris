@@ -33,4 +33,18 @@ export const simpleHeaderConfig = [
         secondaryTo: '/',
         secondaryLabel: 'На главную',
     },
+    {
+        match: (pathname) => pathname === '/support/requests',
+        backTo: '/profile',
+        backLabel: 'К профилю',
+        secondaryTo: '/',
+        secondaryLabel: 'На главную',
+    },
+    {
+        match: (pathname) => pathname.startsWith('/support/'),
+        backTo: '/support/requests',
+        backLabel: 'К Обращениям',
+        secondaryTo: '/',
+        secondaryLabel: 'На главную',
+    },
 ]

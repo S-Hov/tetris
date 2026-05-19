@@ -9,7 +9,7 @@ const GlowEffect = ({ children, className = "" }) => {
         const y = ((e.clientY - rect.top) / rect.height) * 100;
 
         setBgStyle({
-            background: `radial-gradient(circle at ${x}% ${y}%, rgba(0, 255, 255, 0.15), rgba(8, 12, 25, 0))`,
+            background: `radial-gradient(circle at ${x}% ${y}%, var(--glow-effect))`,
         });
     };
 

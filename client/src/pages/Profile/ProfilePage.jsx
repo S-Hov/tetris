@@ -1,7 +1,9 @@
 import { useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
+import AppSwitch from '@/shared/ui/AppSwitch'
 import { useAuth } from '@/shared/hooks/useAuth'
+import { useTheme } from '@/shared/hooks/useTheme.js'
 import {
     formatMatchDate,
     formatMatchResultLabel,
@@ -21,6 +23,7 @@ const fallbackProfile = {
 const ProfilePage = () => {
     const navigate = useNavigate()
     const { checkAuth, logout, user } = useAuth()
+    const { isDarkTheme, toggleTheme } = useTheme()
 
     useEffect(() => {
         const refreshProfile = async () => {
@@ -265,6 +268,35 @@ const ProfilePage = () => {
                                     Мои обращения
                                 </Link>
                             </div>
+                        </div>
+                    </GlowEffect>
+                </section>
+
+                <section className="profile-quick-settings-card">
+                    <GlowEffect>
+                        <div className="glow-effect profile-quick-settings-content">
+                            <div>
+                                <div className='profile-quick-settings-header'>
+                                    <div className="profile-section-title">
+                                        <i className="fas fa-sliders"></i>
+                                        Быстрые настройки
+                                    </div>
+                                    <Link to="/account-settings" className="button profile-advanced-settings-link">
+                                        <i className="fas fa-up-right-from-square"></i>
+                                        Открыть расширенные настройки
+                                    </Link>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                className="profile-theme-toggle"
+                                aria-pressed={isDarkTheme}
+                                onClick={toggleTheme}
+                            >
+                                <span>Тёмная тема</span>
+                                <AppSwitch checked={isDarkTheme} />
+                            </button>
+
                         </div>
                     </GlowEffect>
                 </section>

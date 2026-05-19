@@ -1030,7 +1030,7 @@
     border: 1px solid color-mix(in srgb, var(--countdown-accent) 36%, transparent);
     border-radius: 8px;
     background: linear-gradient(180deg, rgba(7, 15, 28, 0.72), rgba(4, 9, 18, 0.56));
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 14px 34px var(--input-bg);
     backdrop-filter: blur(14px);
     text-align: center;
     transform: translateX(-50%);

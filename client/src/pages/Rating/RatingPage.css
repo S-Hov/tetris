@@ -21,7 +21,7 @@
         display: flex;
         align-items: center;
         gap: 0.7rem;
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-family: var(--font-1);
         font-size: clamp(1.8rem, 3vw, 2.75rem);
         line-height: 1.1;
@@ -81,7 +81,7 @@
     }
 
     & strong {
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-family: var(--font-1);
         font-size: 1.5rem;
         text-shadow: var(--text-shadow);
@@ -190,7 +190,7 @@
 
     & h2 {
         max-width: 100%;
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-family: var(--font-1);
         font-size: 1.1rem;
         overflow-wrap: anywhere;
@@ -305,7 +305,7 @@
 
     & tr:hover td {
         background: rgba(0, 255, 255, 0.08);
-        color: var(--text-active-color);
+        color: var(--text-color);
     }
 }
 
@@ -338,7 +338,7 @@
     & strong {
         display: block;
         max-width: 220px;
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         overflow-wrap: anywhere;
     }
 

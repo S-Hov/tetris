@@ -56,10 +56,12 @@ const SupportRequestsPage = () => {
                                 <h1>Мои обращения</h1>
                                 <p>Здесь собраны обращения, которые вы отправляли из формы поддержки.</p>
                             </div>
-                            <Link to="/support" className="button support-requests-action">
-                                <i className="fas fa-paper-plane"></i>
-                                Новое обращение
-                            </Link>
+                            <div>
+                                <Link to="/support" className="button support-requests-action">
+                                    <i className="fas fa-paper-plane"></i>
+                                    Новое обращение
+                                </Link>
+                            </div>
                         </div>
                     </GlowEffect>
                 </section>
@@ -74,7 +76,7 @@ const SupportRequestsPage = () => {
                                 to={`/support/requests/${request.id}`}
                                 className="support-request-item"
                             >
-                                <GlowEffect>
+                                <GlowEffect className='support-request-item-glow-effect'>
                                     <article className="glow-effect support-request-item__content">
                                         <div className="support-request-item__main">
                                             <span className="support-request-item__meta">

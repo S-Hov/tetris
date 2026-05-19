@@ -36,7 +36,7 @@
         padding: 1rem 1rem 1rem 3rem;
         font-family: 'Inter', monospace;
         font-size: 1rem;
-        color: var(--text-color);
+        color: var(--text-color-1);
         outline: none;
         transition: all 0.2s ease;
         backdrop-filter: var(--easy-blur);
@@ -44,11 +44,11 @@
         &:focus {
             border-color: var(--turquoise);
             box-shadow: var(--lite-shadow);
-            background: rgba(0, 20, 40, 0.7);
+            background: var(--input-bg);
         }
         
         &::placeholder {
-            color: rgba(170, 240, 255, 0.6);
+            color: var(--turquoise);
             font-weight: 400;
         }
     }

@@ -26,7 +26,7 @@
     padding: 1.8rem 2rem;
 
     & h1 {
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-family: var(--font-1);
         font-size: clamp(1.7rem, 3vw, 2.8rem);
         line-height: 1.05;
@@ -69,7 +69,7 @@
     }
     
     & strong {
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-family: var(--font-1);
         font-size: 2rem;
     }
@@ -162,22 +162,22 @@
     }
     
     & strong {
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-family: var(--font-1);
         font-size: clamp(1.7rem, 2.6vw, 2.5rem);
     }
 }
 
 .matches-summary-card__inner--green strong {
-    color: #6fffb1;
+    color: var(--green);
 }
 
 .matches-summary-card__inner--red strong {
-    color: #ff8d8d;
+    color: var(--red);
 }
 
 .matches-summary-card__inner--yellow strong {
-    color: #fff07d;
+    color: var(--yellow);
 }
 
 .matches-list-content {
@@ -252,7 +252,7 @@
 }
 
 .matches-opponent {
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     font-size: 1rem;
     font-weight: 700;
 }

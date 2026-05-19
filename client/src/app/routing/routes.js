@@ -100,7 +100,7 @@ export const routes = [
         path: '/support/requests',
         title: 'Мои обращения',
         component: SupportRequestsPage,
-        layout: MainLayout,
+        layout: InnerPageLayout,
         guard: ProtectedRoute,
     },
     {
@@ -108,7 +108,7 @@ export const routes = [
         path: '/support/requests/:ticketId',
         title: ({ ticketId }) => `Обращение #${ticketId}`,
         component: SupportRequestDetailsPage,
-        layout: MainLayout,
+        layout: InnerPageLayout,
         guard: ProtectedRoute,
     },
     {

@@ -1,3 +1,13 @@
+:root,
+:root[data-theme="dark"] {
+    --select-bg: rgba(3, 8, 18, 0.98);
+}
+
+:root[data-theme="light"] {
+    --select-bg: rgb(255 255 255 / 95%);
+}
+
+
 .custom-select {
     position: relative;
     width: 100%;
@@ -14,8 +24,8 @@
     padding: 0.85rem 0.95rem;
     border: var(--border);
     border-radius: 16px;
-    background: rgba(0, 0, 0, 0.28);
-    color: var(--text-active-color);
+    background: var(--input-bg);
+    color: var(--text-color-1);
     font: inherit;
     text-align: left;
     cursor: pointer;
@@ -79,7 +89,7 @@
     padding: 0.55rem;
     border: var(--border);
     border-radius: 20px;
-    background: rgba(3, 8, 18, 0.98);
+    background: var(--select-bg);
     box-shadow: var(--hover-shadow);
     backdrop-filter: var(--hard-blur);
 }
@@ -125,6 +135,10 @@
         background: var(--hover-bg);
         color: var(--text-active-color);
         outline: none;
+
+        & small, & b {
+            color: var(--text-active-color);
+        }
     }
 
     &:disabled {
@@ -157,5 +171,5 @@
 .custom-select__option--active {
     border-color: rgba(0, 255, 255, 0.34);
     background: linear-gradient(135deg, rgba(0, 255, 255, 0.18), rgba(255, 0, 255, 0.1));
-    color: var(--text-active-color);
+    color: var(--text-color-1);
 }

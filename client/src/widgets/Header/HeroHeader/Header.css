@@ -115,7 +115,7 @@
         height: 42px;
         border: var(--border);
         border-radius: 16px;
-        background: rgba(0, 0, 0, 0.28);
+        background: var(--input-bg);
         color: var(--text-color);
         text-decoration: none;
         transition: var(--transition);

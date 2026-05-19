@@ -45,7 +45,7 @@
 
 .match-details-headline {
     & h1{
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-family: var(--font-1);
         font-size: clamp(1.7rem, 3vw, 2.8rem);
         margin-bottom: 0.5rem;
@@ -65,7 +65,7 @@
     padding: 1rem 1.2rem;
     border-radius: 28px;
     border: 1px solid rgba(0, 255, 255, 0.2);
-    background: rgba(0, 0, 0, 0.28);
+    background: var(--input-bg);
     
     & span {
         font-size: 0.78rem;
@@ -80,11 +80,11 @@
 }
 
 .match-details-result-badge--win {
-    color: #75ffb6;
+    color: var(--green);
 }
 
 .match-details-result-badge--loss {
-    color: #ff8f8f;
+    color: var(--red);
 }
 
 .match-details-meta-grid {
@@ -115,7 +115,7 @@
     }
     
     & strong {
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-size: 1rem;
         line-height: 1.35;
     }
@@ -143,8 +143,8 @@
     gap: 0.45rem;
     padding: 1.2rem;
     border-radius: 28px;
-    border: 1px solid rgba(0, 255, 255, 0.12);
-    background: rgba(0, 0, 0, 0.18);
+    border: var(--border);
+    background: var(--input-bg);
 }
 
 .match-details-team-card--team-a {
@@ -163,7 +163,7 @@
 }
 
 .match-details-team-score {
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     font-family: var(--font-1);
     font-size: 2.3rem;
 }
@@ -197,7 +197,7 @@
 }
 
 .match-details-table td {
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     font-size: 0.9rem;
 }
 
@@ -286,7 +286,7 @@
 
 .match-details-error h1,
 .match-details-empty strong {
-    color: var(--text-active-color);
+    color: var(--text-color-1);
 }
 
 .match-details-skeletons {

@@ -171,7 +171,6 @@ export const getConnectionsService = async (userId) => {
             connectedAt: row.created_at,
         }))
     const loginMethodCount = connectedProviders.length + (hasPassword ? 1 : 0)
-
     return {
         hasPassword,
         providers: OAUTH_PROVIDERS.map((provider) => {

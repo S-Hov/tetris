@@ -38,11 +38,12 @@
     margin-bottom: 0.85rem;
     border: var(--border);
     border-radius: 999px;
-    background: rgba(0, 0, 0, 0.2);
-    color: var(--turquoise-lite);
+    background: var(--elem-bg);
+    color: var(--text-color-1);
     font-family: var(--font-1);
     font-size: 0.74rem;
     text-transform: uppercase;
+    font-weight: 700;
     letter-spacing: 1px;
 }
 
@@ -50,7 +51,7 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     font-family: var(--font-1);
     font-size: clamp(1.8rem, 3.1vw, 3rem);
     margin-bottom: 0.45rem;
@@ -122,7 +123,7 @@
 }
 
 .mode-option-card h2 {
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     font-family: var(--font-1);
     font-size: 1.1rem;
 }
@@ -213,7 +214,7 @@
     }
 
     & h2 {
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-family: var(--font-1);
         font-size: clamp(1.25rem, 2vw, 1.75rem);
         margin: 0.25rem 0 0.35rem;
@@ -247,7 +248,7 @@
     }
 
     & strong {
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-family: var(--font-1);
         font-size: 1.15rem;
         text-shadow: var(--text-shadow);
@@ -264,7 +265,7 @@
     border: 1px solid rgba(219, 56, 56, 0.44);
     border-radius: 999px;
     background: rgba(219, 56, 56, 0.12);
-    color: #ffd8d8;
+    color: var(--red);
     font-family: var(--font-1);
     font-weight: 800;
     cursor: pointer;
@@ -313,16 +314,17 @@
     align-items: center;
     padding: 1rem 1.1rem;
     border-radius: 24px;
-    border: 1px solid rgba(0, 255, 255, 0.12);
-    background: rgba(0, 0, 0, 0.18);
+    border: var(--border);
+    background: var(--input-bg);
     color: inherit;
     cursor: pointer;
     text-align: left;
+    box-shadow: var(--lite-shadow);
 }
 
 .mode-setting-row strong {
     display: block;
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     margin-bottom: 0.3rem;
 }
 
@@ -338,8 +340,9 @@
     align-items: center;
     padding: 1rem 1.1rem;
     border-radius: 24px;
-    background: rgba(0, 0, 0, 0.18);
-    border: 1px solid rgba(0, 255, 255, 0.1);
+    background: var(--input-bg);
+    border: var(--border);
+    box-shadow: var(--lite-shadow);
 }
 
 .mode-select-summary span {
@@ -350,7 +353,7 @@
 
 .mode-select-summary strong {
     display: block;
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     font-family: var(--font-1);
     margin-top: 0.3rem;
 }
@@ -374,7 +377,7 @@
 }
 
 .mode-select-pill.is-active {
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     background: rgba(0, 255, 255, 0.18);
 }
 

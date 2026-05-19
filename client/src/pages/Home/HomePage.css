@@ -41,7 +41,7 @@
 
     & h2 {
         max-width: 760px;
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-family: var(--font-1);
         font-size: clamp(1.5rem, 3vw, 2.35rem);
         line-height: 1.12;
@@ -112,7 +112,7 @@
 
 .home-title {
     max-width: 760px;
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     font-family: var(--font-1);
     font-size: clamp(2.25rem, 5vw, 4.7rem);
     line-height: 1.02;
@@ -179,11 +179,11 @@
         content: '';
         position: absolute;
         inset: 1rem;
-        border: 1px solid rgba(0, 255, 255, 0.12);
+        border: var(--border);
         border-radius: 30px;
         background:
-            linear-gradient(rgba(0, 255, 255, 0.07) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 255, 255, 0.07) 1px, transparent 1px);
+            linear-gradient(rgba(0, 119, 119, 0.4) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 119, 119, 0.4) 1px, transparent 1px);
         background-size: 32px 32px;
     }
 }
@@ -235,7 +235,8 @@
     padding: 0.75rem 0.9rem;
     border: var(--border);
     border-radius: 22px;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(0, 122, 136, 0.45);
+    backdrop-filter: blur(1rem);
     color: var(--turquoise-lite);
     font-family: var(--font-1);
     
@@ -272,7 +273,7 @@
 
 .home-section-header h2,
 .home-cta h2 {
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     font-family: var(--font-1);
     font-size: clamp(1.55rem, 3vw, 2.3rem);
 }
@@ -304,7 +305,7 @@
     }
 
     & h3 {
-        color: var(--text-active-color);
+        color: var(--text-color);
         font-size: 1.15rem;
         line-height: 1.25;
         margin-bottom: 0.65rem;
@@ -380,7 +381,7 @@
     }
     
     & h3 {
-        color: var(--text-active-color);
+        color: var(--text-color-1);
         font-size: 1rem;
     }
     

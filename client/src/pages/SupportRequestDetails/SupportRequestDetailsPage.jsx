@@ -122,7 +122,7 @@ const SupportRequestDetailsPage = () => {
                 </section>
 
                 <section className="support-request-chat">
-                    <GlowEffect>
+                    <GlowEffect className='support-request-chat-glow-effect'>
                         <div className="glow-effect support-request-chat__content">
                             <div className="support-request-chat__head">
                                 <div className="support-request-chat__title">
@@ -186,7 +186,7 @@ const SupportRequestDetailsPage = () => {
 }
 
 const InfoCard = ({ icon, label, value }) => (
-    <GlowEffect>
+    <GlowEffect className='support-request-info-card-glow-effect'>
         <article className="glow-effect support-request-info-card">
             <i className={icon}></i>
             <span>{label}</span>

@@ -1,15 +1,20 @@
-:root {
+:root,
+:root[data-theme="dark"] {
     --main-bg: radial-gradient(circle at 20% 30%, #0a0f1e, #03050b);
     --font-1: 'Orbitron', monospace;
     --box-bg: rgba(8, 16, 30, 0.092);
+    --glass-card-bg: rgba(8, 16, 30, 0.2);
     --blue: #0088ff;
     --pink: #ff00ff;
     --yellow: #ffff00;
+    --green: #6fffb1;
     --red: #db3838;
     --turquoise: #00ffff;
     --turquoise-lite: #aaf0ff;
     --text-color: #ccf4ff;
+    --text-color-1: white;
     --text-active-color: white;
+    --description-color: #aaf0ff;
     --glow-gradient: linear-gradient(90deg, var(--blue), var(--pink), var(--turquoise), var(--yellow), var(--blue));
     --glow-gradient-lite: linear-gradient(135deg, var(--pink), var(--blue), var(--turquoise), var(--pink));
     --elem-gradient-1: linear-gradient(160deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.12)),
@@ -26,11 +31,47 @@
     --btn-gradient-1: linear-gradient(200deg, var(--turquoise), var(--pink));
     --border: 1px solid rgba(0,255,255,0.2);
     --elem-bg: rgba(0, 0, 0, 0.4);
+    --input-autofill-bg: #000000;
     --lite-shadow:  0 0 12px rgba(0,255,255,0.5);
     --hard-shadow:  0 0 25px var(--turquoise);
     --text-shadow: 0 0 5px var(--turquoise);
     --hover-bg: rgba(0, 255, 255, 0.2);
     --max-width: 2100px;
+    --input-bg: rgba(0, 0, 0, 0.28);
+    --glow-effect: rgba(0, 255, 255, 0.15), rgba(8, 12, 25, 0);
 }
 
-:root[data-theme="dark"] {}
+:root[data-theme="light"] {
+    --main-bg: radial-gradient(circle at 15% 20%, #f5fbff, #dcecff 45%, #f8f5ff);
+    --box-bg: rgba(255, 255, 255, 0.3);
+    --glass-card-bg: rgba(255, 255, 255, 0.7);
+    --blue: #006edc;
+    --pink: #c42bbf;
+    --yellow: #ebdf0c;
+    --green: #0a9b00;
+    --red: #c93636;
+    --turquoise: #008fb5;
+    --turquoise-lite: #076f8c;
+    --text-color: #28435a;
+    --text-color-1: #071929;
+    --text-active-color: white;
+    --description-color: #315c76;
+    --glow-gradient: linear-gradient(90deg, var(--blue), var(--pink), var(--turquoise), var(--yellow), var(--blue));
+    --glow-gradient-lite: linear-gradient(135deg, #f3a6ff, #7fc8ff, #8de9ec, #f3a6ff);
+    --elem-gradient-1: linear-gradient(160deg, rgba(0, 143, 181, 0.18), rgba(196, 43, 191, 0.12)),
+    rgba(255, 255, 255, 0.62);
+    --glass-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(228, 243, 255, 0.42));
+    --shadow: 0 20px 40px rgba(46, 90, 125, 0.18), 0 0 28px rgba(0, 143, 181, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+    --revers-shadow: inset 0 0 18px rgba(0, 143, 181, 0.18);
+    --hover-shadow: 0 24px 44px rgba(49, 89, 118, 0.22), 0 0 34px rgba(0, 143, 181, 0.24);
+    --easy-background: rgb(255 255 255 / 72%);
+    --border: 1px solid rgba(0, 111, 150, 0.22);
+    --elem-bg: rgba(255, 255, 255, 0.45);
+    --input-autofill-bg: #eef8ff;
+    --lite-shadow: 0 0 14px rgba(0, 143, 181, 0.22);
+    --hard-shadow: 0 0 25px rgba(0, 143, 181, 0.4);
+    --text-shadow: 0 0 5px rgba(0, 143, 181, 0.26);
+    --hover-bg: rgb(0 112 142);
+    --input-bg: rgb(255 255 255 / 40%);
+    --glow-effect: rgba(0, 255, 255, 0.05), rgba(8, 12, 25, 0);
+}

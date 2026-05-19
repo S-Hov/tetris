@@ -9,8 +9,8 @@
         align-items: center;
         gap: 1.2rem;
         padding-top: 1.25rem;
-        border-top: 1px solid rgba(0, 255, 255, 0.18);
-        color: rgba(204, 244, 255, 0.72);
+        border-top: 1px solid var(--turquoise-lite);
+        color: var(--text-color);
         font-size: 0.82rem;
         background: none;
     }
@@ -20,7 +20,7 @@
         gap: 0.25rem;
         
         & strong {
-            color: var(--text-active-color);
+            color: var(--text-color);
             font-family: var(--font-1);
             letter-spacing: 0;
             text-shadow: var(--text-shadow);
@@ -41,7 +41,6 @@
         
         &:hover,
         &:focus-visible {
-            color: var(--turquoise);
             text-shadow: var(--text-shadow);
         }
     }
@@ -53,15 +52,17 @@
         justify-content: center;
         gap: 0.6rem;
         padding: 0.72rem 1rem;
-        border: var(--border);
+        border: none;
         border-radius: 16px;
-        background: rgba(0, 0, 0, 0.28);
+        background: var(--btn-gradient-1);
         font-family: var(--font-1);
         font-weight: 800;
         white-space: nowrap;
-        
-        & i {
-            color: var(--turquoise);
+        color: var(--text-active-color);
+        transition: var(--transition);
+
+        &:hover {
+            background: var(--hover-bg);
         }
     }
 }

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
+import AppSwitch from '@/shared/ui/AppSwitch'
 import { useAuth } from '@/shared/hooks/useAuth'
+import { useTheme } from '@/shared/hooks/useTheme.js'
 import { authenticationAPI } from '@/shared/api/auth'
 import { settingsAPI } from '@/shared/api/settings'
 import notify from '@/utils/Notifications'
@@ -14,7 +16,8 @@ const AccountSettingsPage = () => {
     const navigate = useNavigate()
     const avatarInputRef = useRef(null)
     const { checkAuth, logout, setUser, user } = useAuth()
-    const [activeTab, setActiveTab] = useState('account')
+    const { isDarkTheme, toggleTheme } = useTheme()
+    const [activeTab, setActiveTab] = useState('general')
     const [profileForm, setProfileForm] = useState({ username: '' })
     const [avatarFile, setAvatarFile] = useState(null)
     const [avatarPreview, setAvatarPreview] = useState('')
@@ -271,6 +274,14 @@ const AccountSettingsPage = () => {
                 <div className="account-settings-tabs" role="tablist" aria-label="Разделы настроек">
                     <button
                         type="button"
+                        className={activeTab === 'general' ? 'is-active' : ''}
+                        onClick={() => setActiveTab('general')}
+                    >
+                        <i className="fas fa-sliders"></i>
+                        Общие
+                    </button>
+                    <button
+                        type="button"
                         className={activeTab === 'account' ? 'is-active' : ''}
                         onClick={() => setActiveTab('account')}
                     >
@@ -287,7 +298,33 @@ const AccountSettingsPage = () => {
                     </button>
                 </div>
 
-                {activeTab === 'account' ? (
+                {activeTab === 'general' && (
+                    <section className="account-settings-panel">
+                        <GlowEffect>
+                            <div className="glow-effect account-general-settings">
+                                <div className="account-section-title">
+                                    <i className="fas fa-palette"></i>
+                                    Оформление
+                                </div>
+
+                                <button
+                                    type="button"
+                                    className="account-theme-toggle"
+                                    aria-pressed={isDarkTheme}
+                                    onClick={toggleTheme}
+                                >
+                                    <span>
+                                        <strong>Тёмная тема</strong>
+                                        <small>Переключает цветовую схему интерфейса</small>
+                                    </span>
+                                    <AppSwitch checked={isDarkTheme} />
+                                </button>
+                            </div>
+                        </GlowEffect>
+                    </section>
+                )}
+
+                {activeTab === 'account' && (
                     <section className="account-settings-panel">
                         <GlowEffect>
                             <form className="glow-effect account-profile-form" onSubmit={handleProfileSave}>
@@ -342,7 +379,9 @@ const AccountSettingsPage = () => {
                             </form>
                         </GlowEffect>
                     </section>
-                ) : (
+                )}
+
+                {activeTab === 'security' && (
                     <section className="account-security-grid">
                         <GlowEffect className="account-login-methods-wrap">
                             <div className="glow-effect account-login-methods">

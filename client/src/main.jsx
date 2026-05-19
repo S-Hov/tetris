@@ -9,6 +9,9 @@ import './app/styles/animations.css'
 
 import App from './app/App.jsx'
 import { AuthProvider } from './shared/context/AuthContext.jsx'
+import { initTheme } from './shared/lib/theme/theme.js'
+
+initTheme()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
