@@ -456,7 +456,6 @@
     }
 
     &:hover {
-        background: var(--hover-bg);
         transform: translateY(-2px);
         color: var(--text-active-color);
     }

@@ -1,3 +1,19 @@
+:root,
+:root[data-theme="dark"] {
+    --board-bg: rgba(0, 0, 0, 0.4);
+    --cell-bg: rgba(255, 255, 255, 0.08);
+    --cell-gost-bg: rgba(255, 255, 255, 0.12);
+    --cell-gost-border: 1px dashed rgba(0, 255, 255, 0.7);
+}
+
+:root[data-theme="light"] {
+    --board-bg: rgb(209 209 209 / 40%);
+    --cell-bg: rgb(239 238 239 / 65%);
+    --cell-gost-bg: rgb(189 255 254 / 27%);
+    --cell-gost-border: 1px dashed rgba(0, 191, 191, 0.7);
+}
+
+
 .tetris-board {
     --tetris-board-padding: clamp(4px, 0.8vmin, 8px);
     --tetris-cell-radius: clamp(4px, 1vmin, 10px);
@@ -10,7 +26,7 @@
     aspect-ratio: 10 / 20;
     padding: var(--tetris-board-padding);
     box-sizing: border-box;
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--board-bg);
     border: 2px solid var(--turquoise);
     backdrop-filter: blur(12px);
     border-radius: clamp(10px, 1.4vmin, 15px);
@@ -27,7 +43,7 @@
     height: 100%;
     min-width: 0;
     min-height: 0;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--cell-bg);
     border-radius: var(--tetris-cell-radius);
     
     &.filled {
@@ -36,7 +52,7 @@
 
     &.ghost {
         background: rgba(0, 255, 255, 0.18);
-        border: 1px dashed rgba(0, 255, 255, 0.7);
+        border: var(--cell-gost-border);
     }
 }
 
@@ -98,7 +114,7 @@
 .tetris-cell.ghost.cell--T,
 .tetris-cell.ghost.cell--L,
 .tetris-cell.ghost.cell--J {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--cell-gost-bg);
 }
 
 .tetris-cell.clearing {
