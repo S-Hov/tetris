@@ -74,6 +74,15 @@ export function AdminSupportRequestDetailsPage() {
       socket.emit('support:join', { requestId }, (response) => {
         if (response?.success === false) {
           notify.error(response.message || 'Не удалось подключить чат обращения')
+          return
+        }
+
+        if (response?.request) {
+          setRequest((current) => ({ ...(current || {}), ...response.request }))
+        }
+
+        if (Array.isArray(response?.messages)) {
+          setMessages((current) => mergeMessages(current, response.messages))
         }
       })
     }
@@ -314,6 +323,21 @@ function appendMessage(messages, message) {
   }
 
   return [...messages, message].sort((left, right) => (
+    new Date(left.created_at).getTime() - new Date(right.created_at).getTime() ||
+    Number(left.id) - Number(right.id)
+  ))
+}
+
+function mergeMessages(existingMessages, incomingMessages) {
+  const merged = [...existingMessages]
+
+  for (const message of incomingMessages) {
+    if (!merged.some((item) => String(item.id) === String(message.id))) {
+      merged.push(message)
+    }
+  }
+
+  return merged.sort((left, right) => (
     new Date(left.created_at).getTime() - new Date(right.created_at).getTime() ||
     Number(left.id) - Number(right.id)
   ))

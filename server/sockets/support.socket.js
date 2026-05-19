@@ -1,4 +1,4 @@
-import { getSupportRequestByIdRepo } from '../repositories/supportRepository.js'
+import { getSupportRequestByIdRepo, getSupportRequestMessagesRepo } from '../repositories/supportRepository.js'
 import { getSupportRequestRoom } from '../services/supportRealtimeService.js'
 
 const isAdminSocket = (socket) => socket.data.user?.role === 'admin'
@@ -31,8 +31,15 @@ export const registerSupportHandlers = (io, socket) => {
                 return
             }
 
+            const messages = await getSupportRequestMessagesRepo(requestId)
+
             await socket.join(getSupportRequestRoom(requestId))
-            callback?.({ success: true, requestId })
+            callback?.({
+                success: true,
+                requestId,
+                request,
+                messages,
+            })
         } catch (error) {
             callback?.({ success: false, message: error.message || 'Could not join support request' })
         }
