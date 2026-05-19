@@ -133,6 +133,37 @@ export function AdminSupportRequestDetailsPage() {
     messagesEndRef.current?.scrollIntoView({ block: 'end' })
   }, [messages.length])
 
+  useEffect(() => {
+    let isActive = true
+
+    const refreshRequest = async () => {
+      try {
+        const response = await resourcesAPI.getSupportRequestDetails(requestId)
+
+        if (!isActive) {
+          return
+        }
+
+        if (response.request) {
+          setRequest((current) => ({ ...(current || {}), ...response.request }))
+        }
+
+        if (Array.isArray(response.messages)) {
+          setMessages((current) => mergeMessages(current, response.messages))
+        }
+      } catch {
+        // Socket remains the primary path; polling quietly retries on the next tick.
+      }
+    }
+
+    const intervalId = window.setInterval(refreshRequest, 10000)
+
+    return () => {
+      isActive = false
+      window.clearInterval(intervalId)
+    }
+  }, [requestId])
+
   const replyHint = useMemo(() => {
     if (!request) {
       return ''

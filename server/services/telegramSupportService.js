@@ -1,5 +1,5 @@
 import {
-    createSupportRequestMessageRepo,
+    appendSupportClientTelegramMessageRepo,
     getActiveSupportRequestByTelegramChatIdRepo,
     getRecentSupportRequestMessagesRepo,
     getSupportRequestByTelegramTokenRepo,
@@ -198,11 +198,9 @@ export const handleSupportClientTelegramMessage = async ({
         telegramUserId: normalizedUserId,
     })
 
-    const message = await createSupportRequestMessageRepo({
+    const { message, request: updatedRequest } = await appendSupportClientTelegramMessageRepo({
         supportRequestId: supportRequest.id,
-        senderType: 'client',
         senderLabel,
-        channel: 'telegram',
         messageText: normalizedText,
         telegramUserId: normalizedUserId,
         telegramChatId: normalizedChatId,
@@ -212,13 +210,17 @@ export const handleSupportClientTelegramMessage = async ({
     emitSupportRequestMessage({
         requestId: supportRequest.id,
         message,
-        request: supportRequest,
+        request: updatedRequest || supportRequest,
+    })
+    emitSupportRequestUpdated({
+        requestId: supportRequest.id,
+        request: updatedRequest || supportRequest,
     })
 
     const recentMessages = await getRecentSupportRequestMessagesRepo(supportRequest.id, 5)
 
     await sendSupportClientMessageTelegramNotification({
-        request: supportRequest,
+        request: updatedRequest || supportRequest,
         senderLabel,
         messageText: normalizedText,
         recentMessages,

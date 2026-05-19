@@ -184,7 +184,7 @@ export const getActiveSupportRequestByTelegramChatIdRepo = async (telegramChatId
             AND preferred_channel = 'telegram'
             AND telegram_linked_at IS NOT NULL
             AND status NOT IN ('closed', 'spam')
-        ORDER BY created_at DESC
+        ORDER BY updated_at DESC NULLS LAST, created_at DESC
         LIMIT 1
         `,
         [telegramChatId]
@@ -272,6 +272,106 @@ export const createSupportRequestMessageRepo = async ({
     )
 
     return result.rows[0] || null
+}
+
+export const appendSupportClientTelegramMessageRepo = async ({
+    supportRequestId,
+    senderLabel,
+    messageText,
+    telegramUserId = null,
+    telegramChatId = null,
+    telegramMessageId = null,
+}) => {
+    const client = await pool.connect()
+
+    try {
+        await client.query('BEGIN')
+
+        const messageResult = await client.query(
+            `
+            INSERT INTO support_request_messages (
+                support_request_id,
+                sender_type,
+                sender_label,
+                channel,
+                message_text,
+                telegram_user_id,
+                telegram_chat_id,
+                telegram_message_id
+            )
+            VALUES ($1, 'client', $2, 'telegram', $3, $4, $5, $6)
+            RETURNING
+                id,
+                support_request_id,
+                sender_type,
+                sender_label,
+                channel,
+                message_text,
+                telegram_user_id,
+                telegram_chat_id,
+                telegram_message_id,
+                created_at
+            `,
+            [
+                supportRequestId,
+                senderLabel || null,
+                messageText,
+                telegramUserId,
+                telegramChatId,
+                telegramMessageId,
+            ]
+        )
+
+        const requestResult = await client.query(
+            `
+            UPDATE support_requests
+            SET
+                status = CASE
+                    WHEN status = 'new' THEN 'triaged'
+                    ELSE status
+                END,
+                updated_at = NOW()
+            WHERE id = $1
+            RETURNING
+                id,
+                user_id,
+                category,
+                status,
+                priority,
+                preferred_channel,
+                contact_name,
+                contact_email,
+                title,
+                message,
+                page_url,
+                attachment_url,
+                client_context,
+                telegram_token,
+                telegram_url,
+                telegram_user_id,
+                telegram_chat_id,
+                telegram_username,
+                telegram_linked_at,
+                admin_notes,
+                resolved_at,
+                created_at,
+                updated_at
+            `,
+            [supportRequestId]
+        )
+
+        await client.query('COMMIT')
+
+        return {
+            message: messageResult.rows[0] || null,
+            request: requestResult.rows[0] || null,
+        }
+    } catch (error) {
+        await client.query('ROLLBACK')
+        throw error
+    } finally {
+        client.release()
+    }
 }
 
 export const getRecentSupportRequestMessagesRepo = async (supportRequestId, limit = 5) => {
