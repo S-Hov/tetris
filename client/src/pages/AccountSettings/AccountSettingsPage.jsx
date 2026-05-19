@@ -30,6 +30,9 @@ const AccountSettingsPage = () => {
     const [isSavingPassword, setIsSavingPassword] = useState(false)
     const [loginHistory, setLoginHistory] = useState([])
     const [isHistoryLoading, setIsHistoryLoading] = useState(true)
+    const [connections, setConnections] = useState(null)
+    const [isConnectionsLoading, setIsConnectionsLoading] = useState(true)
+    const [unlinkingProvider, setUnlinkingProvider] = useState('')
 
     useEffect(() => {
         checkAuth({ silent: true })
@@ -88,6 +91,36 @@ const AccountSettingsPage = () => {
         }
 
         loadHistory()
+
+        return () => {
+            ignore = true
+        }
+    }, [])
+
+    useEffect(() => {
+        let ignore = false
+
+        const loadConnections = async () => {
+            setIsConnectionsLoading(true)
+
+            try {
+                const response = await settingsAPI.getConnections()
+
+                if (!ignore) {
+                    setConnections(response)
+                }
+            } catch (error) {
+                if (!ignore) {
+                    notify(error.message || 'Не удалось загрузить способы входа', 'error')
+                }
+            } finally {
+                if (!ignore) {
+                    setIsConnectionsLoading(false)
+                }
+            }
+        }
+
+        loadConnections()
 
         return () => {
             ignore = true
@@ -207,6 +240,20 @@ const AccountSettingsPage = () => {
         navigate('/login', { replace: true })
     }
 
+    const handleUnlinkConnection = async (provider) => {
+        setUnlinkingProvider(provider)
+
+        try {
+            const response = await settingsAPI.unlinkConnection(provider)
+            setConnections(response)
+            notify('Способ входа удалён', 'success')
+        } catch (error) {
+            notify(error.message || 'Не удалось удалить способ входа', 'error')
+        } finally {
+            setUnlinkingProvider('')
+        }
+    }
+
     return (
         <section className="section account-settings-page">
             <div className="container account-settings-container">
@@ -297,6 +344,64 @@ const AccountSettingsPage = () => {
                     </section>
                 ) : (
                     <section className="account-security-grid">
+                        <GlowEffect className="account-login-methods-wrap">
+                            <div className="glow-effect account-login-methods">
+                                <div className="account-section-title">
+                                    <i className="fas fa-fingerprint"></i>
+                                    Способы входа
+                                </div>
+
+                                <div className="account-login-method-list">
+                                    {isConnectionsLoading ? (
+                                        <div className="account-empty-state">Загружаем способы входа...</div>
+                                    ) : (
+                                        <>
+                                            <article className="account-login-method">
+                                                <span className="account-login-method__icon">
+                                                    <i className="fas fa-envelope"></i>
+                                                </span>
+                                                <div>
+                                                    <strong>Почта и пароль</strong>
+                                                    <small>{connections?.hasPassword ? 'Основной способ входа' : 'Пароль ещё не установлен'}</small>
+                                                </div>
+                                                <span className="account-login-method__badge">Нельзя удалить</span>
+                                            </article>
+
+                                            {(connections?.providers || []).map((provider) => (
+                                                <article
+                                                    key={provider.provider}
+                                                    className={`account-login-method ${provider.isConnected ? 'is-connected' : ''}`}
+                                                >
+                                                    <span className="account-login-method__icon">
+                                                        <i className={getProviderIcon(provider.provider)}></i>
+                                                    </span>
+                                                    <div>
+                                                        <strong>{provider.label}</strong>
+                                                        <small>
+                                                            {provider.isConnected
+                                                                ? `Подключён ${formatDateTime(provider.connectedAt)}`
+                                                                : 'Не подключён'}
+                                                        </small>
+                                                    </div>
+                                                    {provider.isConnected ? (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleUnlinkConnection(provider.provider)}
+                                                            disabled={!provider.canUnlink || unlinkingProvider === provider.provider}
+                                                        >
+                                                            {unlinkingProvider === provider.provider ? 'Удаляем...' : 'Удалить'}
+                                                        </button>
+                                                    ) : (
+                                                        <span className="account-login-method__badge">Нет</span>
+                                                    )}
+                                                </article>
+                                            ))}
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        </GlowEffect>
+
                         <GlowEffect>
                             <form className="glow-effect account-password-form" onSubmit={handlePasswordSave}>
                                 <div className="account-section-title">
@@ -443,6 +548,19 @@ const accountAvatarMedia = (src, alt) => {
     }
 
     return <img src={src} alt={alt} />
+}
+
+const getProviderIcon = (provider) => {
+    const icons = {
+        github: 'fab fa-github',
+        google: 'fab fa-google',
+        discord: 'fab fa-discord',
+        steam: 'fab fa-steam',
+        vk: 'fab fa-vk',
+        yandex: 'fab fa-yandex',
+    }
+
+    return icons[provider] || 'fas fa-link'
 }
 
 const formatStatus = (status) => {

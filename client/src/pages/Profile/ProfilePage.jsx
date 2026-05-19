@@ -241,6 +241,33 @@ const ProfilePage = () => {
                         </GlowEffect>
                     </section>
                 </div>
+
+                <section className="profile-support-card">
+                    <GlowEffect>
+                        <div className="glow-effect profile-support-content">
+                            <div>
+                                <div className="profile-section-title">
+                                    <i className="fas fa-life-ring"></i>
+                                    Поддержка
+                                </div>
+                                <p>
+                                    Нашли ошибку, хотите предложить режим или рассказать, что в матче пошло не так?
+                                    Напишите в поддержку, а свои обращения можно посмотреть здесь же в личном кабинете.
+                                </p>
+                            </div>
+                            <div className="profile-support-actions">
+                                <Link to="/support" className="button">
+                                    <i className="fas fa-paper-plane"></i>
+                                    Обратиться в поддержку
+                                </Link>
+                                <Link to="/support/requests" className="button profile-support-secondary">
+                                    <i className="fas fa-inbox"></i>
+                                    Мои обращения
+                                </Link>
+                            </div>
+                        </div>
+                    </GlowEffect>
+                </section>
             </div>
         </section>
     )

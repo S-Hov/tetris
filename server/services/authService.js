@@ -185,6 +185,12 @@ export const updateUserAvatarService = async ({ userId, contentType, buffer }) =
     const filePath = path.join(AVATAR_UPLOAD_DIR, filename)
     const avatarUrl = `/uploads/avatars/${filename}`
 
+    const currentUser = await getUserRepo(userId)
+
+    if (!currentUser) {
+        throw badRequest('Пользователь не найден')
+    }
+
     await fs.writeFile(filePath, buffer, { flag: 'wx' })
 
     const user = await updateUserAvatarRepo({
@@ -193,8 +199,11 @@ export const updateUserAvatarService = async ({ userId, contentType, buffer }) =
     })
 
     if (!user) {
+        await deleteLocalAvatarFile(avatarUrl)
         throw badRequest('Пользователь не найден')
     }
+
+    await deleteLocalAvatarFile(currentUser.avatar_url)
 
     return await getUserService(userId)
 }
@@ -649,6 +658,30 @@ const normalizeUsername = (value) => {
     }
 
     return username
+}
+
+const deleteLocalAvatarFile = async (avatarUrl) => {
+    const normalizedUrl = String(avatarUrl || '')
+
+    if (!normalizedUrl.startsWith('/uploads/avatars/')) {
+        return
+    }
+
+    const filename = path.basename(normalizedUrl)
+    const avatarPath = path.resolve(AVATAR_UPLOAD_DIR, filename)
+    const uploadDir = path.resolve(AVATAR_UPLOAD_DIR)
+
+    if (!avatarPath.startsWith(`${uploadDir}${path.sep}`)) {
+        return
+    }
+
+    try {
+        await fs.unlink(avatarPath)
+    } catch (error) {
+        if (error.code !== 'ENOENT') {
+            console.error('Avatar cleanup error:', error)
+        }
+    }
 }
 
 const formatLoginLocation = (ipAddress) => {

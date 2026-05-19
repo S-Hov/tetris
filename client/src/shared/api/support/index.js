@@ -15,6 +15,18 @@ export const supportAPI = {
         })
     },
 
+    getMyRequests() {
+        return apiClient('/api/support/requests/my')
+    },
+
+    getMyRequest(ticketId) {
+        return apiClient(`/api/support/requests/my/${encodeURIComponent(ticketId)}`)
+    },
+
+    getMyRequestMessages(ticketId) {
+        return apiClient(`/api/support/requests/my/${encodeURIComponent(ticketId)}/messages`)
+    },
+
     getDonationWallets() {
         return apiClient('/api/support/donations/wallets')
     },

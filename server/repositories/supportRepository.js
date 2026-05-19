@@ -138,6 +138,56 @@ export const getSupportRequestByIdRepo = async (ticketId) => {
     return result.rows[0] || null
 }
 
+export const getUserSupportRequestsRepo = async (userId) => {
+    const result = await pool.query(
+        `
+        SELECT
+            id,
+            category,
+            status,
+            preferred_channel,
+            title,
+            message,
+            created_at,
+            updated_at
+        FROM support_requests
+        WHERE user_id = $1
+        ORDER BY created_at DESC, id DESC
+        `,
+        [userId]
+    )
+
+    return result.rows
+}
+
+export const getUserSupportRequestByIdRepo = async ({ userId, ticketId }) => {
+    const result = await pool.query(
+        `
+        SELECT
+            id,
+            user_id,
+            category,
+            status,
+            priority,
+            preferred_channel,
+            contact_name,
+            contact_email,
+            telegram_url,
+            title,
+            message,
+            created_at,
+            updated_at,
+            resolved_at
+        FROM support_requests
+        WHERE id = $1 AND user_id = $2
+        LIMIT 1
+        `,
+        [ticketId, userId]
+    )
+
+    return result.rows[0] || null
+}
+
 export const getSupportRequestByTelegramTokenRepo = async (telegramToken) => {
     const result = await pool.query(
         `

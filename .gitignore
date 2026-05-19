@@ -31,3 +31,12 @@ dist-ssr
 .env.production.local
 
 .helper.txt
+
+# Runtime uploads
+server/uploads/*
+!server/uploads/.gitkeep
+!server/uploads/avatars/
+server/uploads/avatars/*
+!server/uploads/avatars/.gitkeep
+
+.codex

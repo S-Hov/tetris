@@ -5,7 +5,8 @@
 .profile-welcome,
 .profile-stat-card,
 .profile-card,
-.profile-history-card {
+.profile-history-card,
+.profile-support-card {
     overflow: hidden;
     background: var(--box-bg);
     border: var(--border);
@@ -372,6 +373,44 @@
     font-family: var(--font-1);
 }
 
+.profile-support-card {
+    margin-bottom: 1.5rem;
+}
+
+.profile-support-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    padding: 1.4rem;
+
+    & p {
+        max-width: 760px;
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+}
+
+.profile-support-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.75rem;
+
+    & .button {
+        min-width: 190px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+}
+
+.profile-support-secondary {
+    background: var(--elem-bg);
+}
+
 @media (max-width: 1120px) {
     .profile-stats-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -412,9 +451,19 @@
     }
 
     .profile-match-item,
-    .profile-detail-row {
+    .profile-detail-row,
+    .profile-support-content {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .profile-support-actions {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .profile-support-actions .button {
+        width: 100%;
     }
 
     .profile-match-item > div:last-child {

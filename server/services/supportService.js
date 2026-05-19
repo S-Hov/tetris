@@ -8,6 +8,9 @@ import {
     getActiveSupportBlockRepo,
     getActiveDonationWalletsRepo,
     getDonationWalletByIdRepo,
+    getSupportRequestMessagesRepo,
+    getUserSupportRequestByIdRepo,
+    getUserSupportRequestsRepo,
     getSupportUserContextRepo,
 } from '../repositories/supportRepository.js'
 import { sendSupportRequestReceivedEmail } from './emailService.js'
@@ -134,6 +137,57 @@ export const getDonationWalletsService = async () => {
     }
 }
 
+export const getUserSupportRequestsService = async (userId) => {
+    const rows = await getUserSupportRequestsRepo(userId)
+
+    return {
+        requests: rows.map(formatSupportRequestListItem),
+    }
+}
+
+export const getUserSupportRequestDetailsService = async ({ userId, ticketId }) => {
+    const request = await getUserSupportRequestByIdRepo({ userId, ticketId })
+
+    if (!request) {
+        throw notFound('Обращение не найдено')
+    }
+
+    return {
+        request: formatSupportRequestDetails(request),
+    }
+}
+
+export const getUserSupportRequestMessagesService = async ({ userId, ticketId }) => {
+    const request = await getUserSupportRequestByIdRepo({ userId, ticketId })
+
+    if (!request) {
+        throw notFound('Обращение не найдено')
+    }
+
+    if (request.preferred_channel !== 'telegram') {
+        return {
+            messages: [
+                formatSupportMessage({
+                    id: `initial-${request.id}`,
+                    sender_type: 'client',
+                    sender_label: request.contact_name,
+                    channel: request.preferred_channel,
+                    message_text: request.message,
+                    created_at: request.created_at,
+                }),
+            ],
+            historySupported: false,
+        }
+    }
+
+    const messages = await getSupportRequestMessagesRepo(request.id)
+
+    return {
+        messages: messages.map(formatSupportMessage),
+        historySupported: true,
+    }
+}
+
 export const createDonationService = async ({ userId, body }) => {
     const walletId = Number.parseInt(body.walletId, 10)
 
@@ -204,6 +258,42 @@ const normalizeString = (value) => {
 
     return value.trim()
 }
+
+const formatSupportRequestListItem = (request) => ({
+    id: request.id,
+    category: request.category,
+    status: request.status,
+    preferredChannel: request.preferred_channel,
+    title: request.title,
+    message: request.message,
+    createdAt: request.created_at,
+    updatedAt: request.updated_at,
+})
+
+const formatSupportRequestDetails = (request) => ({
+    id: request.id,
+    category: request.category,
+    status: request.status,
+    priority: request.priority,
+    preferredChannel: request.preferred_channel,
+    contactName: request.contact_name,
+    contactEmail: request.contact_email,
+    telegramUrl: request.telegram_url,
+    title: request.title,
+    message: request.message,
+    createdAt: request.created_at,
+    updatedAt: request.updated_at,
+    resolvedAt: request.resolved_at,
+})
+
+const formatSupportMessage = (message) => ({
+    id: message.id,
+    senderType: message.sender_type,
+    senderLabel: message.sender_label,
+    channel: message.channel,
+    text: message.message_text,
+    createdAt: message.created_at,
+})
 
 const normalizeEmail = (value) => {
     const email = normalizeString(value).toLowerCase()

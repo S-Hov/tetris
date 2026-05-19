@@ -1,6 +1,18 @@
 import { apiClient } from '../apiClient.js'
 
 export const settingsAPI = {
+    getConnections() {
+        return apiClient('/api/settings/connections', {
+            method: 'GET',
+        })
+    },
+
+    unlinkConnection(provider) {
+        return apiClient(`/api/settings/connections/${encodeURIComponent(provider)}/unlink`, {
+            method: 'DELETE',
+        })
+    },
+
     requestEmailChange(data) {
         return apiClient('/api/settings/account/email', {
             method: 'PATCH',

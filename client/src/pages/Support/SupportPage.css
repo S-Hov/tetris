@@ -209,6 +209,20 @@
     }
 }
 
+.support-channel-explainer {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1rem;
+
+    & p {
+        padding: 0.9rem;
+        border: var(--border);
+        border-radius: 18px;
+        background: var(--elem-bg);
+        line-height: 1.55;
+    }
+}
+
 .support-form {
     display: grid;
     gap: 0.9rem;

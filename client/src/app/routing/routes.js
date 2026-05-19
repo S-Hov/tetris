@@ -9,6 +9,8 @@ import ModeSelectPage from '@/pages/ModeSelect/ModeSelectPage.jsx'
 import RatingPage from '@/pages/Rating/RatingPage.jsx'
 import AboutPage from '@/pages/About/AboutPage.jsx'
 import SupportPage from '@/pages/Support/SupportPage.jsx'
+import SupportRequestsPage from '@/pages/SupportRequests/SupportRequestsPage.jsx'
+import SupportRequestDetailsPage from '@/pages/SupportRequestDetails/SupportRequestDetailsPage.jsx'
 
 import MainLayout from '../layouts/MainLayout.jsx'
 import InnerPageLayout from '../layouts/InnerPageLayout.jsx'
@@ -92,6 +94,22 @@ export const routes = [
         title: 'Поддержка',
         component: SupportPage,
         layout: MainLayout,
+    },
+    {
+        key: 'support-requests',
+        path: '/support/requests',
+        title: 'Мои обращения',
+        component: SupportRequestsPage,
+        layout: MainLayout,
+        guard: ProtectedRoute,
+    },
+    {
+        key: 'support-request-details',
+        path: '/support/requests/:ticketId',
+        title: ({ ticketId }) => `Обращение #${ticketId}`,
+        component: SupportRequestDetailsPage,
+        layout: MainLayout,
+        guard: ProtectedRoute,
     },
     {
         key: 'match-details',

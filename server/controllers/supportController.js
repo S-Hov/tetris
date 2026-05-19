@@ -3,6 +3,9 @@ import {
     createDonationService,
     createSupportRequestService,
     getDonationWalletsService,
+    getUserSupportRequestDetailsService,
+    getUserSupportRequestMessagesService,
+    getUserSupportRequestsService,
 } from '../services/supportService.js'
 
 export const createSupportRequest = asyncHandler(async (req, res) => {
@@ -27,6 +30,42 @@ export const getDonationWallets = asyncHandler(async (req, res) => {
     res.json({
         success: true,
         message: 'Donation wallets loaded',
+        data,
+    })
+})
+
+export const getMySupportRequests = asyncHandler(async (req, res) => {
+    const data = await getUserSupportRequestsService(req.user.id)
+
+    res.json({
+        success: true,
+        message: 'Support requests loaded',
+        data,
+    })
+})
+
+export const getMySupportRequestDetails = asyncHandler(async (req, res) => {
+    const data = await getUserSupportRequestDetailsService({
+        userId: req.user.id,
+        ticketId: req.params.ticketId,
+    })
+
+    res.json({
+        success: true,
+        message: 'Support request loaded',
+        data,
+    })
+})
+
+export const getMySupportRequestMessages = asyncHandler(async (req, res) => {
+    const data = await getUserSupportRequestMessagesService({
+        userId: req.user.id,
+        ticketId: req.params.ticketId,
+    })
+
+    res.json({
+        success: true,
+        message: 'Support messages loaded',
         data,
     })
 })
