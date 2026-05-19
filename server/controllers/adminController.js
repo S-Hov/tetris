@@ -23,6 +23,7 @@ import {
     getSupportRequestMessagesRepo,
 } from '../repositories/supportRepository.js'
 import { replyToSupportRequest } from '../services/supportReplyService.js'
+import { closeSupportRequest } from '../services/supportCloseService.js'
 
 const sendAdminResponse = (res, message, data) => {
     res.json({
@@ -512,6 +513,22 @@ export const replySupportRequest = asyncHandler(async (req, res) => {
     const messages = await getSupportRequestMessagesRepo(ticketId)
 
     sendAdminResponse(res, 'Support reply sent', {
+        ...result,
+        request,
+        messages,
+    })
+})
+
+export const closeSupportRequestByAdmin = asyncHandler(async (req, res) => {
+    const ticketId = Number.parseInt(req.params.requestId, 10)
+
+    const result = await closeSupportRequest({
+        ticketId,
+    })
+    const request = await getSupportRequestByIdRepo(ticketId)
+    const messages = await getSupportRequestMessagesRepo(ticketId)
+
+    sendAdminResponse(res, 'Support request closed', {
         ...result,
         request,
         messages,

@@ -39,6 +39,7 @@ import {
     updateResourceStatusByKey,
     updateUser,
     replySupportRequest,
+    closeSupportRequestByAdmin,
 } from '../controllers/adminController.js'
 import { checkAuth } from '../middleware/checkAuth.js'
 import { checkAdmin } from '../middleware/checkAdmin.js'
@@ -94,6 +95,7 @@ adminRouter.get('/rating/history', getRatingHistory)
 adminRouter.get('/support/requests', getSupportRequests)
 adminRouter.get('/support/requests/:requestId', getSupportRequestDetails)
 adminRouter.post('/support/requests/:requestId/reply', replySupportRequest)
+adminRouter.post('/support/requests/:requestId/close', closeSupportRequestByAdmin)
 
 adminRouter.get('/donations', getDonations)
 adminRouter.get('/donations/wallets', getDonationWallets)

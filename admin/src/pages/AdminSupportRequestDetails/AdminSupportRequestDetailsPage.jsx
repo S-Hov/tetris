@@ -26,6 +26,7 @@ export function AdminSupportRequestDetailsPage() {
   const [replyText, setReplyText] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isSending, setIsSending] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
   const [error, setError] = useState('')
   const [isSocketConnected, setIsSocketConnected] = useState(() => adminSocket.connected)
   const messagesEndRef = useRef(null)
@@ -190,6 +191,7 @@ export function AdminSupportRequestDetailsPage() {
       (request.preferred_channel === 'email' && request.contact_email)
     )
   )
+  const canCloseRequest = Boolean(request && !isClosing && !['closed', 'spam'].includes(request.status))
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -211,6 +213,28 @@ export function AdminSupportRequestDetailsPage() {
       notify.error(requestError.message || 'Не удалось отправить ответ')
     } finally {
       setIsSending(false)
+    }
+  }
+
+  const handleCloseRequest = async () => {
+    if (!canCloseRequest) {
+      return
+    }
+
+    setIsClosing(true)
+
+    try {
+      const response = await resourcesAPI.closeSupportRequest(requestId)
+
+      setRequest(response.request || request)
+      setMessages(response.messages || messages)
+      notify.success(response.notified
+        ? 'Обращение закрыто, пользователь уведомлен'
+        : 'Обращение закрыто')
+    } catch (requestError) {
+      notify.error(requestError.message || 'Не удалось закрыть обращение')
+    } finally {
+      setIsClosing(false)
     }
   }
 
@@ -246,6 +270,14 @@ export function AdminSupportRequestDetailsPage() {
           <span className="cell-badge">{request.status}</span>
           <strong>{CHANNEL_LABELS[request.preferred_channel] || request.preferred_channel}</strong>
           <small>{formatDate(request.created_at)}</small>
+          <button
+            className="admin-button"
+            disabled={!canCloseRequest}
+            onClick={handleCloseRequest}
+            type="button"
+          >
+            {isClosing ? 'Закрываем...' : 'Закрыть'}
+          </button>
         </div>
       </header>
 

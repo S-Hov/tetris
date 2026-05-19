@@ -1,11 +1,13 @@
 import { asyncHandler } from '../utils/asyncHandler.js'
 import {
+    answerTelegramCallbackQuery,
     handleSupportClientTelegramMessage,
     linkSupportRequestTelegramChat,
     parseAdminTelegramUserIds,
     sendTelegramBotMessage,
 } from '../services/telegramSupportService.js'
 import { replyToSupportRequest } from '../services/supportReplyService.js'
+import { closeSupportRequest } from '../services/supportCloseService.js'
 
 const extractTicketIdFromText = (text = '') => {
     const match = text.match(/#(\d+)/)
@@ -29,8 +31,22 @@ const extractStartTokenFromText = (text = '') => {
     return match ? match[1].trim().split(/\s+/)[0] : null
 }
 
+const extractSupportCloseTicketId = (value = '') => {
+    const match = String(value || '').match(/^support_close:(\d+)$/)
+    return match ? Number(match[1]) : null
+}
+
 export const handleTelegramWebhook = asyncHandler(async (req, res) => {
     const update = req.body
+    const callbackQuery = update?.callback_query
+
+    if (callbackQuery) {
+        return handleTelegramCallbackQuery({
+            callbackQuery,
+            res,
+        })
+    }
+
     const message = update?.message
     const messageText = getTelegramMessageText(message)
 
@@ -120,6 +136,86 @@ export const handleTelegramWebhook = asyncHandler(async (req, res) => {
 
     return sendWebhookResponse(res, 'Telegram reply processed')
 })
+
+const handleTelegramCallbackQuery = async ({
+    callbackQuery,
+    res,
+}) => {
+    const allowedAdminIds = parseAdminTelegramUserIds()
+    const callbackMessage = callbackQuery.message
+    const callbackFromId = String(callbackQuery.from?.id || '')
+
+    if (!allowedAdminIds.has(callbackFromId) && !isAdminTelegramMessage(callbackMessage, allowedAdminIds)) {
+        await answerTelegramCallback(callbackQuery.id, 'Недостаточно прав', true)
+        return sendWebhookResponse(res, 'Telegram callback ignored')
+    }
+
+    const ticketId = extractSupportCloseTicketId(callbackQuery.data)
+
+    if (!ticketId) {
+        await answerTelegramCallback(callbackQuery.id, 'Действие не найдено', true)
+        return sendWebhookResponse(res, 'Telegram callback ignored')
+    }
+
+    try {
+        const closeResult = await closeSupportRequest({
+            ticketId,
+        })
+        const statusText = closeResult.alreadyClosed
+            ? `Обращение #${ticketId} уже закрыто.`
+            : closeResult.notified
+                ? `Обращение #${ticketId} закрыто. Пользователь уведомлен.`
+                : closeResult.queued
+                    ? `Обращение #${ticketId} закрыто. Пользователь получит уведомление, когда откроет Telegram-бота.`
+                    : `Обращение #${ticketId} закрыто, но уведомление пользователю отправить не удалось.`
+
+        await answerTelegramCallback(callbackQuery.id, statusText)
+        await sendTelegramAdminStatusMessage({
+            chatId: callbackMessage?.chat?.id,
+            text: statusText,
+        })
+
+        return sendWebhookResponse(res, 'Telegram support request closed', {
+            ticketId,
+            closed: true,
+            alreadyClosed: closeResult.alreadyClosed,
+        })
+    } catch (error) {
+        console.error('Telegram support close failed', {
+            ticketId,
+            adminTelegramId: callbackFromId,
+            chatId: callbackMessage?.chat?.id,
+            error: error.message,
+        })
+
+        await answerTelegramCallback(callbackQuery.id, error.message || 'Не удалось закрыть обращение', true)
+        await sendTelegramAdminStatusMessage({
+            chatId: callbackMessage?.chat?.id,
+            text: `Не удалось закрыть обращение #${ticketId}: ${error.message}`,
+        })
+
+        return sendWebhookResponse(res, 'Telegram support close failed', {
+            processed: false,
+            ticketId,
+            error: error.message,
+        })
+    }
+}
+
+const answerTelegramCallback = async (callbackQueryId, text, showAlert = false) => {
+    try {
+        await answerTelegramCallbackQuery({
+            callbackQueryId,
+            text,
+            showAlert,
+        })
+    } catch (error) {
+        console.error('Telegram callback answer failed', {
+            callbackQueryId,
+            error: error.message,
+        })
+    }
+}
 
 const sendTelegramAdminStatusMessage = async ({ chatId, text }) => {
     try {

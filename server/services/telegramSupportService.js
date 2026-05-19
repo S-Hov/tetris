@@ -244,9 +244,9 @@ const sendPendingAdminRepliesToLinkedTelegramChat = async ({
     chatId,
 }) => {
     const messages = await getSupportRequestMessagesRepo(requestId)
-    const pendingAdminReplies = messages.filter((message) => message.sender_type === 'admin')
+    const pendingMessages = messages.filter((message) => ['admin', 'system'].includes(message.sender_type))
 
-    for (const message of pendingAdminReplies) {
+    for (const message of pendingMessages) {
         try {
             await sendTelegramBotMessage({
                 chatId,
@@ -364,6 +364,38 @@ export const sendTelegramBotMessage = async ({
     if (!response.ok) {
         const errorText = await response.text().catch(() => '')
         throw new Error(`chat ${chatId}: ${response.status} ${errorText}`)
+    }
+}
+
+export const answerTelegramCallbackQuery = async ({
+    botToken = normalizeString(process.env.TELEGRAM_BOT_TOKEN),
+    callbackQueryId,
+    text = '',
+    showAlert = false,
+}) => {
+    if (!botToken) {
+        throw new Error('Telegram bot token is not configured')
+    }
+
+    if (!callbackQueryId) {
+        throw new Error('Telegram callback query id is required')
+    }
+
+    const response = await fetch(`${TELEGRAM_API_BASE_URL}/bot${botToken}/answerCallbackQuery`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            callback_query_id: callbackQueryId,
+            text,
+            show_alert: Boolean(showAlert),
+        }),
+    })
+
+    if (!response.ok) {
+        const errorText = await response.text().catch(() => '')
+        throw new Error(`callback ${callbackQueryId}: ${response.status} ${errorText}`)
     }
 }
 

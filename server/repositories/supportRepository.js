@@ -448,6 +448,101 @@ export const appendSupportAdminReplyRepo = async ({
     return result.rows[0] || null
 }
 
+export const closeSupportRequestRepo = async ({
+    ticketId,
+    messageText,
+}) => {
+    const client = await pool.connect()
+
+    try {
+        await client.query('BEGIN')
+
+        const requestResult = await client.query(
+            `
+            UPDATE support_requests
+            SET
+                status = 'closed',
+                resolved_at = COALESCE(resolved_at, NOW()),
+                updated_at = NOW()
+            WHERE id = $1
+                AND status NOT IN ('closed', 'spam')
+            RETURNING
+                id,
+                user_id,
+                category,
+                status,
+                priority,
+                preferred_channel,
+                contact_name,
+                contact_email,
+                title,
+                message,
+                page_url,
+                attachment_url,
+                client_context,
+                telegram_token,
+                telegram_url,
+                telegram_user_id,
+                telegram_chat_id,
+                telegram_username,
+                telegram_linked_at,
+                admin_notes,
+                resolved_at,
+                created_at,
+                updated_at
+            `,
+            [ticketId]
+        )
+        const request = requestResult.rows[0] || null
+
+        if (!request) {
+            await client.query('ROLLBACK')
+            return {
+                request: null,
+                message: null,
+            }
+        }
+
+        const messageResult = await client.query(
+            `
+            INSERT INTO support_request_messages (
+                support_request_id,
+                sender_type,
+                sender_label,
+                channel,
+                message_text
+            )
+            VALUES ($1, 'system', $2, 'admin', $3)
+            RETURNING
+                id,
+                support_request_id,
+                sender_type,
+                sender_label,
+                channel,
+                message_text,
+                created_at
+            `,
+            [
+                ticketId,
+                'Support',
+                messageText,
+            ]
+        )
+
+        await client.query('COMMIT')
+
+        return {
+            request,
+            message: messageResult.rows[0] || null,
+        }
+    } catch (error) {
+        await client.query('ROLLBACK')
+        throw error
+    } finally {
+        client.release()
+    }
+}
+
 export const getActiveDonationWalletsRepo = async () => {
     const result = await pool.query(
         `

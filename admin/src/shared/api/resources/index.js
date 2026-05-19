@@ -42,6 +42,12 @@ export const resourcesAPI = {
     })
   },
 
+  closeSupportRequest(requestId) {
+    return apiClient(`/api/admin/support/requests/${requestId}/close`, {
+      method: 'POST',
+    })
+  },
+
   createItem(resourceKey, payload) {
     return apiClient(`/api/admin/resources/${resourceKey}`, {
       method: 'POST',
