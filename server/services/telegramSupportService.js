@@ -5,6 +5,7 @@ import {
     getSupportRequestByTelegramTokenRepo,
     linkSupportRequestTelegramRepo,
 } from '../repositories/supportRepository.js'
+import { emitSupportRequestMessage, emitSupportRequestUpdated } from './supportRealtimeService.js'
 
 const TELEGRAM_API_BASE_URL = 'https://api.telegram.org'
 const DEFAULT_ADMIN_URL = 'https://admin.pvp-tetris.online'
@@ -146,6 +147,11 @@ export const linkSupportRequestTelegramChat = async ({
         text: TELEGRAM_LINKED_MESSAGE,
     })
 
+    emitSupportRequestUpdated({
+        requestId: linkedRequest.id,
+        request: linkedRequest,
+    })
+
     return {
         linked: true,
         message: 'Telegram support request linked',
@@ -192,7 +198,7 @@ export const handleSupportClientTelegramMessage = async ({
         telegramUserId: normalizedUserId,
     })
 
-    await createSupportRequestMessageRepo({
+    const message = await createSupportRequestMessageRepo({
         supportRequestId: supportRequest.id,
         senderType: 'client',
         senderLabel,
@@ -201,6 +207,12 @@ export const handleSupportClientTelegramMessage = async ({
         telegramUserId: normalizedUserId,
         telegramChatId: normalizedChatId,
         telegramMessageId: normalizeTelegramId(telegramMessageId),
+    })
+
+    emitSupportRequestMessage({
+        requestId: supportRequest.id,
+        message,
+        request: supportRequest,
     })
 
     const recentMessages = await getRecentSupportRequestMessagesRepo(supportRequest.id, 5)
@@ -467,7 +479,7 @@ const createAdminTicketUrl = (ticketId) => {
     const baseUrl = normalizeString(process.env.ADMIN_URL || process.env.ADMIN_PANEL_URL) || DEFAULT_ADMIN_URL
     const normalizedBaseUrl = baseUrl.replace(/\/+$/, '')
 
-    return `${normalizedBaseUrl}/support/requests?search=${encodeURIComponent(ticketId || '')}`
+    return `${normalizedBaseUrl}/support/requests/${encodeURIComponent(ticketId || '')}`
 }
 
 const createAdminUserLine = (userId) => {

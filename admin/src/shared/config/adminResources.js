@@ -308,7 +308,7 @@ export const adminResourceConfigs = {
       { label: 'Канал', key: 'preferred_channel', options: ['email', 'telegram'] },
     ],
     columns: [
-      { key: 'id', label: 'ID', width: '72px' },
+      { key: 'id', label: 'ID', width: '72px', type: 'supportRequestLink' },
       { key: 'user_id', label: 'User ID', type: 'userLink' },
       { key: 'category', label: 'Категория', type: 'badge' },
       { key: 'status', label: 'Статус', type: 'badge' },
@@ -316,7 +316,7 @@ export const adminResourceConfigs = {
       { key: 'preferred_channel', label: 'Канал', type: 'badge' },
       { key: 'title', label: 'Тема' },
       { key: 'contact_email', label: 'Email' },
-      { key: 'telegram_username', label: 'Telegram' },
+      { key: 'telegram_username', label: 'Telegram', type: 'telegram' },
       { key: 'telegram_linked_at', label: 'TG linked', type: 'datetime' },
       { key: 'created_at', label: 'Создано', type: 'datetime' },
     ],

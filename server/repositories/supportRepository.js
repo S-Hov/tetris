@@ -115,6 +115,9 @@ export const getSupportRequestByIdRepo = async (ticketId) => {
             contact_email,
             title,
             message,
+            page_url,
+            attachment_url,
+            client_context,
             telegram_token,
             telegram_url,
             telegram_user_id,
@@ -284,6 +287,30 @@ export const getRecentSupportRequestMessagesRepo = async (supportRequestId, limi
     )
 
     return result.rows.reverse()
+}
+
+export const getSupportRequestMessagesRepo = async (supportRequestId) => {
+    const result = await pool.query(
+        `
+        SELECT
+            id,
+            support_request_id,
+            sender_type,
+            sender_label,
+            channel,
+            message_text,
+            telegram_user_id,
+            telegram_chat_id,
+            telegram_message_id,
+            created_at
+        FROM support_request_messages
+        WHERE support_request_id = $1
+        ORDER BY created_at ASC, id ASC
+        `,
+        [supportRequestId]
+    )
+
+    return result.rows
 }
 
 export const appendSupportAdminReplyRepo = async ({

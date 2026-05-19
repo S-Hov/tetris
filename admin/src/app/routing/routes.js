@@ -4,6 +4,7 @@ import { AdminUserDetailsPage } from '@/pages/AdminUserDetails/AdminUserDetailsP
 import { AdminUserEditPage } from '@/pages/AdminUserEdit/AdminUserEditPage.jsx'
 import { AdminMatchDetailsPage } from '@/pages/AdminMatchDetails/AdminMatchDetailsPage.jsx'
 import { AdminMatchTeamDetailsPage } from '@/pages/AdminMatchTeamDetails/AdminMatchTeamDetailsPage.jsx'
+import { AdminSupportRequestDetailsPage } from '@/pages/AdminSupportRequestDetails/AdminSupportRequestDetailsPage.jsx'
 import { adminResourceConfigs } from '@/shared/config/adminResources.js'
 
 export const routes = [
@@ -36,6 +37,12 @@ export const routes = [
     path: 'matches/teams/:teamId',
     title: ({ teamId }) => `Команда #${teamId}`,
     component: AdminMatchTeamDetailsPage,
+  },
+  {
+    key: 'supportRequestDetails',
+    path: 'support/requests/:requestId',
+    title: ({ requestId }) => `Обращение #${requestId}`,
+    component: AdminSupportRequestDetailsPage,
   },
   ...Object.values(adminResourceConfigs).map((resource) => ({
     key: resource.key,

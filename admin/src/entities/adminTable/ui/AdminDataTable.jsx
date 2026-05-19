@@ -119,6 +119,19 @@ function formatCell(value, column, row, config, onStatusChange) {
     return <Link className="admin-table-link" to={`/matches/${value}`}>#{value}</Link>
   }
 
+  if (column.type === 'supportRequestLink' || (config.key === 'supportRequests' && column.key === 'id')) {
+    return <Link className="admin-table-link" to={`/support/requests/${value}`}>#{value}</Link>
+  }
+
+  if (column.type === 'telegram') {
+    const text = String(value)
+    const username = text.startsWith('@') ? text.slice(1) : ''
+
+    return username
+      ? <a className="admin-table-link" href={`https://t.me/${username}`} target="_blank" rel="noreferrer">{text}</a>
+      : text
+  }
+
   if (column.type === 'matchTeamLink' || (config.key === 'matchTeams' && column.key === 'id')) {
     return <Link className="admin-table-link" to={`/matches/teams/${value}`}>#{value}</Link>
   }

@@ -18,6 +18,11 @@ import {
 } from '../repositories/adminRepository.js'
 import { badRequest } from '../helpers/error.helper.js'
 import { updateUserAvatarService } from '../services/authService.js'
+import {
+    getSupportRequestByIdRepo,
+    getSupportRequestMessagesRepo,
+} from '../repositories/supportRepository.js'
+import { replyToSupportRequest } from '../services/supportReplyService.js'
 
 const sendAdminResponse = (res, message, data) => {
     res.json({
@@ -463,6 +468,54 @@ export const getRatingHistory = asyncHandler(async (req, res) => {
 
 export const getSupportRequests = asyncHandler(async (req, res) => {
     sendAdminResponse(res, 'Support requests loaded', await getAdminResourceRepo('supportRequests', req.query))
+})
+
+export const getSupportRequestDetails = asyncHandler(async (req, res) => {
+    const request = await getSupportRequestByIdRepo(req.params.requestId)
+
+    if (!request) {
+        res.status(404).json({
+            success: false,
+            message: 'Support request not found',
+            data: null,
+        })
+        return
+    }
+
+    const messages = await getSupportRequestMessagesRepo(request.id)
+
+    sendAdminResponse(res, 'Support request details loaded', {
+        request,
+        messages,
+    })
+})
+
+export const replySupportRequest = asyncHandler(async (req, res) => {
+    const ticketId = Number.parseInt(req.params.requestId, 10)
+    const replyText = String(req.body?.message || req.body?.replyText || '').trim()
+
+    if (!Number.isInteger(ticketId) || ticketId <= 0) {
+        throw badRequest('Support request id is invalid')
+    }
+
+    if (!replyText) {
+        throw badRequest('Reply message is required')
+    }
+
+    const result = await replyToSupportRequest({
+        ticketId,
+        adminLabel: `Admin ${req.user?.username || req.user?.id || ''}`.trim(),
+        replyText,
+    })
+
+    const request = await getSupportRequestByIdRepo(ticketId)
+    const messages = await getSupportRequestMessagesRepo(ticketId)
+
+    sendAdminResponse(res, 'Support reply sent', {
+        ...result,
+        request,
+        messages,
+    })
 })
 
 export const getDonations = asyncHandler(async (req, res) => {

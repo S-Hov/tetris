@@ -1,5 +1,6 @@
 import { registerLobbyHandlers } from './lobby.socket.js'
 import { registerGameHandlers } from './game.handlers.js'
+import { registerSupportHandlers } from './support.socket.js'
 import {
     registerMatchmakingHandlers,
     removeSocketFromParties,
@@ -13,6 +14,7 @@ import {
     markRoomPlayerLeftService,
 } from '../services/matchService.js'
 import { upsertUserSessionRepo } from '../repositories/analyticsRepository.js'
+import { setSupportRealtimeIo } from '../services/supportRealtimeService.js'
 
 const getWinnerAfterPlayerLeft = (room, removedPlayer) => {
     const players = getRoomPlayers(room)
@@ -36,6 +38,7 @@ const getTeamOutcomeAfterPlayerLeft = (previousRoom, updatedRoom, removedPlayer)
 }
 
 export const registerSocketHandlers = (io) => {
+    setSupportRealtimeIo(io)
     io.use(socketAuthMiddleware)
 
     io.on('connection', (socket) => {
@@ -59,6 +62,7 @@ export const registerSocketHandlers = (io) => {
         registerLobbyHandlers(io, socket)
         registerGameHandlers(io, socket)
         registerMatchmakingHandlers(io, socket)
+        registerSupportHandlers(io, socket)
 
         socket.on('disconnect', async () => {
             console.log('Socket disconnected:', socket.id)

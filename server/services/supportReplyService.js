@@ -6,20 +6,23 @@ import {
 } from '../repositories/supportRepository.js'
 import { sendSupportReplyEmail } from './emailService.js'
 import { sendTelegramBotMessage } from './telegramSupportService.js'
+import { emitSupportRequestMessage, emitSupportRequestUpdated } from './supportRealtimeService.js'
 
 export const replyToSupportRequest = async ({
     ticketId,
     adminTelegramId,
+    adminLabel,
     replyText,
 }) => {
     const normalizedReplyText = String(replyText || '').trim()
+    const normalizedAdminLabel = String(adminLabel || '').trim()
 
     if (!Number.isInteger(ticketId) || ticketId <= 0) {
         throw badRequest('Support ticket id is invalid')
     }
 
-    if (!adminTelegramId) {
-        throw badRequest('Admin Telegram id is required')
+    if (!adminTelegramId && !normalizedAdminLabel) {
+        throw badRequest('Admin author is required')
     }
 
     if (!normalizedReplyText) {
@@ -58,18 +61,28 @@ export const replyToSupportRequest = async ({
         })
     }
 
-    await appendSupportAdminReplyRepo({
+    const updatedRequest = await appendSupportAdminReplyRepo({
         ticketId: supportRequest.id,
-        adminTelegramId,
+        adminTelegramId: normalizedAdminLabel || adminTelegramId,
         replyText: normalizedReplyText,
     })
 
-    await createSupportRequestMessageRepo({
+    const message = await createSupportRequestMessageRepo({
         supportRequestId: supportRequest.id,
         senderType: 'admin',
-        senderLabel: `Telegram admin ${adminTelegramId}`,
+        senderLabel: normalizedAdminLabel || `Telegram admin ${adminTelegramId}`,
         channel: 'admin',
         messageText: normalizedReplyText,
+    })
+
+    emitSupportRequestMessage({
+        requestId: supportRequest.id,
+        message,
+        request: updatedRequest,
+    })
+    emitSupportRequestUpdated({
+        requestId: supportRequest.id,
+        request: updatedRequest,
     })
 
     return {

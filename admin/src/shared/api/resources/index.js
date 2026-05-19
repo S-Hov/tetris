@@ -29,6 +29,19 @@ export const resourcesAPI = {
     })
   },
 
+  getSupportRequestDetails(requestId) {
+    return apiClient(`/api/admin/support/requests/${requestId}`, {
+      method: 'GET',
+    })
+  },
+
+  replySupportRequest(requestId, message) {
+    return apiClient(`/api/admin/support/requests/${requestId}/reply`, {
+      method: 'POST',
+      body: JSON.stringify({ message }),
+    })
+  },
+
   createItem(resourceKey, payload) {
     return apiClient(`/api/admin/resources/${resourceKey}`, {
       method: 'POST',

@@ -1,3 +1,7 @@
+.auth-section{
+    min-height: 85vh;
+}
+
 .auth-container {
     background: transparent;
     width: 90%;
