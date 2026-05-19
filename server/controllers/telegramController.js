@@ -11,6 +11,18 @@ const extractTicketIdFromText = (text = '') => {
     return match ? Number(match[1]) : null
 }
 
+const getTelegramMessageText = (message = {}) => {
+    const value = message.text || message.caption || ''
+    return typeof value === 'string' ? value : ''
+}
+
+const isAdminTelegramMessage = (message = {}, allowedAdminIds = new Set()) => {
+    const fromId = String(message.from?.id || '')
+    const chatId = String(message.chat?.id || '')
+
+    return allowedAdminIds.has(fromId) || allowedAdminIds.has(chatId)
+}
+
 const extractStartTokenFromText = (text = '') => {
     const match = text.trim().match(/^\/start(?:@\w+)?\s+(.+)$/i)
     return match ? match[1].trim().split(/\s+/)[0] : null
@@ -19,12 +31,13 @@ const extractStartTokenFromText = (text = '') => {
 export const handleTelegramWebhook = asyncHandler(async (req, res) => {
     const update = req.body
     const message = update?.message
+    const messageText = getTelegramMessageText(message)
 
-    if (!message?.text) {
+    if (!message || !messageText) {
         return sendWebhookResponse(res, 'Telegram update ignored')
     }
 
-    const startToken = extractStartTokenFromText(message.text)
+    const startToken = extractStartTokenFromText(messageText)
 
     if (startToken) {
         const linkResult = await linkSupportRequestTelegramChat({
@@ -43,13 +56,13 @@ export const handleTelegramWebhook = asyncHandler(async (req, res) => {
     const adminTelegramId = String(message.from?.id || '')
     const allowedAdminIds = parseAdminTelegramUserIds()
 
-    if (!allowedAdminIds.has(adminTelegramId)) {
+    if (!isAdminTelegramMessage(message, allowedAdminIds)) {
         const clientMessageResult = await handleSupportClientTelegramMessage({
             telegramUserId: message.from?.id,
             telegramChatId: message.chat?.id,
             telegramUsername: message.from?.username,
             telegramMessageId: message.message_id,
-            messageText: message.text,
+            messageText,
         })
 
         return sendWebhookResponse(res, clientMessageResult.message, {
@@ -58,17 +71,19 @@ export const handleTelegramWebhook = asyncHandler(async (req, res) => {
         })
     }
 
-    if (!message.reply_to_message?.text) {
+    const replyContextText = getTelegramMessageText(message.reply_to_message)
+
+    if (!replyContextText) {
         return sendWebhookResponse(res, 'Telegram update ignored')
     }
 
-    const ticketId = extractTicketIdFromText(message.reply_to_message.text)
+    const ticketId = extractTicketIdFromText(replyContextText)
 
     if (!ticketId) {
         return sendWebhookResponse(res, 'Support ticket id not found')
     }
 
-    const replyText = String(message.text || '').trim()
+    const replyText = messageText.trim()
 
     if (!replyText) {
         return sendWebhookResponse(res, 'Telegram reply is empty')
