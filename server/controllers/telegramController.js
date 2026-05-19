@@ -3,6 +3,7 @@ import {
     handleSupportClientTelegramMessage,
     linkSupportRequestTelegramChat,
     parseAdminTelegramUserIds,
+    sendTelegramBotMessage,
 } from '../services/telegramSupportService.js'
 import { replyToSupportRequest } from '../services/supportReplyService.js'
 
@@ -55,8 +56,10 @@ export const handleTelegramWebhook = asyncHandler(async (req, res) => {
 
     const adminTelegramId = String(message.from?.id || '')
     const allowedAdminIds = parseAdminTelegramUserIds()
+    const replyContextText = getTelegramMessageText(message.reply_to_message)
+    const replyTicketId = replyContextText ? extractTicketIdFromText(replyContextText) : null
 
-    if (!isAdminTelegramMessage(message, allowedAdminIds)) {
+    if (!replyTicketId && !isAdminTelegramMessage(message, allowedAdminIds)) {
         const clientMessageResult = await handleSupportClientTelegramMessage({
             telegramUserId: message.from?.id,
             telegramChatId: message.chat?.id,
@@ -71,16 +74,8 @@ export const handleTelegramWebhook = asyncHandler(async (req, res) => {
         })
     }
 
-    const replyContextText = getTelegramMessageText(message.reply_to_message)
-
-    if (!replyContextText) {
+    if (!replyTicketId) {
         return sendWebhookResponse(res, 'Telegram update ignored')
-    }
-
-    const ticketId = extractTicketIdFromText(replyContextText)
-
-    if (!ticketId) {
-        return sendWebhookResponse(res, 'Support ticket id not found')
     }
 
     const replyText = messageText.trim()
@@ -89,14 +84,56 @@ export const handleTelegramWebhook = asyncHandler(async (req, res) => {
         return sendWebhookResponse(res, 'Telegram reply is empty')
     }
 
-    await replyToSupportRequest({
-        ticketId,
-        adminTelegramId,
-        replyText,
-    })
+    try {
+        const replyResult = await replyToSupportRequest({
+            ticketId: replyTicketId,
+            adminTelegramId,
+            replyText,
+        })
+
+        await sendTelegramAdminStatusMessage({
+            chatId: message.chat?.id,
+            text: replyResult.queued
+                ? `Ответ по обращению #${replyTicketId} сохранен. Пользователь получит его, когда откроет Telegram-бота.`
+                : `Ответ по обращению #${replyTicketId} отправлен пользователю.`,
+        })
+    } catch (error) {
+        console.error('Telegram support reply failed', {
+            ticketId: replyTicketId,
+            adminTelegramId,
+            chatId: message.chat?.id,
+            messageId: message.message_id,
+            error: error.message,
+        })
+
+        await sendTelegramAdminStatusMessage({
+            chatId: message.chat?.id,
+            text: `Не удалось отправить ответ по обращению #${replyTicketId}: ${error.message}`,
+        })
+
+        return sendWebhookResponse(res, 'Telegram reply failed', {
+            processed: false,
+            ticketId: replyTicketId,
+            error: error.message,
+        })
+    }
 
     return sendWebhookResponse(res, 'Telegram reply processed')
 })
+
+const sendTelegramAdminStatusMessage = async ({ chatId, text }) => {
+    try {
+        await sendTelegramBotMessage({
+            chatId,
+            text,
+        })
+    } catch (error) {
+        console.error('Telegram admin status message failed', {
+            chatId,
+            error: error.message,
+        })
+    }
+}
 
 const sendWebhookResponse = (res, message, data = null) => res.json({
     success: true,

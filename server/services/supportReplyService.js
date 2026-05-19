@@ -40,14 +40,12 @@ export const replyToSupportRequest = async ({
     }
 
     if (supportRequest.preferred_channel === 'telegram') {
-        if (!supportRequest.telegram_chat_id || !supportRequest.telegram_linked_at) {
-            throw badRequest(`Support request #${ticketId} is not linked to Telegram`)
+        if (supportRequest.telegram_chat_id && supportRequest.telegram_linked_at) {
+            await sendTelegramBotMessage({
+                chatId: supportRequest.telegram_chat_id,
+                text: normalizedReplyText,
+            })
         }
-
-        await sendTelegramBotMessage({
-            chatId: supportRequest.telegram_chat_id,
-            text: normalizedReplyText,
-        })
     } else if (supportRequest.preferred_channel === 'email') {
         if (!supportRequest.contact_email) {
             throw badRequest(`Support request #${ticketId} does not have a contact email`)
@@ -88,5 +86,7 @@ export const replyToSupportRequest = async ({
     return {
         ticketId: supportRequest.id,
         preferredChannel: supportRequest.preferred_channel,
+        queued: supportRequest.preferred_channel === 'telegram'
+            && (!supportRequest.telegram_chat_id || !supportRequest.telegram_linked_at),
     }
 }

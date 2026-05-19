@@ -3,6 +3,7 @@ import {
     getActiveSupportRequestByTelegramChatIdRepo,
     getRecentSupportRequestMessagesRepo,
     getSupportRequestByTelegramTokenRepo,
+    getSupportRequestMessagesRepo,
     linkSupportRequestTelegramRepo,
 } from '../repositories/supportRepository.js'
 import { emitSupportRequestMessage, emitSupportRequestUpdated } from './supportRealtimeService.js'
@@ -147,6 +148,11 @@ export const linkSupportRequestTelegramChat = async ({
         text: TELEGRAM_LINKED_MESSAGE,
     })
 
+    await sendPendingAdminRepliesToLinkedTelegramChat({
+        requestId: linkedRequest.id,
+        chatId: normalizedChatId,
+    })
+
     emitSupportRequestUpdated({
         requestId: linkedRequest.id,
         request: linkedRequest,
@@ -230,6 +236,29 @@ export const handleSupportClientTelegramMessage = async ({
         processed: true,
         message: 'Telegram client message processed',
         ticketId: supportRequest.id,
+    }
+}
+
+const sendPendingAdminRepliesToLinkedTelegramChat = async ({
+    requestId,
+    chatId,
+}) => {
+    const messages = await getSupportRequestMessagesRepo(requestId)
+    const pendingAdminReplies = messages.filter((message) => message.sender_type === 'admin')
+
+    for (const message of pendingAdminReplies) {
+        try {
+            await sendTelegramBotMessage({
+                chatId,
+                text: message.message_text,
+            })
+        } catch (error) {
+            console.error('Pending Telegram admin reply failed', {
+                requestId,
+                messageId: message.id,
+                error: error.message,
+            })
+        }
     }
 }
 
