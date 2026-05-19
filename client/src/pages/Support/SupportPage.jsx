@@ -41,7 +41,7 @@ const initialSuccessState = {
 const SupportPage = () => {
     const { user, isAuth } = useAuth()
     const [category, setCategory] = useState(feedbackTypes[0].value)
-    const [preferredChannel, setPreferredChannel] = useState('email')
+    const [preferredChannel, setPreferredChannel] = useState('telegram')
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [message, setMessage] = useState('')
@@ -262,7 +262,7 @@ const SupportPage = () => {
                                     <div className="support-field support-field--wide">
                                         <span>Предпочитаемый канал ответа</span>
                                         <div className="support-channel-options">
-                                            <label className="support-channel-option">
+                                            <label className="support-channel-option" style={{ order: 2 }}>
                                                 <input
                                                     type="radio"
                                                     name="preferredChannel"
@@ -276,7 +276,7 @@ const SupportPage = () => {
                                                 </span>
                                             </label>
 
-                                            <label className="support-channel-option">
+                                            <label className="support-channel-option" style={{ order: 1 }}>
                                                 <input
                                                     type="radio"
                                                     name="preferredChannel"

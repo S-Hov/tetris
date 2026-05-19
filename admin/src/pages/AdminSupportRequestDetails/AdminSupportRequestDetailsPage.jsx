@@ -216,6 +216,16 @@ export function AdminSupportRequestDetailsPage() {
     }
   }
 
+  const handleReplyKeyDown = (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+      event.preventDefault()
+
+      if (canSendReply) {
+        event.currentTarget.form?.requestSubmit()
+      }
+    }
+  }
+
   const handleCloseRequest = async () => {
     if (!canCloseRequest) {
       return
@@ -352,6 +362,7 @@ export function AdminSupportRequestDetailsPage() {
             rows={4}
             value={replyText}
             onChange={(event) => setReplyText(event.target.value)}
+            onKeyDown={handleReplyKeyDown}
           />
           <button className="admin-button admin-button--primary" disabled={!canSendReply} type="submit">
             {isSending ? 'Отправляем...' : 'Отправить'}

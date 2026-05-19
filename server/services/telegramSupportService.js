@@ -10,6 +10,7 @@ import { emitSupportRequestMessage, emitSupportRequestUpdated } from './supportR
 
 const TELEGRAM_API_BASE_URL = 'https://api.telegram.org'
 const DEFAULT_ADMIN_URL = 'https://admin.pvp-tetris.online'
+const DEFAULT_CLIENT_URL = 'https://pvp-tetris.online'
 const TELEGRAM_LINKED_MESSAGE = 'Спасибо! Ваше обращение отправлено в поддержку. Мы ответим вам здесь.'
 const NO_ACTIVE_TICKET_MESSAGE = 'У вас нет активного обращения. Пожалуйста, создайте новое обращение на сайте.'
 const SUPPORT_CATEGORY_LABELS = {
@@ -190,6 +191,7 @@ export const handleSupportClientTelegramMessage = async ({
         await sendTelegramBotMessage({
             chatId: normalizedChatId,
             text: NO_ACTIVE_TICKET_MESSAGE,
+            replyMarkup: createNoActiveTicketReplyMarkup(),
         })
 
         return {
@@ -543,6 +545,24 @@ const createAdminTicketUrl = (ticketId) => {
     const normalizedBaseUrl = baseUrl.replace(/\/+$/, '')
 
     return `${normalizedBaseUrl}/support/requests/${encodeURIComponent(ticketId || '')}`
+}
+
+const createNoActiveTicketReplyMarkup = () => ({
+    inline_keyboard: [
+        [
+            {
+                text: 'Создать обращение',
+                url: createClientSupportUrl(),
+            },
+        ],
+    ],
+})
+
+const createClientSupportUrl = () => {
+    const baseUrl = normalizeString(process.env.CLIENT_URL || process.env.SITE_URL) || DEFAULT_CLIENT_URL
+    const normalizedBaseUrl = baseUrl.replace(/\/+$/, '')
+
+    return `${normalizedBaseUrl}/support`
 }
 
 const createAdminUserLine = (userId) => {
