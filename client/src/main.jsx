@@ -9,9 +9,11 @@ import './app/styles/animations.css'
 
 import App from './app/App.jsx'
 import { AuthProvider } from './shared/context/AuthContext.jsx'
+import { initGlowEffect } from './shared/lib/glow-effect/glowEffect.js'
 import { initTheme } from './shared/lib/theme/theme.js'
 
 initTheme()
+initGlowEffect()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

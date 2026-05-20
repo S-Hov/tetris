@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import AppSwitch from '@/shared/ui/AppSwitch'
 import { useAuth } from '@/shared/hooks/useAuth'
+import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
 import { authenticationAPI } from '@/shared/api/auth'
 import { settingsAPI } from '@/shared/api/settings'
@@ -16,6 +17,7 @@ const AccountSettingsPage = () => {
     const navigate = useNavigate()
     const avatarInputRef = useRef(null)
     const { checkAuth, logout, setUser, user } = useAuth()
+    const { isGlowEffectEnabled, toggleGlowEffect } = useGlowEffect()
     const { isDarkTheme, toggleTheme } = useTheme()
     const [activeTab, setActiveTab] = useState('general')
     const [profileForm, setProfileForm] = useState({ username: '' })
@@ -318,6 +320,18 @@ const AccountSettingsPage = () => {
                                         <small>Переключает цветовую схему интерфейса</small>
                                     </span>
                                     <AppSwitch checked={isDarkTheme} />
+                                </button>
+                                <button
+                                    type="button"
+                                    className="account-theme-toggle"
+                                    aria-pressed={isGlowEffectEnabled}
+                                    onClick={toggleGlowEffect}
+                                >
+                                    <span>
+                                        <strong>Glow Effect</strong>
+                                        <small>Включает и выключает свечение карточек при движении курсора</small>
+                                    </span>
+                                    <AppSwitch checked={isGlowEffectEnabled} />
                                 </button>
                             </div>
                         </GlowEffect>

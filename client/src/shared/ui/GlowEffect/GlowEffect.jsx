@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
+import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 
 const GlowEffect = ({ children, className = "" }) => {
     const [bgStyle, setBgStyle] = useState({});
+    const { isGlowEffectEnabled } = useGlowEffect()
 
     const handleMouseMove = (e) => {
+        if (!isGlowEffectEnabled) {
+            return
+        }
+
         const rect = e.currentTarget.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * 100;
         const y = ((e.clientY - rect.top) / rect.height) * 100;
@@ -20,9 +26,9 @@ const GlowEffect = ({ children, className = "" }) => {
     return (
         <div
             className={className}
-            style={{ ...bgStyle, transition: 'background 0.1s ease' }}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
+            style={isGlowEffectEnabled ? { ...bgStyle, transition: 'background 0.1s ease' } : undefined}
+            onMouseMove={isGlowEffectEnabled ? handleMouseMove : undefined}
+            onMouseLeave={isGlowEffectEnabled ? handleMouseLeave : undefined}
         >
             {children}
         </div>

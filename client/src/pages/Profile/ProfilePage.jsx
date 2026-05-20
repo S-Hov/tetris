@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import AppSwitch from '@/shared/ui/AppSwitch'
 import { useAuth } from '@/shared/hooks/useAuth'
+import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
 import {
     formatMatchDate,
@@ -23,6 +24,7 @@ const fallbackProfile = {
 const ProfilePage = () => {
     const navigate = useNavigate()
     const { checkAuth, logout, user } = useAuth()
+    const { isGlowEffectEnabled, toggleGlowEffect } = useGlowEffect()
     const { isDarkTheme, toggleTheme } = useTheme()
 
     useEffect(() => {
@@ -295,6 +297,15 @@ const ProfilePage = () => {
                             >
                                 <span>Тёмная тема</span>
                                 <AppSwitch checked={isDarkTheme} />
+                            </button>
+                            <button
+                                type="button"
+                                className="profile-theme-toggle"
+                                aria-pressed={isGlowEffectEnabled}
+                                onClick={toggleGlowEffect}
+                            >
+                                <span>Подсветка курсора</span>
+                                <AppSwitch checked={isGlowEffectEnabled} />
                             </button>
 
                         </div>
