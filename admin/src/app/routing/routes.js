@@ -5,6 +5,8 @@ import { AdminUserEditPage } from '@/pages/AdminUserEdit/AdminUserEditPage.jsx'
 import { AdminMatchDetailsPage } from '@/pages/AdminMatchDetails/AdminMatchDetailsPage.jsx'
 import { AdminMatchTeamDetailsPage } from '@/pages/AdminMatchTeamDetails/AdminMatchTeamDetailsPage.jsx'
 import { AdminSupportRequestDetailsPage } from '@/pages/AdminSupportRequestDetails/AdminSupportRequestDetailsPage.jsx'
+import { DatabaseControlPage } from '@/pages/DatabaseControl/DatabaseControlPage.jsx'
+import { DatabaseSchemaPage } from '@/pages/DatabaseSchema/DatabaseSchemaPage.jsx'
 import { adminResourceConfigs } from '@/shared/config/adminResources.js'
 
 export const routes = [
@@ -43,6 +45,18 @@ export const routes = [
     path: 'support/requests/:requestId',
     title: ({ requestId }) => `Обращение #${requestId}`,
     component: AdminSupportRequestDetailsPage,
+  },
+  {
+    key: 'databaseSchema',
+    path: 'database/schema',
+    title: 'База данных',
+    component: DatabaseSchemaPage,
+  },
+  {
+    key: 'databaseControl',
+    path: 'database/control',
+    title: 'Контроль БД',
+    component: DatabaseControlPage,
   },
   ...Object.values(adminResourceConfigs).map((resource) => ({
     key: resource.key,

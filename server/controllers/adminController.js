@@ -5,7 +5,11 @@ import {
     deleteAdminUserAccountRepo,
     deleteAdminResourceRepo,
     deleteAdminUserRepo,
+    deleteDatabaseBackupRepo,
     getAdminDashboardRepo,
+    getDatabaseBackupPathRepo,
+    getDatabaseControlRepo,
+    getDatabaseSchemaRepo,
     getAdminNavigationRepo,
     getAdminResourceRepo,
     getAdminUserRepo,
@@ -15,6 +19,11 @@ import {
     updateAdminResourceRepo,
     updateAdminResourceStatusRepo,
     updateAdminUserRepo,
+    createDatabaseBackupRepo,
+    exportDatabaseDataRepo,
+    importDatabaseDataRepo,
+    listDatabaseBackupsRepo,
+    restoreDatabaseBackupRepo,
 } from '../repositories/adminRepository.js'
 import { badRequest } from '../helpers/error.helper.js'
 import { updateUserAvatarService } from '../services/authService.js'
@@ -90,6 +99,73 @@ export const getDashboardOverview = asyncHandler(async (req, res) => {
     const data = await getAdminDashboardRepo(req.query)
 
     sendAdminResponse(res, 'Admin dashboard loaded', data)
+})
+
+export const getDatabaseSchema = asyncHandler(async (req, res) => {
+    sendAdminResponse(res, 'Database schema loaded', await getDatabaseSchemaRepo())
+})
+
+export const getDatabaseControl = asyncHandler(async (req, res) => {
+    sendAdminResponse(res, 'Database control loaded', await getDatabaseControlRepo())
+})
+
+export const exportDatabase = asyncHandler(async (req, res) => {
+    const data = await exportDatabaseDataRepo({
+        tables: normalizeTableList(req.body?.tables),
+    })
+    const fileName = `pvp-tetris-db-export-${new Date().toISOString().replace(/[:.]/g, '-')}.json`
+
+    res.setHeader('Content-Type', 'application/json')
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
+    res.send(JSON.stringify(data, null, 2))
+})
+
+export const importDatabase = asyncHandler(async (req, res) => {
+    const mode = normalizeImportMode(req.query.mode || req.headers['x-import-mode'])
+    const tables = normalizeTableList(req.query.tables || req.headers['x-import-tables'])
+    const result = await importDatabaseDataRepo({
+        payload: req.body,
+        mode,
+        tables,
+    })
+
+    sendAdminResponse(res, 'Database import completed', result)
+})
+
+export const getDatabaseBackups = asyncHandler(async (req, res) => {
+    sendAdminResponse(res, 'Database backups loaded', {
+        backups: await listDatabaseBackupsRepo(),
+    })
+})
+
+export const createDatabaseBackup = asyncHandler(async (req, res) => {
+    const backup = await createDatabaseBackupRepo({
+        tables: normalizeTableList(req.body?.tables),
+    })
+
+    sendAdminResponse(res, 'Database backup created', { backup })
+})
+
+export const downloadDatabaseBackup = asyncHandler(async (req, res) => {
+    const filePath = await getDatabaseBackupPathRepo(req.params.fileName)
+
+    res.download(filePath, req.params.fileName)
+})
+
+export const deleteDatabaseBackup = asyncHandler(async (req, res) => {
+    const backup = await deleteDatabaseBackupRepo(req.params.fileName)
+
+    sendAdminResponse(res, 'Database backup deleted', { backup })
+})
+
+export const restoreDatabaseBackup = asyncHandler(async (req, res) => {
+    const result = await restoreDatabaseBackupRepo({
+        fileName: req.params.fileName,
+        mode: normalizeImportMode(req.body?.mode),
+        tables: normalizeTableList(req.body?.tables),
+    })
+
+    sendAdminResponse(res, 'Database backup restored', result)
 })
 
 export const getVisitAnalytics = asyncHandler(async (req, res) => {
@@ -580,6 +656,28 @@ function normalizeStatus(value) {
     const allowedStatuses = new Set(['active', 'pending_verification', 'blocked', 'disabled'])
 
     return allowedStatuses.has(status) ? status : null
+}
+
+function normalizeTableList(value) {
+    if (Array.isArray(value)) {
+        return value.map((table) => String(table).trim()).filter(Boolean)
+    }
+
+    if (typeof value === 'string') {
+        return value.split(',').map((table) => table.trim()).filter(Boolean)
+    }
+
+    return []
+}
+
+function normalizeImportMode(value) {
+    const mode = String(value || 'append').trim().toLowerCase()
+
+    if (!['append', 'replace'].includes(mode)) {
+        throw badRequest('Invalid database import mode')
+    }
+
+    return mode
 }
 
 function normalizePositiveInteger(value, fallback) {

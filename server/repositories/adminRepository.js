@@ -1,9 +1,16 @@
 import { pool } from '../db/index.js'
 import { getActiveSessionWindowMinutes } from './analyticsRepository.js'
 import { getRankTier } from '../services/rankRules.js'
+import fs from 'fs/promises'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
 const DEFAULT_LIMIT = 25
 const MAX_LIMIT = 100
+const BACKUP_FORMAT_VERSION = 1
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const DATABASE_BACKUPS_DIR = path.resolve(__dirname, '..', 'backups', 'database')
 
 const RESOURCE_CONFIGS = {
     users: {
@@ -1098,6 +1105,233 @@ export const deleteAdminUserRepo = async (userId) => {
     return rows[0] || null
 }
 
+export const getDatabaseSchemaRepo = async () => {
+    const [tablesResult, columnsResult, constraintsResult] = await Promise.all([
+        pool.query(
+            `
+            SELECT
+                pg_class.oid,
+                pg_class.relname AS table_name,
+                COALESCE(pg_stat_user_tables.n_live_tup, 0)::bigint AS estimated_rows,
+                pg_total_relation_size(pg_class.oid)::bigint AS total_bytes,
+                pg_size_pretty(pg_total_relation_size(pg_class.oid)) AS total_size
+            FROM pg_class
+            JOIN pg_namespace ON pg_namespace.oid = pg_class.relnamespace
+            LEFT JOIN pg_stat_user_tables ON pg_stat_user_tables.relid = pg_class.oid
+            WHERE pg_namespace.nspname = 'public'
+              AND pg_class.relkind = 'r'
+            ORDER BY pg_class.relname ASC
+            `
+        ),
+        pool.query(
+            `
+            SELECT
+                table_name,
+                column_name,
+                ordinal_position,
+                data_type,
+                udt_name,
+                character_maximum_length,
+                numeric_precision,
+                numeric_scale,
+                is_nullable,
+                column_default
+            FROM information_schema.columns
+            WHERE table_schema = 'public'
+            ORDER BY table_name ASC, ordinal_position ASC
+            `
+        ),
+        pool.query(
+            `
+            SELECT
+                tc.constraint_name,
+                tc.constraint_type,
+                kcu.table_name,
+                kcu.column_name,
+                kcu.ordinal_position,
+                ccu.table_name AS foreign_table_name,
+                ccu.column_name AS foreign_column_name,
+                rc.update_rule,
+                rc.delete_rule
+            FROM information_schema.table_constraints tc
+            LEFT JOIN information_schema.key_column_usage kcu
+                ON kcu.constraint_schema = tc.constraint_schema
+               AND kcu.constraint_name = tc.constraint_name
+               AND kcu.table_schema = tc.table_schema
+            LEFT JOIN information_schema.constraint_column_usage ccu
+                ON ccu.constraint_schema = tc.constraint_schema
+               AND ccu.constraint_name = tc.constraint_name
+            LEFT JOIN information_schema.referential_constraints rc
+                ON rc.constraint_schema = tc.constraint_schema
+               AND rc.constraint_name = tc.constraint_name
+            WHERE tc.table_schema = 'public'
+              AND tc.constraint_type IN ('PRIMARY KEY', 'UNIQUE', 'FOREIGN KEY')
+            ORDER BY tc.table_name ASC, tc.constraint_name ASC, kcu.ordinal_position ASC
+            `
+        ),
+    ])
+
+    const rowCounts = await getTableRowCounts(tablesResult.rows.map((table) => table.table_name))
+    const constraints = buildDatabaseConstraints(constraintsResult.rows)
+    const constraintsByTable = new Map()
+
+    constraints.forEach((constraint) => {
+        if (!constraintsByTable.has(constraint.table)) {
+            constraintsByTable.set(constraint.table, [])
+        }
+
+        constraintsByTable.get(constraint.table).push(constraint)
+    })
+
+    const columnsByTable = new Map()
+
+    columnsResult.rows.forEach((column) => {
+        if (!columnsByTable.has(column.table_name)) {
+            columnsByTable.set(column.table_name, [])
+        }
+
+        columnsByTable.get(column.table_name).push(column)
+    })
+
+    const tables = tablesResult.rows.map((table) => {
+        const tableConstraints = constraintsByTable.get(table.table_name) || []
+
+        return {
+            name: table.table_name,
+            rowCount: rowCounts.get(table.table_name) ?? Number(table.estimated_rows) ?? 0,
+            estimatedRows: Number(table.estimated_rows) || 0,
+            totalBytes: Number(table.total_bytes) || 0,
+            totalSize: table.total_size,
+            columns: (columnsByTable.get(table.table_name) || []).map((column) => ({
+                name: column.column_name,
+                type: formatDatabaseColumnType(column),
+                nullable: column.is_nullable === 'YES',
+                defaultValue: column.column_default,
+                primaryKey: tableConstraints.some((constraint) => constraint.type === 'PRIMARY KEY' && constraint.columns.includes(column.column_name)),
+                unique: tableConstraints.some((constraint) => constraint.type === 'UNIQUE' && constraint.columns.includes(column.column_name)),
+                foreignKey: tableConstraints.some((constraint) => constraint.type === 'FOREIGN KEY' && constraint.columns.includes(column.column_name)),
+            })),
+            constraints: tableConstraints,
+        }
+    })
+
+    const relationships = constraints
+        .filter((constraint) => constraint.type === 'FOREIGN KEY')
+        .map((constraint) => ({
+            name: constraint.name,
+            fromTable: constraint.table,
+            fromColumns: constraint.columns,
+            toTable: constraint.foreignTable,
+            toColumns: constraint.foreignColumns,
+            updateRule: constraint.updateRule,
+            deleteRule: constraint.deleteRule,
+        }))
+
+    return {
+        stats: {
+            tableCount: tables.length,
+            rowCount: tables.reduce((sum, table) => sum + Number(table.rowCount || 0), 0),
+            relationshipCount: relationships.length,
+            totalBytes: tables.reduce((sum, table) => sum + Number(table.totalBytes || 0), 0),
+        },
+        tables,
+        relationships,
+    }
+}
+
+export const getDatabaseControlRepo = async () => {
+    const [schema, backups] = await Promise.all([
+        getDatabaseSchemaRepo(),
+        listDatabaseBackupsRepo(),
+    ])
+
+    return {
+        stats: schema.stats,
+        tables: schema.tables.map((table) => ({
+            name: table.name,
+            rowCount: table.rowCount,
+            totalBytes: table.totalBytes,
+            totalSize: table.totalSize,
+            columnsCount: table.columns.length,
+        })),
+        backups,
+        limits: {
+            importBytes: 50 * 1024 * 1024,
+            formatVersion: BACKUP_FORMAT_VERSION,
+        },
+    }
+}
+
+export const exportDatabaseDataRepo = async ({ tables = [] } = {}) => {
+    const tableNames = await normalizeDatabaseTableSelection(tables)
+
+    return buildDatabaseExport(tableNames)
+}
+
+export const createDatabaseBackupRepo = async ({ tables = [] } = {}) => {
+    const exportData = await exportDatabaseDataRepo({ tables })
+    await ensureDatabaseBackupsDir()
+
+    const scope = exportData.scope === 'all'
+        ? 'all'
+        : exportData.tables.map((table) => table.name).join('-').replace(/[^a-z0-9_-]+/gi, '_').slice(0, 80)
+    const fileName = `${new Date().toISOString().replace(/[:.]/g, '-')}_${scope || 'selected'}.json`
+    const filePath = path.join(DATABASE_BACKUPS_DIR, fileName)
+
+    await fs.writeFile(filePath, JSON.stringify(exportData, null, 2), 'utf8')
+
+    return getDatabaseBackupInfo(filePath, fileName)
+}
+
+export const listDatabaseBackupsRepo = async () => {
+    await ensureDatabaseBackupsDir()
+
+    const entries = await fs.readdir(DATABASE_BACKUPS_DIR, { withFileTypes: true })
+    const backups = await Promise.all(entries
+        .filter((entry) => entry.isFile() && entry.name.endsWith('.json'))
+        .map((entry) => getDatabaseBackupInfo(path.join(DATABASE_BACKUPS_DIR, entry.name), entry.name)))
+
+    return backups.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+}
+
+export const getDatabaseBackupPathRepo = async (fileName) => {
+    const safeFileName = normalizeBackupFileName(fileName)
+    const filePath = path.join(DATABASE_BACKUPS_DIR, safeFileName)
+    await fs.access(filePath)
+
+    return filePath
+}
+
+export const deleteDatabaseBackupRepo = async (fileName) => {
+    const safeFileName = normalizeBackupFileName(fileName)
+    const filePath = path.join(DATABASE_BACKUPS_DIR, safeFileName)
+    await fs.unlink(filePath)
+
+    return { fileName: safeFileName }
+}
+
+export const importDatabaseDataRepo = async ({ payload, mode = 'append', tables = [] } = {}) => {
+    const parsedPayload = parseDatabaseImportPayload(payload)
+    const selectedTables = tables.length > 0
+        ? await normalizeDatabaseTableSelection(tables)
+        : await normalizeDatabaseTableSelection(parsedPayload.tables.map((table) => table.name))
+    const allowedTables = new Set(selectedTables)
+    const importTables = parsedPayload.tables.filter((table) => allowedTables.has(table.name))
+
+    if (importTables.length === 0) {
+        throw new Error('No tables selected for import')
+    }
+
+    return importDatabaseTables(importTables, mode)
+}
+
+export const restoreDatabaseBackupRepo = async ({ fileName, mode = 'replace', tables = [] } = {}) => {
+    const filePath = await getDatabaseBackupPathRepo(fileName)
+    const payload = await fs.readFile(filePath, 'utf8')
+
+    return importDatabaseDataRepo({ payload, mode, tables })
+}
+
 async function getDashboardMetrics(range) {
     const [usersResult, matchesResult, roomsResult, sessionsResult] = await Promise.all([
         pool.query(
@@ -1274,6 +1508,439 @@ async function getOptionalCountQuery(tableName, condition = null, values = []) {
     )
 
     return rows[0]?.total || 0
+}
+
+async function getTableRowCounts(tableNames) {
+    if (tableNames.length === 0) {
+        return new Map()
+    }
+
+    const queries = tableNames.map((tableName) => {
+        const safeTableName = quoteIdentifier(tableName)
+
+        return `SELECT ${quoteLiteral(tableName)} AS table_name, COUNT(*)::bigint AS row_count FROM ${safeTableName}`
+    })
+
+    const { rows } = await pool.query(queries.join(' UNION ALL '))
+
+    return new Map(rows.map((row) => [row.table_name, Number(row.row_count) || 0]))
+}
+
+async function normalizeDatabaseTableSelection(tables = []) {
+    const availableTables = await getPublicTableNames()
+    const requestedTables = [...new Set((tables || []).map((table) => String(table).trim()).filter(Boolean))]
+
+    if (requestedTables.length === 0) {
+        return availableTables
+    }
+
+    const availableSet = new Set(availableTables)
+    const unknownTables = requestedTables.filter((table) => !availableSet.has(table))
+
+    if (unknownTables.length > 0) {
+        throw new Error(`Unknown tables: ${unknownTables.join(', ')}`)
+    }
+
+    return requestedTables
+}
+
+async function getPublicTableNames() {
+    const { rows } = await pool.query(
+        `
+        SELECT tablename AS table_name
+        FROM pg_tables
+        WHERE schemaname = 'public'
+        ORDER BY tablename ASC
+        `
+    )
+
+    return rows.map((row) => row.table_name)
+}
+
+async function buildDatabaseExport(tableNames) {
+    const exportedTables = []
+    let totalRows = 0
+
+    for (const tableName of tableNames) {
+        const columns = await getDatabaseTableColumns(tableName)
+        const { rows } = await pool.query(`SELECT * FROM ${quoteIdentifier(tableName)}`)
+
+        exportedTables.push({
+            name: tableName,
+            columns,
+            rowCount: rows.length,
+            rows,
+        })
+
+        totalRows += rows.length
+    }
+
+    return {
+        format: 'pvp-tetris-database-backup',
+        formatVersion: BACKUP_FORMAT_VERSION,
+        createdAt: new Date().toISOString(),
+        database: process.env.DB_DATABASE || process.env.LOCAL_DB_DATABASE || null,
+        scope: tableNames.length === (await getPublicTableNames()).length ? 'all' : 'selected',
+        stats: {
+            tableCount: exportedTables.length,
+            rowCount: totalRows,
+        },
+        tables: exportedTables,
+    }
+}
+
+async function getDatabaseTableColumns(tableName) {
+    const { rows } = await pool.query(
+        `
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = $1
+        ORDER BY ordinal_position ASC
+        `,
+        [tableName]
+    )
+
+    return rows.map((row) => row.column_name)
+}
+
+async function importDatabaseTables(tables, mode) {
+    const normalizedMode = ['append', 'replace'].includes(mode) ? mode : 'append'
+    const client = await pool.connect()
+    const imported = []
+    const tableNames = tables.map((table) => table.name)
+    const [orderedTableNames, nullableForeignKeys, primaryKeys] = await Promise.all([
+        sortTablesForImport(tableNames),
+        getNullableForeignKeyColumns(tableNames),
+        getPrimaryKeyColumns(tableNames),
+    ])
+    const tablesByName = new Map(tables.map((table) => [table.name, table]))
+    const orderedTables = orderedTableNames.map((tableName) => tablesByName.get(tableName)).filter(Boolean)
+    const deferredUpdates = []
+
+    try {
+        await client.query('BEGIN')
+        await client.query('SET CONSTRAINTS ALL DEFERRED')
+
+        if (normalizedMode === 'replace') {
+            const truncateSql = tables.map((table) => quoteIdentifier(table.name)).join(', ')
+            await client.query(`TRUNCATE ${truncateSql} RESTART IDENTITY CASCADE`)
+        }
+
+        for (const table of orderedTables) {
+            const columns = table.columns?.length ? table.columns : Object.keys(table.rows?.[0] || {})
+            const safeColumns = columns.map(quoteIdentifier)
+            const nullableFkColumns = nullableForeignKeys.get(table.name) || []
+            const primaryKeyColumns = primaryKeys.get(table.name) || []
+
+            for (const row of table.rows || []) {
+                const values = columns.map((column) => nullableFkColumns.includes(column) ? null : (row[column] ?? null))
+                const placeholders = values.map((_, index) => `$${index + 1}`).join(', ')
+
+                await client.query(
+                    `INSERT INTO ${quoteIdentifier(table.name)} (${safeColumns.join(', ')}) VALUES (${placeholders})`,
+                    values
+                )
+
+                if (nullableFkColumns.length > 0 && primaryKeyColumns.length > 0) {
+                    const updateValues = nullableFkColumns.map((column) => row[column] ?? null)
+                    const whereValues = primaryKeyColumns.map((column) => row[column] ?? null)
+
+                    if (whereValues.every((value) => value !== null && value !== undefined)) {
+                        deferredUpdates.push({
+                            tableName: table.name,
+                            setColumns: nullableFkColumns,
+                            updateValues,
+                            whereColumns: primaryKeyColumns,
+                            whereValues,
+                        })
+                    }
+                }
+            }
+
+            imported.push({
+                name: table.name,
+                rowCount: (table.rows || []).length,
+            })
+        }
+
+        for (const update of deferredUpdates) {
+            const setSql = update.setColumns.map((column, index) => `${quoteIdentifier(column)} = $${index + 1}`).join(', ')
+            const whereSql = update.whereColumns
+                .map((column, index) => `${quoteIdentifier(column)} = $${update.updateValues.length + index + 1}`)
+                .join(' AND ')
+
+            await client.query(
+                `UPDATE ${quoteIdentifier(update.tableName)} SET ${setSql} WHERE ${whereSql}`,
+                [...update.updateValues, ...update.whereValues]
+            )
+        }
+
+        await client.query('COMMIT')
+
+        return {
+            mode: normalizedMode,
+            imported,
+            stats: {
+                tableCount: imported.length,
+                rowCount: imported.reduce((sum, table) => sum + table.rowCount, 0),
+            },
+        }
+    } catch (error) {
+        await client.query('ROLLBACK')
+        throw error
+    } finally {
+        client.release()
+    }
+}
+
+async function sortTablesForImport(tableNames) {
+    const tableSet = new Set(tableNames)
+    const dependencies = new Map(tableNames.map((tableName) => [tableName, new Set()]))
+
+    const { rows } = await pool.query(
+        `
+        SELECT
+            kcu.table_name,
+            ccu.table_name AS foreign_table_name
+        FROM information_schema.table_constraints tc
+        JOIN information_schema.key_column_usage kcu
+            ON kcu.constraint_schema = tc.constraint_schema
+           AND kcu.constraint_name = tc.constraint_name
+           AND kcu.table_schema = tc.table_schema
+        JOIN information_schema.constraint_column_usage ccu
+            ON ccu.constraint_schema = tc.constraint_schema
+           AND ccu.constraint_name = tc.constraint_name
+        WHERE tc.table_schema = 'public'
+          AND tc.constraint_type = 'FOREIGN KEY'
+        `
+    )
+
+    rows.forEach((row) => {
+        if (tableSet.has(row.table_name) && tableSet.has(row.foreign_table_name) && row.table_name !== row.foreign_table_name) {
+            dependencies.get(row.table_name)?.add(row.foreign_table_name)
+        }
+    })
+
+    const sorted = []
+    const temporary = new Set()
+    const permanent = new Set()
+
+    const visit = (tableName) => {
+        if (permanent.has(tableName)) return
+        if (temporary.has(tableName)) return
+
+        temporary.add(tableName)
+        ;(dependencies.get(tableName) || []).forEach(visit)
+        temporary.delete(tableName)
+        permanent.add(tableName)
+        sorted.push(tableName)
+    }
+
+    tableNames.forEach(visit)
+
+    return sorted
+}
+
+async function getNullableForeignKeyColumns(tableNames) {
+    if (tableNames.length === 0) {
+        return new Map()
+    }
+
+    const { rows } = await pool.query(
+        `
+        SELECT
+            kcu.table_name,
+            kcu.column_name
+        FROM information_schema.table_constraints tc
+        JOIN information_schema.key_column_usage kcu
+            ON kcu.constraint_schema = tc.constraint_schema
+           AND kcu.constraint_name = tc.constraint_name
+           AND kcu.table_schema = tc.table_schema
+        JOIN information_schema.columns columns
+            ON columns.table_schema = kcu.table_schema
+           AND columns.table_name = kcu.table_name
+           AND columns.column_name = kcu.column_name
+        WHERE tc.table_schema = 'public'
+          AND tc.constraint_type = 'FOREIGN KEY'
+          AND columns.is_nullable = 'YES'
+          AND kcu.table_name = ANY($1)
+        `,
+        [tableNames]
+    )
+
+    const columnsByTable = new Map()
+
+    rows.forEach((row) => {
+        if (!columnsByTable.has(row.table_name)) {
+            columnsByTable.set(row.table_name, [])
+        }
+
+        columnsByTable.get(row.table_name).push(row.column_name)
+    })
+
+    return columnsByTable
+}
+
+async function getPrimaryKeyColumns(tableNames) {
+    if (tableNames.length === 0) {
+        return new Map()
+    }
+
+    const { rows } = await pool.query(
+        `
+        SELECT
+            kcu.table_name,
+            kcu.column_name
+        FROM information_schema.table_constraints tc
+        JOIN information_schema.key_column_usage kcu
+            ON kcu.constraint_schema = tc.constraint_schema
+           AND kcu.constraint_name = tc.constraint_name
+           AND kcu.table_schema = tc.table_schema
+        WHERE tc.table_schema = 'public'
+          AND tc.constraint_type = 'PRIMARY KEY'
+          AND kcu.table_name = ANY($1)
+        ORDER BY kcu.table_name ASC, kcu.ordinal_position ASC
+        `,
+        [tableNames]
+    )
+
+    const columnsByTable = new Map()
+
+    rows.forEach((row) => {
+        if (!columnsByTable.has(row.table_name)) {
+            columnsByTable.set(row.table_name, [])
+        }
+
+        columnsByTable.get(row.table_name).push(row.column_name)
+    })
+
+    return columnsByTable
+}
+
+function parseDatabaseImportPayload(payload) {
+    const text = Buffer.isBuffer(payload) ? payload.toString('utf8') : String(payload || '')
+    const parsed = JSON.parse(text)
+
+    if (parsed?.format !== 'pvp-tetris-database-backup' || parsed?.formatVersion !== BACKUP_FORMAT_VERSION || !Array.isArray(parsed.tables)) {
+        throw new Error('Unsupported database backup format')
+    }
+
+    return parsed
+}
+
+async function ensureDatabaseBackupsDir() {
+    await fs.mkdir(DATABASE_BACKUPS_DIR, { recursive: true })
+}
+
+async function getDatabaseBackupInfo(filePath, fileName) {
+    const stat = await fs.stat(filePath)
+    let metadata = null
+
+    try {
+        const content = await fs.readFile(filePath, 'utf8')
+        const parsed = JSON.parse(content)
+        metadata = {
+            createdAt: parsed.createdAt,
+            scope: parsed.scope,
+            tableCount: parsed.stats?.tableCount || parsed.tables?.length || 0,
+            rowCount: parsed.stats?.rowCount || 0,
+            tables: (parsed.tables || []).map((table) => table.name),
+        }
+    } catch {
+        metadata = null
+    }
+
+    return {
+        fileName,
+        sizeBytes: stat.size,
+        size: formatBytesForBackup(stat.size),
+        createdAt: metadata?.createdAt || stat.birthtime.toISOString(),
+        updatedAt: stat.mtime.toISOString(),
+        scope: metadata?.scope || 'unknown',
+        tableCount: metadata?.tableCount || 0,
+        rowCount: metadata?.rowCount || 0,
+        tables: metadata?.tables || [],
+    }
+}
+
+function normalizeBackupFileName(fileName) {
+    const safeFileName = path.basename(String(fileName || ''))
+
+    if (!safeFileName || safeFileName !== fileName || !safeFileName.endsWith('.json')) {
+        throw new Error('Invalid backup file name')
+    }
+
+    return safeFileName
+}
+
+function formatBytesForBackup(bytes) {
+    const units = ['B', 'KB', 'MB', 'GB']
+    let size = Number(bytes) || 0
+    let unitIndex = 0
+
+    while (size >= 1024 && unitIndex < units.length - 1) {
+        size /= 1024
+        unitIndex += 1
+    }
+
+    return `${size.toFixed(size >= 10 ? 0 : 1)} ${units[unitIndex]}`
+}
+
+function buildDatabaseConstraints(rows) {
+    const constraints = new Map()
+
+    rows.forEach((row) => {
+        if (!row.constraint_name || !row.table_name) {
+            return
+        }
+
+        const key = `${row.table_name}:${row.constraint_name}`
+        const current = constraints.get(key) || {
+            name: row.constraint_name,
+            type: row.constraint_type,
+            table: row.table_name,
+            columns: [],
+            foreignTable: row.foreign_table_name || null,
+            foreignColumns: [],
+            updateRule: row.update_rule || null,
+            deleteRule: row.delete_rule || null,
+        }
+
+        if (row.column_name && !current.columns.includes(row.column_name)) {
+            current.columns.push(row.column_name)
+        }
+
+        if (row.foreign_column_name && !current.foreignColumns.includes(row.foreign_column_name)) {
+            current.foreignColumns.push(row.foreign_column_name)
+        }
+
+        constraints.set(key, current)
+    })
+
+    return [...constraints.values()]
+}
+
+function formatDatabaseColumnType(column) {
+    const dataType = column.data_type === 'USER-DEFINED' ? column.udt_name : column.data_type
+
+    if (column.character_maximum_length) {
+        return `${dataType}(${column.character_maximum_length})`
+    }
+
+    if (column.numeric_precision && column.numeric_scale !== null) {
+        return `${dataType}(${column.numeric_precision}, ${column.numeric_scale})`
+    }
+
+    return dataType
+}
+
+function quoteIdentifier(value) {
+    return `"${String(value).replace(/"/g, '""')}"`
+}
+
+function quoteLiteral(value) {
+    return `'${String(value).replace(/'/g, "''")}'`
 }
 
 async function tableExists(tableName) {

@@ -74,6 +74,8 @@ export const adminNavigation = [
     label: 'Система',
     icon: 'settings',
     items: [
+      { key: 'databaseSchema', label: 'База данных', path: '/database/schema' },
+      { key: 'databaseControl', label: 'Контроль БД', path: '/database/control' },
       resource('adminAudit'),
       resource('migrations'),
     ],

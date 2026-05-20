@@ -10,6 +10,7 @@ import {
     getAdminNavigation,
     getAuthLogs,
     getDashboardOverview,
+    getDatabaseSchema,
     getDonationVerificationEvents,
     getDonationWallets,
     getDonations,
@@ -40,6 +41,14 @@ import {
     updateUser,
     replySupportRequest,
     closeSupportRequestByAdmin,
+    createDatabaseBackup,
+    deleteDatabaseBackup,
+    downloadDatabaseBackup,
+    exportDatabase,
+    getDatabaseBackups,
+    getDatabaseControl,
+    importDatabase,
+    restoreDatabaseBackup,
 } from '../controllers/adminController.js'
 import { checkAuth } from '../middleware/checkAuth.js'
 import { checkAdmin } from '../middleware/checkAdmin.js'
@@ -51,6 +60,22 @@ adminRouter.use(checkAuth, checkAdmin)
 adminRouter.get('/me', getAdminMe)
 adminRouter.get('/navigation', getAdminNavigation)
 adminRouter.get('/dashboard', getDashboardOverview)
+adminRouter.get('/database/schema', getDatabaseSchema)
+adminRouter.get('/database/control', getDatabaseControl)
+adminRouter.post('/database/export', exportDatabase)
+adminRouter.post(
+    '/database/import',
+    express.raw({
+        type: ['application/octet-stream', 'text/plain'],
+        limit: '50mb',
+    }),
+    importDatabase
+)
+adminRouter.get('/database/backups', getDatabaseBackups)
+adminRouter.post('/database/backups', createDatabaseBackup)
+adminRouter.get('/database/backups/:fileName/download', downloadDatabaseBackup)
+adminRouter.post('/database/backups/:fileName/restore', restoreDatabaseBackup)
+adminRouter.delete('/database/backups/:fileName', deleteDatabaseBackup)
 adminRouter.get('/analytics/visits', getVisitAnalytics)
 adminRouter.get('/analytics/games', getGameAnalytics)
 adminRouter.get('/sessions', getActiveSessions)
