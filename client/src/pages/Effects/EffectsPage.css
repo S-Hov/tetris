@@ -72,7 +72,7 @@
 
 .effects-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 1rem;
 }
 
@@ -89,7 +89,7 @@
 }
 
 .effect-card__media {
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 1;
     display: grid;
     place-items: center;
     border: var(--border);
@@ -167,6 +167,18 @@
 
 .effect-card--compact .effect-card__body p {
     font-size: 0.86rem;
+}
+
+@media (max-width: 1200px) {
+    .effects-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1675px) {
+    .effects-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 980px) {
