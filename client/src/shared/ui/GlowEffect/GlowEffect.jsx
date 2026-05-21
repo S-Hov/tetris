@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 
+import './GlowEffect.css'
+    
 const GlowEffect = ({ children, className = "" }) => {
     const [bgStyle, setBgStyle] = useState({});
     const { isGlowEffectEnabled } = useGlowEffect()
@@ -25,7 +27,7 @@ const GlowEffect = ({ children, className = "" }) => {
 
     return (
         <div
-            className={className}
+            className={`Glow__effect-standart ${className}`}
             style={isGlowEffectEnabled ? { ...bgStyle, transition: 'background 0.1s ease' } : undefined}
             onMouseMove={isGlowEffectEnabled ? handleMouseMove : undefined}
             onMouseLeave={isGlowEffectEnabled ? handleMouseLeave : undefined}

@@ -5,6 +5,7 @@ import { useAbilityTimer } from '@/features/tetris/hooks/useAbilityTimer.js'
 import { useGameCountdown } from '@/features/tetris/hooks/useGameCountdown.js'
 import { useMatchResult } from '@/features/tetris/hooks/useMatchResult.js'
 import { useMatchSocketSync } from '@/features/tetris/hooks/useMatchSocketSync.js'
+import { useMobileTetrisControls } from '@/features/tetris/hooks/useMobileTetrisControls.js'
 import { useSoloDebuffTimer } from '@/features/tetris/hooks/useSoloDebuffTimer.js'
 import { useTetrisControls } from '@/features/tetris/hooks/useTetrisControls.js'
 import { useTetrisGameLoop } from '@/features/tetris/hooks/useTetrisGameLoop.js'
@@ -173,6 +174,7 @@ const MatchPageGame = ({
     const [targetChoice, setTargetChoice] = useState(null)
     const [targetSecondsLeft, setTargetSecondsLeft] = useState(0)
     const [soloRecord, setSoloRecord] = useState(() => Number(user?.rankStats?.bestSoloScore) || 0)
+    const boardShellRef = useRef(null)
     const soloResultSubmittedRef = useRef(false)
     const { countdownValue, isCountingDown } = useGameCountdown({
         enabled: !isIntroVisible,
@@ -235,6 +237,12 @@ const MatchPageGame = ({
         disabled: isIntroVisible || isMatchFinished || isCountingDown || Boolean(targetChoice),
         randomPiece: randomPieceGenerator,
         setGameState,
+    })
+    useMobileTetrisControls({
+        disabled: isIntroVisible || isMatchFinished || isCountingDown || Boolean(targetChoice),
+        randomPiece: randomPieceGenerator,
+        setGameState,
+        targetRef: boardShellRef,
     })
 
     const dangerLevel = useMemo(() => getBoardDangerLevel(derivedState.board), [derivedState.board])
@@ -627,6 +635,7 @@ const MatchPageGame = ({
             board={boardWithPiece}
             clearingRows={derivedState.clearingRows}
             boardClassName={dangerLevel > 0 ? 'tetris-board--danger' : ''}
+            boardShellRef={boardShellRef}
             boardShellClassName={boardShellClassName}
             boardShellStyle={dangerStyle}
             boardDecor={boardDecor}

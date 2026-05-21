@@ -11,6 +11,7 @@ const GameLayout = ({
     boardClassName = '',
     boardInvisibleCells = false,
     boardShellClassName = '',
+    boardShellRef,
     boardShellStyle,
     boardDecor = null,
     leftRail = null,
@@ -34,6 +35,7 @@ const GameLayout = ({
 
                     <div className="game-layout__stage">
                         <div
+                            ref={boardShellRef}
                             className={joinClassNames('game-layout__board-shell', boardShellClassName)}
                             style={boardShellStyle}
                         >

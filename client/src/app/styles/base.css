@@ -24,6 +24,37 @@ main {
     overflow-y: auto;
 }
 
+.main-layout__main {
+    position: relative;
+}
+
+.mobile-controls-link {
+    position: absolute;
+    top: max(14px, calc(env(safe-area-inset-top) + 6px));
+    right: max(14px, calc(env(safe-area-inset-right) + 6px));
+    z-index: 80;
+    width: 42px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border: var(--border);
+    border-radius: 50%;
+    background: var(--input-bg);
+    color: var(--text-color-1);
+    text-decoration: none;
+    box-shadow: var(--lite-shadow);
+    backdrop-filter: var(--medium-blur);
+    transition: var(--transition);
+}
+
+.mobile-controls-link:hover,
+.mobile-controls-link:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(0, 255, 255, 0.4);
+    box-shadow: var(--hover-shadow);
+    outline: none;
+}
+
 .section {
     padding: 50px 0;
 }
@@ -84,6 +115,14 @@ main {
 
     main {
         padding-bottom: 88px;
+    }
+}
+
+@media (max-width: 620px) {
+    .mobile-controls-link {
+        width: 40px;
+        top: max(10px, calc(env(safe-area-inset-top) + 2px));
+        right: max(10px, calc(env(safe-area-inset-right) + 2px));
     }
 }
 

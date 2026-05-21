@@ -19,8 +19,11 @@ import ProtectedRoute from './ProtectedRoute.jsx'
 import GuestRoute from './GuestRoute.jsx'
 import VerifyEmailPage from '@/pages/VerifyEmail/VerifyEmailPage.jsx'
 import GamePage from '@/pages/GamePage/GamePage.jsx'
+import GameSettingsPage from '@/pages/GameSettings/GameSettingsPage.jsx'
 import LobbyPage from '@/pages/Lobby/LobbyPage.jsx'
 import MatchPage from '@/pages/Match/MatchPage.jsx'
+import MobileControlsPage from '@/pages/MobileControls/MobileControlsPage.jsx'
+import PcControlsPage from '@/pages/PcControls/PcControlsPage.jsx'
 import TeamQueuePage from '@/pages/TeamQueue/TeamQueuePage.jsx'
 import { getModeSelectionConfig } from '@/shared/config/gameModes.js'
 
@@ -134,6 +137,27 @@ export const routes = [
         component: GamePage,
         layout: MainLayout,
         hideFooter: true,
+    },
+    {
+        key: 'game-settings',
+        path: '/game/controls',
+        title: 'Настройки игры',
+        component: GameSettingsPage,
+        layout: MainLayout,
+    },
+    {
+        key: 'pc-controls',
+        path: '/game/controls/pc',
+        title: 'Управление для ПК',
+        component: PcControlsPage,
+        layout: MainLayout,
+    },
+    {
+        key: 'mobile-controls',
+        path: '/game/controls/mobile',
+        title: 'Мобильное управление',
+        component: MobileControlsPage,
+        layout: MainLayout,
     },
     {
         key: 'mode-select',

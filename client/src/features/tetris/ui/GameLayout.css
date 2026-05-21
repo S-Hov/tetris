@@ -2,6 +2,7 @@
     height: 100%;
     min-height: 0;
     overflow: hidden;
+    position: relative;
 }
 
 .game-layout__container {
@@ -69,6 +70,8 @@
     position: relative;
     width: var(--game-board-width);
     flex: 0 0 auto;
+    touch-action: none;
+    user-select: none;
 }
 
 .game-layout__sidebar {
@@ -1276,6 +1279,11 @@
         justify-content: center;
     }
 
+    .game-layout__header {
+        width: min(100%, calc(var(--game-board-width) + var(--game-sidebar-width) + 14px));
+        margin-inline: auto;
+    }
+
     .game-layout__secondary-column {
         display: none;
     }
@@ -1315,18 +1323,88 @@
 }
 
 @media (max-width: 620px) {
-    .game-layout__container {
-        --game-board-width: min(54vw, calc((100dvh - 210px) / 2), 280px);
-        --game-sidebar-width: clamp(160px, 38vw, 190px);
-        padding-inline: 8px;
+    .game-layout--solo .game-layout__container,
+    .game-layout--versus .game-layout__container {
+        --game-board-width: min(82vw, calc((100dvh - 260px) / 2), 320px);
+        --game-sidebar-width: min(92vw, 320px);
+        padding: 54px 8px 14px;
+        overflow-y: auto;
+    }
+
+    .game-layout__primary-column {
+        width: 100%;
+    }
+
+    .game-layout__header {
+        width: min(92vw, 320px);
+        display: grid;
+        gap: 4px;
+        justify-content: stretch;
+        text-align: center;
+    }
+
+    .game-layout__header-metric {
+        justify-self: center;
+    }
+
+    .game-layout__stage {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
     }
 
     .game-layout__sidebar {
-        width: min(38vw, 190px);
+        width: min(92vw, 320px);
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: stretch;
+    }
+
+    .game-layout__sidebar .game-actions-panel,
+    .game-layout__sidebar .solo-debuff-panel {
+        grid-column: 1 / -1;
+    }
+
+    .game-energy-panel {
+        position: static;
+        width: min(92vw, 320px);
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        order: 2;
+    }
+
+    .game-energy-panel__bar {
+        max-width: none;
+        height: 12px;
+        flex-direction: row;
+    }
+
+    .game-energy-panel__fill {
+        height: 100% !important;
+        width: var(--energy-percent, 0%);
     }
 
     .game-panel {
         padding: 8px;
+    }
+
+    .game-next-piece-panel {
+        min-height: 120px;
+    }
+
+    .game-panel__title {
+        font-size: 15px;
+    }
+
+    .game-stats-panel__row {
+        font-size: 0.74rem;
+    }
+
+    .game-stats-panel__value {
+        display: block;
+        float: none;
+        margin-top: 2px;
     }
 
     .game-result__actions {

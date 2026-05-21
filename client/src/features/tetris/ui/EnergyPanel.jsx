@@ -5,7 +5,7 @@ const EnergyPanel = ({ energy }) => {
             <div className="game-energy-panel__bar">
                 <div
                     className="game-energy-panel__fill"
-                    style={{ height: `${energy}%` }}
+                    style={{ height: `${energy}%`, '--energy-percent': `${energy}%` }}
                 />
             </div>
             <span className="game-energy-panel__value">{energy}%</span>

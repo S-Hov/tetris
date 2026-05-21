@@ -1,0 +1,178 @@
+.game-settings-page__section__glow-effect{
+    border-radius: 32px;
+}
+
+.game-settings-page__container {
+    display: grid;
+    gap: 1.2rem;
+    background: transparent;
+}
+
+.game-settings-page__topbar,
+.game-settings-page__section {
+    border: var(--border);
+    border-radius: 28px;
+    background: var(--box-bg);
+    box-shadow: var(--lite-shadow);
+    backdrop-filter: var(--medium-blur);
+}
+
+.game-settings-page__topbar {
+    padding: 1.5rem 1.7rem;
+}
+
+.game-settings-page__topbar h1 {
+    margin: 0;
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: clamp(1.8rem, 4vw, 2.7rem);
+    line-height: 1.1;
+}
+
+.game-settings-page__eyebrow {
+    width: fit-content;
+    padding: 0.45rem 0.75rem;
+    margin-bottom: 0.55rem;
+    border: var(--border);
+    border-radius: 16px;
+    background: var(--elem-bg);
+    color: var(--turquoise-lite);
+    font-family: var(--font-1);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.game-settings-page__section {
+    display: grid;
+    gap: 1rem;
+    padding: 1.4rem;
+}
+
+.game-settings-page__section-head {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+}
+
+.game-settings-page__section-head h2 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.game-settings-page__section-head i {
+    color: var(--turquoise);
+    text-shadow: var(--text-shadow);
+}
+
+.game-settings-page__cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.game-settings-page__card {
+    min-height: 116px;
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: var(--border);
+    border-radius: 18px;
+    background: var(--elem-bg);
+    color: var(--text-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.game-settings-page__card:hover,
+.game-settings-page__card:focus-visible {
+    transform: translateY(-2px);
+    color: var(--text-color-1);
+    box-shadow: var(--hover-shadow);
+    outline: none;
+}
+
+.game-settings-page__card-icon {
+    width: 52px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border: var(--border);
+    border-radius: 16px;
+    background: rgba(0, 255, 255, 0.08);
+    color: var(--turquoise);
+    font-size: 1.2rem;
+}
+
+.game-settings-page__card strong,
+.game-settings-page__toggle strong {
+    display: block;
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+}
+
+.game-settings-page__card small,
+.game-settings-page__toggle small {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--text-color);
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+
+.game-settings-page__general {
+    display: grid;
+    gap: 1rem;
+}
+
+.game-settings-page__toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    border: var(--border);
+    border-radius: 18px;
+    background: var(--elem-bg);
+    color: var(--text-color-1);
+    cursor: pointer;
+    text-align: left;
+    transition: var(--transition);
+}
+
+.game-settings-page__toggle:hover,
+.game-settings-page__toggle:focus-visible {
+    transform: translateY(-2px);
+    outline: none;
+}
+
+@media (max-width: 760px) {
+    .game-settings-page__cards {
+        grid-template-columns: 1fr;
+    }
+
+    .game-settings-page__card {
+        grid-template-columns: 46px minmax(0, 1fr) auto;
+    }
+}
+
+@media (max-width: 520px) {
+    .game-settings-page__topbar,
+    .game-settings-page__section {
+        border-radius: 22px;
+        padding: 1rem;
+    }
+
+    .game-settings-page__card {
+        grid-template-columns: 1fr auto;
+    }
+
+    .game-settings-page__card-icon {
+        display: none;
+    }
+}

@@ -8,8 +8,33 @@ import {
     withDerivedState,
 } from '@/features/tetris/model/tetrisEngine.js'
 import { EFFECT_TYPES, hasEffect } from '@/features/tetris/model/effects.js'
+import {
+    PC_CONTROL_ACTIONS,
+    getActionForCode,
+    getAllControlCodes,
+    loadPcControlSettings,
+} from '@/features/tetris/model/pcControls.js'
 
-const CONTROL_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Space', 'KeyA', 'KeyD', 'KeyS', 'KeyW', 'KeyP', 'Escape']
+export const applyTetrisAction = (state, action, { randomPiece } = {}) => {
+    switch (action) {
+        case PC_CONTROL_ACTIONS.MOVE_LEFT:
+            return movePiece(state, { x: -1, y: 0 })
+        case PC_CONTROL_ACTIONS.MOVE_RIGHT:
+            return movePiece(state, { x: 1, y: 0 })
+        case PC_CONTROL_ACTIONS.SOFT_DROP:
+            return movePiece(state, { x: 0, y: 1 })
+        case PC_CONTROL_ACTIONS.ROTATE:
+            return rotateCurrentPiece(state)
+        case PC_CONTROL_ACTIONS.HARD_DROP:
+            return hardDrop(state, { randomPiece })
+        default:
+            return state
+    }
+}
+
+export const applyTetrisControl = (state, code, { randomPiece } = {}) => (
+    applyTetrisAction(state, getActionForCode(code), { randomPiece })
+)
 
 export const useTetrisControls = ({
     disabled = false,
@@ -17,29 +42,13 @@ export const useTetrisControls = ({
     setGameState,
 } = {}) => {
     useEffect(() => {
-        const applyControl = (state, code) => {
-            switch (code) {
-                case 'ArrowLeft':
-                case 'KeyA':
-                    return movePiece(state, { x: -1, y: 0 })
-                case 'ArrowRight':
-                case 'KeyD':
-                    return movePiece(state, { x: 1, y: 0 })
-                case 'ArrowDown':
-                case 'KeyS':
-                    return movePiece(state, { x: 0, y: 1 })
-                case 'ArrowUp':
-                case 'KeyW':
-                    return rotateCurrentPiece(state)
-                case 'Space':
-                    return hardDrop(state, { randomPiece })
-                default:
-                    return state
-            }
-        }
+        const settings = loadPcControlSettings()
+        const controlKeys = getAllControlCodes(settings)
 
         const handleKeyDown = (event) => {
-            if (CONTROL_KEYS.includes(event.code)) {
+            const action = getActionForCode(event.code, settings)
+
+            if (controlKeys.includes(event.code)) {
                 event.preventDefault()
             }
 
@@ -50,7 +59,7 @@ export const useTetrisControls = ({
                     return prevState
                 }
 
-                if (event.code === 'KeyP' || event.code === 'Escape') {
+                if (action === PC_CONTROL_ACTIONS.PAUSE) {
                     if (disabled) {
                         return prevState
                     }
@@ -63,16 +72,14 @@ export const useTetrisControls = ({
                 }
 
                 if (hasEffect(state, EFFECT_TYPES.DELAY_INPUT)) {
-                    const code = event.code
-
                     setTimeout(() => {
-                        setGameState((latestState) => applyControl(latestState, code))
+                        setGameState((latestState) => applyTetrisAction(latestState, action, { randomPiece }))
                     }, 150)
 
                     return prevState
                 }
 
-                return applyControl(prevState, event.code)
+                return applyTetrisAction(prevState, action, { randomPiece })
             })
         }
 

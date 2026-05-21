@@ -1,0 +1,176 @@
+.mobile-controls-page {
+    min-height: 100%;
+    padding: clamp(18px, 3vw, 42px) 0;
+}
+
+.mobile-controls-page__container {
+    background: transparent;
+}
+
+.mobile-controls-page__header {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: clamp(16px, 3vw, 28px);
+}
+
+.mobile-controls-page__header span {
+    display: block;
+    color: var(--description-color);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-shadow: var(--text-shadow);
+}
+
+.mobile-controls-page__header h1 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: clamp(1.65rem, 4vw, 2.8rem);
+    line-height: 1.08;
+    text-shadow: var(--text-shadow);
+}
+
+.mobile-controls-page__back,
+.mobile-controls-page__reset {
+    min-height: 42px;
+    display: inline-grid;
+    place-items: center;
+    border: var(--border);
+    border-radius: 32px;
+    background: var(--input-bg);
+    color: var(--text-color-1);
+    text-decoration: none;
+    box-shadow: var(--lite-shadow);
+    backdrop-filter: var(--hard-blur);
+    transition: var(--transition);
+}
+
+.mobile-controls-page__back {
+    width: 42px;
+    cursor: pointer;
+}
+
+.mobile-controls-page__reset {
+    padding: 0 1rem;
+    font: inherit;
+    cursor: pointer;
+}
+
+.mobile-controls-page__back:hover,
+.mobile-controls-page__back:focus-visible,
+.mobile-controls-page__reset:hover,
+.mobile-controls-page__reset:focus-visible {
+    background: var(--hover-bg);
+    color: var(--text-active-color);
+    box-shadow: var(--hover-shadow);
+    outline: none;
+}
+
+.mobile-controls-page__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.mobile-controls-page__panel__glow-effect{
+    border-radius: 32px;
+
+    & .mobile-controls-page__panel{
+        height: 100%!important;
+    }
+
+    &:has(.mobile-controls-page__panel--wide){
+        grid-column: 1 / -1;
+    }
+}
+
+.mobile-controls-page__panel {
+    min-width: 0;
+    padding: clamp(14px, 2vw, 20px);
+    border: var(--border);
+    border-radius: 32px;
+    background: var(--easy-background);
+    box-shadow: var(--lite-shadow);
+    backdrop-filter: var(--medium-blur);
+}
+
+.mobile-controls-page__panel--wide {
+    grid-column: 1 / -1;
+}
+
+.mobile-controls-page__panel h2 {
+    margin: 0 0 12px;
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.mobile-controls-page__note {
+    margin: 12px 0 0;
+    color: var(--description-color);
+    font-size: 0.88rem;
+    line-height: 1.45;
+}
+
+.mobile-controls-page__fields {
+    display: grid;
+    gap: 14px;
+}
+
+.mobile-controls-page__field {
+    display: grid;
+    gap: 8px;
+}
+
+.mobile-controls-page__field span,
+.mobile-controls-page__gesture-row > span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--text-color);
+    font-size: 0.86rem;
+}
+
+.mobile-controls-page__field b {
+    color: var(--text-active-color);
+    font-weight: 700;
+}
+
+.mobile-controls-page__field input {
+    width: 100%;
+    accent-color: #00f0ff;
+}
+
+.mobile-controls-page__gesture-list {
+    display: grid;
+    gap: 10px;
+}
+
+.mobile-controls-page__gesture-row {
+    display: grid;
+    grid-template-columns: minmax(140px, 0.7fr) minmax(160px, 1fr);
+    align-items: center;
+    gap: 12px;
+}
+
+@media (max-width: 700px) {
+    .mobile-controls-page {
+        padding-top: 12px;
+    }
+
+    .mobile-controls-page__grid,
+    .mobile-controls-page__gesture-row {
+        grid-template-columns: 1fr;
+    }
+
+    .mobile-controls-page__header {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .mobile-controls-page__reset {
+        grid-column: 1 / -1;
+        justify-self: stretch;
+    }
+}
