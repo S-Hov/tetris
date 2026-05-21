@@ -15,6 +15,7 @@ const GameLayout = ({
     boardShellStyle,
     boardDecor = null,
     leftRail = null,
+    headerStats = null,
     sidebar = null,
     overlay = null,
     banner = null,
@@ -31,6 +32,7 @@ const GameLayout = ({
                                 <i className="fa-solid fa-star"></i> Score: <b>{score}</b>
                             </p>
                         )}
+                        {headerStats ? <div className="game-layout__header-stats">{headerStats}</div> : null}
                     </header>
 
                     <div className="game-layout__stage">

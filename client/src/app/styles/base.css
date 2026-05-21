@@ -28,6 +28,10 @@ main {
     position: relative;
 }
 
+.main-layout__main--game {
+    overflow: hidden;
+}
+
 .mobile-controls-link {
     position: absolute;
     top: max(14px, calc(env(safe-area-inset-top) + 6px));
@@ -53,6 +57,10 @@ main {
     border-color: rgba(0, 255, 255, 0.4);
     box-shadow: var(--hover-shadow);
     outline: none;
+}
+
+.mobile-controls-link--match {
+    position: fixed;
 }
 
 .section {
@@ -115,6 +123,14 @@ main {
 
     main {
         padding-bottom: 88px;
+    }
+
+    body:has(.main-layout__main--game) .mobile-bottom-nav {
+        display: none;
+    }
+
+    .main-layout__main--game {
+        padding-bottom: 0;
     }
 }
 

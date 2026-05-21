@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { useAbilityTimer } from '@/features/tetris/hooks/useAbilityTimer.js'
 import { useGameCountdown } from '@/features/tetris/hooks/useGameCountdown.js'
@@ -494,7 +494,6 @@ const MatchPageGame = ({
                 lines={derivedState.linesCleared}
                 level={derivedState.level}
                 record={!isOnline ? Math.max(soloRecord, derivedState.score) : soloRecord}
-                status={isCountingDown ? 'Starting' : derivedState.isPaused ? 'Paused' : 'Playing'}
             />
             {isOnline ? (
                 <PlayerSummaryPanel
@@ -517,6 +516,15 @@ const MatchPageGame = ({
                 </>
             )}
         </>
+    )
+
+    const headerStats = (
+        <StatsPanel
+            score={derivedState.score}
+            lines={derivedState.linesCleared}
+            level={derivedState.level}
+            record={!isOnline ? Math.max(soloRecord, derivedState.score) : soloRecord}
+        />
     )
 
     const secondaryColumn = isOnline ? (
@@ -625,6 +633,15 @@ const MatchPageGame = ({
             {shouldShowCountdown ? <GameCountdownOverlay value={countdownValue} /> : null}
             {onlineResultOverlay}
             {soloResultOverlay}
+            {derivedState.isPaused ? (
+                <Link
+                    className="mobile-controls-link mobile-controls-link--match"
+                    to="/game/controls"
+                    aria-label="Mobile control settings"
+                >
+                    <i className="fas fa-gear"></i>
+                </Link>
+            ) : null}
         </>
     )
 
@@ -641,6 +658,7 @@ const MatchPageGame = ({
             boardDecor={boardDecor}
             boardInvisibleCells={hasInvisibleCells}
             leftRail={roomSettings.abilitiesEnabled ? <EnergyPanel energy={derivedState.energy} /> : null}
+            headerStats={headerStats}
             sidebar={sidebar}
             overlay={overlay}
             banner={null}
