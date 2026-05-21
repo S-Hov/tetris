@@ -6,6 +6,9 @@ import notify from '@/utils/Notifications'
 import { useAuth } from '@/shared/hooks/useAuth'
 import {
     ensureSocketSession,
+    getStoredGuestSession,
+    isValidGuestNickname,
+    normalizeGuestNickname,
     socket,
 } from '@/shared/api/socket'
 import {
@@ -30,6 +33,7 @@ const ModeSelectPage = () => {
     const navigate = useNavigate()
     const { mode } = useParams()
     const { user } = useAuth()
+    const [guestNickname, setGuestNickname] = useState(() => getStoredGuestSession()?.nickname || '')
     const modeConfig = useMemo(() => getModeSelectionConfig(mode), [mode])
     const [settings, setSettings] = useState(() => ({
         ...defaultModeSettings,
@@ -158,13 +162,18 @@ const ModeSelectPage = () => {
     }, [])
 
     const startMatchmaking = useCallback(async (matchType) => {
-        if (!user) {
+        if (!user && matchType === MATCH_PLAY_OPTIONS.RANKED) {
             notify('Войдите в аккаунт, чтобы искать матч', 'warning')
             return
         }
 
+        if (!user && !isValidGuestNickname(guestNickname)) {
+            notify('Введите никнейм для обычной игры: 2-24 символа', 'warning')
+            return
+        }
+
         try {
-            await ensureSocketSession({ user })
+            await ensureSocketSession(user ? { user } : { nickname: guestNickname })
 
             const response = await emitWithAck('matchmaking:join', {
                 modeKey: modeConfig.key,
@@ -194,7 +203,7 @@ const ModeSelectPage = () => {
         } catch (error) {
             notify(error.message || 'Не удалось подключиться к поиску матча', 'error')
         }
-    }, [modeConfig.key, settings.abilitiesEnabled, settings.specialBlocksEnabled, user])
+    }, [guestNickname, modeConfig.key, settings.abilitiesEnabled, settings.specialBlocksEnabled, user])
 
     const cancelMatchmaking = useCallback(async () => {
         const response = await emitWithAck('matchmaking:leave', {})
@@ -312,6 +321,33 @@ const ModeSelectPage = () => {
                         </div>
                     </GlowEffect>
                 </section>
+
+                {!user && !isSoloMode && (
+                    <section className="mode-select-settings">
+                        <GlowEffect>
+                            <div className="glow-effect mode-select-settings__content">
+                                <div className="profile-section-title">
+                                    <i className="fas fa-user-astronaut"></i>
+                                    Гостевая игра
+                                </div>
+
+                                <label className="mode-setting-row">
+                                    <span>
+                                        <strong>Никнейм для обычной игры</strong>
+                                        <small>Рейтинговый матч остаётся только для аккаунтов.</small>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        value={guestNickname}
+                                        onChange={(event) => setGuestNickname(normalizeGuestNickname(event.target.value))}
+                                        placeholder="Guest"
+                                        maxLength={24}
+                                    />
+                                </label>
+                            </div>
+                        </GlowEffect>
+                    </section>
+                )}
 
                 <section className="mode-select-options">
                     {visiblePlayCards.map((option) => {

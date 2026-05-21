@@ -333,6 +333,22 @@
     line-height: 1.45;
 }
 
+.mode-setting-row input {
+    min-width: 180px;
+    padding: 0.8rem 1rem;
+    border-radius: 18px;
+    border: var(--border);
+    background: var(--body-bg);
+    color: var(--text-color-1);
+    font: inherit;
+    outline: none;
+}
+
+.mode-setting-row input:focus {
+    border-color: var(--turquoise-lite);
+    box-shadow: 0 0 0 3px rgba(25, 251, 255, 0.14);
+}
+
 .mode-select-summary {
     display: flex;
     justify-content: space-between;

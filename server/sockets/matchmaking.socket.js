@@ -35,11 +35,12 @@ const isRegisteredUser = (socket) => {
 
 const createQueuePlayer = (socket) => {
     const user = socket.data.user
+    const isRegistered = isRegisteredUser(socket)
 
     return {
         socketId: socket.id,
         userId: user.id,
-        isRegistered: true,
+        isRegistered,
         username: user.username || user.email || 'Player',
         avatarUrl: user.avatarUrl || null,
         rankStats: user.rankStats || null,
@@ -363,10 +364,12 @@ export const removeSocketFromParties = (io, socketId) => {
 export const registerMatchmakingHandlers = (io, socket) => {
     socket.on('matchmaking:join', async (payload = {}, callback) => {
         try {
-            if (!isRegisteredUser(socket)) {
+            const matchType = normalizeMatchType(payload.matchType)
+
+            if (matchType === 'ranked' && !isRegisteredUser(socket)) {
                 callback?.({
                     success: false,
-                    message: 'Поиск матча доступен только авторизованным игрокам',
+                    message: 'Рейтинговый матч доступен только авторизованным игрокам',
                 })
                 return
             }
@@ -400,6 +403,7 @@ export const registerMatchmakingHandlers = (io, socket) => {
             const entry = createEntryFromSocket(socket, {
                 ...payload,
                 modeKey,
+                matchType,
             })
             const result = await enqueueOrMatchEntry(io, entry)
 

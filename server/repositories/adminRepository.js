@@ -1132,7 +1132,7 @@ export const getDatabaseSchemaRepo = async () => {
             JOIN pg_namespace ON pg_namespace.oid = pg_class.relnamespace
             LEFT JOIN pg_stat_user_tables ON pg_stat_user_tables.relid = pg_class.oid
             WHERE pg_namespace.nspname = 'public'
-              AND pg_class.relkind = 'r'
+                AND pg_class.relkind = 'r'
             ORDER BY pg_class.relname ASC
             `
         ),
@@ -1169,16 +1169,16 @@ export const getDatabaseSchemaRepo = async () => {
             FROM information_schema.table_constraints tc
             LEFT JOIN information_schema.key_column_usage kcu
                 ON kcu.constraint_schema = tc.constraint_schema
-               AND kcu.constraint_name = tc.constraint_name
-               AND kcu.table_schema = tc.table_schema
+                AND kcu.constraint_name = tc.constraint_name
+                AND kcu.table_schema = tc.table_schema
             LEFT JOIN information_schema.constraint_column_usage ccu
                 ON ccu.constraint_schema = tc.constraint_schema
-               AND ccu.constraint_name = tc.constraint_name
+                AND ccu.constraint_name = tc.constraint_name
             LEFT JOIN information_schema.referential_constraints rc
                 ON rc.constraint_schema = tc.constraint_schema
-               AND rc.constraint_name = tc.constraint_name
+                AND rc.constraint_name = tc.constraint_name
             WHERE tc.table_schema = 'public'
-              AND tc.constraint_type IN ('PRIMARY KEY', 'UNIQUE', 'FOREIGN KEY')
+                AND tc.constraint_type IN ('PRIMARY KEY', 'UNIQUE', 'FOREIGN KEY')
             ORDER BY tc.table_name ASC, tc.constraint_name ASC, kcu.ordinal_position ASC
             `
         ),
@@ -1608,7 +1608,7 @@ async function getDatabaseTableColumns(tableName) {
         SELECT column_name
         FROM information_schema.columns
         WHERE table_schema = 'public'
-          AND table_name = $1
+            AND table_name = $1
         ORDER BY ordinal_position ASC
         `,
         [tableName]
@@ -1719,13 +1719,13 @@ async function sortTablesForImport(tableNames) {
         FROM information_schema.table_constraints tc
         JOIN information_schema.key_column_usage kcu
             ON kcu.constraint_schema = tc.constraint_schema
-           AND kcu.constraint_name = tc.constraint_name
-           AND kcu.table_schema = tc.table_schema
+            AND kcu.constraint_name = tc.constraint_name
+            AND kcu.table_schema = tc.table_schema
         JOIN information_schema.constraint_column_usage ccu
             ON ccu.constraint_schema = tc.constraint_schema
-           AND ccu.constraint_name = tc.constraint_name
+            AND ccu.constraint_name = tc.constraint_name
         WHERE tc.table_schema = 'public'
-          AND tc.constraint_type = 'FOREIGN KEY'
+            AND tc.constraint_type = 'FOREIGN KEY'
         `
     )
 
@@ -1768,16 +1768,16 @@ async function getNullableForeignKeyColumns(tableNames) {
         FROM information_schema.table_constraints tc
         JOIN information_schema.key_column_usage kcu
             ON kcu.constraint_schema = tc.constraint_schema
-           AND kcu.constraint_name = tc.constraint_name
-           AND kcu.table_schema = tc.table_schema
+            AND kcu.constraint_name = tc.constraint_name
+            AND kcu.table_schema = tc.table_schema
         JOIN information_schema.columns columns
             ON columns.table_schema = kcu.table_schema
-           AND columns.table_name = kcu.table_name
-           AND columns.column_name = kcu.column_name
+            AND columns.table_name = kcu.table_name
+            AND columns.column_name = kcu.column_name
         WHERE tc.table_schema = 'public'
-          AND tc.constraint_type = 'FOREIGN KEY'
-          AND columns.is_nullable = 'YES'
-          AND kcu.table_name = ANY($1)
+            AND tc.constraint_type = 'FOREIGN KEY'
+            AND columns.is_nullable = 'YES'
+            AND kcu.table_name = ANY($1)
         `,
         [tableNames]
     )
@@ -1808,11 +1808,11 @@ async function getPrimaryKeyColumns(tableNames) {
         FROM information_schema.table_constraints tc
         JOIN information_schema.key_column_usage kcu
             ON kcu.constraint_schema = tc.constraint_schema
-           AND kcu.constraint_name = tc.constraint_name
-           AND kcu.table_schema = tc.table_schema
+            AND kcu.constraint_name = tc.constraint_name
+            AND kcu.table_schema = tc.table_schema
         WHERE tc.table_schema = 'public'
-          AND tc.constraint_type = 'PRIMARY KEY'
-          AND kcu.table_name = ANY($1)
+            AND tc.constraint_type = 'PRIMARY KEY'
+            AND kcu.table_name = ANY($1)
         ORDER BY kcu.table_name ASC, kcu.ordinal_position ASC
         `,
         [tableNames]
