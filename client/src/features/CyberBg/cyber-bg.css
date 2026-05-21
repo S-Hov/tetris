@@ -103,6 +103,30 @@
     border-color: var(--mosaic-right-edge);
 }
 
+.cyber-embers {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    mix-blend-mode: screen;
+}
+
+.cyber-ember {
+    position: absolute;
+    left: var(--ember-left);
+    bottom: -24px;
+    width: var(--ember-size);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    opacity: 0;
+    background: #ffb34e;
+    box-shadow:
+        0 0 8px rgba(255, 177, 75, 0.95),
+        0 0 18px rgba(255, 78, 32, 0.65);
+    animation: emberFloat var(--ember-duration) linear infinite;
+    animation-delay: var(--ember-delay);
+}
+
 
 @keyframes gridMove {
     0% {
@@ -111,6 +135,26 @@
 
     100% {
         transform: rotateX(45deg) rotateZ(15deg) translateY(50px);
+    }
+}
+
+@keyframes emberFloat {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) scale(0.6);
+    }
+
+    12% {
+        opacity: var(--ember-opacity);
+    }
+
+    70% {
+        opacity: calc(var(--ember-opacity) * 0.72);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate3d(var(--ember-drift), -92vh, 0) scale(1.25);
     }
 }
 
