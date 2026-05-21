@@ -18,6 +18,8 @@ import passport, { configurePassport } from './config/passport.js'
 
 import { logger } from './middleware/logger.js'
 import { errorHandler } from './middleware/errorHandler.js'
+import { serveUploadedAsset } from './controllers/uploadsController.js'
+import { syncLocalUploadsToDatabase } from './services/uploadedAssetService.js'
 
 import http from 'http'
 import { Server } from 'socket.io'
@@ -77,9 +79,9 @@ console.log(`App: ${APP_NAME}`)
 
 app.use(logger)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
-    fallthrough: false,
     maxAge: '7d',
 }))
+app.get(/^\/uploads\/.+/, serveUploadedAsset)
 
 app.use("/api/authentication", authRouter)
 app.use("/api/settings", settingsRouter)
@@ -109,4 +111,14 @@ registerSocketHandlers(io)
 
 httpServer.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
+
+    void syncLocalUploadsToDatabase(path.join(__dirname, 'uploads'))
+        .then(({ synced, total }) => {
+            if (total > 0) {
+                console.log(`Synced uploaded assets to database: ${synced}/${total}`)
+            }
+        })
+        .catch((error) => {
+            console.error('Uploaded assets database sync failed:', error)
+        })
 })

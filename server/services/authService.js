@@ -29,6 +29,7 @@ import {
 } from '../repositories/authRepository.js'
 import { getRoleByKeyRepo } from '../repositories/helper.js'
 import { getRankTier } from './rankRules.js'
+import { storeUploadedAssetRepo } from '../repositories/uploadedAssetRepository.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -192,7 +193,17 @@ export const updateUserAvatarService = async ({ userId, contentType, buffer }) =
         throw badRequest('Пользователь не найден')
     }
 
-    await fs.writeFile(filePath, buffer, { flag: 'wx' })
+    try {
+        await fs.writeFile(filePath, buffer, { flag: 'wx' })
+        await storeUploadedAssetRepo({
+            url: avatarUrl,
+            contentType: normalizedContentType,
+            buffer,
+        })
+    } catch (error) {
+        await deleteLocalAvatarFile(avatarUrl)
+        throw error
+    }
 
     const user = await updateUserAvatarRepo({
         userId,

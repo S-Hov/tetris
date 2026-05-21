@@ -38,6 +38,7 @@ import {
 import { replyToSupportRequest } from '../services/supportReplyService.js'
 import { closeSupportRequest } from '../services/supportCloseService.js'
 import { runPendingMigrations } from '../services/migrationService.js'
+import { storeUploadedAssetRepo } from '../repositories/uploadedAssetRepository.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -267,7 +268,24 @@ export const uploadResourceFileByKey = asyncHandler(async (req, res) => {
     const filePath = path.join(targetDir, filename)
     const publicUrl = `/uploads/${uploadDir}/${filename}`
 
-    await fs.writeFile(filePath, req.body, { flag: 'wx' })
+    try {
+        await fs.writeFile(filePath, req.body, { flag: 'wx' })
+        await storeUploadedAssetRepo({
+            url: publicUrl,
+            contentType: normalizedContentType,
+            buffer: req.body,
+        })
+    } catch (error) {
+        try {
+            await fs.unlink(filePath)
+        } catch (unlinkError) {
+            if (unlinkError.code !== 'ENOENT') {
+                console.error('Resource upload cleanup error:', unlinkError)
+            }
+        }
+
+        throw error
+    }
 
     sendAdminResponse(res, 'Admin resource file uploaded', {
         field,
