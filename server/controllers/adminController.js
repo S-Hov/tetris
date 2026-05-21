@@ -54,6 +54,9 @@ const RESOURCE_UPLOAD_TARGETS = {
     gameEffects: {
         image_url: 'effects',
     },
+    rankTiers: {
+        image_url: 'ranks',
+    },
     donationCurrencies: {
         icon_url: 'donations/currencies',
     },

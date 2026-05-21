@@ -100,6 +100,7 @@ export const getUserService = async (id) => {
     const totalRankedMatches = Number(rankStats?.total_matches) || 0
     const rankedWins = Number(rankStats?.wins) || 0
     const rankPoints = Number(rankStats?.rank_points) || 0
+    const rank = await getRankTier(rankPoints)
 
     return {
         ...user,
@@ -118,7 +119,7 @@ export const getUserService = async (id) => {
                 ? Math.round((rankedWins / totalRankedMatches) * 100)
                 : 0,
             bestSoloScore: Number(rankStats?.best_solo_score) || 0,
-            rank: getRankTier(rankPoints),
+            rank,
         },
         recentMatches: recentMatches.map((match) => ({
             id: match.id,

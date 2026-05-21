@@ -126,6 +126,7 @@ const RatingPage = () => {
                             <article key={player.id} className={`rating-podium-card rating-podium-card--rank-${player.rank}`}>
                                 <GlowEffect>
                                     <div className="glow-effect">
+                                        <RankTierImage tier={player.rankTier} className="rating-rank-tier-image rating-rank-tier-image--podium" />
                                         <span className="rating-podium-rank">{getRankIcon(player.rank)}</span>
                                         <RatingAvatar player={player} />
                                         <h2>{player.username}</h2>
@@ -203,7 +204,12 @@ const RatingPage = () => {
                                                     <td>{player.wins}</td>
                                                     <td>{player.winRate}%</td>
                                                     <td>{player.totalGames}</td>
-                                                    <td>{player.rankTier?.label || 'Bronze'}</td>
+                                                    <td>
+                                                        <span className="rating-rank-tier">
+                                                            <RankTierImage tier={player.rankTier} className="rating-rank-tier-image" />
+                                                            {player.rankTier?.label || 'Bronze'}
+                                                        </span>
+                                                    </td>
                                                     <td>{formatNumber(player.bestSoloScore)}</td>
                                                 </tr>
                                             ))}
@@ -252,6 +258,20 @@ const RatingAvatar = ({ player, small = false }) => (
         {player.avatarUrl ? renderAvatarMedia(getAssetUrl(player.avatarUrl), player.username) : player.avatar}
     </span>
 )
+
+const RankTierImage = ({ tier, className = '' }) => {
+    const imageUrl = getAssetUrl(tier?.imageUrl)
+
+    if (!imageUrl) {
+        return null
+    }
+
+    return (
+        <span className={className}>
+            <img src={imageUrl} alt={tier?.label || 'rank'} />
+        </span>
+    )
+}
 
 const getRankIcon = (rank) => {
     if (rank === 1) return '♛ 1'

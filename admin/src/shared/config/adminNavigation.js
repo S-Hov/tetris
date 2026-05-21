@@ -44,6 +44,7 @@ export const adminNavigation = [
     label: 'Рейтинг',
     icon: 'ranking',
     items: [
+      resource('rankTiers'),
       resource('rankStats'),
       resource('ratingHistory'),
     ],

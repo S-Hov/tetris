@@ -12,11 +12,12 @@ export const getLeaderboardService = async ({ period, sort, limit }) => {
         sort: normalizedSort,
         limit: toPositiveInteger(limit, 50),
     })
+    const rankTiers = await Promise.all(players.map((player) => getRankTier(player.rank_points)))
 
     return {
         period: normalizedPeriod,
         sort: normalizedSort,
-        players: players.map((player) => ({
+        players: players.map((player, index) => ({
             rank: Number(player.rank) || 0,
             id: player.id,
             username: player.username || player.email?.split('@')[0] || 'Игрок',
@@ -31,7 +32,7 @@ export const getLeaderboardService = async ({ period, sort, limit }) => {
             rankPoints: Number(player.rank_points) || 0,
             mmr: Number(player.mmr) || 1000,
             bestSoloScore: Number(player.best_solo_score) || 0,
-            rankTier: getRankTier(player.rank_points),
+            rankTier: rankTiers[index],
             lastPlayedAt: player.last_played_at,
             memberSince: player.created_at,
         })),

@@ -107,6 +107,24 @@
     }
 }
 
+.profile-rank-image {
+    width: 34px;
+    aspect-ratio: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 14px rgba(0, 255, 255, 0.2);
+}
+
+.profile-rank-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 
 .profile-stats-grid {
     display: grid;

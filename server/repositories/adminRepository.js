@@ -104,6 +104,20 @@ const RESOURCE_CONFIGS = {
         orderBy: 'sort_order',
         orderDirection: 'ASC',
     },
+    rankTiers: {
+        table: 'rank_tiers',
+        columns: ['id', 'tier_key', 'label', 'label_ru', 'min_points', 'max_points', 'image_url', 'status', 'sort_order', 'created_at', 'updated_at'],
+        searchable: ['tier_key', 'label', 'label_ru'],
+        filters: ['status', 'tier_key'],
+        editable: true,
+        mutableFields: ['tier_key', 'label', 'label_ru', 'min_points', 'max_points', 'image_url', 'status', 'sort_order', 'metadata'],
+        requiredFields: ['tier_key', 'label', 'min_points', 'status'],
+        statusField: 'status',
+        statusValues: ['active', 'inactive'],
+        orderBy: 'min_points',
+        orderDirection: 'ASC',
+        optional: true,
+    },
     roomPlayers: {
         table: 'game_room_players',
         columns: ['id', 'room_id', 'socket_id', 'user_key', 'user_id', 'is_registered', 'username', 'is_ready', 'team_number', 'team_slot', 'match_player_id', 'joined_at', 'updated_at'],
@@ -867,7 +881,7 @@ export const getAdminUserDetailsRepo = async (userId, params = {}) => {
             totalMatches,
             winRate: totalMatches > 0 ? Math.round((wins / totalMatches) * 100) : 0,
             bestSoloScore: Number(user.best_solo_score) || 0,
-            rank: getRankTier(Number(user.rank_points) || 0),
+            rank: await getRankTier(Number(user.rank_points) || 0),
         },
         matches: matchesResult.rows.map((match) => ({
             id: match.id,
@@ -1999,7 +2013,7 @@ function getMutableResourceConfig(resourceKey) {
     return config
 }
 
-async function normalizeMutablePayload(config, payload = {}, { isCreate = false } = {}) {
+async function normalizeMutablePayload(config, payload = {}, { id = null, isCreate = false } = {}) {
     const normalized = {}
 
     for (const field of config.mutableFields) {
@@ -2016,6 +2030,10 @@ async function normalizeMutablePayload(config, payload = {}, { isCreate = false 
 
     if (config.table === 'game_effects') {
         hydrateGameEffectPayload(normalized)
+    }
+
+    if (config.table === 'rank_tiers') {
+        await validateRankTierPayload(normalized, { id, isCreate })
     }
 
     if (config.statusField && normalized[config.statusField] !== undefined && !config.statusValues.includes(normalized[config.statusField])) {
@@ -2070,7 +2088,7 @@ function normalizeMutableValue(field, value) {
         return JSON.stringify(value)
     }
 
-    if (['sort_order', 'decimals', 'min_confirmations', 'currency_network_id', 'duration_ms'].includes(field)) {
+    if (['sort_order', 'decimals', 'min_confirmations', 'currency_network_id', 'duration_ms', 'min_points', 'max_points'].includes(field)) {
         if (value === '' || value === null || value === undefined) {
             return null
         }
@@ -2091,6 +2109,90 @@ function normalizeMutableValue(field, value) {
     }
 
     return value
+}
+
+async function validateRankTierPayload(payload, { id = null, isCreate = false } = {}) {
+    if (payload.tier_key !== undefined) {
+        payload.tier_key = String(payload.tier_key || '')
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9_-]+/g, '_')
+            .replace(/^_+|_+$/g, '')
+    }
+
+    if (payload.min_points !== undefined && (payload.min_points === null || payload.min_points < 0)) {
+        throw new Error('min_points must be zero or greater')
+    }
+
+    if (payload.max_points !== undefined && payload.max_points !== null && payload.max_points < 0) {
+        throw new Error('max_points must be zero or greater')
+    }
+
+    if (
+        payload.min_points !== undefined &&
+        payload.max_points !== undefined &&
+        payload.max_points !== null &&
+        payload.max_points < payload.min_points
+    ) {
+        throw new Error('max_points must be greater than or equal to min_points')
+    }
+
+    if (!isCreate && id) {
+        const { rows } = await pool.query(
+            `
+            SELECT min_points, max_points, status
+            FROM rank_tiers
+            WHERE id = $1
+            LIMIT 1
+            `,
+            [id]
+        )
+        const current = rows[0]
+
+        if (!current) {
+            return
+        }
+
+        payload.min_points = payload.min_points ?? current.min_points
+        payload.max_points = payload.max_points === undefined ? current.max_points : payload.max_points
+        payload.status = payload.status ?? current.status
+    }
+
+    if (payload.status && payload.status !== 'active') {
+        return
+    }
+
+    if (payload.min_points === undefined || payload.min_points === null) {
+        return
+    }
+
+    const overlapValues = [
+        payload.min_points,
+        payload.max_points,
+    ]
+    let excludeSql = ''
+
+    if (!isCreate && id) {
+        overlapValues.push(id)
+        excludeSql = `AND id <> $${overlapValues.length}`
+    }
+
+    const { rows } = await pool.query(
+        `
+        SELECT id, tier_key
+        FROM rank_tiers
+        WHERE status = 'active'
+            ${excludeSql}
+            AND min_points <= COALESCE($2::integer, 2147483647)
+            AND $1::integer <= COALESCE(max_points, 2147483647)
+        LIMIT 1
+        `,
+        overlapValues
+    )
+
+    if (rows[0]) {
+        throw new Error(`Rank range overlaps with ${rows[0].tier_key}`)
+    }
 }
 
 async function hydrateDonationWalletPayload(payload) {

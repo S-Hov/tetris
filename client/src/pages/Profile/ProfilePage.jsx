@@ -48,6 +48,7 @@ const ProfilePage = () => {
             memberSince: formatMemberSince(user?.created_at) || fallbackProfile.memberSince,
             lastLogin: formatLastLogin(user?.last_login_at) || fallbackProfile.lastLogin,
             rank: user?.rankStats?.rank?.label || fallbackProfile.rank,
+            rankImageUrl: getAssetUrl(user?.rankStats?.rank?.imageUrl),
             rating: user?.rankStats?.rankPoints ?? fallbackProfile.rating,
             rankStats: user?.rankStats || null,
             stats: {
@@ -130,7 +131,13 @@ const ProfilePage = () => {
                                     Настройки
                                 </Link>
                                 <div className="profile-rank-badge">
-                                    <i className="fas fa-trophy"></i>
+                                    {profile.rankImageUrl ? (
+                                        <span className="profile-rank-image">
+                                            <img src={profile.rankImageUrl} alt={profile.rank} />
+                                        </span>
+                                    ) : (
+                                        <i className="fas fa-trophy"></i>
+                                    )}
                                     <span>{profile.rank}</span>
                                     <i className="fas fa-chevron-right"></i>
                                     <strong>{profile.rating}</strong>

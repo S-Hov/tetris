@@ -1,11 +1,13 @@
-export const RANK_TIERS = [
-    { key: 'bronze', label: 'Bronze', min: 0, max: 999 },
-    { key: 'silver', label: 'Silver', min: 1000, max: 1999 },
-    { key: 'gold', label: 'Gold', min: 2000, max: 2999 },
-    { key: 'platinum', label: 'Platinum', min: 3000, max: 3999 },
-    { key: 'diamond', label: 'Diamond', min: 4000, max: 4999 },
-    { key: 'master', label: 'Master', min: 5000, max: 5999 },
-    { key: 'legend', label: 'Legend', min: 6000, max: null },
+import { pool } from '../db/index.js'
+
+export const DEFAULT_RANK_TIERS = [
+    { key: 'bronze', label: 'Bronze', labelRu: 'Bronze', min: 0, max: 999, imageUrl: null },
+    { key: 'silver', label: 'Silver', labelRu: 'Silver', min: 1000, max: 1999, imageUrl: null },
+    { key: 'gold', label: 'Gold', labelRu: 'Gold', min: 2000, max: 2999, imageUrl: null },
+    { key: 'platinum', label: 'Platinum', labelRu: 'Platinum', min: 3000, max: 3999, imageUrl: null },
+    { key: 'diamond', label: 'Diamond', labelRu: 'Diamond', min: 4000, max: 4999, imageUrl: null },
+    { key: 'master', label: 'Master', labelRu: 'Master', min: 5000, max: 5999, imageUrl: null },
+    { key: 'legend', label: 'Legend', labelRu: 'Legend', min: 6000, max: null, imageUrl: null },
 ]
 
 const WIN_BASE_POINTS = 25
@@ -15,12 +17,57 @@ const LOSS_COMPENSATION_CAP = 7
 const MMR_WIN_DELTA = 20
 const MMR_LOSS_DELTA = -20
 
-export const getRankTier = (rankPoints = 0) => {
-    const points = Math.max(0, Number(rankPoints) || 0)
+const RANK_TIER_CACHE_TTL_MS = 30_000
+let rankTierCache = {
+    expiresAt: 0,
+    tiers: DEFAULT_RANK_TIERS,
+}
 
-    return RANK_TIERS.find((tier) => (
+export const getRankTiers = async () => {
+    if (rankTierCache.expiresAt > Date.now()) {
+        return rankTierCache.tiers
+    }
+
+    try {
+        const { rows } = await pool.query(
+            `
+            SELECT tier_key, label, label_ru, min_points, max_points, image_url
+            FROM rank_tiers
+            WHERE status = 'active'
+            ORDER BY min_points ASC, sort_order ASC, id ASC
+            `
+        )
+
+        const tiers = rows.map((row) => ({
+            key: row.tier_key,
+            label: row.label,
+            labelRu: row.label_ru || row.label,
+            min: Number(row.min_points) || 0,
+            max: row.max_points === null ? null : Number(row.max_points),
+            imageUrl: row.image_url || null,
+        }))
+
+        rankTierCache = {
+            expiresAt: Date.now() + RANK_TIER_CACHE_TTL_MS,
+            tiers: tiers.length > 0 ? tiers : DEFAULT_RANK_TIERS,
+        }
+    } catch {
+        rankTierCache = {
+            expiresAt: Date.now() + RANK_TIER_CACHE_TTL_MS,
+            tiers: DEFAULT_RANK_TIERS,
+        }
+    }
+
+    return rankTierCache.tiers
+}
+
+export const getRankTier = async (rankPoints = 0) => {
+    const points = Math.max(0, Number(rankPoints) || 0)
+    const tiers = await getRankTiers()
+
+    return tiers.find((tier) => (
         points >= tier.min && (tier.max === null || points <= tier.max)
-    )) || RANK_TIERS[0]
+    )) || tiers[0] || DEFAULT_RANK_TIERS[0]
 }
 
 export const calculateRankDelta = ({ result, score = 0, linesCleared = 0, scoreDiff = 0 }) => {
