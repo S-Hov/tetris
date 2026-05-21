@@ -232,6 +232,14 @@
     font-family: var(--font-1);
     font-weight: 900;
     box-shadow: var(--lite-shadow);
+    overflow: hidden;
+}
+
+.rating-avatar img,
+.rating-avatar video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .rating-avatar--small {

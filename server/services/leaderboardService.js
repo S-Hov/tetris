@@ -21,6 +21,7 @@ export const getLeaderboardService = async ({ period, sort, limit }) => {
             id: player.id,
             username: player.username || player.email?.split('@')[0] || 'Игрок',
             avatar: getAvatarLabel(player.username || player.email),
+            avatarUrl: player.avatar_url || null,
             totalGames: Number(player.total_matches) || 0,
             wins: Number(player.wins) || 0,
             losses: Number(player.losses) || 0,

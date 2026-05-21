@@ -127,7 +127,7 @@ const RatingPage = () => {
                                 <GlowEffect>
                                     <div className="glow-effect">
                                         <span className="rating-podium-rank">{getRankIcon(player.rank)}</span>
-                                        <div className="rating-avatar">{player.avatar}</div>
+                                        <RatingAvatar player={player} />
                                         <h2>{player.username}</h2>
                                         <strong>{formatNumber(player.rating)}</strong>
                                         <small>{player.rankTier?.label || 'Bronze'} | {player.wins} побед | {player.winRate}%</small>
@@ -192,7 +192,7 @@ const RatingPage = () => {
                                                     </td>
                                                     <td>
                                                         <div className="rating-player">
-                                                            <span className="rating-avatar rating-avatar--small">{player.avatar}</span>
+                                                            <RatingAvatar player={player} small />
                                                             <span>
                                                                 <strong>{player.username}</strong>
                                                                 <small>MMR {player.mmr}</small>
@@ -225,6 +225,33 @@ const RatingPage = () => {
 }
 
 const formatNumber = (value) => new Intl.NumberFormat('ru-RU').format(Number(value) || 0)
+
+const getAssetUrl = (value) => {
+    if (!value) return ''
+    if (/^https?:\/\//i.test(value)) return value
+
+    const baseUrl = import.meta.env.VITE_API_URL || (
+        typeof window !== 'undefined' && window.location.hostname
+            ? `http://${window.location.hostname}:8880`
+            : 'http://127.0.0.1:8880'
+    )
+
+    return `${baseUrl}${value}`
+}
+
+const renderAvatarMedia = (src, alt) => {
+    if (src.toLowerCase().includes('.webm')) {
+        return <video src={src} autoPlay loop muted playsInline aria-label={alt || 'avatar'} />
+    }
+
+    return <img src={src} alt={alt || 'avatar'} />
+}
+
+const RatingAvatar = ({ player, small = false }) => (
+    <span className={`rating-avatar ${small ? 'rating-avatar--small' : ''}`}>
+        {player.avatarUrl ? renderAvatarMedia(getAssetUrl(player.avatarUrl), player.username) : player.avatar}
+    </span>
+)
 
 const getRankIcon = (rank) => {
     if (rank === 1) return '♛ 1'
