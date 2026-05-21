@@ -596,7 +596,7 @@ const getAssetUrl = (value) => {
 }
 
 const accountAvatarMedia = (src, alt) => {
-    if (src.toLowerCase().includes('.webm')) {
+    if (/\.(webm|mp4|mov|ogg|ogv|m4v)(?:[?#]|$)/i.test(src)) {
         return <video src={src} autoPlay loop muted playsInline aria-label={alt} />
     }
 
