@@ -49,6 +49,7 @@ import {
     getDatabaseControl,
     importDatabase,
     restoreDatabaseBackup,
+    runMigrations,
 } from '../controllers/adminController.js'
 import { checkAuth } from '../middleware/checkAuth.js'
 import { checkAdmin } from '../middleware/checkAdmin.js'
@@ -81,6 +82,7 @@ adminRouter.get('/analytics/games', getGameAnalytics)
 adminRouter.get('/sessions', getActiveSessions)
 adminRouter.get('/audit', getAdminAuditLogs)
 adminRouter.get('/migrations', getMigrations)
+adminRouter.post('/migrations/run', runMigrations)
 adminRouter.get('/resources/:resourceKey', getResourceByKey)
 adminRouter.post('/resources/:resourceKey', createResourceByKey)
 adminRouter.patch('/resources/:resourceKey/:resourceId/status', updateResourceStatusByKey)

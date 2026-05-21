@@ -75,6 +75,12 @@ export const resourcesAPI = {
     })
   },
 
+  runMigrations() {
+    return apiClient('/api/admin/migrations/run', {
+      method: 'POST',
+    })
+  },
+
   updateUser(userId, payload) {
     return apiClient(`/api/admin/users/${userId}`, {
       method: 'PUT',

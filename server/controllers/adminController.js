@@ -33,6 +33,7 @@ import {
 } from '../repositories/supportRepository.js'
 import { replyToSupportRequest } from '../services/supportReplyService.js'
 import { closeSupportRequest } from '../services/supportCloseService.js'
+import { runPendingMigrations } from '../services/migrationService.js'
 
 const sendAdminResponse = (res, message, data) => {
     res.json({
@@ -629,6 +630,12 @@ export const getAdminAuditLogs = asyncHandler(async (req, res) => {
 
 export const getMigrations = asyncHandler(async (req, res) => {
     sendAdminResponse(res, 'Migrations loaded', await getAdminResourceRepo('migrations', req.query))
+})
+
+export const runMigrations = asyncHandler(async (req, res) => {
+    const result = await runPendingMigrations()
+
+    sendAdminResponse(res, 'Migrations completed', result)
 })
 
 function normalizeUsername(value) {

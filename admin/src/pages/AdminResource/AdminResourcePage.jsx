@@ -19,6 +19,7 @@ export function AdminResourcePage({ route }) {
   const [editorRow, setEditorRow] = useState(null)
   const [editorMode, setEditorMode] = useState('create')
   const [isSaving, setIsSaving] = useState(false)
+  const [isRunningMigrations, setIsRunningMigrations] = useState(false)
   const [suggestions, setSuggestions] = useState({})
 
   const queryString = searchParams.toString()
@@ -210,6 +211,32 @@ export function AdminResourcePage({ route }) {
     }
   }
 
+  const handleRunMigrations = async () => {
+    setIsRunningMigrations(true)
+
+    try {
+      const result = await resourcesAPI.runMigrations()
+      const appliedCount = result.applied?.length || 0
+      const baselineCount = result.baseline?.length || 0
+
+      if (appliedCount > 0) {
+        notify.success(`Выполнено миграций: ${appliedCount}`)
+      } else if (baselineCount > 0) {
+        notify.success(`Зафиксировано базовых миграций: ${baselineCount}`)
+      } else {
+        notify.success('Новых миграций нет')
+      }
+
+      setRefreshToken((value) => value + 1)
+    } catch (requestError) {
+      notify.error(requestError.message || 'Не удалось выполнить миграции')
+    } finally {
+      setIsRunningMigrations(false)
+    }
+  }
+
+  const isMigrationsResource = config.key === 'migrations'
+
   return (
     <section className="admin-page admin-resource-page">
       <header className="admin-page__header">
@@ -220,7 +247,19 @@ export function AdminResourcePage({ route }) {
             {config.description || `Раздел показывает записи ресурса «${config.title}» и помогает быстро искать, фильтровать и проверять данные.`}
           </p>
         </div>
-        <span>/api/admin/resources/{config.key}</span>
+        <div className="admin-page__actions">
+          {isMigrationsResource ? (
+            <button
+              className="admin-button admin-button--primary"
+              disabled={isLoading || isRunningMigrations}
+              type="button"
+              onClick={handleRunMigrations}
+            >
+              {isRunningMigrations ? 'Выполняем миграции...' : 'Проверить и выполнить миграции'}
+            </button>
+          ) : null}
+          <span>/api/admin/resources/{config.key}</span>
+        </div>
       </header>
 
       {config.advancedFilters ? (
