@@ -75,6 +75,18 @@ export const resourcesAPI = {
     })
   },
 
+  uploadResourceFile(resourceKey, fieldKey, file) {
+    const query = buildQuery({ field: fieldKey, name: file.name })
+
+    return apiClient(`/api/admin/resources/${resourceKey}/upload${query ? `?${query}` : ''}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': file.type,
+      },
+      body: file,
+    })
+  },
+
   runMigrations() {
     return apiClient('/api/admin/migrations/run', {
       method: 'POST',

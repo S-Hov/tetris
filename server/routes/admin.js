@@ -38,6 +38,7 @@ import {
     updateUserAvatar,
     updateResourceByKey,
     updateResourceStatusByKey,
+    uploadResourceFileByKey,
     updateUser,
     replySupportRequest,
     closeSupportRequestByAdmin,
@@ -84,6 +85,14 @@ adminRouter.get('/audit', getAdminAuditLogs)
 adminRouter.get('/migrations', getMigrations)
 adminRouter.post('/migrations/run', runMigrations)
 adminRouter.get('/resources/:resourceKey', getResourceByKey)
+adminRouter.post(
+    '/resources/:resourceKey/upload',
+    express.raw({
+        type: ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/avif', 'image/svg+xml'],
+        limit: '4mb',
+    }),
+    uploadResourceFileByKey
+)
 adminRouter.post('/resources/:resourceKey', createResourceByKey)
 adminRouter.patch('/resources/:resourceKey/:resourceId/status', updateResourceStatusByKey)
 adminRouter.put('/resources/:resourceKey/:resourceId', updateResourceByKey)

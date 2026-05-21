@@ -4,10 +4,12 @@ import { AdminDataTable } from '@/entities/adminTable/ui/AdminDataTable.jsx'
 import { AdminUsersTable } from '@/entities/adminTable/ui/AdminUsersTable.jsx'
 import { resourcesAPI } from '@/shared/api/resources'
 import { adminResourceConfigs } from '@/shared/config/adminResources.js'
+import { AdminModal } from '@/shared/ui/AdminModal'
 import { notify } from '@/shared/lib/notify.js'
 import './AdminResourcePage.css'
 
 const DEFAULT_LIMIT = 25
+const EDITOR_FILE_PREFIX = '__file_'
 
 export function AdminResourcePage({ route }) {
   const config = adminResourceConfigs[route.resourceKey]
@@ -153,6 +155,13 @@ export function AdminResourcePage({ route }) {
     }))
   }
 
+  const handleEditorFileChange = (key, file) => {
+    setEditorRow((current) => ({
+      ...(current || {}),
+      [`${EDITOR_FILE_PREFIX}${key}`]: file,
+    }))
+  }
+
   const handleEditorCancel = () => {
     setEditorRow(null)
     setEditorMode('create')
@@ -168,11 +177,13 @@ export function AdminResourcePage({ route }) {
     setIsSaving(true)
 
     try {
+      const rowWithUploads = await uploadEditorFiles(config, editorRow)
+
       if (editorMode === 'edit') {
-        await resourcesAPI.updateItem(config.key, editorRow[resourceIdKey], buildEditorPayload(config, editorRow))
+        await resourcesAPI.updateItem(config.key, rowWithUploads[resourceIdKey], buildEditorPayload(config, rowWithUploads))
         notify.success('Запись обновлена')
       } else {
-        await resourcesAPI.createItem(config.key, buildEditorPayload(config, editorRow))
+        await resourcesAPI.createItem(config.key, buildEditorPayload(config, rowWithUploads))
         notify.success('Запись добавлена')
       }
 
@@ -314,6 +325,7 @@ export function AdminResourcePage({ route }) {
           onCancel={handleEditorCancel}
           onChange={handleEditorChange}
           onCreate={handleCreateClick}
+          onFileChange={handleEditorFileChange}
           onSubmit={handleEditorSubmit}
         />
       ) : null}
@@ -348,7 +360,7 @@ export function AdminResourcePage({ route }) {
   )
 }
 
-function EditableResourcePanel({ config, row, mode, isSaving, suggestions, onCancel, onChange, onCreate, onSubmit }) {
+function EditableResourcePanel({ config, row, mode, isSaving, suggestions, onCancel, onChange, onCreate, onFileChange, onSubmit }) {
   if (!config.editorFields?.length) {
     return null
   }
@@ -367,39 +379,55 @@ function EditableResourcePanel({ config, row, mode, isSaving, suggestions, onCan
     )
   }
 
+  const formId = `admin-resource-editor-${config.key}`
+
   return (
-    <form className="admin-resource-editor" onSubmit={onSubmit}>
-      <div className="admin-resource-editor__header">
-        <div>
-          <strong>{mode === 'edit' ? 'Редактирование записи' : 'Новая запись'}</strong>
-          <span>{config.title}</span>
-        </div>
-        <div>
+    <AdminModal
+      actions={(
+        <>
           <button type="button" onClick={onCancel}>Отмена</button>
-          <button className="admin-button--primary" disabled={isSaving} type="submit">
+          <button className="admin-button--primary" disabled={isSaving} form={formId} type="submit">
             {isSaving ? 'Сохраняем...' : 'Сохранить'}
           </button>
+        </>
+      )}
+      isOpen={Boolean(row)}
+      subtitle={config.title}
+      title={mode === 'edit' ? 'Редактирование записи' : 'Новая запись'}
+      onClose={isSaving ? undefined : onCancel}
+    >
+      <form className="admin-resource-editor admin-resource-editor--modal" id={formId} onSubmit={onSubmit}>
+        <div className="admin-resource-editor__grid">
+          {config.editorFields.map((field) => (
+            <label className="admin-resource-editor__field" key={field.key}>
+              <span>{field.label}</span>
+              <EditorInput
+                field={field}
+                file={row[`${EDITOR_FILE_PREFIX}${field.key}`]}
+                suggestions={suggestions[field.suggestionSource] || []}
+                value={row[field.key]}
+                onChange={(value, option) => onChange(field.key, value, option)}
+                onFileChange={(file) => onFileChange(field.key, file)}
+              />
+            </label>
+          ))}
         </div>
-      </div>
-      <div className="admin-resource-editor__grid">
-        {config.editorFields.map((field) => (
-          <label className="admin-resource-editor__field" key={field.key}>
-            <span>{field.label}</span>
-            <EditorInput
-              field={field}
-              suggestions={suggestions[field.suggestionSource] || []}
-              value={row[field.key]}
-              onChange={(value, option) => onChange(field.key, value, option)}
-            />
-          </label>
-        ))}
-      </div>
-    </form>
+      </form>
+    </AdminModal>
   )
 }
 
-function EditorInput({ field, suggestions, value, onChange }) {
+function EditorInput({ field, file, suggestions, value, onChange, onFileChange }) {
   const [isOpen, setIsOpen] = useState(false)
+  const previewUrl = useMemo(() => (file ? URL.createObjectURL(file) : ''), [file])
+
+  useEffect(() => {
+    if (!previewUrl) {
+      return undefined
+    }
+
+    return () => URL.revokeObjectURL(previewUrl)
+  }, [previewUrl])
 
   if (field.type === 'select') {
     return (
@@ -481,6 +509,33 @@ function EditorInput({ field, suggestions, value, onChange }) {
     )
   }
 
+  if (field.type === 'image') {
+    const assetUrl = previewUrl || getAdminAssetUrl(value)
+
+    return (
+      <div className="admin-image-field">
+        {assetUrl ? (
+          <span className="admin-image-field__preview">
+            <img src={assetUrl} alt="" />
+          </span>
+        ) : (
+          <span className="admin-image-field__empty">Нет изображения</span>
+        )}
+        <input
+          accept="image/png,image/jpeg,image/gif,image/webp,image/avif,image/svg+xml"
+          type="file"
+          onChange={(event) => onFileChange(event.target.files?.[0] || null)}
+        />
+        <input
+          placeholder={field.placeholder || ''}
+          type="text"
+          value={value ?? ''}
+          onChange={(event) => onChange(event.target.value)}
+        />
+      </div>
+    )
+  }
+
   return (
     <input
       placeholder={field.placeholder || ''}
@@ -547,6 +602,40 @@ function createEditorRow(config, row) {
 
 function buildEditorPayload(config, row) {
   return Object.fromEntries((config.editorFields || []).map((field) => [field.key, row[field.key]]))
+}
+
+async function uploadEditorFiles(config, row) {
+  let nextRow = row
+  const uploadFields = (config.editorFields || []).filter((field) => field.upload)
+
+  for (const field of uploadFields) {
+    const file = nextRow?.[`${EDITOR_FILE_PREFIX}${field.key}`]
+
+    if (!file) {
+      continue
+    }
+
+    const response = await resourcesAPI.uploadResourceFile(config.key, field.key, file)
+    nextRow = {
+      ...nextRow,
+      [field.key]: response.url,
+    }
+  }
+
+  return nextRow
+}
+
+function getAdminAssetUrl(value) {
+  if (!value) return ''
+  if (/^https?:\/\//i.test(value)) return value
+
+  const baseUrl = import.meta.env.VITE_API_URL || (
+    typeof window !== 'undefined' && window.location.hostname
+      ? `http://${window.location.hostname}:8880`
+      : 'http://127.0.0.1:8880'
+  )
+
+  return `${baseUrl}${value}`
 }
 
 function AdvancedFilters({ filters, isLoading, searchParams, onClear, onRefresh, onSetParam }) {

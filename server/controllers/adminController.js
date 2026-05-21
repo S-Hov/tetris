@@ -1,5 +1,9 @@
 import { asyncHandler } from '../utils/asyncHandler.js'
 import bcrypt from 'bcrypt'
+import crypto from 'crypto'
+import { promises as fs } from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import {
     createAdminResourceRepo,
     deleteAdminUserAccountRepo,
@@ -34,6 +38,30 @@ import {
 import { replyToSupportRequest } from '../services/supportReplyService.js'
 import { closeSupportRequest } from '../services/supportCloseService.js'
 import { runPendingMigrations } from '../services/migrationService.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const SERVER_ROOT = path.resolve(__dirname, '..')
+const RESOURCE_UPLOAD_TYPES = {
+    'image/png': { ext: 'png', validate: (buffer) => buffer.subarray(0, 4).equals(Buffer.from([0x89, 0x50, 0x4E, 0x47])) },
+    'image/jpeg': { ext: 'jpg', validate: (buffer) => buffer.subarray(0, 3).equals(Buffer.from([0xFF, 0xD8, 0xFF])) },
+    'image/gif': { ext: 'gif', validate: (buffer) => ['GIF87a', 'GIF89a'].includes(buffer.subarray(0, 6).toString('ascii')) },
+    'image/webp': { ext: 'webp', validate: (buffer) => buffer.subarray(0, 4).toString('ascii') === 'RIFF' && buffer.subarray(8, 12).toString('ascii') === 'WEBP' },
+    'image/avif': { ext: 'avif', validate: (buffer) => buffer.subarray(4, 8).toString('ascii') === 'ftyp' },
+    'image/svg+xml': { ext: 'svg', validate: (buffer) => buffer.subarray(0, 512).toString('utf8').includes('<svg') },
+}
+const RESOURCE_UPLOAD_TARGETS = {
+    gameEffects: {
+        image_url: 'effects',
+    },
+    donationCurrencies: {
+        icon_url: 'donations/currencies',
+    },
+    donationNetworks: {
+        icon_url: 'donations/networks',
+    },
+}
+const MAX_RESOURCE_UPLOAD_SIZE_BYTES = 4 * 1024 * 1024
 
 const sendAdminResponse = (res, message, data) => {
     res.json({
@@ -194,6 +222,54 @@ export const getResourceByKey = asyncHandler(async (req, res) => {
     }
 
     sendAdminResponse(res, 'Admin resource loaded', data)
+})
+
+export const uploadResourceFileByKey = asyncHandler(async (req, res) => {
+    const field = String(req.query?.field || '').trim()
+    const uploadDir = RESOURCE_UPLOAD_TARGETS[req.params.resourceKey]?.[field]
+
+    if (!uploadDir) {
+        throw badRequest('Р—Р°РіСЂСѓР·РєР° С„Р°Р№Р»РѕРІ РґР»СЏ СЌС‚РѕРіРѕ РїРѕР»СЏ РЅРµРґРѕСЃС‚СѓРїРЅР°')
+    }
+
+    const normalizedContentType = String(req.get('content-type') || '').split(';')[0].trim().toLowerCase()
+    const fileType = RESOURCE_UPLOAD_TYPES[normalizedContentType]
+
+    if (!fileType) {
+        throw badRequest('РџРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ С‚РѕР»СЊРєРѕ PNG, JPG, GIF, WEBP, AVIF Рё SVG')
+    }
+
+    if (!Buffer.isBuffer(req.body) || req.body.length === 0) {
+        throw badRequest('Р¤Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ')
+    }
+
+    if (req.body.length > MAX_RESOURCE_UPLOAD_SIZE_BYTES) {
+        throw badRequest('Р¤Р°Р№Р» РЅРµ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ 4 РњР‘')
+    }
+
+    if (!fileType.validate(req.body)) {
+        throw badRequest('Р¤Р°Р№Р» РЅРµ РїРѕС…РѕР¶ РЅР° Р·Р°СЏРІР»РµРЅРЅС‹Р№ С„РѕСЂРјР°С‚ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ')
+    }
+
+    const targetDir = path.join(SERVER_ROOT, 'uploads', uploadDir)
+    await fs.mkdir(targetDir, { recursive: true })
+
+    const baseName = normalizeUploadBaseName(req.query?.name || field)
+    const fileHash = crypto
+        .createHash('sha256')
+        .update(`${req.params.resourceKey}:${field}:${Date.now()}:${crypto.randomUUID()}`)
+        .digest('hex')
+        .slice(0, 20)
+    const filename = `${baseName}-${fileHash}.${fileType.ext}`
+    const filePath = path.join(targetDir, filename)
+    const publicUrl = `/uploads/${uploadDir}/${filename}`
+
+    await fs.writeFile(filePath, req.body, { flag: 'wx' })
+
+    sendAdminResponse(res, 'Admin resource file uploaded', {
+        field,
+        url: publicUrl,
+    })
 })
 
 export const createResourceByKey = asyncHandler(async (req, res) => {
@@ -675,6 +751,17 @@ function normalizeTableList(value) {
     }
 
     return []
+}
+
+function normalizeUploadBaseName(value) {
+    const rawName = path.basename(String(value || 'upload')).replace(/\.[^.]+$/, '')
+    const safeName = rawName
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 48)
+
+    return safeName || 'upload'
 }
 
 function normalizeImportMode(value) {
