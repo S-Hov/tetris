@@ -11,6 +11,7 @@ import AboutPage from '@/pages/About/AboutPage.jsx'
 import SupportPage from '@/pages/Support/SupportPage.jsx'
 import SupportRequestsPage from '@/pages/SupportRequests/SupportRequestsPage.jsx'
 import SupportRequestDetailsPage from '@/pages/SupportRequestDetails/SupportRequestDetailsPage.jsx'
+import EffectsPage from '@/pages/Effects/EffectsPage.jsx'
 
 import MainLayout from '../layouts/MainLayout.jsx'
 import InnerPageLayout from '../layouts/InnerPageLayout.jsx'
@@ -89,6 +90,13 @@ export const routes = [
         path: '/about',
         title: 'О нас',
         component: AboutPage,
+        layout: MainLayout,
+    },
+    {
+        key: 'effects',
+        path: '/effects',
+        title: 'Игровые эффекты',
+        component: EffectsPage,
         layout: MainLayout,
     },
     {

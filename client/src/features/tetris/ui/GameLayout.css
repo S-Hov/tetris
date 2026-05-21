@@ -438,6 +438,12 @@
     text-shadow: 0 0 18px rgba(0, 240, 255, 0.4);
 }
 
+.game-overlay__card-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .game-overlay__card-label {
     font-size: 0.72rem;
     text-transform: uppercase;

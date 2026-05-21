@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import './HomePage.css'
 import GlowEffect from '@/shared/ui/GlowEffect'
+import { effectsAPI } from '@/shared/api/effects'
+import { EffectCard } from '@/pages/Effects/EffectsPage.jsx'
 
 const gameModes = [
     {
@@ -95,7 +98,39 @@ const tetrisBlocks = [
     'home-block--pink',
 ]
 
+const effectPreviewFallback = [
+    { id: 'speed_x2_for_4s', label: 'Overclock', labelRu: 'Перегрузка', title: 'Speed Surge', titleRu: 'Ускорение', description: 'Opponent pieces fall much faster for a short time.', descriptionRu: 'Фигуры соперника на короткое время начинают падать заметно быстрее.', icon: 'fa-gauge-high', visual: 'speed', durationMs: 4000 },
+    { id: 'darkness', label: 'Blackout', labelRu: 'Затемнение', title: 'Darkness', titleRu: 'Тьма', description: 'Covers most of the opponent board with a dark veil.', descriptionRu: 'Почти всё поле соперника накрывает тёмная пелена.', icon: 'fa-moon', visual: 'darkness', durationMs: 10000 },
+    { id: 'garbage_rain', label: 'Garbage Rain', labelRu: 'Мусорный дождь', title: 'Random Blocks', titleRu: 'Случайные блоки', description: 'Drops a few messy blocks into the opponent board.', descriptionRu: 'На поле соперника падают лишние случайные блоки.', icon: 'fa-cubes', visual: 'garbage', durationMs: 1 },
+]
+
 const HomePage = () => {
+    const [effectsPreview, setEffectsPreview] = useState(effectPreviewFallback)
+
+    useEffect(() => {
+        let isCancelled = false
+
+        const loadEffects = async () => {
+            try {
+                const response = await effectsAPI.getEffects()
+
+                if (!isCancelled) {
+                    setEffectsPreview((response.effects || []).slice(0, 3))
+                }
+            } catch {
+                if (!isCancelled) {
+                    setEffectsPreview(effectPreviewFallback)
+                }
+            }
+        }
+
+        loadEffects()
+
+        return () => {
+            isCancelled = true
+        }
+    }, [])
+
     return (
         <section className="section home-page">
             <div className="container home-container">
@@ -189,6 +224,24 @@ const HomePage = () => {
                             ))}
                         </div>
                     </GlowEffect>
+                </section>
+
+                <section className="home-effects">
+                    <div className="home-section-header">
+                        <div>
+                            <h2>Не просто тетрис, а дуэль с эффектами</h2>
+                            <p>Копите энергию, выбирайте момент атаки и ломайте привычный ритм соперника.</p>
+                        </div>
+                        <Link to="/effects" className="button home-secondary-button">
+                            Все эффекты
+                        </Link>
+                    </div>
+
+                    <div className="home-effects-grid">
+                        {effectsPreview.map((effect) => (
+                            <EffectCard compact effect={effect} key={effect.id || effect.key} />
+                        ))}
+                    </div>
                 </section>
 
                 <section className="home-cta">

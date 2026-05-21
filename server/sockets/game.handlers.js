@@ -8,53 +8,7 @@ import {
     finishRoomMatchService,
     recordMatchEventService,
 } from '../services/matchService.js'
-
-const ABILITY_EFFECTS = {
-    speed_x2_for_4s: {
-        type: 'speed_x2_for_4s',
-        durationMs: 4000,
-    },
-    darkness: {
-        type: 'darkness',
-        durationMs: 10000,
-    },
-    garbage_rain: {
-        type: 'garbage_rain',
-        durationMs: 1,
-    },
-    controls_swap: {
-        type: 'controls_swap',
-        durationMs: 5000,
-    },
-    fog_piece: {
-        type: 'fog_piece',
-        durationMs: 6000,
-    },
-    gravity_lock: {
-        type: 'gravity_lock',
-        durationMs: 3500,
-    },
-    screen_shake: {
-        type: 'screen_shake',
-        durationMs: 3500,
-    },
-    random_rotation: {
-        type: 'random_rotation',
-        durationMs: 5000,
-    },
-    sticky_walls: {
-        type: 'sticky_walls',
-        durationMs: 5000,
-    },
-    delay_input: {
-        type: 'delay_input',
-        durationMs: 5000,
-    },
-    invisible_cells: {
-        type: 'invisible_cells',
-        durationMs: 6000,
-    },
-}
+import { getActiveGameEffectByKeyRepo } from '../repositories/gameEffectsRepository.js'
 
 export const registerGameHandlers = (io, socket) => {
     socket.on('game:update', async ({ roomId, payload }) => {
@@ -227,11 +181,16 @@ export const registerGameHandlers = (io, socket) => {
             return
         }
 
-        const effect = ABILITY_EFFECTS[abilityId]
+        const ability = await getActiveGameEffectByKeyRepo(abilityId)
 
-        if (!effect) {
+        if (!ability) {
             callback?.({ success: false, message: 'Unknown ability' })
             return
+        }
+
+        const effect = {
+            type: ability.effect_key,
+            durationMs: Number(ability.duration_ms) || 0,
         }
 
         io.to(targetPlayer.socketId).emit('effect:apply', {

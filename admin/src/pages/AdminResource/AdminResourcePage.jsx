@@ -430,6 +430,18 @@ function EditorInput({ field, suggestions, value, onChange }) {
     )
   }
 
+  if (field.type === 'textarea') {
+    return (
+      <textarea
+        placeholder={field.placeholder || ''}
+        required={field.required}
+        rows={3}
+        value={value ?? ''}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    )
+  }
+
   return (
     <input
       placeholder={field.placeholder || ''}

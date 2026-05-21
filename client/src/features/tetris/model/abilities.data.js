@@ -118,6 +118,8 @@ export const ABILITIES = [
     },
 ]
 
+let runtimeAbilities = ABILITIES
+
 export const ABILITY_EFFECTS = {
     [ABILITY_IDS.SPEED_X2_FOR_4S]: {
         type: ABILITY_IDS.SPEED_X2_FOR_4S,
@@ -166,7 +168,7 @@ export const ABILITY_EFFECTS = {
 }
 
 export function getRandomDebuffs(count = ABILITY_CHOICE_COUNT, random = Math.random) {
-    const enabledAbilities = ABILITIES.filter((ability) => ability.enabled)
+    const enabledAbilities = runtimeAbilities.filter((ability) => ability.enabled)
 
     return enabledAbilities
         .slice()
@@ -175,5 +177,48 @@ export function getRandomDebuffs(count = ABILITY_CHOICE_COUNT, random = Math.ran
 }
 
 export function getAbilityEffect(abilityId) {
+    const runtimeAbility = runtimeAbilities.find((ability) => ability.id === abilityId)
+
+    if (runtimeAbility) {
+        return {
+            type: runtimeAbility.id,
+            durationMs: runtimeAbility.durationMs,
+        }
+    }
+
     return ABILITY_EFFECTS[abilityId] || null
+}
+
+export function setRuntimeAbilities(abilities = []) {
+    if (!Array.isArray(abilities) || abilities.length === 0) {
+        runtimeAbilities = ABILITIES
+        return runtimeAbilities
+    }
+
+    runtimeAbilities = abilities.map((ability) => ({
+        id: ability.id || ability.key,
+        enabled: ability.enabled !== false,
+        label: ability.label || ability.title || ability.id,
+        title: ability.title || ability.label || ability.id,
+        description: ability.description || '',
+        icon: ability.icon || 'fa-bolt',
+        imageUrl: normalizeAssetUrl(ability.imageUrl || ability.image_url || ''),
+        visual: ability.visual || 'default',
+        durationMs: Number(ability.durationMs ?? ability.duration_ms) || 0,
+    })).filter((ability) => ability.id)
+
+    return runtimeAbilities
+}
+
+function normalizeAssetUrl(value) {
+    if (!value) return ''
+    if (/^(https?:)?\/\//i.test(value) || String(value).startsWith('data:')) return value
+
+    const baseUrl = import.meta.env.VITE_API_URL || (
+        typeof window !== 'undefined' && window.location.hostname
+            ? `http://${window.location.hostname}:8880`
+            : 'http://127.0.0.1:8880'
+    )
+
+    return `${baseUrl}${String(value).startsWith('/') ? value : `/${value}`}`
 }

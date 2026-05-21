@@ -368,6 +368,21 @@
     }
 }
 
+.home-effects {
+    margin-bottom: 2.5rem;
+}
+
+.home-effects .home-section-header > div {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.home-effects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
 .home-feature {
     display: grid;
     gap: 0.45rem;
@@ -424,6 +439,7 @@
     }
 
     .home-modes-grid,
+    .home-effects-grid,
     .home-features {
         grid-template-columns: 1fr;
     }

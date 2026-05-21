@@ -35,6 +35,7 @@ export const adminNavigation = [
       resource('matchPlayers'),
       resource('matchEvents'),
       resource('rooms'),
+      resource('gameEffects'),
       resource('roomPlayers'),
     ],
   },

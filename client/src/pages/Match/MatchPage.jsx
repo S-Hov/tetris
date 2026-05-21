@@ -18,6 +18,7 @@ import {
     normalizeMatchSettings,
 } from '@/features/tetris/model/matchSettings.js'
 import { ABILITY_CHOICE_DURATION_MS } from '@/features/tetris/model/abilities.data.js'
+import { setRuntimeAbilities } from '@/features/tetris/model/abilities.data.js'
 import { EFFECT_TYPES, hasEffect } from '@/features/tetris/model/effects.js'
 import { resolveAbilityChoice, togglePause } from '@/features/tetris/model/tetrisEngine.js'
 import AbilityOverlay from '@/features/tetris/ui/AbilityOverlay.jsx'
@@ -34,6 +35,7 @@ import TetrisBoard from '@/features/tetris/ui/TetrisBoard.jsx'
 import { useAuth } from '@/shared/hooks/useAuth.js'
 import { socket } from '@/shared/api/socket'
 import { matchesAPI } from '@/shared/api/matches'
+import { effectsAPI } from '@/shared/api/effects'
 import notify from '@/utils/Notifications'
 
 import './MatchPage.css'
@@ -244,6 +246,34 @@ const MatchPageGame = ({
         setGameState,
         targetRef: boardShellRef,
     })
+
+    useEffect(() => {
+        if (!roomSettings.abilitiesEnabled && !roomSettings.soloGameDebuffsMockEnabled) {
+            return undefined
+        }
+
+        let isCancelled = false
+
+        const loadEffects = async () => {
+            try {
+                const response = await effectsAPI.getEffects()
+
+                if (!isCancelled) {
+                    setRuntimeAbilities(response.effects || [])
+                }
+            } catch {
+                if (!isCancelled) {
+                    setRuntimeAbilities()
+                }
+            }
+        }
+
+        loadEffects()
+
+        return () => {
+            isCancelled = true
+        }
+    }, [roomSettings.abilitiesEnabled, roomSettings.soloGameDebuffsMockEnabled])
 
     const dangerLevel = useMemo(() => getBoardDangerLevel(derivedState.board), [derivedState.board])
     const hasDarkness = hasEffect(derivedState, EFFECT_TYPES.DARKNESS)

@@ -187,7 +187,8 @@
 }
 
 .admin-resource-editor__field input,
-.admin-resource-editor__field select {
+.admin-resource-editor__field select,
+.admin-resource-editor__field textarea {
   width: 100%;
   min-width: 0;
   height: 38px;
@@ -198,6 +199,13 @@
   color: #344054;
   font: inherit;
   font-size: 14px;
+}
+
+.admin-resource-editor__field textarea {
+  min-height: 86px;
+  height: auto;
+  padding: 10px;
+  resize: vertical;
 }
 
 .admin-resource-editor__field input[type="checkbox"] {

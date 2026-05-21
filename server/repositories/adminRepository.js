@@ -91,6 +91,19 @@ const RESOURCE_CONFIGS = {
         orderBy: 'updated_at',
         orderDirection: 'DESC',
     },
+    gameEffects: {
+        table: 'game_effects',
+        columns: ['id', 'effect_key', 'label', 'label_ru', 'title', 'title_ru', 'description', 'description_ru', 'icon', 'image_url', 'visual', 'duration_ms', 'status', 'sort_order', 'created_at', 'updated_at'],
+        searchable: ['effect_key', 'label', 'label_ru', 'title', 'title_ru', 'description', 'description_ru', 'icon', 'visual'],
+        filters: ['status', 'effect_key', 'visual'],
+        editable: true,
+        mutableFields: ['effect_key', 'label', 'label_ru', 'title', 'title_ru', 'description', 'description_ru', 'icon', 'image_url', 'visual', 'duration_ms', 'status', 'sort_order', 'metadata'],
+        requiredFields: ['effect_key', 'label', 'label_ru', 'title', 'title_ru', 'status'],
+        statusField: 'status',
+        statusValues: ['active', 'inactive'],
+        orderBy: 'sort_order',
+        orderDirection: 'ASC',
+    },
     roomPlayers: {
         table: 'game_room_players',
         columns: ['id', 'room_id', 'socket_id', 'user_key', 'user_id', 'is_registered', 'username', 'is_ready', 'team_number', 'team_slot', 'match_player_id', 'joined_at', 'updated_at'],
@@ -2001,6 +2014,10 @@ async function normalizeMutablePayload(config, payload = {}, { isCreate = false 
         await hydrateDonationWalletPayload(normalized)
     }
 
+    if (config.table === 'game_effects') {
+        hydrateGameEffectPayload(normalized)
+    }
+
     if (config.statusField && normalized[config.statusField] !== undefined && !config.statusValues.includes(normalized[config.statusField])) {
         throw new Error(`Invalid ${config.statusField}`)
     }
@@ -2016,6 +2033,32 @@ async function normalizeMutablePayload(config, payload = {}, { isCreate = false 
     return normalized
 }
 
+function hydrateGameEffectPayload(payload) {
+    if (payload.description === null || payload.description === undefined) {
+        payload.description = ''
+    }
+
+    if (payload.description_ru === null || payload.description_ru === undefined) {
+        payload.description_ru = ''
+    }
+
+    if (payload.icon === null || payload.icon === undefined) {
+        payload.icon = 'fa-bolt'
+    }
+
+    if (payload.visual === null || payload.visual === undefined) {
+        payload.visual = 'default'
+    }
+
+    if (payload.duration_ms === null || payload.duration_ms === undefined) {
+        payload.duration_ms = 4000
+    }
+
+    if (payload.sort_order === null || payload.sort_order === undefined) {
+        payload.sort_order = 0
+    }
+}
+
 function normalizeMutableValue(field, value) {
     if (field === 'metadata') {
         if (!value) return '{}'
@@ -2027,7 +2070,7 @@ function normalizeMutableValue(field, value) {
         return JSON.stringify(value)
     }
 
-    if (['sort_order', 'decimals', 'min_confirmations', 'currency_network_id'].includes(field)) {
+    if (['sort_order', 'decimals', 'min_confirmations', 'currency_network_id', 'duration_ms'].includes(field)) {
         if (value === '' || value === null || value === undefined) {
             return null
         }

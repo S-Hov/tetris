@@ -17,7 +17,11 @@ const AbilityOverlay = ({ title, eyebrow, secondsLeft, options, onChoose }) => {
                             onClick={() => onChoose(ability)}
                         >
                             <span className={`game-overlay__card-visual game-overlay__card-visual--${ability.visual}`}>
-                                <i className={`fa-solid ${ability.icon}`} aria-hidden="true"></i>
+                                {ability.imageUrl ? (
+                                    <img src={ability.imageUrl} alt="" aria-hidden="true" />
+                                ) : (
+                                    <i className={`fa-solid ${ability.icon}`} aria-hidden="true"></i>
+                                )}
                             </span>
                             <span className="game-overlay__card-label">{ability.label}</span>
                             <span className="game-overlay__card-title">{ability.title}</span>
