@@ -1,7 +1,8 @@
 import { useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import GlowEffect from '@/shared/ui/GlowEffect'
 import AppSwitch from '@/shared/ui/AppSwitch'
+import GlowEffect from '@/shared/ui/GlowEffect'
+import ProfileSideNav from '@/widgets/ProfileSideNav'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
@@ -11,14 +12,37 @@ import {
     getMatchModeLabel,
     getMatchResultClass,
 } from '@/shared/lib/matches/presentation.js'
+import bronzeRank from '@/assets/runks/bronze.png'
+import silverRank from '@/assets/runks/silver.png'
+import goldRank from '@/assets/runks/gold.png'
+import platinumRank from '@/assets/runks/platinum.png'
+import diamondRank from '@/assets/runks/diamond.png'
+import masterRank from '@/assets/runks/master.png'
+import legendRank from '@/assets/runks/legend.png'
+import bronzeBg from './assets/runks_bg/bronze.png'
+import silverBg from './assets/runks_bg/silver.png'
+import goldBg from './assets/runks_bg/gold.png'
+import platinumBg from './assets/runks_bg/platinum.png'
+import diamondBg from './assets/runks_bg/diamond.png'
+import masterBg from './assets/runks_bg/master.png'
+import legendBg from './assets/runks_bg/legend.png'
+import bronzeFrame from './assets/ranks_frames/bronze.png'
+import silverFrame from './assets/ranks_frames/silver.png'
+import goldFrame from './assets/ranks_frames/gold.png'
+import platinumFrame from './assets/ranks_frames/platinum.png'
+import diamondFrame from './assets/ranks_frames/diamond.png'
+import masterFrame from './assets/ranks_frames/master.png'
+import legendFrame from './assets/ranks_frames/legend.png'
 import './ProfilePage.css'
 
-const fallbackProfile = {
-    country: 'Россия',
-    memberSince: 'января 2024',
-    lastLogin: 'Сегодня, 14:32',
-    rank: 'Bronze',
-    rating: 0,
+const RANK_ASSETS = {
+    bronze: { icon: bronzeRank, bg: bronzeBg, frame: bronzeFrame },
+    silver: { icon: silverRank, bg: silverBg, frame: silverFrame },
+    gold: { icon: goldRank, bg: goldBg, frame: goldFrame },
+    platinum: { icon: platinumRank, bg: platinumBg, frame: platinumFrame },
+    diamond: { icon: diamondRank, bg: diamondBg, frame: diamondFrame },
+    master: { icon: masterRank, bg: masterBg, frame: masterFrame },
+    legend: { icon: legendRank, bg: legendBg, frame: legendFrame },
 }
 
 const ProfilePage = () => {
@@ -28,85 +52,53 @@ const ProfilePage = () => {
     const { isDarkTheme, toggleTheme } = useTheme()
 
     useEffect(() => {
-        const refreshProfile = async () => {
-            await checkAuth({ silent: true })
-        }
-
-        refreshProfile()
+        checkAuth({ silent: true })
     }, [checkAuth])
 
     const profile = useMemo(() => {
-        const displayName = user?.username || user?.email?.split('@')[0] || 'NeoMaster'
+        const rankStats = user?.rankStats || {}
+        const rank = rankStats.rank || {}
+        const rankName = rank.label || rank.label_ru || 'Bronze'
+        const rankKey = normalizeRankKey(rank.key || rankName)
+        const rankAssets = RANK_ASSETS[rankKey] || RANK_ASSETS.bronze
+        const totalMatches = Number(rankStats.totalMatches ?? user?.stats?.totalGames) || 0
+        const wins = Number(rankStats.wins) || 0
+        const losses = Number(rankStats.losses) || 0
+        const draws = Number(rankStats.draws) || 0
+        const winRate = totalMatches > 0 ? ((wins / totalMatches) * 100).toFixed(1) : '0.0'
 
         return {
             id: user?.id,
-            name: displayName,
-            email: user?.email || 'neo@pvp-tetris.com',
-            avatarUrl: getAssetUrl(user?.avatar_url),
+            name: user?.username || user?.email?.split('@')[0] || 'Игрок',
+            email: user?.email || '',
             status: user?.status || 'active',
-            country: fallbackProfile.country,
-            memberSince: formatMemberSince(user?.created_at) || fallbackProfile.memberSince,
-            lastLogin: formatLastLogin(user?.last_login_at) || fallbackProfile.lastLogin,
-            rank: user?.rankStats?.rank?.label || fallbackProfile.rank,
-            rankImageUrl: getAssetUrl(user?.rankStats?.rank?.imageUrl),
-            rating: user?.rankStats?.rankPoints ?? fallbackProfile.rating,
-            rankStats: user?.rankStats || null,
-            stats: {
-                totalGames: user?.stats?.totalGames || 0,
-                wins: user?.stats?.wins || 0,
-            },
+            memberSince: formatMemberSince(user?.created_at || user?.createdAt),
+            lastLogin: formatLastLogin(user?.last_login_at || user?.lastLoginAt),
+            rankName,
+            rankKey,
+            rankAssets,
+            rankPoints: Number(rankStats.rankPoints) || 0,
+            mmr: Number(rankStats.mmr) || 1000,
+            totalMatches,
+            wins,
+            losses,
+            draws,
+            winRate,
+            bestSoloScore: Number(rankStats.bestSoloScore) || 0,
             recentMatches: Array.isArray(user?.recentMatches) ? user.recentMatches : [],
         }
     }, [user])
 
-    const playerStats = useMemo(() => {
-        const totalGames = profile.rankStats?.totalMatches || profile.stats.totalGames
-        const wins = profile.rankStats?.wins || 0
-        const winRate = totalGames > 0 ? ((wins / totalGames) * 100).toFixed(1) : '0.0'
+    const stats = useMemo(() => ([
+        { key: 'mmr', label: 'MMR', value: formatNumber(profile.rankPoints), note: `${profile.mmr} скрытый MMR`, icon: 'fas fa-gem' },
+        { key: 'wins', label: 'Победы', value: formatNumber(profile.wins), note: `${formatNumber(profile.losses)} поражений`, icon: 'fas fa-trophy' },
+        { key: 'winRate', label: 'Win Rate', value: `${profile.winRate}%`, note: `${formatNumber(profile.totalMatches)} матчей`, icon: 'fas fa-chart-pie' },
+        { key: 'solo', label: 'Solo рекорд', value: formatNumber(profile.bestSoloScore), note: `${formatNumber(profile.draws)} ничьих`, icon: 'fas fa-star' },
+        { key: 'member', label: 'В игре', value: profile.memberSince.short, note: profile.memberSince.full, icon: 'fas fa-calendar' },
+        { key: 'id', label: 'ID игрока', value: profile.id ? `#${profile.id}` : '-', note: formatStatus(profile.status), icon: 'fas fa-fingerprint' },
+    ]), [profile])
 
-        return [
-            {
-                key: 'games',
-                title: 'Ranked игр',
-                value: String(totalGames),
-                change: 'Влияют на ранг',
-                icon: 'fas fa-chart-line',
-            },
-            {
-                key: 'wins',
-                title: 'Побед',
-                value: String(wins),
-                change: `Процент побед: ${winRate}%`,
-                icon: 'fas fa-trophy',
-            },
-            {
-                key: 'combo',
-                title: 'MMR',
-                value: String(profile.rankStats?.mmr || 1000),
-                change: 'Скрытый подбор соперников',
-                icon: 'fas fa-wave-square',
-            },
-            {
-                key: 'crystals',
-                title: 'Solo рекорд',
-                value: String(profile.rankStats?.bestSoloScore || 0),
-                change: `${profile.rankStats?.losses || 0} поражений | ${profile.rankStats?.draws || 0} ничьих`,
-                icon: 'fas fa-star',
-            },
-        ]
-    }, [profile.rankStats, profile.stats.totalGames])
-
-    const matchHistory = useMemo(
-        () => profile.recentMatches.map((match) => ({
-            id: match.id,
-            mode: getMatchModeLabel(match.mode),
-            result: match.result === 'win' ? 'win' : 'loss',
-            opponent: match.opponent,
-            score: `${match.score}-${match.opponentScore}`,
-            date: formatMatchDate(match.playedAt),
-        })),
-        [profile.recentMatches]
-    )
+    const matchHistory = useMemo(() => profile.recentMatches.slice(0, 6), [profile.recentMatches])
 
     const handleLogout = async () => {
         await logout()
@@ -115,249 +107,206 @@ const ProfilePage = () => {
 
     return (
         <section className="section profile-page">
-            <div className="container profile-container">
-                <section className="profile-welcome">
-                    <GlowEffect>
-                        <div className="glow-effect profile-welcome-content">
-                            <div>
-                                <p className="profile-eyebrow">Личный кабинет</p>
-                                <h1>Добро пожаловать, {profile.name}!</h1>
-                                <p>Ваша статистика и достижения на PvP арене</p>
+            <div className="container profile-shell profile-layout-shell">
+                <ProfileSideNav />
+
+                <div className="profile-content profile-layout-content">
+                    <GlowEffect className="profile-hero-glow">
+                        <section
+                            className={`profile-hero profile-hero--${profile.rankKey}`}
+                            style={{ '--profile-rank-bg': `url(${profile.rankAssets.bg})` }}
+                        >
+                            <div className="profile-hero__rank">
+                                <img src={profile.rankAssets.icon} alt={profile.rankName} />
                             </div>
 
-                            <div className="profile-welcome-actions">
-                                <Link to="/account-settings" className="button profile-settings-shortcut">
-                                    <i className="fas fa-gear"></i>
-                                    Настройки
-                                </Link>
-                                <div className="profile-rank-badge">
-                                    {profile.rankImageUrl ? (
-                                        <span className="profile-rank-image">
-                                            <img src={profile.rankImageUrl} alt={profile.rank} />
-                                        </span>
-                                    ) : (
-                                        <i className="fas fa-trophy"></i>
-                                    )}
-                                    <span>{profile.rank}</span>
-                                    <i className="fas fa-chevron-right"></i>
-                                    <strong>{profile.rating}</strong>
-                                    <small>очков</small>
-                                </div>
-                            </div>
-                        </div>
-                    </GlowEffect>
-                </section>
-
-                <section className="profile-stats-grid" aria-label="Статистика игрока">
-                    {playerStats.map((stat) => (
-                        <article key={stat.key} className="profile-stat-card">
-                            <GlowEffect>
-                                <div className="glow-effect">
-                                    <div className="profile-stat-title">{stat.title}</div>
-                                    <div className="profile-stat-value">
-                                        {stat.value}
-                                        {stat.unit && <span>{stat.unit}</span>}
-                                    </div>
-                                    <div className="profile-stat-change">
-                                        <i className={stat.icon}></i>
-                                        {stat.change}
-                                    </div>
-                                </div>
-                            </GlowEffect>
-                        </article>
-                    ))}
-                </section>
-
-                <div className="profile-main-grid">
-                    <section className="profile-card">
-                        <GlowEffect className="profile-card-glow">
-                            <div className="glow-effect">
-                                <div className="profile-card-header">
-                                    <div className="profile-avatar">
-                                        {profile.avatarUrl ? (
-                                            profileAvatarMedia(profile.avatarUrl, profile.name)
-                                        ) : (
-                                            <i className="fas fa-user-astronaut"></i>
-                                        )}
-                                    </div>
-                                    <h2>{profile.name}</h2>
-                                    <p>Участник с {profile.memberSince}</p>
-                                </div>
-
-                                <div className="profile-details">
-                                    <DetailRow icon="fas fa-envelope" label="Email" value={profile.email} />
-                                    <DetailRow icon="fas fa-map-marker-alt" label="Страна" value={profile.country} />
-                                    <DetailRow icon="fas fa-shield-alt" label="Статус" value={formatStatus(profile.status)} />
-                                    <DetailRow icon="fas fa-calendar" label="Последний вход" value={profile.lastLogin} />
-                                </div>
-
-                                <div className="profile-card-actions">
-                                    <Link to="/account-settings" className="button">
+                            <div className="profile-hero__player">
+                                <span className="profile-rank-pill">{profile.rankName}</span>
+                                <div className="profile-hero__name-row">
+                                    <h1>{profile.name}</h1>
+                                    <Link className="profile-edit-link" to="/account-settings" aria-label="Открыть настройки профиля">
                                         <i className="fas fa-pen"></i>
-                                        Редактировать профиль
                                     </Link>
-                                    <button type="button" className="button profile-logout-button" onClick={handleLogout}>
-                                        <i className="fas fa-sign-out-alt"></i>
-                                        Выйти
-                                    </button>
+                                </div>
+                                <div className="profile-hero__rating">
+                                    <i className="fas fa-trophy"></i>
+                                    <strong>{formatNumber(profile.rankPoints)}</strong>
+                                    <span>MMR</span>
+                                </div>
+                                <div className="profile-hero__meta">
+                                    <span><i className="fas fa-calendar"></i>В игре с {profile.memberSince.full}</span>
+                                    <span><i className="fas fa-id-card"></i>ID: {profile.id || '-'}</span>
                                 </div>
                             </div>
-                        </GlowEffect>
-                    </section>
 
-                    <section className="profile-history-card">
-                        <GlowEffect className="profile-history-card-glow-bg">
-                            <div className="glow-effect">
-                                <div className="profile-section-heading">
-                                    <div className="profile-section-title">
-                                        <i className="fas fa-history"></i>
-                                        История матчей
-                                    </div>
-                                    <Link to="/matches" className="profile-section-link">
-                                        Все матчи
-                                    </Link>
+                            <div className="profile-season-card" style={{ '--profile-rank-frame': `url(${profile.rankAssets.frame})` }}>
+                                <span>Season 1</span>
+                                <strong>{profile.rankName}</strong>
+                            </div>
+
+                            <div className="profile-hero-stats" aria-label="Краткая статистика">
+                                <HeroStat icon="fas fa-chart-line" label="Win Rate" value={`${profile.winRate}%`} />
+                                <HeroStat icon="fas fa-trophy" label="Победы" value={formatNumber(profile.wins)} />
+                                <HeroStat icon="fas fa-gamepad" label="Матчи" value={formatNumber(profile.totalMatches)} />
+                                <HeroStat icon="fas fa-fire" label="Solo" value={formatNumber(profile.bestSoloScore)} />
+                            </div>
+                        </section>
+                    </GlowEffect>
+
+                    <div className="profile-main-grid">
+                        <GlowEffect className="profile-panel-glow">
+                            <section className="profile-panel" id="profile-stats">
+                                <PanelHeader title="Основная статистика" />
+                                <div className="profile-stat-grid">
+                                    {stats.map((stat) => (
+                                        <article key={stat.key} className="profile-stat-tile">
+                                            <span className="profile-stat-tile__icon"><i className={stat.icon}></i></span>
+                                            <div>
+                                                <span>{stat.label}</span>
+                                                <strong>{stat.value}</strong>
+                                                <small>{stat.note}</small>
+                                            </div>
+                                        </article>
+                                    ))}
                                 </div>
+                            </section>
+                        </GlowEffect>
 
+                        <GlowEffect className="profile-panel-glow">
+                            <section className="profile-panel profile-panel--matches">
+                                <PanelHeader title="История матчей" action={<Link to="/matches">Смотреть все</Link>} />
                                 <div className="profile-match-list">
                                     {matchHistory.length > 0 ? (
                                         matchHistory.map((match) => (
-                                            <Link key={match.id} to={`/matches/${match.id}`} className="profile-match-item profile-match-item--link">
-                                                <div>
-                                                    <span className="profile-match-mode">{match.mode}</span>
-                                                    <strong className={`profile-match-result profile-match-result--${getMatchResultClass(match.result)}`}>
-                                                        {formatMatchResultLabel(match.result)}
-                                                    </strong>
-                                                    <span className="profile-match-opponent">{match.opponent}</span>
-                                                </div>
-                                                <div>
-                                                    <strong className="profile-match-score">{match.score}</strong>
-                                                    <span className="profile-match-date">{match.date}</span>
-                                                </div>
-                                            </Link>
+                                            <MatchRow key={match.id} match={match} />
                                         ))
                                     ) : (
-                                        <article className="profile-match-item">
-                                            <div>
-                                                <span className="profile-match-mode">Матчи</span>
-                                                <strong className="profile-match-result">Пока пусто</strong>
-                                                <span className="profile-match-opponent">Сыграйте первую игру, и она появится здесь</span>
-                                            </div>
-                                            <div>
-                                                <strong className="profile-match-score">0</strong>
-                                                <span className="profile-match-date">Нет данных</span>
-                                            </div>
-                                        </article>
+                                        <div className="profile-empty">
+                                            <i className="fas fa-folder-open"></i>
+                                            <strong>Матчей пока нет</strong>
+                                            <span>История появится после первой игры.</span>
+                                        </div>
                                     )}
                                 </div>
-                            </div>
+                            </section>
                         </GlowEffect>
-                    </section>
+                    </div>
+
+                    <GlowEffect className="profile-panel-glow">
+                        <section className="profile-panel profile-quick-settings-panel">
+                            <PanelHeader
+                                title="Быстрые настройки"
+                                action={<Link to="/account-settings">Все настройки</Link>}
+                            />
+                            <div className="profile-quick-settings-grid">
+                                <button
+                                    type="button"
+                                    className="profile-settings-toggle"
+                                    aria-pressed={isDarkTheme}
+                                    onClick={toggleTheme}
+                                >
+                                    <span className="profile-settings-toggle__icon"><i className="fas fa-moon"></i></span>
+                                    <span>
+                                        <strong>Тёмная тема</strong>
+                                        <small>Оформление интерфейса</small>
+                                    </span>
+                                    <AppSwitch checked={isDarkTheme} />
+                                </button>
+                                <button
+                                    type="button"
+                                    className="profile-settings-toggle"
+                                    aria-pressed={isGlowEffectEnabled}
+                                    onClick={toggleGlowEffect}
+                                >
+                                    <span className="profile-settings-toggle__icon"><i className="fas fa-wand-magic-sparkles"></i></span>
+                                    <span>
+                                        <strong>Подсветка курсора</strong>
+                                        <small>Glow effect на панелях</small>
+                                    </span>
+                                    <AppSwitch checked={isGlowEffectEnabled} />
+                                </button>
+                            </div>
+                        </section>
+                    </GlowEffect>
+
+                    <GlowEffect className="profile-panel-glow">
+                        <section className="profile-panel profile-account-panel">
+                            <PanelHeader title="Аккаунт" />
+                            <div className="profile-account-grid">
+                                <InfoLine label="Email" value={profile.email || 'Не указан'} icon="fas fa-envelope" />
+                                <InfoLine label="Последний вход" value={profile.lastLogin} icon="fas fa-clock" />
+                                <InfoLine label="Статус" value={formatStatus(profile.status)} icon="fas fa-shield-halved" />
+                                <button type="button" className="profile-logout" onClick={handleLogout}>
+                                    <i className="fas fa-right-from-bracket"></i>
+                                    Выйти
+                                </button>
+                            </div>
+                        </section>
+                    </GlowEffect>
                 </div>
-
-                <section className="profile-support-card">
-                    <GlowEffect>
-                        <div className="glow-effect profile-support-content">
-                            <div>
-                                <div className="profile-section-title">
-                                    <i className="fas fa-life-ring"></i>
-                                    Поддержка
-                                </div>
-                                <p>
-                                    Нашли ошибку, хотите предложить режим или рассказать, что в матче пошло не так?
-                                    Напишите в поддержку, а свои обращения можно посмотреть здесь же в личном кабинете.
-                                </p>
-                            </div>
-                            <div className="profile-support-actions">
-                                <Link to="/support" className="button">
-                                    <i className="fas fa-paper-plane"></i>
-                                    Обратиться в поддержку
-                                </Link>
-                                <Link to="/support/requests" className="button profile-support-secondary">
-                                    <i className="fas fa-inbox"></i>
-                                    Мои обращения
-                                </Link>
-                            </div>
-                        </div>
-                    </GlowEffect>
-                </section>
-
-                <section className="profile-quick-settings-card">
-                    <GlowEffect>
-                        <div className="glow-effect profile-quick-settings-content">
-                            <div>
-                                <div className='profile-quick-settings-header'>
-                                    <div className="profile-section-title">
-                                        <i className="fas fa-sliders"></i>
-                                        Быстрые настройки
-                                    </div>
-                                    <Link to="/account-settings" className="button profile-advanced-settings-link">
-                                        <i className="fas fa-up-right-from-square"></i>
-                                        Открыть расширенные настройки
-                                    </Link>
-                                </div>
-                            </div>
-                            <button
-                                type="button"
-                                className="profile-theme-toggle"
-                                aria-pressed={isDarkTheme}
-                                onClick={toggleTheme}
-                            >
-                                <span>Тёмная тема</span>
-                                <AppSwitch checked={isDarkTheme} />
-                            </button>
-                            <button
-                                type="button"
-                                className="profile-theme-toggle"
-                                aria-pressed={isGlowEffectEnabled}
-                                onClick={toggleGlowEffect}
-                            >
-                                <span>Подсветка курсора</span>
-                                <AppSwitch checked={isGlowEffectEnabled} />
-                            </button>
-
-                        </div>
-                    </GlowEffect>
-                </section>
             </div>
         </section>
     )
 }
 
-const DetailRow = ({ icon, label, value }) => (
-    <div className="profile-detail-row">
-        <span>
-            <i className={icon}></i>
-            {label}
-        </span>
+const PanelHeader = ({ title, action = null }) => (
+    <header className="profile-panel__header">
+        <h2>{title}</h2>
+        {action}
+    </header>
+)
+
+const HeroStat = ({ icon, label, value }) => (
+    <article className="profile-hero-stat">
+        <i className={icon}></i>
+        <div>
+            <span>{label}</span>
+            <strong>{value}</strong>
+        </div>
+    </article>
+)
+
+const MatchRow = ({ match }) => {
+    const result = match.result === 'win' ? 'win' : 'loss'
+    const score = `${Number(match.score) || 0}:${Number(match.opponentScore) || Number(match.opponentTeamScore) || 0}`
+
+    return (
+        <Link to={`/matches/${match.id}`} className={`profile-match-row profile-match-row--${getMatchResultClass(result)}`}>
+            <div>
+                <strong>{formatMatchResultLabel(result)}</strong>
+                <span>vs {match.opponent || 'Неизвестный соперник'}</span>
+            </div>
+            <span>{getMatchModeLabel(match.mode)}</span>
+            <div>
+                <strong>{score}</strong>
+                <span>{formatMatchDate(match.playedAt)}</span>
+            </div>
+        </Link>
+    )
+}
+
+const InfoLine = ({ icon, label, value }) => (
+    <div className="profile-info-line">
+        <i className={icon}></i>
+        <span>{label}</span>
         <strong>{value}</strong>
     </div>
 )
 
-const getAssetUrl = (value) => {
-    if (!value) {
-        return ''
-    }
+const normalizeRankKey = (value) => {
+    const normalized = String(value || '').toLowerCase().trim()
 
-    if (/^https?:\/\//i.test(value)) {
-        return value
-    }
+    if (normalized.includes('legend')) return 'legend'
+    if (normalized.includes('master')) return 'master'
+    if (normalized.includes('diamond')) return 'diamond'
+    if (normalized.includes('platinum')) return 'platinum'
+    if (normalized.includes('gold')) return 'gold'
+    if (normalized.includes('silver')) return 'silver'
 
-    const baseUrl = import.meta.env.VITE_API_URL || (
-        typeof window !== 'undefined' && window.location.hostname
-            ? `http://${window.location.hostname}:8880`
-            : 'http://127.0.0.1:8880'
-    )
-
-    return `${baseUrl}${value}`
+    return 'bronze'
 }
 
-const profileAvatarMedia = (src, alt) => {
-    if (/\.(webm|mp4|mov|ogg|ogv|m4v)(?:[?#]|$)/i.test(src)) {
-        return <video src={src} autoPlay loop muted playsInline aria-label={alt} />
-    }
-
-    return <img src={src} alt={alt} />
-}
+const formatNumber = (value) => new Intl.NumberFormat('ru-RU').format(Number(value) || 0)
 
 const formatStatus = (status) => {
     if (status === 'active') return 'Активен'
@@ -367,31 +316,28 @@ const formatStatus = (status) => {
 }
 
 const formatMemberSince = (value) => {
-    if (!value) {
-        return null
+    const date = parseDate(value)
+
+    if (!date) {
+        return { short: '0 дн.', full: 'нет данных' }
     }
 
-    const date = new Date(value)
+    const days = Math.max(1, Math.floor((Date.now() - date.getTime()) / 86400000))
 
-    if (Number.isNaN(date.getTime())) {
-        return null
+    return {
+        short: `${days} дн.`,
+        full: new Intl.DateTimeFormat('ru-RU', {
+            month: 'long',
+            year: 'numeric',
+        }).format(date),
     }
-
-    return new Intl.DateTimeFormat('ru-RU', {
-        month: 'long',
-        year: 'numeric',
-    }).format(date)
 }
 
 const formatLastLogin = (value) => {
-    if (!value) {
-        return null
-    }
+    const date = parseDate(value)
 
-    const date = new Date(value)
-
-    if (Number.isNaN(date.getTime())) {
-        return null
+    if (!date) {
+        return 'Нет данных'
     }
 
     return new Intl.DateTimeFormat('ru-RU', {
@@ -400,6 +346,16 @@ const formatLastLogin = (value) => {
         hour: '2-digit',
         minute: '2-digit',
     }).format(date)
+}
+
+const parseDate = (value) => {
+    if (!value) {
+        return null
+    }
+
+    const date = new Date(value)
+
+    return Number.isNaN(date.getTime()) ? null : date
 }
 
 export default ProfilePage

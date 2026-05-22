@@ -2,6 +2,10 @@
     background: transparent;
 }
 
+.matches-content {
+    min-width: 0;
+}
+
 .matches-hero,
 .matches-filters,
 .matches-list-shell,
@@ -381,4 +385,13 @@
     .matches-list-content {
         padding: 1rem;
     }
+}
+
+.matches-item--win {
+    background: linear-gradient(90deg, rgba(111, 255, 177, 0.16), rgba(2, 11, 34, 0.52));
+    border-color: rgba(111, 255, 177, 0.32);
+}
+
+.matches-item--loss {
+    background: linear-gradient(90deg, rgba(219, 56, 56, 0.14), rgba(2, 11, 34, 0.52));
 }

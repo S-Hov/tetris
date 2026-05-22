@@ -9,9 +9,13 @@
 
 
 .account-settings-container {
+    background: transparent;
+}
+
+.account-settings-content {
+    min-width: 0;
     display: grid;
     gap: 1.2rem;
-    background: transparent;
 }
 
 .account-settings-topbar {

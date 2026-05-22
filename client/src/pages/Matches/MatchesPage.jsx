@@ -1,6 +1,7 @@
 import { startTransition, useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
+import ProfileSideNav from '@/widgets/ProfileSideNav'
 import { matchesAPI } from '@/shared/api/matches'
 import {
     formatMatchDate,
@@ -155,8 +156,11 @@ const MatchesPage = () => {
 
     return (
         <section className="section matches-page">
-            <div className="container matches-container">
-                <section className="matches-hero">
+            <div className="container matches-container profile-layout-shell">
+                <ProfileSideNav />
+
+                <div className="matches-content profile-layout-content">
+                    <section className="matches-hero">
                     <GlowEffect>
                         <div className="glow-effect matches-hero-content">
                             <div>
@@ -171,9 +175,9 @@ const MatchesPage = () => {
                             </div>
                         </div>
                     </GlowEffect>
-                </section>
+                    </section>
 
-                <section className="matches-filters">
+                    <section className="matches-filters">
                     <GlowEffect>
                         <div className="glow-effect matches-filters-content">
                             <div className="matches-filter-group">
@@ -213,17 +217,17 @@ const MatchesPage = () => {
                             </label>
                         </div>
                     </GlowEffect>
-                </section>
+                    </section>
 
-                <section className="matches-summary" aria-label="Сводка по матчам">
+                    <section className="matches-summary" aria-label="Сводка по матчам">
                     <StatCard label="Всего матчей" value={matchesData.summary.totalMatches} accent="cyan" />
                     <StatCard label="Победы" value={matchesData.summary.wins} accent="green" />
                     <StatCard label="Поражения" value={matchesData.summary.losses} accent="red" />
                     <StatCard label="Win Rate" value={`${matchesData.summary.winRate}%`} accent="yellow" />
                     <StatCard label="Ср. линии" value={matchesData.summary.avgLines} accent="cyan" />
-                </section>
+                    </section>
 
-                <section className="matches-list-section">
+                    <section className="matches-list-section">
                     <GlowEffect className="matches-list-shell">
                         <div className="glow-effect matches-list-content">
                             <div className="matches-list-header">
@@ -263,7 +267,7 @@ const MatchesPage = () => {
                             {!error && !isLoading && matchesData.matches.length > 0 ? (
                                 <div className="matches-list">
                                     {matchesData.matches.map((match) => (
-                                        <Link key={match.id} to={`/matches/${match.id}`} className="matches-item">
+                                        <Link key={match.id} to={`/matches/${match.id}`} className={`matches-item matches-item--${getMatchResultClass(match.result)}`}>
                                             <div className="matches-item-primary">
                                                 <span className="matches-mode">
                                                     <i className={getMatchModeIcon(match.mode)}></i>
@@ -313,7 +317,8 @@ const MatchesPage = () => {
                             ) : null}
                         </div>
                     </GlowEffect>
-                </section>
+                    </section>
+                </div>
             </div>
         </section>
     )

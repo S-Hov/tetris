@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import AppSwitch from '@/shared/ui/AppSwitch'
+import ProfileSideNav from '@/widgets/ProfileSideNav'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
@@ -261,19 +262,22 @@ const AccountSettingsPage = () => {
 
     return (
         <section className="section account-settings-page">
-            <div className="container account-settings-container">
-                <div className="account-settings-topbar">
-                    <div>
-                        <p className="account-settings-eyebrow">Личный кабинет</p>
-                        <h1>Настройки аккаунта</h1>
-                    </div>
-                    <Link to="/profile" className="button account-settings-back">
-                        <i className="fas fa-arrow-left"></i>
-                        Профиль
-                    </Link>
-                </div>
+            <div className="container account-settings-container profile-layout-shell">
+                <ProfileSideNav />
 
-                <div className="account-settings-tabs" role="tablist" aria-label="Разделы настроек">
+                <div className="account-settings-content profile-layout-content">
+                    <div className="account-settings-topbar">
+                        <div>
+                            <p className="account-settings-eyebrow">Личный кабинет</p>
+                            <h1>Настройки аккаунта</h1>
+                        </div>
+                        <Link to="/profile" className="button account-settings-back">
+                            <i className="fas fa-arrow-left"></i>
+                            Профиль
+                        </Link>
+                    </div>
+
+                    <div className="account-settings-tabs" role="tablist" aria-label="Разделы настроек">
                     <button
                         type="button"
                         className={activeTab === 'general' ? 'is-active' : ''}
@@ -298,9 +302,9 @@ const AccountSettingsPage = () => {
                         <i className="fas fa-shield-alt"></i>
                         Безопасность
                     </button>
-                </div>
+                    </div>
 
-                {activeTab === 'general' && (
+                    {activeTab === 'general' && (
                     <section className="account-settings-panel">
                         <GlowEffect>
                             <div className="glow-effect account-general-settings">
@@ -336,9 +340,9 @@ const AccountSettingsPage = () => {
                             </div>
                         </GlowEffect>
                     </section>
-                )}
+                    )}
 
-                {activeTab === 'account' && (
+                    {activeTab === 'account' && (
                     <section className="account-settings-panel">
                         <GlowEffect>
                             <form className="glow-effect account-profile-form" onSubmit={handleProfileSave}>
@@ -393,9 +397,9 @@ const AccountSettingsPage = () => {
                             </form>
                         </GlowEffect>
                     </section>
-                )}
+                    )}
 
-                {activeTab === 'security' && (
+                    {activeTab === 'security' && (
                     <section className="account-security-grid">
                         <GlowEffect className="account-login-methods-wrap">
                             <div className="glow-effect account-login-methods">
@@ -532,7 +536,8 @@ const AccountSettingsPage = () => {
                             </div>
                         </GlowEffect>
                     </section>
-                )}
+                    )}
+                </div>
             </div>
 
             {isEmailModalOpen && (
