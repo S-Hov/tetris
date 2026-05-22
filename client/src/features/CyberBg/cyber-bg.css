@@ -6,6 +6,13 @@
     height: 100%;
     z-index: -2;
     overflow: hidden;
+    background:
+        linear-gradient(rgba(2, 8, 18, 0.28), rgba(2, 8, 18, 0.48)),
+        url('./assets/cyber-bg.png') center / contain no-repeat;
+
+    mask-image: radial-gradient(circle, #00000063 30%, #00000096 100%);
+    -webkit-mask-image: radial-gradient(circle, #00000063 30%, #00000096 100%);
+
     --mosaic-left-color: rgba(199, 88, 255, 0.2);
     --mosaic-left-edge: rgba(198, 98, 255, 0.18);
     --mosaic-left-glow: rgba(213, 88, 255, 0.16);
