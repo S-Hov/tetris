@@ -11,6 +11,12 @@ import mode1vs1 from './assets/modes/mode_1vs1.png'
 import mode2vs2 from './assets/modes/mode_2vs2.png'
 import mode5vs5 from './assets/modes/mode_5vs5.png'
 import modeRoyale from './assets/modes/mode_royal.png'
+import donatBg from './assets/donats/donat_bg.png'
+import donationHeart from './assets/donats/icons/hearth.png'
+import payingForServersIcon from './assets/donats/icons/paying-for-servers.png'
+import newModesIcon from './assets/donats/icons/new-modes.png'
+import tournamentsIcon from './assets/donats/icons/tournaments-and-events.png'
+import projectDevelopmentIcon from './assets/donats/icons/project-development.png'
 import rankBronze from '@/assets/runks/bronze.png'
 import rankSilver from '@/assets/runks/silver.png'
 import rankGold from '@/assets/runks/gold.png'
@@ -83,6 +89,33 @@ const gameModes = [
         to: '/game/royale',
         image: modeRoyale,
         tone: 'magenta',
+    },
+]
+
+const donationBenefits = [
+    {
+        key: 'servers',
+        icon: payingForServersIcon,
+        title: 'Оплата серверов',
+        description: 'Стабильная игра без лагов',
+    },
+    {
+        key: 'modes',
+        icon: newModesIcon,
+        title: 'Новые режимы',
+        description: 'Больше битв, больше эмоций',
+    },
+    {
+        key: 'events',
+        icon: tournamentsIcon,
+        title: 'Турниры и события',
+        description: 'Призы, рейтинги и активности',
+    },
+    {
+        key: 'development',
+        icon: projectDevelopmentIcon,
+        title: 'Развитие проекта',
+        description: 'Новые функции, звуки и улучшения',
     },
 ]
 
@@ -324,6 +357,45 @@ const HomePage = () => {
                             )}
                         </section>
                     </GlowEffect>
+                </section>
+
+                <section className="home-donation" style={{ '--donation-bg': `url(${donatBg})` }} aria-labelledby="home-donation-title">
+                    <div className="home-donation__content">
+
+                        <div className="home-donation__heading">
+                            <div className="home-donation__content-header">
+                                <img className="home-donation__heart" src={donationHeart} alt="" />
+                                <h2 id="home-donation-title">
+                                    <span>Поддержи</span>
+                                    <strong className='glow-text'>развитие проекта</strong>
+                                </h2>
+                            </div>
+                            <p>
+                                PvP Tetris — это проект одного разработчика, сделанный с любовью к игре
+                                и киберспорту. Ваша поддержка помогает проекту расти и становиться
+                                лучше с каждым днём.
+                            </p>
+                        </div>
+
+                        <div className="home-donation__benefits">
+                            {donationBenefits.map((benefit) => (
+                                <article className="home-donation-benefit" key={benefit.key}>
+                                    <img src={benefit.icon} alt="" />
+                                    <h3>{benefit.title}</h3>
+                                    <p>{benefit.description}</p>
+                                </article>
+                            ))}
+                        </div>
+
+                        <Link to="/support" className="home-donation__button">
+                            <i className="fas fa-heart"></i>
+                            Поддержать проект
+                        </Link>
+
+                        <p className="home-donation__note">
+                            Никаких преимуществ в игре — только поддержка и развитие.
+                        </p>
+                    </div>
                 </section>
 
             </div>
