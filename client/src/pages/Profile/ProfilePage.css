@@ -51,7 +51,6 @@
     & .profile-hero__player,
     & .profile-season-card,
     & .profile-hero-stats {
-        position: relative;
         z-index: 1;
     }
 
@@ -404,7 +403,7 @@
         filter: brightness(1.08);
     }
 
-    & > div:last-child {
+    &>div:last-child {
         text-align: right;
     }
 
@@ -419,7 +418,7 @@
         font-weight: 800;
     }
 
-    & > span {
+    &>span {
         color: var(--text-color);
         font-weight: 900;
         text-transform: uppercase;
@@ -595,7 +594,22 @@
     }
 }
 
+@media (max-width: 1220px) {
+    .profile-hero {
+        grid-template-columns: 1fr;
+
+        &>div {
+            margin: 0 auto;
+        }
+    }
+
+    .profile-hero-stats {
+        left: 46px;
+    }
+}
+
 @media (max-width: 1060px) {
+
     .profile-main-grid,
     .profile-account-grid,
     .profile-quick-settings-grid {
@@ -648,7 +662,6 @@
         padding-top: 16px;
     }
 
-    .profile-hero-stats,
     .profile-match-row,
     .profile-settings-toggle {
         grid-template-columns: 1fr;
@@ -675,8 +688,15 @@
     }
 
     .profile-match-row {
-        & > div:last-child {
+        &>div:last-child {
             text-align: left;
         }
     }
+}
+
+@media (max-width: 390px) {
+        
+    .profile-hero-stats {
+        grid-template-columns: 1fr;
+    } 
 }

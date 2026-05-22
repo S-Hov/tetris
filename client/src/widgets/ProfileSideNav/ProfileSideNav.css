@@ -48,7 +48,7 @@
             z-index: 0;
             opacity: 0;
             pointer-events: none;
-            background: var(--profile-menu-active-border) center / 100% 100% no-repeat;
+            /* background: var(--profile-menu-active-border) center / 100% 100% no-repeat; */
             transition: opacity 180ms ease;
         }
 
@@ -102,7 +102,6 @@
 
         & .profile-sidebar__item {
             min-height: 58px;
-            font-size: 0;
 
             i {
                 font-size: 1.15rem;
