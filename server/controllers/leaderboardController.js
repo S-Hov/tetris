@@ -1,5 +1,6 @@
 import { asyncHandler } from '../utils/asyncHandler.js'
 import { getLeaderboardService } from '../services/leaderboardService.js'
+import { ok } from '../src/shared/responses/send.js'
 
 export const getLeaderboard = asyncHandler(async (req, res) => {
     const data = await getLeaderboardService({
@@ -8,9 +9,7 @@ export const getLeaderboard = asyncHandler(async (req, res) => {
         limit: req.query.limit,
     })
 
-    res.json({
-        success: true,
-        message: 'Мировой рейтинг получен',
+    return ok(res, req, 'LEADERBOARD.LOADED', {
         data,
     })
 })

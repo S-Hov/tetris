@@ -33,6 +33,8 @@ import {
     recordLoginFailure,
     requiresLoginTurnstile,
 } from "../utils/loginTurnstile.js"
+import { ok, fail } from "../src/shared/responses/send.js"
+import { forbidden } from "../helpers/error.helper.js"
 
 const getRequestMeta = (req) => ({
     ipAddress: req.ip || req.socket?.remoteAddress || null,
@@ -59,13 +61,12 @@ export const register = asyncHandler(async (req, res) => {
         console.error('Email send error:', error)
     }
 
-    res.status(201).json({
+    return ok(res, req, 'AUTH.REGISTERED', {
+        status: 201,
         data: {
             ...user,
             redirectTo: `/verify-email/${encodeURIComponent(user.email)}`
         },
-        message: "Пользователь зарегистрирован",
-        success: true
     })
 })
 
@@ -78,7 +79,7 @@ export const login = asyncHandler(async (req, res) => {
         const isTurnstileValid = await verifyTurnstile(turnstileToken, req.ip)
 
         if (!isTurnstileValid) {
-            return turnstileErrorResponse(res)
+            return turnstileErrorResponse(res, req)
         }
     }
 
@@ -91,9 +92,8 @@ export const login = asyncHandler(async (req, res) => {
             ...requestMeta,
         })
 
-        return res.status(401).json({
-            success: false,
-            message: 'Неверный Email или пароль',
+        return fail(res, req, 'AUTH.INVALID_CREDENTIALS', {
+            status: 401,
             data: {
                 requiresTurnstile,
             },
@@ -113,9 +113,7 @@ export const login = asyncHandler(async (req, res) => {
             ...requestMeta,
         })
 
-        const error = new Error('Этот аккаунт создан через внешний вход. Войдите через Google/GitHub/Discord/Steam/Yandex/VK или установите пароль.')
-        error.statusCode = 403
-        throw error
+        throw forbidden('AUTH.EXTERNAL_PASSWORD_MISSING')
     }
 
     const isMatch = await bcrypt.compare(password, user.password_hash)
@@ -137,11 +135,10 @@ export const login = asyncHandler(async (req, res) => {
             await sendVerificationEmail(pendingVerification.email, pendingVerification.verificationCode)
         }
 
-        return res.status(403).json({
-            success: false,
-            message: pendingVerification.shouldSendEmail
-                ? 'Почта не подтверждена. Мы отправили новый код'
-                : 'Почта не подтверждена. Введите код из письма',
+        return fail(res, req, pendingVerification.shouldSendEmail
+            ? 'AUTH.EMAIL_NOT_VERIFIED_CODE_SENT'
+            : 'AUTH.EMAIL_NOT_VERIFIED', {
+            status: 403,
             data: {
                 code: 'EMAIL_NOT_VERIFIED',
                 email: user.email,
@@ -160,9 +157,7 @@ export const login = asyncHandler(async (req, res) => {
 
     setAuthCookie(res, user)
 
-    res.json({
-        success: true,
-        message: 'Вы успешно вошли в аккаунт',
+    return ok(res, req, 'AUTH.LOGGED_IN', {
         data: {
             id: user.id,
             username: user.username,
@@ -173,9 +168,7 @@ export const login = asyncHandler(async (req, res) => {
 })
 export const getMe = asyncHandler(async (req, res) => {
     if (!req.user) {
-        return res.json({
-            success: true,
-            message: "Guest session",
+        return ok(res, req, 'AUTH.GUEST_SESSION', {
             data: {
                 user: null,
                 isAuthenticated: false,
@@ -187,9 +180,7 @@ export const getMe = asyncHandler(async (req, res) => {
 
     const user = await getUserService(userId)
 
-    res.json({
-        success: true,
-        message: "User fetched successfully",
+    return ok(res, req, 'AUTH.USER_LOADED', {
         data: {
             user,
             isAuthenticated: true,
@@ -203,9 +194,7 @@ export const updateMe = asyncHandler(async (req, res) => {
         username: req.body.username,
     })
 
-    res.json({
-        success: true,
-        message: 'Профиль обновлён',
+    return ok(res, req, 'AUTH.PROFILE_UPDATED', {
         data: {
             user,
         },
@@ -219,9 +208,7 @@ export const updateAvatar = asyncHandler(async (req, res) => {
         buffer: req.body,
     })
 
-    res.json({
-        success: true,
-        message: 'Аватар обновлён',
+    return ok(res, req, 'AUTH.AVATAR_UPDATED', {
         data: {
             user,
         },
@@ -242,9 +229,7 @@ export const updatePassword = asyncHandler(async (req, res) => {
         ...requestMeta,
     })
 
-    res.json({
-        success: true,
-        message: 'Пароль обновлён',
+    return ok(res, req, 'AUTH.PASSWORD_UPDATED', {
         data: {
             user,
         },
@@ -264,9 +249,7 @@ export const setPassword = asyncHandler(async (req, res) => {
         ...requestMeta,
     })
 
-    res.json({
-        success: true,
-        message: 'Пароль установлен',
+    return ok(res, req, 'AUTH.PASSWORD_SET', {
         data: {
             user,
         },
@@ -288,10 +271,7 @@ export const logout = (req, res) => {
 
     res.clearCookie('token', getAuthCookieOptions())
 
-    res.json({
-        success: true,
-        message: 'Logged out successfully'
-    })
+    return ok(res, req, 'AUTH.LOGGED_OUT')
 }
 
 export const getVerificationMeta = asyncHandler(async (req, res) => {
@@ -299,9 +279,7 @@ export const getVerificationMeta = asyncHandler(async (req, res) => {
 
     const meta = await getVerificationMetaService(email)
 
-    res.json({
-        success: true,
-        message: 'Verification metadata fetched successfully',
+    return ok(res, req, 'AUTH.VERIFICATION_META_LOADED', {
         data: meta,
     })
 })
@@ -319,9 +297,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
         ...requestMeta,
     })
 
-    res.json({
-        success: true,
-        message: 'Email verified successfully',
+    return ok(res, req, 'AUTH.EMAIL_VERIFIED', {
         data: {
             user,
             redirectTo: '/login',
@@ -347,9 +323,7 @@ export const changeUnverifiedEmail = asyncHandler(async (req, res) => {
 
     const meta = await getVerificationMetaService(user.email)
 
-    res.json({
-        success: true,
-        message: 'Почта обновлена. Новый код отправлен',
+    return ok(res, req, 'AUTH.EMAIL_UPDATED', {
         data: {
             ...meta,
             redirectTo: `/verify-email/${encodeURIComponent(user.email)}`,
@@ -366,9 +340,7 @@ export const requestPasswordReset = asyncHandler(async (req, res) => {
 
     const meta = await getPasswordResetMetaService(userEmail)
 
-    res.json({
-        success: true,
-        message: 'Код восстановления отправлен',
+    return ok(res, req, 'AUTH.PASSWORD_RESET_CODE_SENT', {
         data: {
             ...meta,
             redirectTo: `/verify-email/${encodeURIComponent(userEmail)}?mode=password-reset`,
@@ -380,9 +352,7 @@ export const getPasswordResetMeta = asyncHandler(async (req, res) => {
     const { email } = req.params
     const meta = await getPasswordResetMetaService(email)
 
-    res.json({
-        success: true,
-        message: 'Password reset metadata fetched successfully',
+    return ok(res, req, 'AUTH.PASSWORD_RESET_META_LOADED', {
         data: meta,
     })
 })
@@ -395,9 +365,7 @@ export const completePasswordReset = asyncHandler(async (req, res) => {
 
     await sendTemporaryPasswordEmail(userEmail, temporaryPassword)
 
-    res.json({
-        success: true,
-        message: 'Новый пароль отправлен на почту',
+    return ok(res, req, 'AUTH.TEMPORARY_PASSWORD_SENT', {
         data: {
             redirectTo: '/login',
         },
@@ -413,9 +381,7 @@ export const resendVerificationEmail = asyncHandler(async (req, res) => {
 
     const meta = await getVerificationMetaService(userEmail)
 
-    res.json({
-        success: true,
-        message: 'Verification email sent successfully',
+    return ok(res, req, 'AUTH.VERIFICATION_EMAIL_SENT', {
         data: meta,
     })
 })

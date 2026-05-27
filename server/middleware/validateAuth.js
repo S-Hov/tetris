@@ -5,7 +5,11 @@ export const validate = (schema) => (req, res, next) => {
         req.body = schema.parse(req.body)
         next()
     } catch (error) {
-        const message = error.issues?.map((issue) => issue.message).join(", ") || "Bad request"
-        next(badRequest(message))
+        const errors = error.issues?.map((issue) => ({
+            path: issue.path,
+            message: issue.message,
+        }))
+
+        next(badRequest('COMMON.BAD_REQUEST', { errors }))
     }
 }

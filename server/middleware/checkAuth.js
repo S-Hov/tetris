@@ -5,7 +5,7 @@ export const checkAuth = (req, res, next) => {
     const token = req.cookies.token
 
     if (!token) {
-        return next(unauthorized("No token"))
+        return next(unauthorized('COMMON.UNAUTHORIZED'))
     }
 
     try {
@@ -16,7 +16,7 @@ export const checkAuth = (req, res, next) => {
         }
         next()
     } catch (error) {
-        return next(unauthorized("Invalid or expired token"))
+        return next(unauthorized('COMMON.UNAUTHORIZED'))
     }
 }
 
@@ -48,7 +48,7 @@ export const checkNotAuth = (req, res, next) => {
         try {
             jwt.verify(token, process.env.JWT_SECRET)
             
-            return next(forbidden("You are already logged in"))
+            return next(forbidden('AUTH.ALREADY_LOGGED_IN'))
         } catch (error) {
             return next()
         }

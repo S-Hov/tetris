@@ -1,11 +1,11 @@
 export const OAUTH_PROVIDERS = [
-                                    'google',
-                                    // 'discord',
-                                    'steam',
-                                    'yandex',
-                                    // 'vk',
-                                    'github'
-                                ]
+    'google',
+    // 'discord',
+    'steam',
+    'yandex',
+    // 'vk',
+    'github'
+]
 
 export const OAUTH_PROVIDER_LABELS = {
     google: 'Google',

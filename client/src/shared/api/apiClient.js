@@ -12,6 +12,7 @@ export const getBaseUrl = () => {
 
 export async function apiClient(url, options = {}) {
     const headers = new Headers(options.headers || {})
+    console.log('options :', options);
     const isFormDataBody = typeof FormData !== 'undefined' && options.body instanceof FormData
 
     if (!isFormDataBody && !headers.has('Content-Type')) {

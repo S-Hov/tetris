@@ -25,7 +25,7 @@ export const createSupportRequestService = async ({ userId, body, headers }) => 
     const supportBlock = await getActiveSupportBlockRepo(userId)
 
     if (supportBlock || ['blocked', 'disabled'].includes(user?.status)) {
-        throw forbidden('Support requests are disabled for this account')
+        throw forbidden('SUPPORT.DISABLED')
     }
 
     const category = normalizeString(body.category) || 'other'
@@ -33,26 +33,26 @@ export const createSupportRequestService = async ({ userId, body, headers }) => 
     const preferredChannel = normalizeString(body.preferredChannel || body.preferred_channel).toLowerCase()
 
     if (!SUPPORT_CATEGORIES.has(category)) {
-        throw badRequest('Unsupported support category')
+        throw badRequest('SUPPORT.INVALID_CATEGORY')
     }
 
     if (!SUPPORT_CHANNELS.has(preferredChannel)) {
-        throw badRequest('Preferred channel must be email or telegram')
+        throw badRequest('SUPPORT.INVALID_CHANNEL')
     }
 
     if (!message || message.length < 10) {
-        throw badRequest('Message must contain at least 10 characters')
+        throw badRequest('SUPPORT.MESSAGE_TOO_SHORT')
     }
 
     const contactName = normalizeString(body.name || body.contactName) || normalizeString(user?.username)
     const contactEmail = normalizeEmail(body.email || body.contactEmail) || normalizeEmail(user?.email)
 
     if (!contactName) {
-        throw badRequest('Name is required')
+        throw badRequest('SUPPORT.NAME_REQUIRED')
     }
 
     if (preferredChannel === 'email' && !contactEmail) {
-        throw badRequest('Valid email is required')
+        throw badRequest('SUPPORT.EMAIL_REQUIRED')
     }
 
     const telegramToken = preferredChannel === 'telegram' ? createTelegramToken() : null
@@ -149,7 +149,7 @@ export const getUserSupportRequestDetailsService = async ({ userId, ticketId }) 
     const request = await getUserSupportRequestByIdRepo({ userId, ticketId })
 
     if (!request) {
-        throw notFound('Обращение не найдено')
+        throw notFound('SUPPORT.NOT_FOUND')
     }
 
     return {
@@ -161,7 +161,7 @@ export const getUserSupportRequestMessagesService = async ({ userId, ticketId })
     const request = await getUserSupportRequestByIdRepo({ userId, ticketId })
 
     if (!request) {
-        throw notFound('Обращение не найдено')
+        throw notFound('SUPPORT.NOT_FOUND')
     }
 
     if (request.preferred_channel !== 'telegram') {
@@ -192,13 +192,13 @@ export const createDonationService = async ({ userId, body }) => {
     const walletId = Number.parseInt(body.walletId, 10)
 
     if (!Number.isInteger(walletId) || walletId <= 0) {
-        throw badRequest('Donation wallet is required')
+        throw badRequest('PAYMENT.WALLET_REQUIRED')
     }
 
     const wallet = await getDonationWalletByIdRepo(walletId)
 
     if (!wallet) {
-        throw notFound('Donation wallet not found')
+        throw notFound('PAYMENT.WALLET_NOT_FOUND')
     }
 
     const expectedAmount = normalizeAmount(body.expectedAmount, { required: true })
@@ -206,7 +206,7 @@ export const createDonationService = async ({ userId, body }) => {
     const donorName = normalizeString(body.donorName)
 
     if ((isAnonymous || !userId) && donorName.length < 2) {
-        throw badRequest('Donation nickname is required')
+        throw badRequest('PAYMENT.DONOR_NAME_REQUIRED')
     }
 
     const donation = await createDonationRepo({
@@ -320,7 +320,7 @@ const createTelegramUrl = (token) => {
 const normalizeAmount = (value, { required = false } = {}) => {
     if (value === undefined || value === null || value === '') {
         if (required) {
-            throw badRequest('Donation amount is required')
+            throw badRequest('PAYMENT.AMOUNT_REQUIRED')
         }
 
         return null
@@ -330,7 +330,7 @@ const normalizeAmount = (value, { required = false } = {}) => {
     const amount = Number(normalized)
 
     if (!Number.isFinite(amount) || amount <= 0) {
-        throw badRequest('Donation amount must be greater than zero')
+        throw badRequest('PAYMENT.AMOUNT_INVALID')
     }
 
     return normalized

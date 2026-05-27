@@ -7,6 +7,7 @@ import {
     getUserSupportRequestMessagesService,
     getUserSupportRequestsService,
 } from '../services/supportService.js'
+import { ok } from '../src/shared/responses/send.js'
 
 export const createSupportRequest = asyncHandler(async (req, res) => {
     const data = await createSupportRequestService({
@@ -15,21 +16,20 @@ export const createSupportRequest = asyncHandler(async (req, res) => {
         headers: req.headers,
     })
 
-    res.status(201).json({
-        success: true,
-        message: 'Support request created',
-        ticketId: data.ticketId,
-        telegramUrl: data.telegramUrl,
+    return ok(res, req, 'SUPPORT.CREATED', {
+        status: 201,
         data,
+        extra: {
+            ticketId: data.ticketId,
+            telegramUrl: data.telegramUrl,
+        },
     })
 })
 
 export const getDonationWallets = asyncHandler(async (req, res) => {
     const data = await getDonationWalletsService()
 
-    res.json({
-        success: true,
-        message: 'Donation wallets loaded',
+    return ok(res, req, 'PAYMENT.DONATION_WALLETS_LOADED', {
         data,
     })
 })
@@ -37,9 +37,7 @@ export const getDonationWallets = asyncHandler(async (req, res) => {
 export const getMySupportRequests = asyncHandler(async (req, res) => {
     const data = await getUserSupportRequestsService(req.user.id)
 
-    res.json({
-        success: true,
-        message: 'Support requests loaded',
+    return ok(res, req, 'SUPPORT.LOADED', {
         data,
     })
 })
@@ -50,9 +48,7 @@ export const getMySupportRequestDetails = asyncHandler(async (req, res) => {
         ticketId: req.params.ticketId,
     })
 
-    res.json({
-        success: true,
-        message: 'Support request loaded',
+    return ok(res, req, 'SUPPORT.REQUEST_LOADED', {
         data,
     })
 })
@@ -63,9 +59,7 @@ export const getMySupportRequestMessages = asyncHandler(async (req, res) => {
         ticketId: req.params.ticketId,
     })
 
-    res.json({
-        success: true,
-        message: 'Support messages loaded',
+    return ok(res, req, 'SUPPORT.MESSAGES_LOADED', {
         data,
     })
 })
@@ -76,9 +70,8 @@ export const createDonation = asyncHandler(async (req, res) => {
         body: req.body || {},
     })
 
-    res.status(201).json({
-        success: true,
-        message: 'Donation created',
+    return ok(res, req, 'PAYMENT.DONATION_CREATED', {
+        status: 201,
         data,
     })
 })

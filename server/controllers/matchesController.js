@@ -5,6 +5,7 @@ import {
     getUserSoloRecordService,
     submitSoloResultService,
 } from '../services/userMatchesService.js'
+import { ok } from '../src/shared/responses/send.js'
 
 export const getUserMatches = asyncHandler(async (req, res) => {
     const data = await getUserMatchesService({
@@ -16,9 +17,7 @@ export const getUserMatches = asyncHandler(async (req, res) => {
         search: req.query.search,
     })
 
-    res.json({
-        success: true,
-        message: 'Список матчей получен',
+    return ok(res, req, 'MATCH.LIST_LOADED', {
         data,
     })
 })
@@ -29,9 +28,7 @@ export const getUserMatchDetails = asyncHandler(async (req, res) => {
         matchId: req.params.matchId,
     })
 
-    res.json({
-        success: true,
-        message: 'Детали матча получены',
+    return ok(res, req, 'MATCH.DETAILS_LOADED', {
         data,
     })
 })
@@ -41,9 +38,7 @@ export const getUserSoloRecord = asyncHandler(async (req, res) => {
         userId: req.user.id,
     })
 
-    res.json({
-        success: true,
-        message: 'Solo record loaded',
+    return ok(res, req, 'MATCH.SOLO_RECORD_LOADED', {
         data,
     })
 })
@@ -54,9 +49,7 @@ export const submitSoloResult = asyncHandler(async (req, res) => {
         stats: req.body,
     })
 
-    res.json({
-        success: true,
-        message: data.isNewRecord ? 'Solo record saved' : 'Solo result skipped',
+    return ok(res, req, data.isNewRecord ? 'MATCH.SOLO_RECORD_SAVED' : 'MATCH.SOLO_RESULT_SKIPPED', {
         data,
     })
 })

@@ -1,3 +1,5 @@
+import { fail } from '../src/shared/responses/send.js'
+
 const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
 
 export async function verifyTurnstile(turnstileToken, ip) {
@@ -37,6 +39,6 @@ export async function verifyTurnstile(turnstileToken, ip) {
     }
 }
 
-export const turnstileErrorResponse = (res) => res.status(403).json({
-    message: 'Проверка безопасности не пройдена',
+export const turnstileErrorResponse = (res, req = null) => fail(res, req, 'AUTH.TURNSTILE_FAILED', {
+    status: 403,
 })

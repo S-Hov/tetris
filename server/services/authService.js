@@ -45,18 +45,18 @@ const AVATAR_TYPES = {
     'video/webm': { ext: 'webm', validate: (buffer) => buffer.subarray(0, 4).equals(Buffer.from([0x1A, 0x45, 0xDF, 0xA3])) },
 }
 
-const PASSWORD_RULE_MESSAGE = 'Пароль должен быть 8-16 символов, с заглавной, строчной буквой и цифрой'
+const PASSWORD_RULE_CODE = 'AUTH.PASSWORD_RULE'
 
 export const registerUserService = async (username, email, password) => {
     if (await checkEmailRepo(email)) {
-        throw badRequest('Пользователь с таким email уже существует')
+        throw badRequest('AUTH.EMAIL_ALREADY_EXISTS')
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const role = await getRoleByKeyRepo('user')
     if (!role) {
-        throw badRequest('Роль user не найдена')
+        throw badRequest('AUTH.ROLE_NOT_FOUND')
     }
 
     const verificationCode = createVerificationCode()
@@ -141,7 +141,7 @@ export const updateUserProfileService = async ({ userId, username }) => {
     const normalizedUsername = normalizeUsername(username)
 
     if (!normalizedUsername) {
-        throw badRequest('Введите имя игрока')
+        throw badRequest('AUTH.USERNAME_REQUIRED')
     }
 
     const user = await updateUserProfileRepo({
@@ -150,7 +150,7 @@ export const updateUserProfileService = async ({ userId, username }) => {
     })
 
     if (!user) {
-        throw badRequest('Пользователь не найден')
+        throw badRequest('AUTH.USER_NOT_FOUND')
     }
 
     return await getUserService(userId)
@@ -161,19 +161,19 @@ export const updateUserAvatarService = async ({ userId, contentType, buffer }) =
     const avatarType = AVATAR_TYPES[normalizedContentType]
 
     if (!avatarType) {
-        throw badRequest('Поддерживаются только PNG, JPG, GIF, WEBP, AVIF и WEBM')
+        throw badRequest('USER.AVATAR_TYPE_UNSUPPORTED')
     }
 
     if (!Buffer.isBuffer(buffer) || buffer.length === 0) {
-        throw badRequest('Файл не найден')
+        throw badRequest('USER.FILE_NOT_FOUND')
     }
 
     if (buffer.length > MAX_AVATAR_SIZE_BYTES) {
-        throw badRequest('Аватарка не должна быть больше 2 МБ')
+        throw badRequest('USER.AVATAR_TOO_LARGE')
     }
 
     if (!avatarType.validate(buffer)) {
-        throw badRequest('Файл не похож на заявленный формат изображения')
+        throw badRequest('USER.FILE_TYPE_MISMATCH')
     }
 
     await fs.mkdir(AVATAR_UPLOAD_DIR, { recursive: true })
@@ -190,7 +190,7 @@ export const updateUserAvatarService = async ({ userId, contentType, buffer }) =
     const currentUser = await getUserRepo(userId)
 
     if (!currentUser) {
-        throw badRequest('Пользователь не найден')
+        throw badRequest('AUTH.USER_NOT_FOUND')
     }
 
     try {
@@ -212,7 +212,7 @@ export const updateUserAvatarService = async ({ userId, contentType, buffer }) =
 
     if (!user) {
         await deleteLocalAvatarFile(avatarUrl)
-        throw badRequest('Пользователь не найден')
+        throw badRequest('AUTH.USER_NOT_FOUND')
     }
 
     await deleteLocalAvatarFile(currentUser.avatar_url)
@@ -224,21 +224,21 @@ export const requestAccountEmailChangeService = async ({ userId, nextEmail }) =>
     const normalizedNextEmail = normalizeEmail(nextEmail)
 
     if (!normalizedNextEmail) {
-        throw badRequest('Введите корректный email')
+        throw badRequest('AUTH.INVALID_EMAIL')
     }
 
     const currentUser = await getUserRepo(userId)
 
     if (!currentUser) {
-        throw badRequest('Пользователь не найден')
+        throw badRequest('AUTH.USER_NOT_FOUND')
     }
 
     if (normalizeEmail(currentUser.email) === normalizedNextEmail) {
-        throw badRequest('Новая почта совпадает с текущей')
+        throw badRequest('AUTH.EMAIL_SAME_AS_CURRENT')
     }
 
     if (await checkEmailRepo(normalizedNextEmail)) {
-        throw badRequest('Пользователь с таким email уже существует')
+        throw badRequest('AUTH.EMAIL_ALREADY_EXISTS')
     }
 
     const verificationCode = createVerificationCode()
@@ -252,7 +252,7 @@ export const requestAccountEmailChangeService = async ({ userId, nextEmail }) =>
     })
 
     if (!user) {
-        throw badRequest('Не удалось обновить почту')
+        throw badRequest('AUTH.EMAIL_UPDATE_FAILED')
     }
 
     return {
@@ -266,25 +266,25 @@ export const changeUnverifiedEmailService = async ({ currentEmail, nextEmail }) 
     const normalizedNextEmail = normalizeEmail(nextEmail)
 
     if (!normalizedCurrentEmail || !normalizedNextEmail) {
-        throw badRequest('Введите корректный email')
+        throw badRequest('AUTH.INVALID_EMAIL')
     }
 
     if (normalizedCurrentEmail === normalizedNextEmail) {
-        throw badRequest('Новая почта совпадает с текущей')
+        throw badRequest('AUTH.EMAIL_SAME_AS_CURRENT')
     }
 
     const user = await getUserByEmailRepo(normalizedCurrentEmail)
 
     if (!user) {
-        throw badRequest('Аккаунт с текущей почтой не найден')
+        throw badRequest('AUTH.CURRENT_ACCOUNT_NOT_FOUND')
     }
 
     if (user.status === 'active') {
-        throw badRequest('Почта уже подтверждена. Изменить её можно только через настройки аккаунта')
+        throw badRequest('AUTH.EMAIL_ALREADY_VERIFIED_CHANGE_SETTINGS')
     }
 
     if (await checkEmailRepo(normalizedNextEmail)) {
-        throw badRequest('Пользователь с таким email уже существует')
+        throw badRequest('AUTH.EMAIL_ALREADY_EXISTS')
     }
 
     const verificationCode = createVerificationCode()
@@ -299,7 +299,7 @@ export const changeUnverifiedEmailService = async ({ currentEmail, nextEmail }) 
     })
 
     if (!updatedUser) {
-        throw badRequest('Не удалось обновить почту. Запросите новый код или зарегистрируйтесь заново')
+        throw badRequest('AUTH.EMAIL_UPDATE_FAILED_RETRY')
     }
 
     return {
@@ -312,7 +312,7 @@ export const getVerificationMetaService = async (email) => {
     const user = await getUserByEmailRepo(email)
 
     if (!user) {
-        throw badRequest('Пользователь не найден')
+        throw badRequest('AUTH.USER_NOT_FOUND')
     }
 
     if (user.status === 'active') {
@@ -347,24 +347,24 @@ export const verifyEmailService = async (email, code) => {
     const normalizedCode = String(code || '').trim()
 
     if (normalizedCode.length !== getVerificationCodeLength()) {
-        throw badRequest('Введите полный код подтверждения')
+        throw badRequest('AUTH.CODE_INCOMPLETE')
     }
 
     const verification = await getLatestPendingVerificationByEmailRepo(email)
 
     if (!verification) {
-        throw badRequest('Код подтверждения не найден. Запросите новый код')
+        throw badRequest('AUTH.VERIFICATION_CODE_NOT_FOUND')
     }
 
     if (getRemainingSeconds(verification.expires_at) <= 0) {
         await expireEmailVerificationRepo(verification.id)
-        throw badRequest('Срок действия кода истёк. Запросите новый код')
+        throw badRequest('AUTH.VERIFICATION_CODE_EXPIRED')
     }
 
     const codeHash = hashVerificationCode(normalizedCode)
 
     if (codeHash !== verification.code_hash) {
-        throw badRequest('Неверный код подтверждения')
+        throw badRequest('AUTH.INVALID_VERIFICATION_CODE')
     }
 
     return await markEmailVerifiedRepo({
@@ -378,11 +378,11 @@ export const requestPasswordResetService = async (email) => {
     const user = await getUserByEmailRepo(normalizedEmail)
 
     if (!user) {
-        throw badRequest('Пользователь с таким email не найден')
+        throw badRequest('AUTH.EMAIL_NOT_FOUND')
     }
 
     if (user.status !== 'active') {
-        throw badRequest('Сначала подтвердите почту аккаунта')
+        throw badRequest('AUTH.CONFIRM_EMAIL_FIRST')
     }
 
     const verificationCode = createVerificationCode()
@@ -406,11 +406,11 @@ export const getPasswordResetMetaService = async (email) => {
     const user = await getUserByEmailRepo(normalizedEmail)
 
     if (!user) {
-        throw badRequest('Пользователь не найден')
+        throw badRequest('AUTH.USER_NOT_FOUND')
     }
 
     if (user.status !== 'active') {
-        throw badRequest('Сначала подтвердите почту аккаунта')
+        throw badRequest('AUTH.CONFIRM_EMAIL_FIRST')
     }
 
     const verification = await getLatestPendingVerificationByEmailRepo(user.email)
@@ -429,32 +429,32 @@ export const completePasswordResetService = async ({ email, code }) => {
     const normalizedCode = String(code || '').trim()
 
     if (normalizedCode.length !== getVerificationCodeLength()) {
-        throw badRequest('Введите полный код подтверждения')
+        throw badRequest('AUTH.CODE_INCOMPLETE')
     }
 
     const user = await getUserByEmailRepo(normalizedEmail)
 
     if (!user || user.status !== 'active') {
-        throw badRequest('Аккаунт не найден или почта не подтверждена')
+        throw badRequest('AUTH.ACCOUNT_NOT_FOUND_OR_EMAIL_UNVERIFIED')
     }
 
     const verification = await getLatestPendingVerificationByEmailRepo(user.email)
 
     if (!verification) {
-        throw badRequest('Код восстановления не найден. Запросите новый код')
+        throw badRequest('AUTH.PASSWORD_RESET_CODE_NOT_FOUND')
     }
 
     if (verification.user_id !== user.id) {
-        throw badRequest('Код восстановления не подходит для этого аккаунта')
+        throw badRequest('AUTH.PASSWORD_RESET_CODE_ACCOUNT_MISMATCH')
     }
 
     if (getRemainingSeconds(verification.expires_at) <= 0) {
         await expireEmailVerificationRepo(verification.id)
-        throw badRequest('Срок действия кода истёк. Запросите новый код')
+        throw badRequest('AUTH.VERIFICATION_CODE_EXPIRED')
     }
 
     if (hashVerificationCode(normalizedCode) !== verification.code_hash) {
-        throw badRequest('Неверный код подтверждения')
+        throw badRequest('AUTH.INVALID_VERIFICATION_CODE')
     }
 
     const temporaryPassword = createTemporaryPassword()
@@ -476,27 +476,27 @@ export const updateUserPasswordService = async ({ userId, currentPassword, nextP
     const user = await getUserAuthByIdRepo(userId)
 
     if (!user) {
-        throw badRequest('Пользователь не найден')
+        throw badRequest('AUTH.USER_NOT_FOUND')
     }
 
     if (!isStrongPassword(nextPassword)) {
-        throw badRequest(PASSWORD_RULE_MESSAGE)
+        throw badRequest(PASSWORD_RULE_CODE)
     }
 
     if (!user.password_hash) {
-        throw badRequest('Пароль еще не установлен. Используйте установку пароля')
+        throw badRequest('AUTH.PASSWORD_NOT_SET')
     }
 
     const isCurrentPasswordValid = await bcrypt.compare(String(currentPassword || ''), user.password_hash)
 
     if (!isCurrentPasswordValid) {
-        throw badRequest('Текущий пароль указан неверно')
+        throw badRequest('AUTH.CURRENT_PASSWORD_INVALID')
     }
 
     const isSamePassword = await bcrypt.compare(String(nextPassword || ''), user.password_hash)
 
     if (isSamePassword) {
-        throw badRequest('Новый пароль совпадает с текущим')
+        throw badRequest('AUTH.PASSWORD_SAME_AS_CURRENT')
     }
 
     const passwordHash = await bcrypt.hash(nextPassword, 10)
@@ -513,11 +513,11 @@ export const resendVerificationCodeService = async (email) => {
     const user = await getUserByEmailRepo(email)
 
     if (!user) {
-        throw badRequest('Пользователь не найден')
+        throw badRequest('AUTH.USER_NOT_FOUND')
     }
 
     if (user.status === 'active') {
-        throw badRequest('Почта уже подтверждена')
+        throw badRequest('AUTH.EMAIL_ALREADY_VERIFIED')
     }
 
     const verificationCode = createVerificationCode()
@@ -540,7 +540,7 @@ export const ensurePendingVerificationService = async (email) => {
     const user = await getUserByEmailRepo(email)
 
     if (!user) {
-        throw badRequest('Пользователь не найден')
+        throw badRequest('AUTH.USER_NOT_FOUND')
     }
 
     if (user.status === 'active') {
