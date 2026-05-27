@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
+import { useTranslation } from 'react-i18next'
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '@/i18n'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { leaderboardAPI } from '@/shared/api/leaderboard'
 import './HomePage.css'
@@ -26,6 +29,8 @@ import rankMaster from '@/assets/runks/master.png'
 import rankLegend from '@/assets/runks/legend.png'
 import GlowEffect from '@/shared/ui/GlowEffect'
 
+const SITE_URL = 'https://www.pvp-tetris.online'
+
 const rankImages = {
     bronze: rankBronze,
     silver: rankSilver,
@@ -36,93 +41,42 @@ const rankImages = {
     legend: rankLegend,
 }
 
-const arenaStats = [
-    { key: 'online', icon: 'fas fa-users', value: '2,481', label: 'онлайн' },
-    { key: 'matches', icon: 'fas fa-clock', value: '128', label: 'матчей сейчас' },
-    { key: 'queue', icon: 'far fa-user', value: '56', label: 'игроков в очереди' },
-    { key: 'season', icon: 'fa-solid fa-chart-line', value: 'Сезон 1', label: '' },
+const arenaStatsMeta = [
+    { key: 'online', icon: 'fas fa-users', value: '2,481' },
+    { key: 'matches', icon: 'fas fa-clock', value: '128' },
+    { key: 'queue', icon: 'far fa-user', value: '56' },
+    { key: 'season', icon: 'fa-solid fa-chart-line', valueKey: 'seasonValue' },
 ]
 
-const gameModes = [
-    {
-        key: 'solo',
-        title: 'Solo',
-        description: 'Тренеруйся в одиночном режиме, стань лучшим',
-        // queue: 'В очереди: 56 игроков',
-        to: '/game/solo',
-        image: modeSolo,
-        tone: 'violet',
-    },
-    {
-        key: '1v1',
-        title: '1vs1',
-        label: 'Рекомендуем',
-        description: 'классическая дуэль',
-        queue: 'В очереди: 24 игрока',
-        to: '/game/1v1',
-        image: mode1vs1,
-        tone: 'blue',
-    },
-    {
-        key: '2v2',
-        title: '2vs2',
-        description: 'играйте в паре',
-        queue: 'В очереди: 18 команд',
-        to: '/game/2v2',
-        image: mode2vs2,
-        tone: 'green',
-    },
-    {
-        key: '5v5',
-        title: '5vs5',
-        description: 'массовая битва команд',
-        queue: 'В очереди: 12 команд',
-        to: '/game/5v5',
-        image: mode5vs5,
-        tone: 'orange',
-    },
-    {
-        key: 'royale',
-        title: 'Royale',
-        description: 'последний выживший',
-        queue: 'В очереди: 31 игрок',
-        to: '/game/royale',
-        image: modeRoyale,
-        tone: 'magenta',
-    },
+const gameModesMeta = [
+    { key: 'solo', to: '/game/solo', image: modeSolo, tone: 'violet' },
+    { key: '1v1', to: '/game/1v1', image: mode1vs1, tone: 'blue' },
+    { key: '2v2', to: '/game/2v2', image: mode2vs2, tone: 'green' },
+    { key: '5v5', to: '/game/5v5', image: mode5vs5, tone: 'orange' },
+    { key: 'royale', to: '/game/royale', image: modeRoyale, tone: 'magenta' },
 ]
 
-const donationBenefits = [
-    {
-        key: 'servers',
-        icon: payingForServersIcon,
-        title: 'Оплата серверов',
-        description: 'Стабильная игра без лагов',
-    },
-    {
-        key: 'modes',
-        icon: newModesIcon,
-        title: 'Новые режимы',
-        description: 'Больше битв, больше эмоций',
-    },
-    {
-        key: 'events',
-        icon: tournamentsIcon,
-        title: 'Турниры и события',
-        description: 'Призы, рейтинги и активности',
-    },
-    {
-        key: 'development',
-        icon: projectDevelopmentIcon,
-        title: 'Развитие проекта',
-        description: 'Новые функции, звуки и улучшения',
-    },
+const donationBenefitsMeta = [
+    { key: 'servers', icon: payingForServersIcon },
+    { key: 'modes', icon: newModesIcon },
+    { key: 'events', icon: tournamentsIcon },
+    { key: 'development', icon: projectDevelopmentIcon },
 ]
 
 const HomePage = () => {
+    const { lang } = useParams()
+    const { t, i18n } = useTranslation()
     const { isAuth, isLoading: isAuthLoading, user } = useAuth()
     const [topPlayers, setTopPlayers] = useState([])
     const [isTopLoading, setIsTopLoading] = useState(true)
+    const isSupportedLanguage = SUPPORTED_LANGUAGES.includes(lang)
+    const currentLanguage = isSupportedLanguage ? lang : DEFAULT_LANGUAGE
+
+    useEffect(() => {
+        if (i18n.language !== currentLanguage) {
+            i18n.changeLanguage(currentLanguage)
+        }
+    }, [currentLanguage, i18n])
 
     useEffect(() => {
         let ignore = false
@@ -181,13 +135,49 @@ const HomePage = () => {
         }
     }, [user])
 
+    const arenaStats = useMemo(() => arenaStatsMeta.map((stat) => ({
+        ...stat,
+        value: stat.valueKey ? t(`home.arena.stats.${stat.valueKey}`) : stat.value,
+        label: stat.key === 'season' ? '' : t(`home.arena.stats.${stat.key}`),
+    })), [t])
+
+    const gameModes = useMemo(() => gameModesMeta.map((mode) => ({
+        ...mode,
+        title: t(`home.modes.items.${mode.key}.title`),
+        label: t(`home.modes.items.${mode.key}.label`, { defaultValue: '' }),
+        description: t(`home.modes.items.${mode.key}.description`),
+        queue: t(`home.modes.items.${mode.key}.queue`, { defaultValue: '' }),
+    })), [t])
+
+    const donationBenefits = useMemo(() => donationBenefitsMeta.map((benefit) => ({
+        ...benefit,
+        title: t(`home.donation.benefits.${benefit.key}.title`),
+        description: t(`home.donation.benefits.${benefit.key}.description`),
+    })), [t])
+
+    if (!isSupportedLanguage) {
+        return <Navigate to={`/${DEFAULT_LANGUAGE}`} replace />
+    }
+
     return (
         <section className="section home-page">
+            <Helmet htmlAttributes={{ lang: currentLanguage }}>
+                <title>{t('seo.title')}</title>
+                <meta name="description" content={t('seo.description')} />
+                <meta property="og:title" content={t('seo.ogTitle')} />
+                <meta property="og:description" content={t('seo.ogDescription')} />
+                <meta property="og:type" content="website" />
+                <link rel="canonical" href={`${SITE_URL}/${currentLanguage}`} />
+                <link rel="alternate" hrefLang="ru" href={`${SITE_URL}/ru`} />
+                <link rel="alternate" hrefLang="en" href={`${SITE_URL}/en`} />
+                <link rel="alternate" hrefLang="x-default" href={`${SITE_URL}/ru`} />
+            </Helmet>
+
             <div className="container home-container">
 
                 <section className="home-bunner" style={{ '--home-bunner-bg': `url(${bunnerBg})` }}>
                     <div>
-                        <section className="home-arena-panel" aria-label="Статистика арены">
+                        <section className="home-arena-panel" aria-label={t('home.arena.ariaLabel')}>
                             {arenaStats.map((stat) => (
                                 <div className="home-arena-panel__item" key={stat.key}>
                                     <span className="home-arena-panel__icon">
@@ -202,28 +192,25 @@ const HomePage = () => {
                         </section>
                         <div className="home-bunner__content">
                             <h1>
-                                Сражайся. Стань<br />
-                                <span className='glow-text'>легендой.</span>
+                                {t('home.hero.titleLine')}<br />
+                                <span className="glow-text">{t('home.hero.titleHighlight')}</span>
                             </h1>
-                            <p>
-                                Классический тетрис в новом формате. Динамичные PvP-битвы,
-                                уникальные режимы и настоящая кибер-арена ждут тебя!
-                            </p>
+                            <p>{t('home.hero.subtitle')}</p>
 
                             <div className="home-bunner__actions">
                                 <Link to="/game/solo" className="home-primary-button">
                                     <i className="fas fa-play"></i>
-                                    Играть сейчас
+                                    {t('home.hero.playButton')}
                                 </Link>
                                 <Link to="/rating" className="home-secondary-button button btn-hover-shine">
                                     <i className="fas fa-crown"></i>
-                                    Рейтинг арены
+                                    {t('home.hero.ratingButton')}
                                 </Link>
                             </div>
                         </div>
                     </div>
 
-                    <div className="home-bunner__preview" aria-label="PvP Tetris preview">
+                    <div className="home-bunner__preview" aria-label={t('home.hero.previewAriaLabel')}>
                         <img src={bunnerImg} alt="" />
                     </div>
                 </section>
@@ -231,7 +218,7 @@ const HomePage = () => {
                 <section className="home-modes" aria-labelledby="home-modes-title">
                     <h2 id="home-modes-title">
                         <i className="fas fa-check"></i>
-                        Выбери режим
+                        {t('home.modes.title')}
                     </h2>
 
                     <div className="home-modes__grid">
@@ -254,23 +241,23 @@ const HomePage = () => {
                     </div>
                 </section>
 
-                <section className="home-dashboard" aria-label="Сезонные данные">
+                <section className="home-dashboard" aria-label={t('home.dashboard.ariaLabel')}>
                     <GlowEffect>
                         <section className="home-leaders-panel">
                             <div className="home-panel-heading">
-                                <h2>Топ игроков</h2>
-                                <span>Сезон 1</span>
+                                <h2>{t('home.dashboard.leadersTitle')}</h2>
+                                <span>{t('home.dashboard.season')}</span>
                             </div>
 
                             {isTopLoading ? (
                                 <div className="home-panel-state">
                                     <i className="fas fa-sync-alt"></i>
-                                    Загружаем рейтинг...
+                                    {t('home.dashboard.loadingRating')}
                                 </div>
                             ) : topPlayers.length === 0 ? (
                                 <div className="home-panel-state">
                                     <i className="fas fa-database"></i>
-                                    Рейтинг пока пуст
+                                    {t('home.dashboard.emptyRating')}
                                 </div>
                             ) : (
                                 <div className="home-leaders-list">
@@ -284,36 +271,36 @@ const HomePage = () => {
                                                 {player.username}
                                                 {player.rank === 1 ? <i className="fas fa-crown"></i> : null}
                                             </span>
-                                            <strong>{formatNumber(player.rating)}</strong>
+                                            <strong>{formatNumber(player.rating, currentLanguage)}</strong>
                                         </Link>
                                     ))}
                                 </div>
                             )}
 
                             <Link to="/rating" className="button home-panel-button btn-hover-shine">
-                                Смотреть полный рейтинг
+                                {t('home.dashboard.fullRatingButton')}
                             </Link>
                         </section>
                     </GlowEffect>
                     <GlowEffect>
                         <section className="home-player-stats-panel">
                             <div className="home-panel-heading">
-                                <h2>Статистика</h2>
-                                <span>Сезон 1</span>
+                                <h2>{t('home.dashboard.statsTitle')}</h2>
+                                <span>{t('home.dashboard.season')}</span>
                             </div>
 
                             {isAuthLoading ? (
                                 <div className="home-panel-state home-panel-state--stats">
                                     <i className="fas fa-sync-alt"></i>
-                                    Загружаем статистику...
+                                    {t('home.dashboard.loadingStats')}
                                 </div>
                             ) : isAuth ? (
                                 <div className="home-player-stats">
                                     <div className="home-player-stats__values">
-                                        <StatRow label="Победы" value={formatNumber(playerStats.wins)} />
-                                        <StatRow label="Матчи" value={formatNumber(playerStats.totalMatches)} />
-                                        <StatRow label="Винрейт" value={`${playerStats.winRate}%`} />
-                                        <StatRow label="Ранг" value={playerStats.rank?.label || 'Bronze'} />
+                                        <StatRow label={t('home.dashboard.statWins')} value={formatNumber(playerStats.wins, currentLanguage)} />
+                                        <StatRow label={t('home.dashboard.statMatches')} value={formatNumber(playerStats.totalMatches, currentLanguage)} />
+                                        <StatRow label={t('home.dashboard.statWinRate')} value={`${playerStats.winRate}%`} />
+                                        <StatRow label={t('home.dashboard.statRank')} value={playerStats.rank?.label || t('home.dashboard.fallbackRank')} />
                                     </div>
 
                                     <div className="home-player-rank">
@@ -327,8 +314,8 @@ const HomePage = () => {
                                     {playerStats.hasNextRank ? (
                                         <div className="home-rank-progress">
                                             <div className="home-rank-progress__meta">
-                                                <span>{formatNumber(playerStats.rankPoints)} очков</span>
-                                                <span>до {formatNumber(playerStats.nextRankPoints)}</span>
+                                                <span>{formatNumber(playerStats.rankPoints, currentLanguage)} {t('home.dashboard.points')}</span>
+                                                <span>{t('home.dashboard.pointsTo')} {formatNumber(playerStats.nextRankPoints, currentLanguage)}</span>
                                             </div>
                                             <div className="home-rank-progress__bar">
                                                 <span style={{ width: `${playerStats.progress}%` }} />
@@ -336,12 +323,12 @@ const HomePage = () => {
                                         </div>
                                     ) : (
                                         <div className="home-rank-progress home-rank-progress--max">
-                                            Максимальный ранг сезона
+                                            {t('home.dashboard.maxRank')}
                                         </div>
                                     )}
 
                                     <Link to="/profile" className="button home-panel-button home-panel-button--filled">
-                                        Перейти в профиль
+                                        {t('home.dashboard.profileButton')}
                                     </Link>
                                 </div>
                             ) : (
@@ -349,9 +336,9 @@ const HomePage = () => {
                                     <div className="home-player-rank home-player-rank--empty">
                                         <i className="fas fa-user-lock"></i>
                                     </div>
-                                    <p>У гостей нет ранга. Зарегистрируйтесь, чтобы открыть сезонную статистику и прогресс ранга.</p>
+                                    <p>{t('home.dashboard.guestText')}</p>
                                     <Link to="/register" className="button home-panel-button btn-hover-shine home-panel-button--filled">
-                                        Зарегистрироваться
+                                        {t('home.dashboard.registerButton')}
                                     </Link>
                                 </div>
                             )}
@@ -366,15 +353,11 @@ const HomePage = () => {
                             <div className="home-donation__content-header">
                                 <img className="home-donation__heart" src={donationHeart} alt="" />
                                 <h2 id="home-donation-title">
-                                    <span>Поддержи</span>
-                                    <strong className='glow-text'>развитие проекта</strong>
+                                    <span>{t('home.donation.titlePrefix')}</span>
+                                    <strong className="glow-text">{t('home.donation.titleHighlight')}</strong>
                                 </h2>
                             </div>
-                            <p>
-                                PvP Tetris — это проект одного разработчика, сделанный с любовью к игре
-                                и киберспорту. Ваша поддержка помогает проекту расти и становиться
-                                лучше с каждым днём.
-                            </p>
+                            <p>{t('home.donation.description')}</p>
                         </div>
 
                         <div className="home-donation__benefits">
@@ -389,11 +372,11 @@ const HomePage = () => {
 
                         <Link to="/support" className="home-donation__button">
                             <i className="fas fa-heart"></i>
-                            Поддержать проект
+                            {t('home.donation.button')}
                         </Link>
 
                         <p className="home-donation__note">
-                            Никаких преимуществ в игре — только поддержка и развитие.
+                            {t('home.donation.note')}
                         </p>
                     </div>
                 </section>
@@ -403,7 +386,7 @@ const HomePage = () => {
     )
 }
 
-const formatNumber = (value) => new Intl.NumberFormat('ru-RU').format(Number(value) || 0)
+const formatNumber = (value, lang = DEFAULT_LANGUAGE) => new Intl.NumberFormat(lang === 'en' ? 'en-US' : 'ru-RU').format(Number(value) || 0)
 
 const getAssetUrl = (value) => {
     if (!value) return ''

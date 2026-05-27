@@ -6,24 +6,46 @@ import HeaderNav from '@/features/HeaderNav'
 import HeaderBrand from '@/shared/ui/Header/HeaderBrand'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
+import { DEFAULT_LANGUAGE, getLanguageFromPathname } from '@/i18n'
 import mobileLogo from '@/widgets/Header/assets/logo.png'
 
 export default function Header() {
     const { pathname } = useLocation()
     const navigate = useNavigate()
+    const currentLanguage = getLanguageFromPathname(pathname)
+    const homePath = `/${currentLanguage}`
+    const localizedNavItems = navItems.map((item) => (
+        item.key === 'home' ? { ...item, to: homePath } : item
+    ))
     const activeMode = getActiveItemKey(modeItems, pathname)
-    const activePage = activeMode ? null : getActiveItemKey(navItems, pathname)
+    const activePage = activeMode ? null : getActiveItemKey(localizedNavItems, pathname)
     const activeModeItem = modeItems.find((item) => item.key === activeMode) || modeItems[0]
     const mobileModeOptions = modeItems.map((item) => ({
         value: item.to,
         label: item.label,
         icon: item.icon,
     }))
+    const languageOptions = [
+        { value: 'ru', label: 'RU' },
+        { value: 'en', label: 'EN' },
+    ]
+
+    const handleLanguageChange = (nextLanguage) => {
+        if (nextLanguage === currentLanguage) {
+            return
+        }
+
+        const nextPath = pathname === `/${currentLanguage}` || pathname === '/'
+            ? `/${nextLanguage}`
+            : `/${nextLanguage || DEFAULT_LANGUAGE}`
+
+        navigate(nextPath)
+    }
 
     const contextValue = {
         activePage,
         activeMode,
-        navItems,
+        navItems: localizedNavItems,
         modeItems,
         modeStats,
     }
@@ -32,11 +54,17 @@ export default function Header() {
         <GlowEffect >
             <header className="header hero-header">
                 <div className="header-content">
-                    <HeaderBrand />
+                    <HeaderBrand to={homePath} />
                     <HeaderNavContext.Provider value={contextValue}>
                         <HeaderNav type="nav" />
                         <HeaderNav type="mode" />
                     </HeaderNavContext.Provider>
+                    <CustomSelect
+                        className="header-language-select"
+                        value={currentLanguage}
+                        options={languageOptions}
+                        onChange={handleLanguageChange}
+                    />
 
                     {/* {stats && (
                         <div className="stats-panel">
@@ -64,11 +92,11 @@ export default function Header() {
                 <div className="glow-line" />
             </header>
             <nav className="mobile-bottom-nav" aria-label="Мобильная навигация">
-                <Link to="/" className="mobile-bottom-nav__brand" aria-label="PVP Tetris">
+                <Link to={homePath} className="mobile-bottom-nav__brand" aria-label="PVP Tetris">
                     <img src={mobileLogo} alt="" />
                 </Link>
                 <div className="mobile-bottom-nav__pages">
-                    {navItems.map((item) => (
+                    {localizedNavItems.map((item) => (
                         <Link
                             key={item.key}
                             to={item.to}
@@ -86,6 +114,13 @@ export default function Header() {
                     options={mobileModeOptions}
                     menuPlacement="top"
                     onChange={(nextPath) => navigate(nextPath)}
+                />
+                <CustomSelect
+                    className="mobile-language-select"
+                    value={currentLanguage}
+                    options={languageOptions}
+                    menuPlacement="top"
+                    onChange={handleLanguageChange}
                 />
             </nav>
         </GlowEffect>

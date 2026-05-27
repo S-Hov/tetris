@@ -33,10 +33,11 @@ const getModeTitle = (modeKey) => getModeSelectionConfig(modeKey).title
 export const routes = [
     {
         key: 'home',
-        path: '/',
+        path: '/:lang',
         title: 'Главная',
         component: HomePage,
         layout: MainLayout,
+        skipDocumentTitle: true,
     },
     {
         key: 'login',

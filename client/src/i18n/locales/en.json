@@ -1,0 +1,107 @@
+{
+  "seo": {
+    "title": "PVP Tetris - online PvP tetris arena",
+    "description": "Play PVP Tetris online with competitive Solo, 1v1, 2v2, 5v5 and Royale modes, player rankings and seasonal stats.",
+    "ogTitle": "PVP Tetris - competitive arena for tetris players",
+    "ogDescription": "Fight in fast PvP matches, choose your mode, climb the leaderboard and become an arena legend."
+  },
+  "home": {
+    "arena": {
+      "ariaLabel": "Arena statistics",
+      "stats": {
+        "online": "online",
+        "matches": "matches now",
+        "queue": "players in queue",
+        "seasonValue": "Season 1"
+      }
+    },
+    "hero": {
+      "titleLine": "Fight. Become",
+      "titleHighlight": "a legend.",
+      "subtitle": "Classic tetris in a new format. Fast PvP battles, unique modes and a true competitive arena are waiting for you!",
+      "playButton": "Play now",
+      "ratingButton": "Arena rating",
+      "previewAriaLabel": "PvP Tetris preview"
+    },
+    "modes": {
+      "title": "Choose a mode",
+      "items": {
+        "solo": {
+          "title": "Solo",
+          "description": "Train in solo mode and push your skill higher"
+        },
+        "1v1": {
+          "title": "1vs1",
+          "label": "Recommended",
+          "description": "A classic duel",
+          "queue": "In queue: 24 players"
+        },
+        "2v2": {
+          "title": "2vs2",
+          "description": "Play together as a pair",
+          "queue": "In queue: 18 teams"
+        },
+        "5v5": {
+          "title": "5vs5",
+          "description": "A large team battle",
+          "queue": "In queue: 12 teams"
+        },
+        "royale": {
+          "title": "Royale",
+          "description": "Last player standing",
+          "queue": "In queue: 31 players"
+        }
+      }
+    },
+    "dashboard": {
+      "ariaLabel": "Season data",
+      "season": "Season 1",
+      "leadersTitle": "Top players",
+      "loadingRating": "Loading rating...",
+      "emptyRating": "The rating is empty for now",
+      "fullRatingButton": "View full rating",
+      "statsTitle": "Statistics",
+      "loadingStats": "Loading statistics...",
+      "statWins": "Wins",
+      "statMatches": "Matches",
+      "statWinRate": "Win rate",
+      "statRank": "Rank",
+      "fallbackRank": "Bronze",
+      "points": "points",
+      "pointsTo": "to",
+      "maxRank": "Maximum season rank",
+      "profileButton": "Go to profile",
+      "guestText": "Guests do not have a rank. Create an account to unlock seasonal statistics and rank progress.",
+      "registerButton": "Create account"
+    },
+    "donation": {
+      "titlePrefix": "Support",
+      "titleHighlight": "project growth",
+      "description": "PvP Tetris is a solo developer project made with love for the game and esports. Your support helps the project grow and improve every day.",
+      "button": "Support the project",
+      "note": "No gameplay advantages - only support and development.",
+      "benefits": {
+        "servers": {
+          "title": "Server costs",
+          "description": "Stable matches without lag"
+        },
+        "modes": {
+          "title": "New modes",
+          "description": "More battles, more emotion"
+        },
+        "events": {
+          "title": "Tournaments and events",
+          "description": "Prizes, ratings and activities"
+        },
+        "development": {
+          "title": "Project development",
+          "description": "New features, sounds and improvements"
+        }
+      }
+    }
+  },
+  "language": {
+    "ru": "RU",
+    "en": "EN"
+  }
+}

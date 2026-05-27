@@ -7,10 +7,11 @@ const HeaderBrand = (props) => {
     const {
         description = true,
         title = true,
+        to = '/',
     } = props
 
     return (
-        <Link to="/" className="brand-link" aria-label="PVP Tetris">
+        <Link to={to} className="brand-link" aria-label="PVP Tetris">
             <div className="brand">
                 <picture className="brand-logo">
                     <source media="(max-width: 700px)" srcSet={mobileLogo} />

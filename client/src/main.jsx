@@ -1,11 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
 
 import './app/styles/reset.css'
 import './app/styles/variables.css'
 import './app/styles/base.css'
 import './app/styles/animations.css'
+import './i18n'
 
 import App from './app/App.jsx'
 import { AuthProvider } from './shared/context/AuthContext.jsx'
@@ -17,10 +19,12 @@ initGlowEffect()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AuthProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </AuthProvider>
+    <HelmetProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </AuthProvider>
+    </HelmetProvider>
   </React.StrictMode>
 )

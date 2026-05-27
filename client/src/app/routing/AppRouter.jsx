@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Routes, Route, useLocation, useParams } from 'react-router-dom'
+import { Navigate, Routes, Route, useLocation, useParams } from 'react-router-dom'
 import { routes } from './routes.js'
 import NotFoundPage from '@/pages/NotFound/NotFoundPage.jsx'
 import { trackPageView } from '@/shared/api/analytics'
@@ -18,6 +18,7 @@ const AppRouter = () => {
 
     return (
         <Routes>
+            <Route path="/" element={<Navigate to="/ru" replace />} />
             {routes.map((route) => {
                 const PageComponent = route.component
                 const Layout = route.layout || DefaultLayout
@@ -29,7 +30,7 @@ const AppRouter = () => {
                         path={route.path}
                         element={
                             <Guard>
-                                <DocumentTitle title={route.title} />
+                                {route.skipDocumentTitle ? null : <DocumentTitle title={route.title} />}
                                 <Layout hideFooter={route.hideFooter}>
                                     <PageComponent />
                                 </Layout>

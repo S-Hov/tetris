@@ -5,8 +5,8 @@
     backdrop-filter: var(--medium-blur);
     box-shadow: var(--shadow);
     transition: var(--transition);
-    overflow: hidden;
     margin: 2px;
+    z-index: 300;
 
     &:hover {
         box-shadow: var(--hover-shadow);
@@ -15,6 +15,20 @@
 
 .mobile-bottom-nav {
     display: none;
+}
+
+.header-language-select {
+    width: 84px;
+    flex: 0 0 84px;
+}
+
+.header-language-select .custom-select__trigger {
+    min-height: 42px;
+    padding: 0.55rem 0.7rem;
+    border-radius: 32px;
+    font-family: var(--font-1);
+    font-size: 0.78rem;
+    font-weight: 900;
 }
 
 .header-content {
@@ -95,7 +109,7 @@
         bottom: max(10px, env(safe-area-inset-bottom));
         z-index: 500;
         display: grid;
-        grid-template-columns: 48px minmax(0, 1fr) minmax(112px, 132px);
+        grid-template-columns: 48px minmax(0, 1fr) minmax(112px, 132px) 74px;
         align-items: center;
         gap: 0.5rem;
         padding: 0.5rem;
@@ -155,33 +169,42 @@
         border: none;
     }
 
-    .mobile-mode-select {
+    .mobile-mode-select,
+    .mobile-language-select {
         min-width: 0;
         z-index: 501;
     }
 
-    .mobile-mode-select .custom-select__trigger {
+    .mobile-mode-select .custom-select__trigger,
+    .mobile-language-select .custom-select__trigger {
         min-height: 42px;
         padding: 0.55rem 0.65rem;
         border-radius: 16px;
         font-size: 0.72rem;
     }
 
-    .mobile-mode-select .custom-select__trigger span {
+    .mobile-mode-select .custom-select__trigger span,
+    .mobile-language-select .custom-select__trigger span {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow-wrap: normal;
     }
 
-    .mobile-mode-select .custom-select__menu {
+    .mobile-mode-select .custom-select__menu,
+    .mobile-language-select .custom-select__menu {
         min-width: 170px;
         left: auto;
         max-height: min(280px, calc(100vh - 150px));
         border-radius: 18px;
     }
 
-    .mobile-mode-select .custom-select__option {
+    .mobile-language-select .custom-select__menu {
+        min-width: 90px;
+    }
+
+    .mobile-mode-select .custom-select__option,
+    .mobile-language-select .custom-select__option {
         padding: 0.68rem 0.75rem;
         border-radius: 13px;
         font-size: 0.78rem;
@@ -190,7 +213,7 @@
 
 @media (max-width: 470px) {
     .mobile-bottom-nav{
-        grid-template-columns: 1fr minmax(112px, 132px);
+        grid-template-columns: minmax(0, 1fr) minmax(104px, 126px) 68px;
         gap: 0.35rem;
         padding: 0.42rem;
         width: 100%;
@@ -217,7 +240,8 @@
         width: 38px;
     }
 
-    .mobile-mode-select .custom-select__trigger {
+    .mobile-mode-select .custom-select__trigger,
+    .mobile-language-select .custom-select__trigger {
         min-height: 38px;
         font-size: 0.66rem;
     }
