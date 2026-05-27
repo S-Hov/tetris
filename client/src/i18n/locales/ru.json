@@ -100,6 +100,76 @@
       }
     }
   },
+  "profile": {
+    "seo": {
+      "title": "Личный кабинет - PVP Tetris",
+      "description": "Откройте личный кабинет PVP Tetris: ранг, MMR, история матчей, быстрые настройки и статус аккаунта.",
+      "ogTitle": "Личный кабинет PVP Tetris",
+      "ogDescription": "Следите за сезонным прогрессом, победами, винрейтом, рангом и последними матчами в профиле PVP Tetris."
+    },
+    "common": {
+      "playerFallback": "Игрок",
+      "unknownOpponent": "Неизвестный соперник",
+      "notSpecified": "Не указан",
+      "noData": "Нет данных",
+      "dayShort": "дн.",
+      "active": "Активен",
+      "pendingVerification": "Ожидает подтверждения",
+      "match": "Матч",
+      "win": "Победа",
+      "loss": "Поражение"
+    },
+    "sideNav": {
+      "ariaLabel": "Меню профиля",
+      "profile": "Профиль",
+      "stats": "Статистика",
+      "matches": "Матчи",
+      "settings": "Настройки"
+    },
+    "hero": {
+      "editAria": "Открыть настройки профиля",
+      "memberSince": "В игре с {{date}}",
+      "season": "Сезон 1",
+      "statsAria": "Краткая статистика",
+      "winRate": "Винрейт",
+      "wins": "Победы",
+      "matches": "Матчи",
+      "solo": "Solo"
+    },
+    "stats": {
+      "title": "Основная статистика",
+      "hiddenMmr": "{{value}} скрытый MMR",
+      "wins": "Победы",
+      "losses": "{{value}} поражений",
+      "winRate": "Винрейт",
+      "matches": "{{value}} матчей",
+      "soloRecord": "Solo рекорд",
+      "draws": "{{value}} ничьих",
+      "member": "В игре",
+      "playerId": "ID игрока"
+    },
+    "matches": {
+      "title": "История матчей",
+      "viewAll": "Смотреть все",
+      "emptyTitle": "Матчей пока нет",
+      "emptyText": "История появится после первой игры."
+    },
+    "settings": {
+      "title": "Быстрые настройки",
+      "all": "Все настройки",
+      "darkTheme": "Темная тема",
+      "darkThemeDescription": "Оформление интерфейса",
+      "glow": "Подсветка курсора",
+      "glowDescription": "Glow effect на панелях"
+    },
+    "account": {
+      "title": "Аккаунт",
+      "email": "Email",
+      "lastLogin": "Последний вход",
+      "status": "Статус",
+      "logout": "Выйти"
+    }
+  },
   "language": {
     "ru": "RU",
     "en": "EN"

@@ -327,7 +327,7 @@ const HomePage = () => {
                                         </div>
                                     )}
 
-                                    <Link to="/profile" className="button home-panel-button home-panel-button--filled">
+                                    <Link to={`/${currentLanguage}/profile`} className="button home-panel-button home-panel-button--filled">
                                         {t('home.dashboard.profileButton')}
                                     </Link>
                                 </div>

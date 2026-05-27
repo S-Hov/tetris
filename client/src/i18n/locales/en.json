@@ -100,6 +100,76 @@
       }
     }
   },
+  "profile": {
+    "seo": {
+      "title": "Personal account - PVP Tetris",
+      "description": "Open your PVP Tetris personal account to view your rank, MMR, match history, quick settings and account status.",
+      "ogTitle": "PVP Tetris personal account",
+      "ogDescription": "Track your seasonal progress, wins, win rate, rank and recent matches in your PVP Tetris account."
+    },
+    "common": {
+      "playerFallback": "Player",
+      "unknownOpponent": "Unknown opponent",
+      "notSpecified": "Not specified",
+      "noData": "No data",
+      "dayShort": "d.",
+      "active": "Active",
+      "pendingVerification": "Pending verification",
+      "match": "Match",
+      "win": "Win",
+      "loss": "Loss"
+    },
+    "sideNav": {
+      "ariaLabel": "Profile menu",
+      "profile": "Profile",
+      "stats": "Statistics",
+      "matches": "Matches",
+      "settings": "Settings"
+    },
+    "hero": {
+      "editAria": "Open profile settings",
+      "memberSince": "In game since {{date}}",
+      "season": "Season 1",
+      "statsAria": "Short statistics",
+      "winRate": "Win Rate",
+      "wins": "Wins",
+      "matches": "Matches",
+      "solo": "Solo"
+    },
+    "stats": {
+      "title": "Main statistics",
+      "hiddenMmr": "{{value}} hidden MMR",
+      "wins": "Wins",
+      "losses": "{{value}} losses",
+      "winRate": "Win Rate",
+      "matches": "{{value}} matches",
+      "soloRecord": "Solo record",
+      "draws": "{{value}} draws",
+      "member": "In game",
+      "playerId": "Player ID"
+    },
+    "matches": {
+      "title": "Match history",
+      "viewAll": "View all",
+      "emptyTitle": "No matches yet",
+      "emptyText": "History will appear after your first game."
+    },
+    "settings": {
+      "title": "Quick settings",
+      "all": "All settings",
+      "darkTheme": "Dark theme",
+      "darkThemeDescription": "Interface appearance",
+      "glow": "Cursor glow",
+      "glowDescription": "Glow effect on panels"
+    },
+    "account": {
+      "title": "Account",
+      "email": "Email",
+      "lastLogin": "Last login",
+      "status": "Status",
+      "logout": "Log out"
+    }
+  },
   "language": {
     "ru": "RU",
     "en": "EN"

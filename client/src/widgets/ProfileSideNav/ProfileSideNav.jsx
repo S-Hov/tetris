@@ -1,40 +1,52 @@
 import { Link, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { getLanguageFromPathname } from '@/i18n'
 import activeMenuBorder from '@/pages/Profile/assets/menu/active_border.png'
 import './ProfileSideNav.css'
 
 const PROFILE_NAV_ITEMS = [
-    { key: 'profile', label: 'Профиль', icon: 'fas fa-user', to: '/profile' },
-    { key: 'stats', label: 'Статистика', icon: 'fas fa-chart-line', to: '/profile#profile-stats' },
-    { key: 'matches', label: 'Матчи', icon: 'fas fa-gamepad', to: '/matches' },
-    { key: 'settings', label: 'Настройки', icon: 'fas fa-gear', to: '/account-settings' },
+    { key: 'profile', labelKey: 'profile.sideNav.profile', icon: 'fas fa-user', to: '/profile' },
+    { key: 'stats', labelKey: 'profile.sideNav.stats', icon: 'fas fa-chart-line', to: '/profile#profile-stats' },
+    { key: 'matches', labelKey: 'profile.sideNav.matches', icon: 'fas fa-gamepad', to: '/matches' },
+    { key: 'settings', labelKey: 'profile.sideNav.settings', icon: 'fas fa-gear', to: '/account-settings' },
 ]
 
 const ProfileSideNav = () => {
     const location = useLocation()
+    const { t } = useTranslation()
+    const lang = getLanguageFromPathname(location.pathname)
+    const profilePath = `/${lang}/profile`
 
     return (
-        <aside className="profile-sidebar" style={{ '--profile-menu-active-border': `url(${activeMenuBorder})` }} aria-label="Меню профиля">
+        <aside className="profile-sidebar" style={{ '--profile-menu-active-border': `url(${activeMenuBorder})` }} aria-label={t('profile.sideNav.ariaLabel')}>
             {PROFILE_NAV_ITEMS.map((item) => (
                 <Link
                     key={item.key}
                     className={`profile-sidebar__item ${isItemActive(item.key, location) ? 'profile-sidebar__item--active' : ''}`}
-                    to={item.to}
+                    to={getItemPath(item, profilePath)}
                 >
                     <i className={item.icon}></i>
-                    <span>{item.label}</span>
+                    <span>{t(item.labelKey)}</span>
                 </Link>
             ))}
         </aside>
     )
 }
 
+const getItemPath = (item, profilePath) => {
+    if (item.key === 'profile') return profilePath
+    if (item.key === 'stats') return `${profilePath}#profile-stats`
+
+    return item.to
+}
+
 const isItemActive = (key, location) => {
     if (key === 'stats') {
-        return location.pathname === '/profile' && location.hash === '#profile-stats'
+        return isProfilePath(location.pathname) && location.hash === '#profile-stats'
     }
 
     if (key === 'profile') {
-        return location.pathname === '/profile' && location.hash !== '#profile-stats'
+        return isProfilePath(location.pathname) && location.hash !== '#profile-stats'
     }
 
     if (key === 'matches') {
@@ -47,5 +59,7 @@ const isItemActive = (key, location) => {
 
     return false
 }
+
+const isProfilePath = (pathname) => pathname === '/profile' || /^\/(ru|en)\/profile\/?$/.test(pathname)
 
 export default ProfileSideNav

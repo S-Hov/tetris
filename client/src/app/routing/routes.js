@@ -57,11 +57,12 @@ export const routes = [
     },
     {
         key: 'profile',
-        path: '/profile',
+        path: '/:lang/profile',
         title: 'Профиль',
         component: ProfilePage,
         layout: MainLayout,
         guard: ProtectedRoute,
+        skipDocumentTitle: true,
     },
     {
         key: 'account-settings',

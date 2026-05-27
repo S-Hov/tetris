@@ -15,7 +15,11 @@ export default function Header() {
     const currentLanguage = getLanguageFromPathname(pathname)
     const homePath = `/${currentLanguage}`
     const localizedNavItems = navItems.map((item) => (
-        item.key === 'home' ? { ...item, to: homePath } : item
+        item.key === 'home'
+            ? { ...item, to: homePath }
+            : item.key === 'profile'
+                ? { ...item, to: `${homePath}/profile` }
+                : item
     ))
     const activeMode = getActiveItemKey(modeItems, pathname)
     const activePage = activeMode ? null : getActiveItemKey(localizedNavItems, pathname)
@@ -35,11 +39,7 @@ export default function Header() {
             return
         }
 
-        const nextPath = pathname === `/${currentLanguage}` || pathname === '/'
-            ? `/${nextLanguage}`
-            : `/${nextLanguage || DEFAULT_LANGUAGE}`
-
-        navigate(nextPath)
+        navigate(getLocalizedPath(pathname, nextLanguage || DEFAULT_LANGUAGE))
     }
 
     const contextValue = {
@@ -125,6 +125,25 @@ export default function Header() {
             </nav>
         </GlowEffect>
     )
+}
+
+const getLocalizedPath = (pathname, language) => {
+    if (!pathname || pathname === '/') {
+        return `/${language}`
+    }
+
+    const parts = pathname.split('/')
+    const pathWithoutLanguage = parts[1] === 'ru' || parts[1] === 'en'
+        ? `/${parts.slice(2).join('/')}`.replace(/\/+$/, '') || '/'
+        : pathname
+
+    if (parts[1] === 'ru' || parts[1] === 'en') {
+        return pathWithoutLanguage === '/profile'
+            ? `/${language}/profile`
+            : `/${language}`
+    }
+
+    return pathname === '/profile' ? `/${language}/profile` : `/${language}`
 }
 
 const getActiveItemKey = (items, pathname) => {
