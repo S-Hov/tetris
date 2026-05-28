@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, Navigate, useLocation, useParams } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
+import { useTranslation } from 'react-i18next'
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '@/i18n'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
 import TurnstileWidget from '@/shared/ui/TurnstileWidget'
@@ -15,66 +17,32 @@ import seasonThreeImage from './assets/seasons/season_3.png'
 import seasonFourImage from './assets/seasons/season_4.png'
 import './AboutPage.css'
 
-const featureCards = [
-    {
-        title: 'PvP бои',
-        icon: 'fas fa-gamepad',
-        items: ['Атаки линиями', 'Дебаффы', 'Контроль темпа', 'Никакого рандома без твоего ответа'],
-    },
-    {
-        title: 'Режимы',
-        icon: 'fas fa-users',
-        items: ['1v1', '2v2', '5v5', 'Royale'],
-        note: 'Выбирай свой стиль и побеждай.',
-    },
-    {
-        title: 'Система эффектов',
-        icon: 'fas fa-bolt',
-        items: ['Инверсия поля', 'Слепые зоны', 'Ускорение', 'Нестандартные фигуры'],
-        note: 'Каждая партия - новый вызов.',
-    },
-    {
-        title: 'Без pay-to-win',
-        icon: 'fa-solid fa-shield',
-        items: ['Никаких преимуществ за донат.', 'Только скилл, реакция и стратегия.'],
-        note: 'Честная арена для каждого',
-    },
+const featureCardsMeta = [
+    { key: 'pvp', icon: 'fas fa-gamepad' },
+    { key: 'modes', icon: 'fas fa-users' },
+    { key: 'effects', icon: 'fas fa-bolt' },
+    { key: 'fair', icon: 'fa-solid fa-shield' },
 ]
 
-const seasons = [
-    {
-        title: 'Сезон 1',
-        status: 'done',
-        image: seasonOneImage,
-        items: ['PvP ядро', 'Рейтинг', 'Личный кабинет', 'Система эффектов'],
-    },
-    {
-        title: 'Сезон 2',
-        image: seasonTwoImage,
-        items: ['Турниры', 'Spectator mode', 'Replay система', 'Достижения'],
-    },
-    {
-        title: 'Сезон 3',
-        image: seasonThreeImage,
-        items: ['Кастомные эффекты', 'Battle Pass', 'Ranked divisions', 'Глобальные таблицы'],
-    },
-    {
-        title: 'Сезон 4+',
-        image: seasonFourImage,
-        items: ['Свои лиги и ивенты', 'API и моддинг', 'Мобильное приложение', 'И многое другое...'],
-    },
+const seasonsMeta = [
+    { key: 'season1', status: 'done', image: seasonOneImage },
+    { key: 'season2', image: seasonTwoImage },
+    { key: 'season3', image: seasonThreeImage },
+    { key: 'season4', image: seasonFourImage },
 ]
 
-const projectStats = [
-    { value: '24/7', label: 'Арена онлайн', icon: 'fas fa-users' },
-    { value: '100+', label: 'Матчей сыграно', icon: 'fas fa-gamepad' },
-    { value: '?', label: 'Среднее время поиска', icon: 'fas fa-clock-rotate-left' },
-    { value: '0$', label: 'Pay to win', icon: 'fas fa-crown' },
-    { value: '100%', label: 'Честный геймплей', icon: 'fas fa-trophy' },
+const projectStatsMeta = [
+    { key: 'online', value: '24/7', icon: 'fas fa-users' },
+    { key: 'matches', value: '100+', icon: 'fas fa-gamepad' },
+    { key: 'search', value: '?', icon: 'fas fa-clock-rotate-left' },
+    { key: 'payToWin', value: '0$', icon: 'fas fa-crown' },
+    { key: 'fair', value: '100%', icon: 'fas fa-trophy' },
 ]
 
 const AboutPage = () => {
     const location = useLocation()
+    const { lang } = useParams()
+    const { t, i18n } = useTranslation()
     const { isAuth, user } = useAuth()
     const [donationWallets, setDonationWallets] = useState([])
     const [selectedWalletId, setSelectedWalletId] = useState('')
@@ -87,11 +55,28 @@ const AboutPage = () => {
     const selectedWallet = donationWallets.find((wallet) => String(wallet.id) === String(selectedWalletId)) || donationWallets[0]
     const cryptoOptions = donationWallets.map((wallet) => ({
         value: String(wallet.id),
-        label: wallet.addressLabel || `${wallet.currencyCode} в сети ${wallet.networkName}`,
+        label: wallet.addressLabel || `${wallet.currencyCode} ${t('about.donate.inNetwork')} ${wallet.networkName}`,
         description: `${wallet.currencyName || wallet.currencyCode} | ${wallet.networkName}`,
         iconImage: wallet.currencyIconUrl || wallet.networkIconUrl,
         iconText: wallet.currencyIconSymbol || wallet.networkIconSymbol || wallet.currencyCode?.slice(0, 2),
     }))
+    const featureCards = featureCardsMeta.map((feature) => ({
+        ...feature,
+        title: t(`about.features.items.${feature.key}.title`),
+        items: t(`about.features.items.${feature.key}.items`, { returnObjects: true }),
+        note: t(`about.features.items.${feature.key}.note`, { defaultValue: '' }),
+    }))
+    const seasons = seasonsMeta.map((season) => ({
+        ...season,
+        title: t(`about.seasons.items.${season.key}.title`),
+        items: t(`about.seasons.items.${season.key}.items`, { returnObjects: true }),
+    }))
+    const projectStats = projectStatsMeta.map((stat) => ({
+        ...stat,
+        label: t(`about.stats.items.${stat.key}`),
+    }))
+    const isSupportedLanguage = SUPPORTED_LANGUAGES.includes(lang)
+    const currentLanguage = isSupportedLanguage ? lang : DEFAULT_LANGUAGE
 
     useEffect(() => {
         if (!location.hash) {
@@ -101,6 +86,12 @@ const AboutPage = () => {
         const target = document.querySelector(location.hash)
         target?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, [location.hash])
+
+    useEffect(() => {
+        if (i18n.language !== currentLanguage) {
+            i18n.changeLanguage(currentLanguage)
+        }
+    }, [currentLanguage, i18n])
 
     useEffect(() => {
         let ignore = false
@@ -118,7 +109,7 @@ const AboutPage = () => {
                 }
             } catch (error) {
                 if (!ignore) {
-                    notify(error.message || 'Не удалось загрузить кошельки для донатов', 'error')
+                    notify(error.message || t('about.donate.errors.walletsLoad'), 'error')
                 }
             } finally {
                 if (!ignore) {
@@ -132,7 +123,7 @@ const AboutPage = () => {
         return () => {
             ignore = true
         }
-    }, [])
+    }, [t])
 
     const handleTurnstileTokenChange = useCallback((token) => {
         setTurnstileToken(token)
@@ -147,12 +138,12 @@ const AboutPage = () => {
         event.preventDefault()
 
         if (!selectedWallet) {
-            notify('Сейчас нет активного кошелька для доната', 'error')
+            notify(t('about.donate.errors.noWallet'), 'error')
             return
         }
 
         if (!turnstileToken) {
-            notify('Проверка безопасности не пройдена', 'error')
+            notify(t('about.donate.errors.turnstile'), 'error')
             return
         }
 
@@ -172,9 +163,9 @@ const AboutPage = () => {
             })
 
             form.reset()
-            notify('Донат создан. Спасибо за поддержку!', 'success')
+            notify(t('about.donate.success.created'), 'success')
         } catch (error) {
-            notify(error.message || 'Не удалось создать донат', 'error')
+            notify(error.message || t('about.donate.errors.create'), 'error')
             resetTurnstile()
         } finally {
             setIsDonationSubmitting(false)
@@ -183,7 +174,7 @@ const AboutPage = () => {
 
     const handleCopyAddress = async () => {
         if (!selectedWallet?.address) {
-            notify('Адрес кошелька пока не выбран', 'error')
+            notify(t('about.donate.errors.noAddress'), 'error')
             return
         }
 
@@ -202,10 +193,14 @@ const AboutPage = () => {
                 document.body.removeChild(input)
             }
 
-            notify('Адрес скопирован', 'success')
+            notify(t('about.donate.success.copied'), 'success')
         } catch {
-            notify('Не удалось скопировать адрес', 'error')
+            notify(t('about.donate.errors.copy'), 'error')
         }
+    }
+
+    if (!isSupportedLanguage) {
+        return <Navigate to={`/${DEFAULT_LANGUAGE}/about`} replace />
     }
 
     return (
@@ -216,28 +211,25 @@ const AboutPage = () => {
                         <img src={aboutHeroImage} alt="" />
                     </div>
                     <div className="about-hero__copy">
-                        <p className="about-kicker">О проекте</p>
-                        <h1>PvP Tetris - это не просто тетрис.</h1>
-                        <p className="about-hero__lead glow-text">Это PvP-арена на скорости реакции.</p>
-                        <p>
-                            Мы объединили классический геймплей Тетриса с динамичными PvP-битвами, уникальными механиками и эффектами,
-                            чтобы каждая партия была непредсказуемой и захватывающей.
-                        </p>
+                        <p className="about-kicker">{t('about.hero.kicker')}</p>
+                        <h1>{t('about.hero.title')}</h1>
+                        <p className="about-hero__lead glow-text">{t('about.hero.lead')}</p>
+                        <p>{t('about.hero.description')}</p>
                         <div className="about-hero__actions">
                             <Link to="/game/1v1" className="button about-button about-button--primary">
                                 <i className="fas fa-play"></i>
-                                Играть сейчас
+                                {t('about.hero.play')}
                             </Link>
                             <Link to="/support" className="button about-button about-button--ghost">
                                 <i className="fas fa-headset"></i>
-                                Поддержка
+                                {t('about.hero.support')}
                             </Link>
                         </div>
                     </div>
                 </section>
 
                 <section className="about-block" aria-labelledby="about-features-title">
-                    <h2 className="about-block__title" id="about-features-title">Что делает игру особенной</h2>
+                    <h2 className="about-block__title" id="about-features-title">{t('about.features.title')}</h2>
                     <div className="about-features">
                         {featureCards.map((feature) => (
                             <article className="about-feature-card" key={feature.title}>
@@ -261,7 +253,7 @@ const AboutPage = () => {
                 </section>
 
                 <section className="about-block" aria-labelledby="about-seasons-title">
-                    <h2 className="about-block__title" id="about-seasons-title">Будущие арены</h2>
+                    <h2 className="about-block__title" id="about-seasons-title">{t('about.seasons.title')}</h2>
                     <div className="about-seasons">
                         {seasons.map((season) => (
                             <article className="about-season-card" key={season.title}>
@@ -285,7 +277,7 @@ const AboutPage = () => {
                 </section>
 
                 <section className="about-block" aria-labelledby="about-stats-title">
-                    <h2 className="about-block__title" id="about-stats-title">Наши цифры</h2>
+                    <h2 className="about-block__title" id="about-stats-title">{t('about.stats.title')}</h2>
                     <div className="about-stats">
                         {projectStats.map((stat) => (
                             <article className="about-stat-card" key={stat.label}>
@@ -305,14 +297,11 @@ const AboutPage = () => {
                     <article className="about-dev-card">
                         <img src={gameDevImage} alt="" />
                         <div className="about-dev-card__content">
-                            <p className="about-kicker">Кто делает игру</p>
-                            <h2>Один разработчик. Одна идея. Сделать тетрис снова адреналиновым.</h2>
-                            <p>
-                                Проект делает студент и инди-разработчик. Я собираю эту арену один, с любовью к игре и сообществу.
-                                Спасибо, что вы с нами!
-                            </p>
+                            <p className="about-kicker">{t('about.dev.kicker')}</p>
+                            <h2>{t('about.dev.title')}</h2>
+                            <p>{t('about.dev.description')}</p>
                             <Link className="button about-button about-button--primary" to="/support">
-                                Узнать больше
+                                {t('about.dev.button')}
                             </Link>
                         </div>
                     </article>
@@ -322,25 +311,25 @@ const AboutPage = () => {
                             <div className="glow-effect about-donate-content">
                                 <form className="about-donate-form" onSubmit={handleDonateSubmit}>
                                     <div className="about-donate-form__head">
-                                        <p className="about-kicker">Поддержать проект</p>
-                                        <p>Донаты помогают содержать серверы, развивать проект и делать арену лучше.</p>
+                                        <p className="about-kicker">{t('about.donate.kicker')}</p>
+                                        <p>{t('about.donate.description')}</p>
                                     </div>
 
                                     <label className="about-field">
-                                        <span>Валюта</span>
+                                        <span>{t('about.donate.currency')}</span>
                                         <CustomSelect
                                             name="walletId"
                                             value={selectedWalletId}
                                             options={cryptoOptions}
                                             onChange={setSelectedWalletId}
                                             disabled={isWalletsLoading || cryptoOptions.length === 0}
-                                            placeholder={isWalletsLoading ? 'Загружаем кошельки' : 'Нет активных кошельков'}
+                                            placeholder={isWalletsLoading ? t('about.donate.loadingWallets') : t('about.donate.emptyWallets')}
                                         />
                                     </label>
 
                                     <label className="about-field">
-                                        <span>Сумма</span>
-                                        <input name="expectedAmount" type="number" min="0.000000000000000001" step="any" placeholder="Например, 5" required />
+                                        <span>{t('about.donate.amount')}</span>
+                                        <input name="expectedAmount" type="number" min="0.000000000000000001" step="any" placeholder={t('about.donate.amountPlaceholder')} required />
                                     </label>
 
                                     {isAuth ? (
@@ -350,28 +339,28 @@ const AboutPage = () => {
                                                 type="checkbox"
                                                 onChange={(event) => setIsAnonymousDonation(event.target.checked)}
                                             />
-                                            <span>Анонимная поддержка</span>
+                                            <span>{t('about.donate.anonymous')}</span>
                                         </label>
                                     ) : null}
 
                                     {(!isAuth || isAnonymousDonation) ? (
                                         <label className="about-field">
-                                            <span>Псевдоним</span>
+                                            <span>{t('about.donate.nickname')}</span>
                                             <input name="donorName" type="text" maxLength="120" placeholder="NeonStack" required />
                                         </label>
                                     ) : (
                                         <label className="about-field">
-                                            <span>От кого</span>
-                                            <input type="text" value={user?.username || 'Ваш аккаунт'} readOnly />
+                                            <span>{t('about.donate.from')}</span>
+                                            <input type="text" value={user?.username || t('about.donate.accountFallback')} readOnly />
                                         </label>
                                     )}
 
                                     <label className="about-field about-field--wide">
-                                        <span>Кошелек</span>
+                                        <span>{t('about.donate.wallet')}</span>
                                         <div className="about-wallet-row">
                                             <input type="text" value={selectedWallet?.address || ''} readOnly />
                                             <button
-                                                aria-label="Скопировать адрес кошелька"
+                                                aria-label={t('about.donate.copyAddress')}
                                                 disabled={!selectedWallet?.address}
                                                 type="button"
                                                 onClick={handleCopyAddress}
@@ -379,7 +368,7 @@ const AboutPage = () => {
                                                 <i className="fas fa-copy"></i>
                                             </button>
                                             <button
-                                                aria-label="Показать QR-код"
+                                                aria-label={t('about.donate.showQr')}
                                                 disabled={!selectedWallet?.address}
                                                 type="button"
                                                 onClick={() => setIsQrOpen(true)}
@@ -389,20 +378,20 @@ const AboutPage = () => {
                                         </div>
                                         {selectedWallet?.memoTag && <small>Memo/tag: {selectedWallet.memoTag}</small>}
                                         {selectedWallet?.memoRequired && !selectedWallet?.memoTag && (
-                                            <small>Для этой сети нужен memo/tag. Укажите его в админке кошелька.</small>
+                                            <small>{t('about.donate.memoRequired')}</small>
                                         )}
                                     </label>
 
                                     <label className="about-field about-field--wide">
-                                        <span>Комментарий</span>
-                                        <textarea name="note" rows="3" placeholder="Можно оставить пару слов автору"></textarea>
+                                        <span>{t('about.donate.comment')}</span>
+                                        <textarea name="note" rows="3" placeholder={t('about.donate.commentPlaceholder')}></textarea>
                                     </label>
 
                                     <TurnstileWidget onTokenChange={handleTurnstileTokenChange} resetSignal={turnstileResetSignal} />
 
                                     <button type="submit" className="button about-button about-button--primary" disabled={isDonationSubmitting || !selectedWallet || !turnstileToken}>
                                         <i className="fas fa-wallet"></i>
-                                        {isDonationSubmitting ? 'Сохраняем...' : 'Создать донат'}
+                                        {isDonationSubmitting ? t('about.donate.submitting') : t('about.donate.submit')}
                                     </button>
                                 </form>
                             </div>
@@ -416,12 +405,12 @@ const AboutPage = () => {
                             className="about-qr-modal__dialog"
                             role="dialog"
                             aria-modal="true"
-                            aria-label="QR-код кошелька"
+                            aria-label={t('about.donate.qrDialog')}
                             onMouseDown={(event) => event.stopPropagation()}
                         >
                             <button
                                 className="about-qr-modal__close"
-                                aria-label="Закрыть QR-код"
+                                aria-label={t('about.donate.closeQr')}
                                 type="button"
                                 onClick={() => setIsQrOpen(false)}
                             >

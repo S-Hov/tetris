@@ -6,7 +6,7 @@ import HeaderNav from '@/features/HeaderNav'
 import HeaderBrand from '@/shared/ui/Header/HeaderBrand'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
-import { DEFAULT_LANGUAGE, getLanguageFromPathname } from '@/i18n'
+import { DEFAULT_LANGUAGE, LANGUAGES, getLanguageFromPathname } from '@/i18n'
 import mobileLogo from '@/widgets/Header/assets/logo.png'
 
 export default function Header() {
@@ -17,6 +17,8 @@ export default function Header() {
     const localizedNavItems = navItems.map((item) => (
         item.key === 'home'
             ? { ...item, to: homePath }
+            : item.key === 'about'
+                ? { ...item, to: `${homePath}/about` }
             : item.key === 'profile'
                 ? { ...item, to: `${homePath}/profile` }
                 : item
@@ -29,11 +31,6 @@ export default function Header() {
         label: item.label,
         icon: item.icon,
     }))
-    const languageOptions = [
-        { value: 'ru', label: 'RU' },
-        { value: 'en', label: 'EN' },
-    ]
-
     const handleLanguageChange = (nextLanguage) => {
         if (nextLanguage === currentLanguage) {
             return
@@ -62,7 +59,7 @@ export default function Header() {
                     <CustomSelect
                         className="header-language-select"
                         value={currentLanguage}
-                        options={languageOptions}
+                        options={LANGUAGES}
                         onChange={handleLanguageChange}
                     />
 
@@ -118,7 +115,7 @@ export default function Header() {
                 <CustomSelect
                     className="mobile-language-select"
                     value={currentLanguage}
-                    options={languageOptions}
+                    options={LANGUAGES}
                     menuPlacement="top"
                     onChange={handleLanguageChange}
                 />
@@ -138,12 +135,16 @@ const getLocalizedPath = (pathname, language) => {
         : pathname
 
     if (parts[1] === 'ru' || parts[1] === 'en') {
-        return pathWithoutLanguage === '/profile'
-            ? `/${language}/profile`
+        if (pathWithoutLanguage === '/' || pathWithoutLanguage === '') {
+            return `/${language}`
+        }
+
+        return ['/about', '/profile'].includes(pathWithoutLanguage)
+            ? `/${language}${pathWithoutLanguage}`
             : `/${language}`
     }
 
-    return pathname === '/profile' ? `/${language}/profile` : `/${language}`
+    return ['/about', '/profile'].includes(pathname) ? `/${language}${pathname}` : `/${language}`
 }
 
 const getActiveItemKey = (items, pathname) => {

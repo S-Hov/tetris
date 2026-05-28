@@ -89,7 +89,7 @@ export const routes = [
     },
     {
         key: 'about',
-        path: '/about',
+        path: '/:lang/about',
         title: 'О нас',
         component: AboutPage,
         layout: MainLayout,

@@ -1,0 +1,109 @@
+{
+  "about": {
+    "hero": {
+      "kicker": "About the project",
+      "title": "PvP Tetris is more than just tetris.",
+      "lead": "It is a reaction-speed PvP arena.",
+      "description": "We combined classic Tetris gameplay with fast PvP battles, unique mechanics and effects, so every match feels unpredictable and exciting.",
+      "play": "Play now",
+      "support": "Support"
+    },
+    "features": {
+      "title": "What makes the game special",
+      "items": {
+        "pvp": {
+          "title": "PvP battles",
+          "items": ["Line attacks", "Debuffs", "Tempo control", "No randomness without your answer"]
+        },
+        "modes": {
+          "title": "Modes",
+          "items": ["1v1", "2v2", "5v5", "Royale"],
+          "note": "Choose your style and win."
+        },
+        "effects": {
+          "title": "Effect system",
+          "items": ["Board inversion", "Blind zones", "Speed-up", "Non-standard pieces"],
+          "note": "Every match is a new challenge."
+        },
+        "fair": {
+          "title": "No pay-to-win",
+          "items": ["No advantages for donations.", "Only skill, reaction and strategy."],
+          "note": "A fair arena for everyone"
+        }
+      }
+    },
+    "seasons": {
+      "title": "Future arenas",
+      "items": {
+        "season1": {
+          "title": "Season 1",
+          "items": ["PvP core", "Rating", "Personal account", "Effect system"]
+        },
+        "season2": {
+          "title": "Season 2",
+          "items": ["Tournaments", "Spectator mode", "Replay system", "Achievements"]
+        },
+        "season3": {
+          "title": "Season 3",
+          "items": ["Custom effects", "Battle Pass", "Ranked divisions", "Global leaderboards"]
+        },
+        "season4": {
+          "title": "Season 4+",
+          "items": ["Custom leagues and events", "API and modding", "Mobile app", "And much more..."]
+        }
+      }
+    },
+    "stats": {
+      "title": "Our numbers",
+      "items": {
+        "online": "Arena online",
+        "matches": "Matches played",
+        "search": "Average search time",
+        "payToWin": "Pay to win",
+        "fair": "Fair gameplay"
+      }
+    },
+    "dev": {
+      "kicker": "Who builds the game",
+      "title": "One developer. One idea. Make tetris feel adrenaline-fueled again.",
+      "description": "The project is built by a student and indie developer. I am creating this arena alone, with love for the game and the community. Thank you for being with us!",
+      "button": "Learn more"
+    },
+    "donate": {
+      "kicker": "Support the project",
+      "description": "Donations help pay for servers, develop the project and make the arena better.",
+      "currency": "Currency",
+      "amount": "Amount",
+      "amountPlaceholder": "For example, 5",
+      "anonymous": "Anonymous support",
+      "nickname": "Nickname",
+      "from": "From",
+      "accountFallback": "Your account",
+      "wallet": "Wallet",
+      "comment": "Comment",
+      "commentPlaceholder": "You can leave a few words for the author",
+      "loadingWallets": "Loading wallets",
+      "emptyWallets": "No active wallets",
+      "copyAddress": "Copy wallet address",
+      "showQr": "Show QR code",
+      "qrDialog": "Wallet QR code",
+      "closeQr": "Close QR code",
+      "memoRequired": "This network requires memo/tag. Add it in the wallet admin panel.",
+      "submit": "Create donation",
+      "submitting": "Saving...",
+      "inNetwork": "on",
+      "errors": {
+        "walletsLoad": "Could not load donation wallets",
+        "noWallet": "There is no active donation wallet right now",
+        "turnstile": "Security check has not passed",
+        "create": "Could not create donation",
+        "noAddress": "Wallet address is not selected yet",
+        "copy": "Could not copy address"
+      },
+      "success": {
+        "created": "Donation created. Thank you for your support!",
+        "copied": "Address copied"
+      }
+    }
+  }
+}

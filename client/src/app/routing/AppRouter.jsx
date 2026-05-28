@@ -19,6 +19,7 @@ const AppRouter = () => {
     return (
         <Routes>
             <Route path="/" element={<Navigate to="/ru" replace />} />
+            <Route path="/about" element={<Navigate to="/ru/about" replace />} />
             <Route path="/profile" element={<Navigate to="/ru/profile" replace />} />
             {routes.map((route) => {
                 const PageComponent = route.component
