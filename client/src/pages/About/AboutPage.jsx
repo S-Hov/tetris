@@ -207,25 +207,27 @@ const AboutPage = () => {
         <section className="section about-page">
             <div className="container about-container">
                 <section className="about-hero">
-                    <div className="about-hero__background" aria-hidden="true">
-                        <img src={aboutHeroImage} alt="" />
-                    </div>
-                    <div className="about-hero__copy">
-                        <p className="about-kicker">{t('about.hero.kicker')}</p>
-                        <h1>{t('about.hero.title')}</h1>
-                        <p className="about-hero__lead glow-text">{t('about.hero.lead')}</p>
-                        <p>{t('about.hero.description')}</p>
-                        <div className="about-hero__actions">
-                            <Link to="/game/1v1" className="button about-button about-button--primary">
-                                <i className="fas fa-play"></i>
-                                {t('about.hero.play')}
-                            </Link>
-                            <Link to="/support" className="button about-button about-button--ghost">
-                                <i className="fas fa-headset"></i>
-                                {t('about.hero.support')}
-                            </Link>
+                    <GlowEffect>
+                        <div className="about-hero__background" aria-hidden="true">
+                            <img src={aboutHeroImage} alt="" />
                         </div>
-                    </div>
+                        <div className="about-hero__copy">
+                            <p className="about-kicker">{t('about.hero.kicker')}</p>
+                            <h1>{t('about.hero.title')}</h1>
+                            <p className="about-hero__lead glow-text">{t('about.hero.lead')}</p>
+                            <p>{t('about.hero.description')}</p>
+                            <div className="about-hero__actions">
+                                <Link to="/game/1v1" className="button about-button about-button--primary">
+                                    <i className="fas fa-play"></i>
+                                    {t('about.hero.play')}
+                                </Link>
+                                <Link to="/support" className="button about-button about-button--ghost">
+                                    <i className="fas fa-headset"></i>
+                                    {t('about.hero.support')}
+                                </Link>
+                            </div>
+                        </div>
+                    </GlowEffect>
                 </section>
 
                 <section className="about-block" aria-labelledby="about-features-title">

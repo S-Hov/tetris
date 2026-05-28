@@ -60,6 +60,7 @@
     --turquoise: #008fb5;
     --turquoise-lite: #076f8c;
     --text-color: #28435a;
+    --text-color-white: #ccf4ff;
     --text-color-1: #071929;
     --text-active-color: white;
     --description-color: #315c76;
@@ -85,7 +86,7 @@
     --surface-panel-border: 1px solid rgba(0, 111, 150, 0.22);
     --radius-panel: 32px;
     --radius-card: 8px;
-    --text-muted: rgb(222 240 255 / 74%);
+    --text-muted: rgb(25 32 39 / 68%);
     --cta-gradient: linear-gradient(100deg, #f064ff 0%, #7c5cff 48%, #00aede 100%);
     --cta-shadow: 0 18px 38px rgba(49, 89, 118, 0.2), 0 0 30px rgba(0, 143, 181, 0.18);
 }
