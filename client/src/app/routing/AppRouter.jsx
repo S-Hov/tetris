@@ -21,6 +21,7 @@ const AppRouter = () => {
             <Route path="/" element={<Navigate to="/ru" replace />} />
             <Route path="/about" element={<Navigate to="/ru/about" replace />} />
             <Route path="/profile" element={<Navigate to="/ru/profile" replace />} />
+            <Route path="/support" element={<Navigate to="/ru/support" replace />} />
             {routes.map((route) => {
                 const PageComponent = route.component
                 const Layout = route.layout || DefaultLayout

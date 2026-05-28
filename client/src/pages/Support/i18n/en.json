@@ -1,0 +1,112 @@
+{
+  "header": {
+    "nav": {
+      "home": "HOME",
+      "about": "ABOUT",
+      "profile": "ACCOUNT",
+      "leaderboard": "RATING",
+      "support": "SUPPORT"
+    },
+    "mobileNavigation": "Mobile navigation"
+  },
+  "support": {
+    "feedbackTypes": {
+      "bug": "Bug or error",
+      "idea": "Improvement idea",
+      "mode": "New mode",
+      "balance": "Match balance and fairness",
+      "other": "Other"
+    },
+    "cards": {
+      "direct": {
+        "title": "Get straight to the point",
+        "text": "For a faster fix, describe the issue clearly and include details: mode, nickname, time, and so on."
+      },
+      "bugs": {
+        "title": "Bugs and errors",
+        "text": "Describe what happened and what you expected to see. Attach screenshots or video if you have them."
+      },
+      "balance": {
+        "title": "Balance and modes",
+        "text": "Tell us which mode or balance detail feels unfair and what could be improved."
+      }
+    },
+    "faq": {
+      "rating": {
+        "question": "How does the rating system work?",
+        "answer": "Rating changes after completed matches and depends on the mode, result, and opponent strength."
+      },
+      "disconnect": {
+        "question": "What should I do if I disconnect from a match?",
+        "answer": "Include the mode, approximate time, nickname, and a match link if you have one. This helps us find the session faster."
+      },
+      "report": {
+        "question": "How do I report a rule breaker?",
+        "answer": "Create a request with the \"Other\" or \"Balance\" category and attach a match link or screenshot."
+      },
+      "progress": {
+        "question": "How can I restore lost progress?",
+        "answer": "Send your nickname, account email, and describe which action happened before the progress disappeared."
+      },
+      "chat": {
+        "question": "Are there chat restrictions?",
+        "answer": "Yes. Insults, spam, and attempts to bypass the rules can lead to account restrictions."
+      }
+    },
+    "contacts": {
+      "telegram": "Telegram Bot",
+      "email": "Email"
+    },
+    "hero": {
+      "eyebrow": "Support",
+      "title": "How can we",
+      "titleHighlight": "help you?",
+      "description": "Your request will be saved in the project database and sent to the admin support section. Choose where you would like to continue the conversation: by email or in the Telegram bot."
+    },
+    "status": {
+      "ariaLabel": "Support working hours",
+      "eyebrow": "We are online",
+      "text": "Our support team tries to reply as quickly as possible",
+      "note": "The form accepts requests 24/7"
+    },
+    "help": {
+      "title": "Good to know",
+      "ariaLabel": "Request types"
+    },
+    "form": {
+      "title": "Create a request",
+      "category": "Request topic",
+      "nickname": "Your player nickname",
+      "nicknamePlaceholder": "Enter your nickname",
+      "channel": "Preferred reply channel",
+      "emailDescription": "The reply will arrive in your inbox. We will continue the conversation there",
+      "telegramDescription": "We will redirect you to the Telegram bot, where you can continue the conversation.",
+      "message": "Problem description",
+      "messagePlaceholder": "Describe the situation in as much detail as possible... What happened? Where? When?",
+      "attachment": "Match link or screenshot (optional)",
+      "consent": "I confirm that I have read the project rules and consent to the processing of my data.",
+      "submitting": "Sending...",
+      "submit": "Send request"
+    },
+    "validation": {
+      "name": "Enter your name so support knows how to address you.",
+      "email": "Enter a valid email address for the reply.",
+      "message": "The message must be at least 10 characters long.",
+      "turnstile": "Security check failed"
+    },
+    "success": {
+      "telegram": "Thank you! Now open Telegram to continue the conversation with support.",
+      "email": "Thank you! Your message has been sent. We will reply by email.",
+      "telegramButton": "Continue in Telegram",
+      "telegramHint": "If Telegram did not open automatically, press the button above."
+    },
+    "errors": {
+      "submit": "Could not send the message. Please try again."
+    },
+    "sidebar": {
+      "faq": "Frequently asked questions",
+      "myRequests": "My requests",
+      "contacts": "Other contact options"
+    }
+  }
+}

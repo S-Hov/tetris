@@ -221,7 +221,7 @@ const AboutPage = () => {
                                     <i className="fas fa-play"></i>
                                     {t('about.hero.play')}
                                 </Link>
-                                <Link to="/support" className="button about-button about-button--ghost">
+                                <Link to={`/${currentLanguage}/support`} className="button about-button about-button--ghost">
                                     <i className="fas fa-headset"></i>
                                     {t('about.hero.support')}
                                 </Link>
@@ -302,7 +302,7 @@ const AboutPage = () => {
                             <p className="about-kicker">{t('about.dev.kicker')}</p>
                             <h2>{t('about.dev.title')}</h2>
                             <p>{t('about.dev.description')}</p>
-                            <Link className="button about-button about-button--primary" to="/support">
+                            <Link className="button about-button about-button--primary" to={`/${currentLanguage}/support`}>
                                 {t('about.dev.button')}
                             </Link>
                         </div>

@@ -370,7 +370,7 @@ const HomePage = () => {
                             ))}
                         </div>
 
-                        <Link to="/support" className="home-donation__button">
+                        <Link to={`/${currentLanguage}/support`} className="home-donation__button">
                             <i className="fas fa-heart"></i>
                             {t('home.donation.button')}
                         </Link>

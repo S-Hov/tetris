@@ -1,9 +1,9 @@
 export const navItems = [
-    { key: 'home', label: 'ГЛАВНАЯ', icon: 'fas fa-home', to: '/' },
-    { key: 'about', label: 'О НАС', icon: 'fas fa-info-circle', to: '/about' },
-    { key: 'profile', label: 'ЛИЧНЫЙ КАБИНЕТ', icon: 'fas fa-user-astronaut', to: '/profile' },
-    { key: 'leaderboard', label: 'РЕЙТИНГ', icon: 'fas fa-trophy', to: '/rating' },
-    { key: 'support', label: 'ПОДДЕРЖКА', icon: 'fas fa-headset', to: '/support' }
+    { key: 'home', labelKey: 'header.nav.home', icon: 'fas fa-home', to: '/' },
+    { key: 'about', labelKey: 'header.nav.about', icon: 'fas fa-info-circle', to: '/about' },
+    { key: 'profile', labelKey: 'header.nav.profile', icon: 'fas fa-user-astronaut', to: '/profile' },
+    { key: 'leaderboard', labelKey: 'header.nav.leaderboard', icon: 'fas fa-trophy', to: '/rating' },
+    { key: 'support', labelKey: 'header.nav.support', icon: 'fas fa-headset', to: '/support' }
 ]
 
 export const modeItems = [

@@ -8,21 +8,19 @@ import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
 import { DEFAULT_LANGUAGE, LANGUAGES, getLanguageFromPathname } from '@/i18n'
 import mobileLogo from '@/widgets/Header/assets/logo.png'
+import { useTranslation } from 'react-i18next'
 
 export default function Header() {
     const { pathname } = useLocation()
     const navigate = useNavigate()
+    const { t } = useTranslation()
     const currentLanguage = getLanguageFromPathname(pathname)
     const homePath = `/${currentLanguage}`
-    const localizedNavItems = navItems.map((item) => (
-        item.key === 'home'
-            ? { ...item, to: homePath }
-            : item.key === 'about'
-                ? { ...item, to: `${homePath}/about` }
-            : item.key === 'profile'
-                ? { ...item, to: `${homePath}/profile` }
-                : item
-    ))
+    const localizedNavItems = navItems.map((item) => ({
+        ...item,
+        label: t(item.labelKey),
+        to: getNavItemPath(item, homePath),
+    }))
     const activeMode = getActiveItemKey(modeItems, pathname)
     const activePage = activeMode ? null : getActiveItemKey(localizedNavItems, pathname)
     const activeModeItem = modeItems.find((item) => item.key === activeMode) || modeItems[0]
@@ -88,7 +86,7 @@ export default function Header() {
 
                 <div className="glow-line" />
             </header>
-            <nav className="mobile-bottom-nav" aria-label="Мобильная навигация">
+            <nav className="mobile-bottom-nav" aria-label={t('header.mobileNavigation')}>
                 <Link to={homePath} className="mobile-bottom-nav__brand" aria-label="PVP Tetris">
                     <img src={mobileLogo} alt="" />
                 </Link>
@@ -139,12 +137,24 @@ const getLocalizedPath = (pathname, language) => {
             return `/${language}`
         }
 
-        return ['/about', '/profile'].includes(pathWithoutLanguage)
+        return ['/about', '/profile', '/support'].includes(pathWithoutLanguage)
             ? `/${language}${pathWithoutLanguage}`
             : `/${language}`
     }
 
-    return ['/about', '/profile'].includes(pathname) ? `/${language}${pathname}` : `/${language}`
+    return ['/about', '/profile', '/support'].includes(pathname) ? `/${language}${pathname}` : `/${language}`
+}
+
+const getNavItemPath = (item, homePath) => {
+    if (item.key === 'home') {
+        return homePath
+    }
+
+    if (['about', 'profile', 'support'].includes(item.key)) {
+        return `${homePath}${item.to}`
+    }
+
+    return item.to
 }
 
 const getActiveItemKey = (items, pathname) => {

@@ -103,7 +103,7 @@ export const routes = [
     },
     {
         key: 'support',
-        path: '/support',
+        path: '/:lang/support',
         title: 'Поддержка',
         component: SupportPage,
         layout: MainLayout,

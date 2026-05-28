@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '@/i18n'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
 import TurnstileWidget from '@/shared/ui/TurnstileWidget'
@@ -10,66 +12,48 @@ import './SupportPage.css'
 import supportBunner from './assets/bunner.png'
 
 const feedbackTypes = [
-    { value: 'bug', label: 'Баг или ошибка', icon: 'fas fa-bug' },
-    { value: 'idea', label: 'Идея для улучшения', icon: 'fas fa-lightbulb' },
-    { value: 'mode', label: 'Новый режим', icon: 'fas fa-gamepad' },
-    { value: 'balance', label: 'Баланс и честность матчей', icon: 'fas fa-balance-scale' },
-    { value: 'other', label: 'Другое', icon: 'fas fa-comment-dots' },
+    { value: 'bug', labelKey: 'support.feedbackTypes.bug', icon: 'fas fa-bug' },
+    { value: 'idea', labelKey: 'support.feedbackTypes.idea', icon: 'fas fa-lightbulb' },
+    { value: 'mode', labelKey: 'support.feedbackTypes.mode', icon: 'fas fa-gamepad' },
+    { value: 'balance', labelKey: 'support.feedbackTypes.balance', icon: 'fas fa-balance-scale' },
+    { value: 'other', labelKey: 'support.feedbackTypes.other', icon: 'fas fa-comment-dots' },
 ]
 
 const supportCards = [
     {
-        title: 'Пишите сразу по делу',
-        text: 'Для более быстрого решения опишите суть проблемы и укажите детали: режим, ник, время и т.д.',
+        key: 'direct',
         icon: 'fas fa-heart',
         tone: 'pink',
     },
     {
-        title: 'Баги и ошибки',
-        text: 'Опишите, что произошло и что ожидали увидеть. Приложите скриншоты или видео, если есть.',
+        key: 'bugs',
         icon: 'fas fa-bug',
         tone: 'cyan',
     },
     {
-        title: 'Баланс и режимы',
-        text: 'Укажите, какой режим или баланс кажется нечестным и что можно улучшить.',
+        key: 'balance',
         icon: 'fas fa-balance-scale',
         tone: 'violet',
     },
 ]
 
 const faqItems = [
-    {
-        question: 'Как работает система рейтинга?',
-        answer: 'Рейтинг меняется после завершённых матчей и зависит от режима, результата и силы соперников.',
-    },
-    {
-        question: 'Что делать при вылете из матча?',
-        answer: 'Укажите режим, примерное время, ник и ссылку на матч, если она есть. Так мы быстрее найдём сессию.',
-    },
-    {
-        question: 'Как сообщить о нарушителе?',
-        answer: 'Создайте обращение с категорией "Другое" или "Баланс" и приложите ссылку на матч или скриншот.',
-    },
-    {
-        question: 'Как вернуть потерянный прогресс?',
-        answer: 'Напишите ник, email аккаунта и опишите, после какого действия пропал прогресс.',
-    },
-    {
-        question: 'Есть ли ограничения в чатах?',
-        answer: 'Да. Оскорбления, спам и попытки обхода правил могут привести к ограничениям аккаунта.',
-    },
+    'rating',
+    'disconnect',
+    'report',
+    'progress',
+    'chat',
 ]
 
 const contactItems = [
     {
-        title: 'Telegram-Бот',
+        titleKey: 'support.contacts.telegram',
         text: '@pvptetris_support_bot',
         icon: 'fa-brands fa-telegram',
         href: 'https://t.me/pvptetris_support_bot',
     },
     {
-        title: 'Email',
+        titleKey: 'support.contacts.email',
         text: 'support@pvptetris.com',
         icon: 'fa-solid fa-envelope',
         href: 'mailto:support@pvptetris.com',
@@ -82,6 +66,8 @@ const initialSuccessState = {
 }
 
 const SupportPage = () => {
+    const { lang } = useParams()
+    const { t, i18n } = useTranslation()
     const { user, isAuth } = useAuth()
     const [category, setCategory] = useState(feedbackTypes[0].value)
     const [preferredChannel, setPreferredChannel] = useState('telegram')
@@ -97,6 +83,32 @@ const SupportPage = () => {
 
     const registeredName = useMemo(() => user?.username || '', [user?.username])
     const registeredEmail = useMemo(() => user?.email || '', [user?.email])
+    const isSupportedLanguage = SUPPORTED_LANGUAGES.includes(lang)
+    const currentLanguage = isSupportedLanguage ? lang : DEFAULT_LANGUAGE
+    const feedbackOptions = useMemo(() => feedbackTypes.map((type) => ({
+        ...type,
+        label: t(type.labelKey),
+    })), [t])
+    const localizedSupportCards = useMemo(() => supportCards.map((card) => ({
+        ...card,
+        title: t(`support.cards.${card.key}.title`),
+        text: t(`support.cards.${card.key}.text`),
+    })), [t])
+    const localizedFaqItems = useMemo(() => faqItems.map((key) => ({
+        key,
+        question: t(`support.faq.${key}.question`),
+        answer: t(`support.faq.${key}.answer`),
+    })), [t])
+    const localizedContactItems = useMemo(() => contactItems.map((item) => ({
+        ...item,
+        title: t(item.titleKey),
+    })), [t])
+
+    useEffect(() => {
+        if (i18n.language !== currentLanguage) {
+            i18n.changeLanguage(currentLanguage)
+        }
+    }, [currentLanguage, i18n])
 
     useEffect(() => {
         if (isAuth) {
@@ -122,22 +134,22 @@ const SupportPage = () => {
         const normalizedMessage = String(message || '').trim()
 
         if (!normalizedName) {
-            notify('Укажите имя, чтобы поддержка знала, как к вам обратиться.', 'error')
+            notify(t('support.validation.name'), 'error')
             return
         }
 
         if (preferredChannel === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
-            notify('Введите корректный email для ответа.', 'error')
+            notify(t('support.validation.email'), 'error')
             return
         }
 
         if (normalizedMessage.length < 10) {
-            notify('Сообщение должно быть не короче 10 символов.', 'error')
+            notify(t('support.validation.message'), 'error')
             return
         }
 
         if (!turnstileToken) {
-            notify('Проверка безопасности не пройдена', 'error')
+            notify(t('support.validation.turnstile'), 'error')
             return
         }
 
@@ -175,21 +187,21 @@ const SupportPage = () => {
                     window.open(response.telegramUrl, '_blank', 'noopener,noreferrer')
                 }
 
-                notify('Спасибо! Теперь откройте Telegram, чтобы продолжить диалог с поддержкой.', 'success')
+                notify(t('support.success.telegram'), 'success')
             } else {
                 setSuccessState({
                     channel: 'email',
                     telegramUrl: '',
                 })
 
-                notify('Спасибо! Ваше сообщение отправлено. Мы ответим вам на email.', 'success')
+                notify(t('support.success.email'), 'success')
             }
 
             setMessage('')
             setAttachmentUrl('')
-            setCategory(feedbackTypes[0].value)
+            setCategory(feedbackOptions[0].value)
         } catch {
-            notify('Не удалось отправить сообщение. Попробуйте ещё раз.', 'error')
+            notify(t('support.errors.submit'), 'error')
             resetTurnstile()
         } finally {
             setIsSubmitting(false)
@@ -202,29 +214,30 @@ const SupportPage = () => {
         }
     }
 
+    if (!isSupportedLanguage) {
+        return <Navigate to={`/${DEFAULT_LANGUAGE}/support`} replace />
+    }
+
     return (
         <section className="section support-page">
             <div className="container support-container">
                 <section className="support-hero-grid">
                     <section className="support-hero" style={{ '--support-bunner': `url(${supportBunner})` }}>
                         <div className="support-hero__content">
-                            <p className="support-eyebrow">Поддержка</p>
-                            <h1>Чем мы можем вам <span className='glow-text'>помочь?</span></h1>
-                            <p>
-                                Обращение сохранится в базе проекта и попадёт в админский раздел поддержки.
-                                Выберите, где удобнее продолжить диалог: по email или в Telegram-боте.
-                            </p>
+                            <p className="support-eyebrow">{t('support.hero.eyebrow')}</p>
+                            <h1>{t('support.hero.title')} <span className='glow-text'>{t('support.hero.titleHighlight')}</span></h1>
+                            <p>{t('support.hero.description')}</p>
                         </div>
                     </section>
 
                     <GlowEffect>
-                        <aside className="glow-effect support-status-panel" aria-label="Время работы поддержки">
-                            <span className="support-eyebrow"><p>Мы на связи</p></span>
+                        <aside className="glow-effect support-status-panel" aria-label={t('support.status.ariaLabel')}>
+                            <span className="support-eyebrow"><p>{t('support.status.eyebrow')}</p></span>
                             <strong>24/7</strong>
-                            <p>Наша команда поддержки старается отвечать как можно быстрее</p>
+                            <p>{t('support.status.text')}</p>
                             <small>
                                 <i className="fas fa-circle-check"></i>
-                                Форма принимает обращения 24/7
+                                {t('support.status.note')}
                             </small>
                         </aside>
                     </GlowEffect>
@@ -233,11 +246,11 @@ const SupportPage = () => {
                 <section className="support-help">
                     <h2>
                         <i className="fas fa-star"></i>
-                        Полезно знать
+                        {t('support.help.title')}
                     </h2>
 
-                    <div className="support-cards" aria-label="Типы обращений">
-                        {supportCards.map((card) => (
+                    <div className="support-cards" aria-label={t('support.help.ariaLabel')}>
+                        {localizedSupportCards.map((card) => (
                             <GlowEffect key={card.title}>
                                 <article className={`glow-effect support-card support-card--${card.tone}`}>
                                     <i className={card.icon}></i>
@@ -254,27 +267,27 @@ const SupportPage = () => {
                 <section className="support-main-grid">
                     <GlowEffect>
                         <section className="glow-effect support-form-card">
-                            <h2 className="support-section-title">Создать обращение</h2>
+                            <h2 className="support-section-title">{t('support.form.title')}</h2>
                             <form className="support-form" onSubmit={handleSupportSubmit}>
                                 <fieldset disabled={isSubmitting} className="support-form__fieldset">
                                     <div>
                                         <label className="support-field">
-                                            <span>Тема обращения</span>
+                                            <span>{t('support.form.category')}</span>
                                             <CustomSelect
                                                 name="category"
                                                 value={category}
-                                                options={feedbackTypes}
+                                                options={feedbackOptions}
                                                 onChange={setCategory}
                                             />
                                         </label>
 
                                         {!isAuth ? (
                                             <label className="support-field">
-                                                <span>Ваш игровой ник</span>
+                                                <span>{t('support.form.nickname')}</span>
                                                 <input
                                                     name="name"
                                                     type="text"
-                                                    placeholder="Введите ваш никнейм"
+                                                    placeholder={t('support.form.nicknamePlaceholder')}
                                                     value={name}
                                                     onChange={(event) => setName(event.target.value)}
                                                     required
@@ -282,13 +295,13 @@ const SupportPage = () => {
                                             </label>
                                         ) : (
                                             <label className="support-field">
-                                                <span>Ваш игровой ник</span>
+                                                <span>{t('support.form.nickname')}</span>
                                                 <input name="name" type="text" value={name} disabled />
                                             </label>
                                         )}
 
                                         <div className="support-field support-field--wide">
-                                            <span>Предпочитаемый канал ответа</span>
+                                            <span>{t('support.form.channel')}</span>
                                             <div className="support-channel-options">
                                                 <label className="support-channel-option" style={{ order: 2 }}>
                                                     <input
@@ -300,7 +313,7 @@ const SupportPage = () => {
                                                     />
                                                     <span>
                                                         <strong><i className="fa-solid fa-envelope"></i> Email</strong>
-                                                        <small>Ответ придёт вам на почту. Дальнейшее общение продолжим там</small>
+                                                        <small>{t('support.form.emailDescription')}</small>
                                                     </span>
                                                 </label>
 
@@ -314,7 +327,7 @@ const SupportPage = () => {
                                                     />
                                                     <span>
                                                         <strong><i className="fa-brands fa-telegram"></i> Telegram</strong>
-                                                        <small>Мы перенаправим вас в Telegram-бота, где вы сможете продолжить переписку.</small>
+                                                        <small>{t('support.form.telegramDescription')}</small>
                                                     </span>
                                                 </label>
                                             </div>
@@ -336,10 +349,10 @@ const SupportPage = () => {
                                     </div>
                                     <div>
                                         <label className="support-field support-field--wide">
-                                            <span>Описание проблемы</span>
+                                            <span>{t('support.form.message')}</span>
                                             <textarea
                                                 name="message"
-                                                placeholder="Опишите ситуацию как можно подробнее... Что произошло? Где? Когда?"
+                                                placeholder={t('support.form.messagePlaceholder')}
                                                 rows="7"
                                                 value={message}
                                                 onChange={(event) => setMessage(event.target.value)}
@@ -348,7 +361,7 @@ const SupportPage = () => {
                                         </label>
 
                                         <label className="support-field support-field--wide">
-                                            <span>Ссылка на матч или скриншот (необязательно)</span>
+                                            <span>{t('support.form.attachment')}</span>
                                             <input
                                                 name="attachmentUrl"
                                                 type="text"
@@ -362,30 +375,30 @@ const SupportPage = () => {
 
                                         <label className="support-consent support-field--wide">
                                             <input type="checkbox" required />
-                                            <span>Я подтверждаю, что ознакомился с правилами проекта и даю согласие на обработку моих данных.</span>
+                                            <span>{t('support.form.consent')}</span>
                                         </label>
 
                                         <button type="submit" className="button support-primary-button" disabled={isSubmitting || !turnstileToken}>
                                             <i className="fas fa-paper-plane"></i>
-                                            {isSubmitting ? 'Отправляем...' : 'Отправить обращение'}
+                                            {isSubmitting ? t('support.form.submitting') : t('support.form.submit')}
                                         </button>
                                     </div>
                                 </fieldset>
 
                                 {successState.channel === 'email' && (
                                     <div className="support-success support-success--email" role="status">
-                                        Спасибо! Ваше сообщение отправлено. Мы ответим вам на email.
+                                        {t('support.success.email')}
                                     </div>
                                 )}
 
                                 {successState.channel === 'telegram' && (
                                     <div className="support-success support-success--telegram" role="status">
-                                        <p>Спасибо! Теперь откройте Telegram, чтобы продолжить диалог с поддержкой.</p>
+                                        <p>{t('support.success.telegram')}</p>
                                         <button type="button" className="button support-telegram-button" onClick={openTelegram}>
                                             <i className="fab fa-telegram-plane"></i>
-                                            Продолжить в Telegram
+                                            {t('support.success.telegramButton')}
                                         </button>
-                                        <small>Если Telegram не открылся автоматически, нажмите кнопку выше.</small>
+                                        <small>{t('support.success.telegramHint')}</small>
                                     </div>
                                 )}
                             </form>
@@ -395,10 +408,10 @@ const SupportPage = () => {
                     <aside className="support-sidebar">
                         <GlowEffect>
                             <section className="glow-effect support-panel">
-                                <h2 className="support-section-title">Частые вопросы</h2>
+                                <h2 className="support-section-title">{t('support.sidebar.faq')}</h2>
                                 <div className="support-faq-list">
-                                    {faqItems.map((item, index) => (
-                                        <div className="support-faq-item" key={item.question}>
+                                    {localizedFaqItems.map((item, index) => (
+                                        <div className="support-faq-item" key={item.key}>
                                             <button
                                                 type="button"
                                                 className="support-faq-link"
@@ -415,7 +428,7 @@ const SupportPage = () => {
                                     ))}
                                 </div>
                                 <Link to="/support/requests" className="support-outline-button">
-                                    Мои обращения
+                                    {t('support.sidebar.myRequests')}
                                     <i className="fas fa-up-right-from-square"></i>
                                 </Link>
                             </section>
@@ -423,9 +436,9 @@ const SupportPage = () => {
 
                         <GlowEffect>
                             <section className="glow-effect support-panel">
-                                <h2 className="support-section-title">Другие способы связи</h2>
+                                <h2 className="support-section-title">{t('support.sidebar.contacts')}</h2>
                                 <div className="support-contact-list">
-                                    {contactItems.map((item) => (
+                                    {localizedContactItems.map((item) => (
                                         <a className="support-contact-link" href={item.href} key={item.title} target={item.href.startsWith('http') ? '_blank' : undefined} rel={item.href.startsWith('http') ? 'noreferrer' : undefined}>
                                             <i className={item.icon}></i>
                                             <span>
