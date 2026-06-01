@@ -10,12 +10,16 @@ import gameControlsEn from '../pages/GameSettings/i18n/en.json'
 import gameControlsRu from '../pages/GameSettings/i18n/ru.json'
 import accountSettingsEn from '../pages/AccountSettings/i18n/en.json'
 import accountSettingsRu from '../pages/AccountSettings/i18n/ru.json'
+import matchesEn from '../pages/Matches/i18n/en.json'
+import matchesRu from '../pages/Matches/i18n/ru.json'
 import profileEn from '../pages/Profile/i18n/en.json'
 import profileRu from '../pages/Profile/i18n/ru.json'
 import ratingEn from '../pages/Rating/i18n/en.json'
 import ratingRu from '../pages/Rating/i18n/ru.json'
 import supportEn from '../pages/Support/i18n/en.json'
 import supportRu from '../pages/Support/i18n/ru.json'
+import supportRequestsEn from '../pages/SupportRequests/i18n/en.json'
+import supportRequestsRu from '../pages/SupportRequests/i18n/ru.json'
 
 export { DEFAULT_LANGUAGE, LANGUAGES, SUPPORTED_LANGUAGES } from './languages'
 
@@ -41,8 +45,8 @@ i18n
     .use(initReactI18next)
     .init({
         resources: {
-            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu } },
-            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn } },
+            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...matchesRu, ...supportRequestsRu } },
+            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...matchesEn, ...supportRequestsEn } },
         },
         lng: getLanguageFromPathname(typeof window !== 'undefined' ? window.location.pathname : ''),
         fallbackLng: DEFAULT_LANGUAGE,

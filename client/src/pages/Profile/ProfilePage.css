@@ -460,6 +460,73 @@
     min-height: 0;
 }
 
+.profile-support-panel {
+    min-height: 260px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    padding: 32px;
+    border: var(--border);
+    border-radius: var(--radius-panel);
+    background: linear-gradient(88deg, rgb(3 8 24), rgb(2 10 31) 61%, rgb(4 17 42 / 0%)), var(--profile-support-bg) center right / auto 100% no-repeat;
+    box-shadow: var(--shadow);
+    backdrop-filter: var(--medium-blur);
+}
+
+.profile-support-panel__content {
+    width: min(100%, 580px);
+    display: grid;
+    gap: 14px;
+}
+
+.profile-support-panel__eyebrow {
+    color: var(--turquoise);
+    font-size: 0.78rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.profile-support-panel h2 {
+    margin: 0;
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: clamp(1.7rem, 3vw, 2.6rem);
+    line-height: 1;
+    text-transform: uppercase;
+    text-shadow: var(--text-shadow);
+}
+
+.profile-support-panel p {
+    max-width: 520px;
+    margin: 0;
+    color: var(--text-color);
+    font-weight: 800;
+    line-height: 1.55;
+}
+
+.profile-support-panel__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.profile-support-panel__primary,
+.profile-support-panel__secondary {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    border-radius: 22px;
+    font-family: var(--font-1);
+    font-weight: 900;
+    text-transform: uppercase;
+    border: var(--border);
+    color: var(--text-active-color);
+    background: rgba(2, 11, 34, 0.54);
+}
+
 .profile-quick-settings-panel {
     min-height: 0;
 }
@@ -707,6 +774,19 @@
         padding: 20px;
     }
 
+    .profile-support-panel {
+        min-height: 0;
+        padding: 24px;
+        background:
+            linear-gradient(180deg, rgba(3, 8, 24, 0.92), rgba(4, 17, 42, 0.72)),
+            var(--profile-support-bg) center / cover no-repeat;
+    }
+
+    .profile-support-panel__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
     .profile-match-row {
         &>div:last-child {
             text-align: left;
@@ -715,8 +795,8 @@
 }
 
 @media (max-width: 390px) {
-        
+
     .profile-hero-stats {
         grid-template-columns: 1fr;
-    } 
+    }
 }

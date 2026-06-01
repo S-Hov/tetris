@@ -1,0 +1,111 @@
+{
+  "matches": {
+    "common": {
+      "noData": "No data",
+      "match": "Match",
+      "win": "Win",
+      "loss": "Loss",
+      "team": "Team",
+      "winner": "Winner",
+      "guest": "Guest",
+      "registered": "Registered",
+      "leftMatch": "Left match",
+      "roomId": "Room ID",
+      "noWinner": "No winner",
+      "noPlayers": "No players found",
+      "noRoom": "No data"
+    },
+    "list": {
+      "loadError": "Could not load match history",
+      "eyebrow": "Match archive",
+      "title": "History of all your games",
+      "description": "Filter results, quickly find the matches you need and open full analytics for every battle.",
+      "found": "matches found",
+      "searchPlaceholder": "Search by opponent or mode",
+      "summaryAria": "Match summary",
+      "summary": {
+        "total": "Total matches",
+        "wins": "Wins",
+        "losses": "Losses",
+        "winRate": "Win Rate",
+        "avgLines": "Avg. lines"
+      },
+      "filters": {
+        "all": "All",
+        "win": "Wins",
+        "loss": "Losses",
+        "allModes": "All modes"
+      },
+      "sectionTitle": "Match list",
+      "updating": "Updating data...",
+      "pageOf": "Page {{page}} of {{total}}",
+      "errorTitle": "Could not load matches",
+      "emptyTitle": "No matches found",
+      "emptyText": "Try changing filters or play new games.",
+      "lines": "{{count}} lines",
+      "level": "Level {{level}}",
+      "matchNumber": "Match #{{id}}",
+      "openDetails": "Open details"
+    },
+    "details": {
+      "loadError": "Could not load match details",
+      "openErrorTitle": "Could not open match",
+      "backToMatches": "Back to matches",
+      "title": "Match #{{id}}",
+      "description": "A detailed battle card with real team, player and event log data.",
+      "winnerTeam": "Team {{team}}",
+      "startedAt": "Match start",
+      "duration": "Duration",
+      "result": "Result",
+      "winnerResult": "Team {{team}} won",
+      "finishedNoWinner": "Match finished without a winner",
+      "scoreTitle": "Final score",
+      "teamName": "Team {{team}}",
+      "playersTitle": "Match players",
+      "headers": {
+        "player": "Player",
+        "team": "Team",
+        "result": "Result",
+        "score": "Score",
+        "lines": "Lines",
+        "level": "Level",
+        "status": "Status"
+      },
+      "timelineTitle": "Match timeline",
+      "emptyEventsTitle": "Match events were not recorded",
+      "emptyEventsText": "The match was saved correctly, but the event log is empty for now."
+    },
+    "duration": {
+      "seconds": "{{count}} sec",
+      "minutes": "{{count}} min",
+      "minutesSeconds": "{{minutes}} min {{seconds}} sec"
+    },
+    "timeline": {
+      "effect": "Effect",
+      "attack": "{{source}} attacks {{target}}",
+      "attackFallback": "Game attack",
+      "abilityUsed": "{{source}} uses an ability",
+      "abilityFallback": "Ability used",
+      "garbageSent": "{{source}} sends garbage lines to {{target}}",
+      "garbageFallback": "Garbage lines sent",
+      "playerJoined": "{{source}} joined the match",
+      "playerJoinedFallback": "Player joined the match",
+      "playerLeft": "{{source}} left the match",
+      "playerLeftFallback": "Player left the match",
+      "eventFallback": "Match event",
+      "effects": {
+        "speed_x2_for_4s": "Speed x2 for 4 sec",
+        "darkness": "Field darkness",
+        "garbage_rain": "Garbage rain",
+        "controls_swap": "Controls swap",
+        "fog_piece": "Hidden next piece",
+        "gravity_lock": "Heavy gravity",
+        "screen_shake": "Screen shake",
+        "random_rotation": "Random rotation",
+        "sticky_walls": "Sticky walls",
+        "delay_input": "Input delay",
+        "invisible_cells": "Invisible cells"
+      }
+    }
+  }
+}

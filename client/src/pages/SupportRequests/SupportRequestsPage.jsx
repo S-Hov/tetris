@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { supportAPI } from '@/shared/api/support'
 import notify from '@/utils/Notifications'
@@ -12,8 +13,10 @@ import {
 import './SupportRequestsPage.css'
 
 const SupportRequestsPage = () => {
+    const { t, i18n } = useTranslation()
     const [requests, setRequests] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const currentLanguage = i18n.language === 'en' ? 'en' : 'ru'
 
     useEffect(() => {
         let ignore = false
@@ -29,7 +32,7 @@ const SupportRequestsPage = () => {
                 }
             } catch (error) {
                 if (!ignore) {
-                    notify(error.message || 'Не удалось загрузить обращения', 'error')
+                    notify(error.message || t('supportRequests.list.loadError'), 'error')
                 }
             } finally {
                 if (!ignore) {
@@ -43,7 +46,7 @@ const SupportRequestsPage = () => {
         return () => {
             ignore = true
         }
-    }, [])
+    }, [t])
 
     return (
         <section className="section support-requests-page">
@@ -52,23 +55,23 @@ const SupportRequestsPage = () => {
                     <GlowEffect>
                         <div className="glow-effect support-requests-head__content">
                             <div>
-                                <p className="support-requests-eyebrow">Поддержка</p>
-                                <h1>Мои обращения</h1>
-                                <p>Здесь собраны обращения, которые вы отправляли из формы поддержки.</p>
+                                <p className="support-requests-eyebrow">{t('supportRequests.list.eyebrow')}</p>
+                                <h1>{t('supportRequests.list.title')}</h1>
+                                <p>{t('supportRequests.list.description')}</p>
                             </div>
                             <div>
-                                <Link to="/support" className="button support-requests-action">
+                                <Link to={`/${currentLanguage}/support`} className="button support-requests-action">
                                     <i className="fas fa-paper-plane"></i>
-                                    Новое обращение
+                                    {t('supportRequests.list.newRequest')}
                                 </Link>
                             </div>
                         </div>
                     </GlowEffect>
                 </section>
 
-                <section className="support-requests-list" aria-label="Список обращений">
+                <section className="support-requests-list" aria-label={t('supportRequests.list.ariaLabel')}>
                     {isLoading ? (
-                        <div className="support-requests-empty">Загружаем обращения...</div>
+                        <div className="support-requests-empty">{t('supportRequests.list.loading')}</div>
                     ) : requests.length > 0 ? (
                         requests.map((request) => (
                             <Link
@@ -80,16 +83,16 @@ const SupportRequestsPage = () => {
                                     <article className="glow-effect support-request-item__content">
                                         <div className="support-request-item__main">
                                             <span className="support-request-item__meta">
-                                                {formatDateTime(request.createdAt)} · {formatChannel(request.preferredChannel)}
+                                                {formatDateTime(request.createdAt, currentLanguage, t)} · {formatChannel(request.preferredChannel, t)}
                                             </span>
-                                            <h2>{request.title || formatCategory(request.category)}</h2>
+                                            <h2>{request.title || formatCategory(request.category, t)}</h2>
                                             <p>{request.message}</p>
                                         </div>
                                         <div className="support-request-item__side">
                                             <span className={`support-request-status support-request-status--${request.status}`}>
-                                                {formatStatus(request.status)}
+                                                {formatStatus(request.status, t)}
                                             </span>
-                                            <small>{formatCategory(request.category)}</small>
+                                            <small>{formatCategory(request.category, t)}</small>
                                         </div>
                                     </article>
                                 </GlowEffect>
@@ -97,7 +100,7 @@ const SupportRequestsPage = () => {
                         ))
                     ) : (
                         <div className="support-requests-empty">
-                            Обращений пока нет. Если заметите ошибку или появится идея, напишите нам.
+                            {t('supportRequests.list.empty')}
                         </div>
                     )}
                 </section>

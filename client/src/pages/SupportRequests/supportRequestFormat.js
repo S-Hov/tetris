@@ -1,15 +1,15 @@
-export const formatDateTime = (value) => {
+export const formatDateTime = (value, lang = 'ru', t) => {
     if (!value) {
-        return 'Дата не указана'
+        return t?.('supportRequests.format.dateFallback') || 'Date is not set'
     }
 
     const date = new Date(value)
 
     if (Number.isNaN(date.getTime())) {
-        return 'Дата не указана'
+        return t?.('supportRequests.format.dateFallback') || 'Date is not set'
     }
 
-    return new Intl.DateTimeFormat('ru-RU', {
+    return new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'ru-RU', {
         day: 'numeric',
         month: 'short',
         year: 'numeric',
@@ -18,33 +18,22 @@ export const formatDateTime = (value) => {
     }).format(date)
 }
 
-export const formatCategory = (category) => {
-    const labels = {
-        bug: 'Баг или ошибка',
-        idea: 'Идея',
-        mode: 'Новый режим',
-        balance: 'Баланс',
-        other: 'Другое',
-    }
-
-    return labels[category] || 'Другое'
+export const formatCategory = (category, t) => {
+    return t?.(`supportRequests.format.categories.${category}`, { defaultValue: '' })
+        || t?.('supportRequests.format.categories.other')
+        || 'Other'
 }
 
-export const formatChannel = (channel) => {
+export const formatChannel = (channel, t) => {
     if (channel === 'telegram') return 'Telegram'
-    if (channel === 'email') return 'Почта'
+    if (channel === 'email') return t?.('supportRequests.format.channels.email') || 'Email'
 
-    return channel || 'Канал не указан'
+    return channel || t?.('supportRequests.format.channels.fallback') || 'Channel is not set'
 }
 
-export const formatStatus = (status) => {
-    const labels = {
-        new: 'Новое',
-        triaged: 'Принято',
-        in_progress: 'В работе',
-        closed: 'Закрыто',
-        spam: 'Отклонено',
-    }
-
-    return labels[status] || status || 'Новое'
+export const formatStatus = (status, t) => {
+    return t?.(`supportRequests.format.statuses.${status}`, { defaultValue: '' })
+        || status
+        || t?.('supportRequests.format.statuses.new')
+        || 'New'
 }

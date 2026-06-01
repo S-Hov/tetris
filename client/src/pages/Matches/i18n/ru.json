@@ -1,0 +1,111 @@
+{
+  "matches": {
+    "common": {
+      "noData": "Нет данных",
+      "match": "Матч",
+      "win": "Победа",
+      "loss": "Поражение",
+      "team": "Команда",
+      "winner": "Победитель",
+      "guest": "Гость",
+      "registered": "Зарегистрирован",
+      "leftMatch": "Покинул матч",
+      "roomId": "Room ID",
+      "noWinner": "Без победителя",
+      "noPlayers": "Игроки не найдены",
+      "noRoom": "Нет данных"
+    },
+    "list": {
+      "loadError": "Не удалось загрузить историю матчей",
+      "eyebrow": "Архив матчей",
+      "title": "История всех ваших игр",
+      "description": "Фильтруйте результаты, быстро находите нужные матчи и открывайте полную аналитику по каждому бою.",
+      "found": "матчей найдено",
+      "searchPlaceholder": "Поиск по сопернику или режиму",
+      "summaryAria": "Сводка по матчам",
+      "summary": {
+        "total": "Всего матчей",
+        "wins": "Победы",
+        "losses": "Поражения",
+        "winRate": "Win Rate",
+        "avgLines": "Ср. линии"
+      },
+      "filters": {
+        "all": "Все",
+        "win": "Победы",
+        "loss": "Поражения",
+        "allModes": "Все режимы"
+      },
+      "sectionTitle": "Список матчей",
+      "updating": "Обновляем данные...",
+      "pageOf": "Страница {{page}} из {{total}}",
+      "errorTitle": "Не удалось загрузить матчи",
+      "emptyTitle": "Матчи не найдены",
+      "emptyText": "Попробуйте сменить фильтры или сыграйте новые игры.",
+      "lines": "{{count}} линий",
+      "level": "Уровень {{level}}",
+      "matchNumber": "Матч #{{id}}",
+      "openDetails": "Открыть детали"
+    },
+    "details": {
+      "loadError": "Не удалось загрузить детали матча",
+      "openErrorTitle": "Не удалось открыть матч",
+      "backToMatches": "Вернуться к матчам",
+      "title": "Матч #{{id}}",
+      "description": "Подробная карточка боя с реальными данными по командам, игрокам и журналу событий.",
+      "winnerTeam": "Команда {{team}}",
+      "startedAt": "Начало матча",
+      "duration": "Длительность",
+      "result": "Итог",
+      "winnerResult": "Победила команда {{team}}",
+      "finishedNoWinner": "Матч завершён без победителя",
+      "scoreTitle": "Итоговый счёт",
+      "teamName": "Команда {{team}}",
+      "playersTitle": "Игроки матча",
+      "headers": {
+        "player": "Игрок",
+        "team": "Команда",
+        "result": "Результат",
+        "score": "Счёт",
+        "lines": "Линии",
+        "level": "Уровень",
+        "status": "Статус"
+      },
+      "timelineTitle": "Хронология матча",
+      "emptyEventsTitle": "События матча не записаны",
+      "emptyEventsText": "Матч сохранён корректно, но журнал игровых событий пока пуст."
+    },
+    "duration": {
+      "seconds": "{{count}} сек",
+      "minutes": "{{count}} мин",
+      "minutesSeconds": "{{minutes}} мин {{seconds}} сек"
+    },
+    "timeline": {
+      "effect": "Эффект",
+      "attack": "{{source}} атакует {{target}}",
+      "attackFallback": "Игровая атака",
+      "abilityUsed": "{{source}} использует способность",
+      "abilityFallback": "Использована способность",
+      "garbageSent": "{{source}} отправляет мусорные линии игроку {{target}}",
+      "garbageFallback": "Отправлены мусорные линии",
+      "playerJoined": "{{source}} присоединился к матчу",
+      "playerJoinedFallback": "Игрок присоединился к матчу",
+      "playerLeft": "{{source}} покинул матч",
+      "playerLeftFallback": "Игрок покинул матч",
+      "eventFallback": "Событие матча",
+      "effects": {
+        "speed_x2_for_4s": "Ускорение x2 на 4 сек",
+        "darkness": "Затемнение поля",
+        "garbage_rain": "Мусорный дождь",
+        "controls_swap": "Смена управления",
+        "fog_piece": "Скрытие следующей фигуры",
+        "gravity_lock": "Тяжелая гравитация",
+        "screen_shake": "Тряска экрана",
+        "random_rotation": "Случайный поворот",
+        "sticky_walls": "Липкие стены",
+        "delay_input": "Задержка ввода",
+        "invisible_cells": "Невидимые клетки"
+      }
+    }
+  }
+}

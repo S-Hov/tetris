@@ -1,4 +1,4 @@
-export const getMatchModeLabel = (mode) => {
+export const getMatchModeLabel = (mode, t) => {
     switch (mode) {
         case 'solo':
             return 'Solo'
@@ -11,7 +11,7 @@ export const getMatchModeLabel = (mode) => {
         case 'royale':
             return 'Royale'
         default:
-            return mode || 'Матч'
+            return mode || t?.('matches.common.match') || 'Match'
     }
 }
 
@@ -32,18 +32,18 @@ export const getMatchModeIcon = (mode) => {
     }
 }
 
-export const formatMatchDate = (value) => {
+export const formatMatchDate = (value, lang = 'ru', t) => {
     if (!value) {
-        return 'Нет данных'
+        return t?.('matches.common.noData') || 'No data'
     }
 
     const date = new Date(value)
 
     if (Number.isNaN(date.getTime())) {
-        return 'Нет данных'
+        return t?.('matches.common.noData') || 'No data'
     }
 
-    return new Intl.DateTimeFormat('ru-RU', {
+    return new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'ru-RU', {
         day: 'numeric',
         month: 'short',
         hour: '2-digit',
@@ -51,18 +51,18 @@ export const formatMatchDate = (value) => {
     }).format(date)
 }
 
-export const formatFullDate = (value) => {
+export const formatFullDate = (value, lang = 'ru', t) => {
     if (!value) {
-        return 'Нет данных'
+        return t?.('matches.common.noData') || 'No data'
     }
 
     const date = new Date(value)
 
     if (Number.isNaN(date.getTime())) {
-        return 'Нет данных'
+        return t?.('matches.common.noData') || 'No data'
     }
 
-    return new Intl.DateTimeFormat('ru-RU', {
+    return new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'ru-RU', {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
@@ -71,70 +71,73 @@ export const formatFullDate = (value) => {
     }).format(date)
 }
 
-export const formatDuration = (seconds) => {
+export const formatDuration = (seconds, t) => {
     const normalizedSeconds = Number.isFinite(seconds) ? Math.max(0, Math.floor(seconds)) : 0
     const minutes = Math.floor(normalizedSeconds / 60)
     const restSeconds = normalizedSeconds % 60
 
     if (minutes === 0) {
-        return `${restSeconds} сек`
+        return t?.('matches.duration.seconds', { count: restSeconds }) || `${restSeconds} sec`
     }
 
     if (restSeconds === 0) {
-        return `${minutes} мин`
+        return t?.('matches.duration.minutes', { count: minutes }) || `${minutes} min`
     }
 
-    return `${minutes} мин ${restSeconds} сек`
+    return t?.('matches.duration.minutesSeconds', { minutes, seconds: restSeconds }) || `${minutes} min ${restSeconds} sec`
 }
 
-export const formatMatchResultLabel = (result) => {
-    return result === 'win' ? 'Победа' : 'Поражение'
+export const formatMatchResultLabel = (result, t) => {
+    return result === 'win'
+        ? (t?.('matches.common.win') || 'Win')
+        : (t?.('matches.common.loss') || 'Loss')
 }
 
 export const getMatchResultClass = (result) => {
     return result === 'win' ? 'win' : 'loss'
 }
 
-export const describeTimelineEvent = (event) => {
+export const describeTimelineEvent = (event, t) => {
     const source = event.sourcePlayer?.nickname
     const target = event.targetPlayer?.nickname
     const payload = event.payload && typeof event.payload === 'object' ? event.payload : null
-    const effectTypeLabel = formatEffectType(payload?.effectType)
+    const effectTypeLabel = formatEffectType(payload?.effectType, t)
 
     if (payload?.message) {
         return effectTypeLabel
-            ? `${payload.message} • Эффект: ${effectTypeLabel}`
+            ? `${payload.message} • ${t?.('matches.timeline.effect') || 'Effect'}: ${effectTypeLabel}`
             : payload.message
     }
 
     switch (event.eventType) {
         case 'attack':
             return source && target
-                ? `${source} атакует ${target}`
-                : 'Игровая атака'
+                ? (t?.('matches.timeline.attack', { source, target }) || `${source} attacks ${target}`)
+                : (t?.('matches.timeline.attackFallback') || 'Game attack')
         case 'ability_used':
             return source
-                ? `${source} использует способность${effectTypeLabel ? ` • Эффект: ${effectTypeLabel}` : ''}`
-                : `Использована способность${effectTypeLabel ? ` • Эффект: ${effectTypeLabel}` : ''}`
+                ? `${t?.('matches.timeline.abilityUsed', { source }) || `${source} uses an ability`}${effectTypeLabel ? ` • ${t?.('matches.timeline.effect') || 'Effect'}: ${effectTypeLabel}` : ''}`
+                : `${t?.('matches.timeline.abilityFallback') || 'Ability used'}${effectTypeLabel ? ` • ${t?.('matches.timeline.effect') || 'Effect'}: ${effectTypeLabel}` : ''}`
         case 'garbage_sent':
             return source && target
-                ? `${source} отправляет мусорные линии игроку ${target}`
-                : 'Отправлены мусорные линии'
+                ? (t?.('matches.timeline.garbageSent', { source, target }) || `${source} sends garbage lines to ${target}`)
+                : (t?.('matches.timeline.garbageFallback') || 'Garbage lines sent')
         case 'player_joined':
             return source
-                ? `${source} присоединился к матчу`
-                : 'Игрок присоединился к матчу'
+                ? (t?.('matches.timeline.playerJoined', { source }) || `${source} joined the match`)
+                : (t?.('matches.timeline.playerJoinedFallback') || 'Player joined the match')
         case 'player_left':
             return source
-                ? `${source} покинул матч`
-                : 'Игрок покинул матч'
+                ? (t?.('matches.timeline.playerLeft', { source }) || `${source} left the match`)
+                : (t?.('matches.timeline.playerLeftFallback') || 'Player left the match')
         default:
             return effectTypeLabel
                 || payload?.effect
                 || payload?.description
                 || payload?.name
                 || event.eventType
-                || 'Событие матча'
+                || t?.('matches.timeline.eventFallback')
+                || 'Match event'
     }
 }
 
@@ -158,37 +161,18 @@ export const getTeamAccentClass = (teamNumber) => {
     return teamNumber === 1 ? 'team-a' : 'team-b'
 }
 
-const formatEffectType = (effectType) => {
+const formatEffectType = (effectType, t) => {
     if (!effectType) {
         return ''
     }
 
-    switch (effectType) {
-        case 'speed_x2_for_4s':
-            return 'Ускорение x2 на 4 сек'
-        case 'darkness':
-            return 'Затемнение поля'
-        case 'garbage_rain':
-            return 'Мусорный дождь'
-        case 'controls_swap':
-            return 'Смена управления'
-        case 'fog_piece':
-            return 'Скрытие следующей фигуры'
-        case 'gravity_lock':
-            return 'Тяжелая гравитация'
-        case 'screen_shake':
-            return 'Тряска экрана'
-        case 'random_rotation':
-            return 'Случайный поворот'
-        case 'sticky_walls':
-            return 'Липкие стены'
-        case 'delay_input':
-            return 'Задержка ввода'
-        case 'invisible_cells':
-            return 'Невидимые клетки'
-        default:
-            return String(effectType)
-                .replaceAll('_', ' ')
-                .trim()
+    const translated = t?.(`matches.timeline.effects.${effectType}`, { defaultValue: '' })
+
+    if (translated) {
+        return translated
     }
+
+    return String(effectType)
+        .replaceAll('_', ' ')
+        .trim()
 }

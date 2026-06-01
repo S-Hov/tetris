@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { matchesAPI } from '@/shared/api/matches'
 import {
@@ -17,9 +18,11 @@ import './MatchDetailsPage.css'
 
 const MatchDetailsPage = () => {
     const { matchId } = useParams()
+    const { t, i18n } = useTranslation()
     const [data, setData] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState('')
+    const currentLanguage = i18n.language === 'en' ? 'en' : 'ru'
 
     useEffect(() => {
         let cancelled = false
@@ -36,7 +39,7 @@ const MatchDetailsPage = () => {
                 }
             } catch (requestError) {
                 if (!cancelled) {
-                    setError(requestError?.message || 'Не удалось загрузить детали матча')
+                    setError(requestError?.message || t('matches.details.loadError'))
                 }
             } finally {
                 if (!cancelled) {
@@ -50,7 +53,7 @@ const MatchDetailsPage = () => {
         return () => {
             cancelled = true
         }
-    }, [matchId])
+    }, [matchId, t])
 
     const winnerTeam = useMemo(
         () => data?.teams?.find((team) => team.isWinner) || null,
@@ -64,9 +67,9 @@ const MatchDetailsPage = () => {
                     <GlowEffect className="match-details-error-shell">
                         <div className="glow-effect match-details-error">
                             <i className="fas fa-triangle-exclamation"></i>
-                            <h1>Не удалось открыть матч</h1>
+                            <h1>{t('matches.details.openErrorTitle')}</h1>
                             <p>{error}</p>
-                            <Link to="/matches" className="button">Вернуться к матчам</Link>
+                            <Link to="/matches" className="button">{t('matches.details.backToMatches')}</Link>
                         </div>
                     </GlowEffect>
                 ) : null}
@@ -87,25 +90,25 @@ const MatchDetailsPage = () => {
                                     <div className="match-details-headline">
                                         <div className="match-details-kicker">
                                             <i className={getMatchModeIcon(data.match.mode)}></i>
-                                            {getMatchModeLabel(data.match.mode)}
+                                            {getMatchModeLabel(data.match.mode, t)}
                                         </div>
-                                        <h1>Матч #{data.match.id}</h1>
-                                        <p>Подробная карточка боя с реальными данными по командам, игрокам и журналу событий.</p>
+                                        <h1>{t('matches.details.title', { id: data.match.id })}</h1>
+                                        <p>{t('matches.details.description')}</p>
                                     </div>
 
                                     <div className={`match-details-result-badge match-details-result-badge--${getMatchResultClass(data.match.result)}`}>
-                                        <span>{formatMatchResultLabel(data.match.result)}</span>
-                                        <strong>{winnerTeam ? `Команда ${winnerTeam.teamNumber}` : 'Без победителя'}</strong>
+                                        <span>{formatMatchResultLabel(data.match.result, t)}</span>
+                                        <strong>{winnerTeam ? t('matches.details.winnerTeam', { team: winnerTeam.teamNumber }) : t('matches.common.noWinner')}</strong>
                                     </div>
                                 </div>
                             </GlowEffect>
                         </section>
 
                         <section className="match-details-meta-grid">
-                            <MetaCard icon="fas fa-calendar" label="Начало матча" value={formatFullDate(data.match.startedAt || data.match.createdAt)} />
-                            <MetaCard icon="fas fa-hourglass-half" label="Длительность" value={formatDuration(data.match.durationSeconds)} />
-                            <MetaCard icon="fas fa-trophy" label="Итог" value={winnerTeam ? `Победила команда ${winnerTeam.teamNumber}` : 'Матч завершён без победителя'} />
-                            <MetaCard icon="fas fa-hashtag" label="Room ID" value={data.match.roomId || 'Нет данных'} />
+                            <MetaCard icon="fas fa-calendar" label={t('matches.details.startedAt')} value={formatFullDate(data.match.startedAt || data.match.createdAt, currentLanguage, t)} />
+                            <MetaCard icon="fas fa-hourglass-half" label={t('matches.details.duration')} value={formatDuration(data.match.durationSeconds, t)} />
+                            <MetaCard icon="fas fa-trophy" label={t('matches.details.result')} value={winnerTeam ? t('matches.details.winnerResult', { team: winnerTeam.teamNumber }) : t('matches.details.finishedNoWinner')} />
+                            <MetaCard icon="fas fa-hashtag" label={t('matches.common.roomId')} value={data.match.roomId || t('matches.common.noRoom')} />
                         </section>
 
                         <section className="match-details-scoreboard">
@@ -113,7 +116,7 @@ const MatchDetailsPage = () => {
                                 <div className="glow-effect match-details-scoreboard-content">
                                     <div className="profile-section-title">
                                         <i className="fas fa-chart-simple"></i>
-                                        Итоговый счёт
+                                        {t('matches.details.scoreTitle')}
                                     </div>
 
                                     <div className="match-details-teams-grid">
@@ -123,12 +126,12 @@ const MatchDetailsPage = () => {
                                                 className={`match-details-team-card match-details-team-card--${getTeamAccentClass(team.teamNumber)}`}
                                             >
                                                 <span className="match-details-team-name">
-                                                    Команда {team.teamNumber}
-                                                    {team.isWinner ? ' • Победитель' : ''}
+                                                    {t('matches.details.teamName', { team: team.teamNumber })}
+                                                    {team.isWinner ? ` • ${t('matches.common.winner')}` : ''}
                                                 </span>
                                                 <strong className="match-details-team-score">{team.teamScore}</strong>
                                                 <p className="match-details-team-players">
-                                                    {team.players.map((player) => player.nickname).join(', ') || 'Игроки не найдены'}
+                                                    {team.players.map((player) => player.nickname).join(', ') || t('matches.common.noPlayers')}
                                                 </p>
                                             </article>
                                         ))}
@@ -142,20 +145,20 @@ const MatchDetailsPage = () => {
                                 <div className="glow-effect match-details-table-content">
                                     <div className="profile-section-title">
                                         <i className="fas fa-user-friends"></i>
-                                        Игроки матча
+                                        {t('matches.details.playersTitle')}
                                     </div>
 
                                     <div className="match-details-table-scroll">
                                         <table className="match-details-table">
                                             <thead>
                                                 <tr>
-                                                    <th>Игрок</th>
-                                                    <th>Команда</th>
-                                                    <th>Результат</th>
-                                                    <th>Счёт</th>
-                                                    <th>Линии</th>
-                                                    <th>Уровень</th>
-                                                    <th>Статус</th>
+                                                    <th>{t('matches.details.headers.player')}</th>
+                                                    <th>{t('matches.details.headers.team')}</th>
+                                                    <th>{t('matches.details.headers.result')}</th>
+                                                    <th>{t('matches.details.headers.score')}</th>
+                                                    <th>{t('matches.details.headers.lines')}</th>
+                                                    <th>{t('matches.details.headers.level')}</th>
+                                                    <th>{t('matches.details.headers.status')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -169,13 +172,13 @@ const MatchDetailsPage = () => {
                                                         </td>
                                                         <td>
                                                             <span className={`match-details-player-result match-details-player-result--${getMatchResultClass(player.result)}`}>
-                                                                {formatMatchResultLabel(player.result)}
+                                                                {formatMatchResultLabel(player.result, t)}
                                                             </span>
                                                         </td>
                                                         <td>{player.score}</td>
                                                         <td>{player.linesCleared}</td>
                                                         <td>{player.levelReached}</td>
-                                                        <td>{player.leftAt ? 'Покинул матч' : (player.isRegistered ? 'Зарегистрирован' : 'Гость')}</td>
+                                                        <td>{player.leftAt ? t('matches.common.leftMatch') : (player.isRegistered ? t('matches.common.registered') : t('matches.common.guest'))}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -190,7 +193,7 @@ const MatchDetailsPage = () => {
                                 <div className="glow-effect match-details-timeline-content">
                                     <div className="profile-section-title">
                                         <i className="fas fa-clock"></i>
-                                        Хронология матча
+                                        {t('matches.details.timelineTitle')}
                                     </div>
 
                                     {data.events.length > 0 ? (
@@ -201,8 +204,8 @@ const MatchDetailsPage = () => {
                                                         <i className={getTimelineIcon(event.eventType)}></i>
                                                     </div>
                                                     <div className="match-details-timeline-body">
-                                                        <strong>{describeTimelineEvent(event)}</strong>
-                                                        <span>{formatFullDate(event.createdAt)}</span>
+                                                        <strong>{describeTimelineEvent(event, t)}</strong>
+                                                        <span>{formatFullDate(event.createdAt, currentLanguage, t)}</span>
                                                     </div>
                                                 </article>
                                             ))}
@@ -210,8 +213,8 @@ const MatchDetailsPage = () => {
                                     ) : (
                                         <div className="match-details-empty">
                                             <i className="fas fa-stream"></i>
-                                            <strong>События матча не записаны</strong>
-                                            <p>Матч сохранён корректно, но журнал игровых событий пока пуст.</p>
+                                            <strong>{t('matches.details.emptyEventsTitle')}</strong>
+                                            <p>{t('matches.details.emptyEventsText')}</p>
                                         </div>
                                     )}
                                 </div>

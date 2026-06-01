@@ -1,0 +1,36 @@
+{
+  "supportRequests": {
+    "list": {
+      "loadError": "Could not load requests",
+      "eyebrow": "Support",
+      "title": "My requests",
+      "description": "Here are the requests you sent through the support form.",
+      "newRequest": "New request",
+      "ariaLabel": "Request list",
+      "loading": "Loading requests...",
+      "empty": "No requests yet. If you notice a bug or have an idea, write to us."
+    },
+    "format": {
+      "dateFallback": "Date is not set",
+      "categories": {
+        "bug": "Bug or error",
+        "idea": "Idea",
+        "mode": "New mode",
+        "balance": "Balance",
+        "other": "Other"
+      },
+      "channels": {
+        "email": "Email",
+        "telegram": "Telegram",
+        "fallback": "Channel is not set"
+      },
+      "statuses": {
+        "new": "New",
+        "triaged": "Triaged",
+        "in_progress": "In progress",
+        "closed": "Closed",
+        "spam": "Rejected"
+      }
+    }
+  }
+}

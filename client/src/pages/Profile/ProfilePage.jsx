@@ -32,6 +32,7 @@ import platinumFrame from './assets/ranks_frames/platinum.png'
 import diamondFrame from './assets/ranks_frames/diamond.png'
 import masterFrame from './assets/ranks_frames/master.png'
 import legendFrame from './assets/ranks_frames/legend.png'
+import supportBanner from '@/pages/Support/assets/bunner.png'
 import './ProfilePage.css'
 
 const SITE_URL = 'https://www.pvp-tetris.online'
@@ -220,6 +221,21 @@ const ProfilePage = () => {
                     </div>
 
                     <GlowEffect className="profile-panel-glow">
+                        <section className="profile-panel profile-account-panel">
+                            <PanelHeader title={t('profile.account.title')} />
+                            <div className="profile-account-grid">
+                                <InfoLine label={t('profile.account.email')} value={profile.email || t('profile.common.notSpecified')} icon="fas fa-envelope" />
+                                <InfoLine label={t('profile.account.lastLogin')} value={profile.lastLogin} icon="fas fa-clock" />
+                                <InfoLine label={t('profile.account.status')} value={formatStatus(profile.status, t)} icon="fas fa-shield-halved" />
+                                <button type="button" className="profile-logout" onClick={handleLogout}>
+                                    <i className="fas fa-right-from-bracket"></i>
+                                    {t('profile.account.logout')}
+                                </button>
+                            </div>
+                        </section>
+                    </GlowEffect>
+                    
+                    <GlowEffect className="profile-panel-glow">
                         <section className="profile-panel profile-quick-settings-panel">
                             <PanelHeader
                                 title={t('profile.settings.title')}
@@ -265,19 +281,25 @@ const ProfilePage = () => {
                     </GlowEffect>
 
                     <GlowEffect className="profile-panel-glow">
-                        <section className="profile-panel profile-account-panel">
-                            <PanelHeader title={t('profile.account.title')} />
-                            <div className="profile-account-grid">
-                                <InfoLine label={t('profile.account.email')} value={profile.email || t('profile.common.notSpecified')} icon="fas fa-envelope" />
-                                <InfoLine label={t('profile.account.lastLogin')} value={profile.lastLogin} icon="fas fa-clock" />
-                                <InfoLine label={t('profile.account.status')} value={formatStatus(profile.status, t)} icon="fas fa-shield-halved" />
-                                <button type="button" className="profile-logout" onClick={handleLogout}>
-                                    <i className="fas fa-right-from-bracket"></i>
-                                    {t('profile.account.logout')}
-                                </button>
+                        <section className="profile-support-panel" style={{ '--profile-support-bg': `url(${supportBanner})` }}>
+                            <div className="profile-support-panel__content">
+                                <span className="profile-support-panel__eyebrow">{t('profile.support.eyebrow')}</span>
+                                <h2>{t('profile.support.title')}</h2>
+                                <p>{t('profile.support.description')}</p>
+                                <div className="profile-support-panel__actions">
+                                    <Link className="button profile-support-panel__primary" to={`/${currentLanguage}/support`}>
+                                        <i className="fas fa-paper-plane"></i>
+                                        {t('profile.support.createRequest')}
+                                    </Link>
+                                    <Link className="button profile-support-panel__secondary" to="/support/requests">
+                                        <i className="fas fa-list-check"></i>
+                                        {t('profile.support.myRequests')}
+                                    </Link>
+                                </div>
                             </div>
                         </section>
                     </GlowEffect>
+
                 </div>
             </div>
         </section>

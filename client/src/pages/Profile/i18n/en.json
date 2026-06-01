@@ -63,6 +63,13 @@
       "language": "Interface language",
       "languageDescription": "Text language in the interface"
     },
+    "support": {
+      "eyebrow": "Need help?",
+      "title": "Questions, bugs and ideas",
+      "description": "If you found a problem, want to suggest an improvement, or still have a question about the game, send a support request. We will keep the conversation history so you can return to it later.",
+      "createRequest": "Create request",
+      "myRequests": "My requests"
+    },
     "account": {
       "title": "Account",
       "email": "Email",

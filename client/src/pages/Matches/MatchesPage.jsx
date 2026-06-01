@@ -1,5 +1,6 @@
 import { startTransition, useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import ProfileSideNav from '@/widgets/ProfileSideNav'
 import { matchesAPI } from '@/shared/api/matches'
@@ -28,13 +29,13 @@ const EMPTY_PAGINATION = {
 }
 
 const RESULT_FILTERS = [
-    { key: 'all', label: 'Все' },
-    { key: 'win', label: 'Победы' },
-    { key: 'loss', label: 'Поражения' },
+    { key: 'all', labelKey: 'matches.list.filters.all' },
+    { key: 'win', labelKey: 'matches.list.filters.win' },
+    { key: 'loss', labelKey: 'matches.list.filters.loss' },
 ]
 
 const MODE_FILTERS = [
-    { key: 'all', label: 'Все режимы' },
+    { key: 'all', labelKey: 'matches.list.filters.allModes' },
     { key: 'solo', label: 'Solo' },
     { key: '1v1', label: '1v1' },
     { key: '2v2', label: '2v2' },
@@ -43,6 +44,7 @@ const MODE_FILTERS = [
 ]
 
 const MatchesPage = () => {
+    const { t, i18n } = useTranslation()
     const [searchParams, setSearchParams] = useSearchParams()
     const [resultFilter, setResultFilter] = useState(() => searchParams.get('result') || 'all')
     const [modeFilter, setModeFilter] = useState(() => searchParams.get('mode') || 'all')
@@ -57,6 +59,7 @@ const MatchesPage = () => {
     })
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState('')
+    const currentLanguage = i18n.language === 'en' ? 'en' : 'ru'
 
     useEffect(() => {
         const nextParams = new URLSearchParams()
@@ -105,7 +108,7 @@ const MatchesPage = () => {
                 }
             } catch (requestError) {
                 if (!cancelled) {
-                    setError(requestError?.message || 'Не удалось загрузить историю матчей')
+                    setError(requestError?.message || t('matches.list.loadError'))
                 }
             } finally {
                 if (!cancelled) {
@@ -119,7 +122,7 @@ const MatchesPage = () => {
         return () => {
             cancelled = true
         }
-    }, [deferredSearch, modeFilter, page, resultFilter])
+    }, [deferredSearch, modeFilter, page, resultFilter, t])
 
     const pageNumbers = useMemo(() => {
         const totalPages = matchesData.pagination.totalPages
@@ -164,14 +167,14 @@ const MatchesPage = () => {
                     <GlowEffect>
                         <div className="glow-effect matches-hero-content">
                             <div>
-                                <p className="matches-eyebrow">Архив матчей</p>
-                                <h1>История всех ваших игр</h1>
-                                <p>Фильтруйте результаты, быстро находите нужные матчи и открывайте полную аналитику по каждому бою.</p>
+                                <p className="matches-eyebrow">{t('matches.list.eyebrow')}</p>
+                                <h1>{t('matches.list.title')}</h1>
+                                <p>{t('matches.list.description')}</p>
                             </div>
                             <div className="matches-hero-badge">
                                 <i className="fas fa-history"></i>
                                 <strong>{matchesData.pagination.totalCount}</strong>
-                                <span>матчей найдено</span>
+                                <span>{t('matches.list.found')}</span>
                             </div>
                         </div>
                     </GlowEffect>
@@ -188,7 +191,7 @@ const MatchesPage = () => {
                                         className={`matches-filter-button ${resultFilter === filter.key ? 'matches-filter-button--active' : ''}`}
                                         onClick={() => handleResultFilterChange(filter.key)}
                                     >
-                                        {filter.label}
+                                        {t(filter.labelKey)}
                                     </button>
                                 ))}
                             </div>
@@ -201,7 +204,7 @@ const MatchesPage = () => {
                                         className={`matches-filter-button ${modeFilter === filter.key ? 'matches-filter-button--active' : ''}`}
                                         onClick={() => handleModeFilterChange(filter.key)}
                                     >
-                                        {filter.label}
+                                        {filter.labelKey ? t(filter.labelKey) : filter.label}
                                     </button>
                                 ))}
                             </div>
@@ -212,19 +215,19 @@ const MatchesPage = () => {
                                     type="search"
                                     value={searchInput}
                                     onChange={handleSearchChange}
-                                    placeholder="Поиск по сопернику или режиму"
+                                    placeholder={t('matches.list.searchPlaceholder')}
                                 />
                             </label>
                         </div>
                     </GlowEffect>
                     </section>
 
-                    <section className="matches-summary" aria-label="Сводка по матчам">
-                    <StatCard label="Всего матчей" value={matchesData.summary.totalMatches} accent="cyan" />
-                    <StatCard label="Победы" value={matchesData.summary.wins} accent="green" />
-                    <StatCard label="Поражения" value={matchesData.summary.losses} accent="red" />
-                    <StatCard label="Win Rate" value={`${matchesData.summary.winRate}%`} accent="yellow" />
-                    <StatCard label="Ср. линии" value={matchesData.summary.avgLines} accent="cyan" />
+                    <section className="matches-summary" aria-label={t('matches.list.summaryAria')}>
+                    <StatCard label={t('matches.list.summary.total')} value={matchesData.summary.totalMatches} accent="cyan" />
+                    <StatCard label={t('matches.list.summary.wins')} value={matchesData.summary.wins} accent="green" />
+                    <StatCard label={t('matches.list.summary.losses')} value={matchesData.summary.losses} accent="red" />
+                    <StatCard label={t('matches.list.summary.winRate')} value={`${matchesData.summary.winRate}%`} accent="yellow" />
+                    <StatCard label={t('matches.list.summary.avgLines')} value={matchesData.summary.avgLines} accent="cyan" />
                     </section>
 
                     <section className="matches-list-section">
@@ -233,17 +236,22 @@ const MatchesPage = () => {
                             <div className="matches-list-header">
                                 <div className="profile-section-title">
                                     <i className="fas fa-gamepad"></i>
-                                    Список матчей
+                                    {t('matches.list.sectionTitle')}
                                 </div>
                                 <span className="matches-list-note">
-                                    {isLoading ? 'Обновляем данные...' : `Страница ${matchesData.pagination.page} из ${Math.max(matchesData.pagination.totalPages, 1)}`}
+                                    {isLoading
+                                        ? t('matches.list.updating')
+                                        : t('matches.list.pageOf', {
+                                            page: matchesData.pagination.page,
+                                            total: Math.max(matchesData.pagination.totalPages, 1),
+                                        })}
                                 </span>
                             </div>
 
                             {error ? (
                                 <div className="matches-empty-state">
                                     <i className="fas fa-triangle-exclamation"></i>
-                                    <strong>Не удалось загрузить матчи</strong>
+                                    <strong>{t('matches.list.errorTitle')}</strong>
                                     <p>{error}</p>
                                 </div>
                             ) : null}
@@ -259,8 +267,8 @@ const MatchesPage = () => {
                             {!error && !isLoading && matchesData.matches.length === 0 ? (
                                 <div className="matches-empty-state">
                                     <i className="fas fa-folder-open"></i>
-                                    <strong>Матчи не найдены</strong>
-                                    <p>Попробуйте сменить фильтры или сыграйте новые игры.</p>
+                                    <strong>{t('matches.list.emptyTitle')}</strong>
+                                    <p>{t('matches.list.emptyText')}</p>
                                 </div>
                             ) : null}
 
@@ -271,10 +279,10 @@ const MatchesPage = () => {
                                             <div className="matches-item-primary">
                                                 <span className="matches-mode">
                                                     <i className={getMatchModeIcon(match.mode)}></i>
-                                                    {getMatchModeLabel(match.mode)}
+                                                    {getMatchModeLabel(match.mode, t)}
                                                 </span>
                                                 <strong className={`matches-result matches-result--${getMatchResultClass(match.result)}`}>
-                                                    {formatMatchResultLabel(match.result)}
+                                                    {formatMatchResultLabel(match.result, t)}
                                                 </strong>
                                             </div>
 
@@ -286,15 +294,15 @@ const MatchesPage = () => {
                                                     {match.score} : {match.opponentTeamScore}
                                                 </strong>
                                                 <div className="matches-metrics">
-                                                    <span><i className="fas fa-layer-group"></i>{match.linesCleared} линий</span>
-                                                    <span><i className="fas fa-signal"></i>Уровень {match.levelReached}</span>
-                                                    <span><i className="fas fa-hashtag"></i>Матч #{match.id}</span>
+                                                    <span><i className="fas fa-layer-group"></i>{t('matches.list.lines', { count: match.linesCleared })}</span>
+                                                    <span><i className="fas fa-signal"></i>{t('matches.list.level', { level: match.levelReached })}</span>
+                                                    <span><i className="fas fa-hashtag"></i>{t('matches.list.matchNumber', { id: match.id })}</span>
                                                 </div>
                                             </div>
 
                                             <div className="matches-item-meta">
-                                                <span>{formatMatchDate(match.playedAt)}</span>
-                                                <span className="matches-item-link">Открыть детали</span>
+                                                <span>{formatMatchDate(match.playedAt, currentLanguage, t)}</span>
+                                                <span className="matches-item-link">{t('matches.list.openDetails')}</span>
                                             </div>
                                         </Link>
                                     ))}
