@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { leaderboardAPI } from '@/shared/api/leaderboard'
+import seasonBg from './assets/backgrounds/season_bg.png'
+import goldBg from './assets/leaders_bg/gold.png'
+import silverBg from './assets/leaders_bg/silver.png'
+import bronzeBg from './assets/leaders_bg/bronze.png'
 import './RatingPage.css'
 
 const sortOptions = [
@@ -11,6 +15,12 @@ const sortOptions = [
     { key: 'mmr', label: 'MMR', icon: 'fas fa-wave-square' },
     { key: 'bestSolo', label: 'Solo рекорд', icon: 'fas fa-star' },
 ]
+
+const podiumConfig = {
+    1: { bg: goldBg, label: 'Первое место', accent: 'gold' },
+    2: { bg: silverBg, label: 'Второе место', accent: 'silver' },
+    3: { bg: bronzeBg, label: 'Третье место', accent: 'bronze' },
+}
 
 const RatingPage = () => {
     const [sort, setSort] = useState('rating')
@@ -51,8 +61,14 @@ const RatingPage = () => {
     }, [sort])
 
     const topPlayers = useMemo(() => players.slice(0, 3), [players])
+    const podiumPlayers = useMemo(() => {
+        const byRank = new Map(topPlayers.map((player) => [player.rank, player]))
+
+        return [byRank.get(2), byRank.get(1), byRank.get(3)].filter(Boolean)
+    }, [topPlayers])
+    const leader = topPlayers[0]
     const totalGames = useMemo(
-        () => players.reduce((sum, player) => sum + player.totalGames, 0),
+        () => players.reduce((sum, player) => sum + Number(player.totalGames || 0), 0),
         [players]
     )
 
@@ -61,28 +77,30 @@ const RatingPage = () => {
             <div className="container rating-container">
                 <section className="rating-hero">
                     <GlowEffect>
-                        <div className="glow-effect rating-hero-content">
-                            <div className="rating-title-block">
-                                <p className="rating-eyebrow">PvP Tetris</p>
-                                <h1>
-                                    <i className="fas fa-trophy"></i>
-                                    Мировой рейтинг
-                                </h1>
-                                <p>Таблица сильнейших игроков по ранговым очкам из базы данных.</p>
-                            </div>
+                        <div className="rating-hero-main">
+                            <span className="rating-eyebrow">PvP Tetris</span>
 
-                            <div className="rating-summary">
-                                <span>
-                                    <strong>{players.length}</strong>
-                                    игроков
-                                </span>
-                                <span>
-                                    <strong>{formatNumber(totalGames)}</strong>
-                                    матчей
-                                </span>
+                            <div className='rating-hero-header'>
+                                <h1 className='glow-text'>Зал легенд</h1>
+                                <div className="rating-summary" aria-label="Статистика рейтинга">
+                                    <span>
+                                        <strong>{formatNumber(players.length)}</strong>
+                                        игроков онлайн
+                                    </span>
+                                    <span>
+                                        <strong>{formatNumber(totalGames)}</strong>
+                                        матчей сыграно
+                                    </span>
+                                </div>
                             </div>
+                            <p>Лучшие игроки арены. Докажи, что ты достоин быть среди них.</p>
                         </div>
                     </GlowEffect>
+
+
+                    <aside className="rating-season" style={{ backgroundImage: `url(${seasonBg})` }}>
+                        <span>Сезон 1</span>
+                    </aside>
                 </section>
 
                 <section className="rating-controls-card">
@@ -90,12 +108,8 @@ const RatingPage = () => {
                         <div className="glow-effect rating-controls">
                             <div className="rating-control-group" aria-label="Система рейтинга">
                                 <span className="rating-chip rating-chip--active">
-                                    <i className="fas fa-medal"></i>
+                                    <i className="fas fa-trophy"></i>
                                     Ranked season
-                                </span>
-                                <span className="rating-chip">
-                                    <i className="fas fa-lock"></i>
-                                    MMR скрыт в матчмейкинге
                                 </span>
                             </div>
 
@@ -120,115 +134,186 @@ const RatingPage = () => {
                     </GlowEffect>
                 </section>
 
-                {topPlayers.length > 0 && (
+                {podiumPlayers.length > 0 && (
                     <section className="rating-podium" aria-label="Топ игроки">
-                        {topPlayers.map((player) => (
-                            <article key={player.id} className={`rating-podium-card rating-podium-card--rank-${player.rank}`}>
-                                <GlowEffect>
-                                    <div className="glow-effect">
-                                        <RankTierImage tier={player.rankTier} className="rating-rank-tier-image rating-rank-tier-image--podium" />
-                                        <span className="rating-podium-rank">{getRankIcon(player.rank)}</span>
-                                        <RatingAvatar player={player} />
-                                        <h2>{player.username}</h2>
-                                        <strong>{formatNumber(player.rating)}</strong>
-                                        <small>{player.rankTier?.label || 'Bronze'} | {player.wins} побед | {player.winRate}%</small>
-                                    </div>
-                                </GlowEffect>
-                            </article>
+                        {podiumPlayers.map((player) => (
+                            <PodiumCard key={player.id} player={player} />
                         ))}
                     </section>
                 )}
 
-                <section className="rating-board">
-                    <GlowEffect>
-                        <div className="glow-effect rating-board-inner">
-                            <div className="rating-board-header">
-                                <div>
-                                    <h2>Таблица лидеров</h2>
-                                    <p>Глобальный рейтинг | {getSortLabel(sort)}</p>
+                <div className="rating-content-grid">
+                    <section className="rating-board">
+                        <GlowEffect>
+                            <div className="glow-effect rating-board-inner">
+                                <div className="rating-board-header">
+                                    <div>
+                                        <h2>Таблица лидеров</h2>
+                                        <p>Глобальный рейтинг | {getSortLabel(sort)}</p>
+                                    </div>
+                                    <span>
+                                        <i className="fas fa-sync-alt"></i>
+                                        Живые данные
+                                    </span>
                                 </div>
-                                <span>
-                                    <i className="fas fa-sync-alt"></i>
-                                    Живые данные
-                                </span>
-                            </div>
 
-                            {isLoading ? (
-                                <div className="rating-state">
-                                    <i className="fas fa-sync-alt"></i>
-                                    Загружаем рейтинг...
-                                </div>
-                            ) : error ? (
-                                <div className="rating-state rating-state--error">
-                                    <i className="fas fa-exclamation-triangle"></i>
-                                    {error}
-                                </div>
-                            ) : players.length === 0 ? (
-                                <div className="rating-state">
-                                    <i className="fas fa-database"></i>
-                                    Пока нет игроков для выбранного периода
-                                </div>
-                            ) : (
-                                <div className="rating-table-wrap">
-                                    <table className="rating-table">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Игрок</th>
-                                                <th>Рейтинг</th>
-                                                <th>Победы</th>
-                                                <th>Win rate</th>
-                                                <th>Игры</th>
-                                                <th>Ранг</th>
-                                                <th>Solo рекорд</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {players.map((player) => (
-                                                <tr key={player.id}>
-                                                    <td>
-                                                        <span className={`rating-rank rating-rank--${player.rank}`}>
-                                                            {getRankIcon(player.rank)}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <div className="rating-player">
-                                                            <RatingAvatar player={player} small />
-                                                            <span>
-                                                                <strong>{player.username}</strong>
-                                                                <small>MMR {player.mmr}</small>
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="rating-value">{formatNumber(player.rating)}</td>
-                                                    <td>{player.wins}</td>
-                                                    <td>{player.winRate}%</td>
-                                                    <td>{player.totalGames}</td>
-                                                    <td>
-                                                        <span className="rating-rank-tier">
-                                                            <RankTierImage tier={player.rankTier} className="rating-rank-tier-image" />
-                                                            {player.rankTier?.label || 'Bronze'}
-                                                        </span>
-                                                    </td>
-                                                    <td>{formatNumber(player.bestSoloScore)}</td>
+                                {isLoading ? (
+                                    <div className="rating-state">
+                                        <i className="fas fa-sync-alt"></i>
+                                        Загружаем рейтинг...
+                                    </div>
+                                ) : error ? (
+                                    <div className="rating-state rating-state--error">
+                                        <i className="fas fa-exclamation-triangle"></i>
+                                        {error}
+                                    </div>
+                                ) : players.length === 0 ? (
+                                    <div className="rating-state">
+                                        <i className="fas fa-database"></i>
+                                        Пока нет игроков для выбранной сортировки
+                                    </div>
+                                ) : (
+                                    <div className="rating-table-wrap">
+                                        <table className="rating-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Игрок</th>
+                                                    <th>Рейтинг</th>
+                                                    <th>Победы</th>
+                                                    <th>Win rate</th>
+                                                    <th>Игры</th>
+                                                    <th>Ранг</th>
+                                                    <th>Solo рекорд</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
+                                            </thead>
+                                            <tbody>
+                                                {players.map((player) => (
+                                                    <tr key={player.id}>
+                                                        <td>
+                                                            <span className={`rating-rank rating-rank--${player.rank}`}>
+                                                                {getRankIcon(player.rank)}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <div className="rating-player">
+                                                                <RatingAvatar player={player} small />
+                                                                <span>
+                                                                    <strong>{player.username}</strong>
+                                                                    <small>MMR {formatNumber(player.mmr)}</small>
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="rating-value">{formatNumber(player.rating)}</td>
+                                                        <td>{formatNumber(player.wins)}</td>
+                                                        <td>{player.winRate}%</td>
+                                                        <td>{formatNumber(player.totalGames)}</td>
+                                                        <td>
+                                                            <span className="rating-rank-tier">
+                                                                <RankTierImage tier={player.rankTier} className="rating-rank-tier-image" />
+                                                                {player.rankTier?.label || 'Bronze'}
+                                                            </span>
+                                                        </td>
+                                                        <td>{formatNumber(player.bestSoloScore)}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
 
-                            <footer className="rating-update-info">
-                                <i className="fas fa-shield-alt"></i>
-                                Leaderboard сортируется по rank_points; ranked влияет на рейтинг и MMR, casual/private только на историю.
-                            </footer>
-                        </div>
-                    </GlowEffect>
-                </section>
+                                <footer className="rating-update-info">
+                                    <i className="fas fa-shield-alt"></i>
+                                    Рейтинг обновляется автоматически по данным матчей.
+                                </footer>
+                            </div>
+                        </GlowEffect>
+                    </section>
+
+                    <aside className="rating-sidebar" aria-label="Данные первого места">
+                        <LeaderPanel player={leader} />
+                    </aside>
+                </div>
             </div>
         </section>
     )
 }
+
+const PodiumCard = ({ player }) => {
+    const config = podiumConfig[player.rank] || podiumConfig[3]
+
+    return (
+        <article
+            className={`rating-podium-card rating-podium-card--rank-${player.rank} rating-podium-card--${config.accent}`}
+            style={{ backgroundImage: `url(${config.bg})` }}
+        >
+            {/* <span className="rating-podium-rank">{getRankIcon(player.rank)}</span> */}
+            <RatingAvatar player={player} />
+            <h2>{player.username}</h2>
+            <span className="rating-player-country">🇷🇺</span>
+            <span className="rating-tier-pill">
+                <RankTierImage tier={player.rankTier} className="rating-rank-tier-image rating-rank-tier-image--pill" />
+                {player.rankTier?.label || 'Bronze'}
+            </span>
+            <strong>{formatNumber(player.rating)} <small>MMR</small></strong>
+            <div className="rating-podium-stats">
+                <span>
+                    <small>Win rate</small>
+                    {player.winRate}%
+                </span>
+                <span>
+                    <small>Побед</small>
+                    {formatNumber(player.wins)}
+                </span>
+                <span>
+                    <small>Игры</small>
+                    {formatNumber(player.totalGames)}
+                </span>
+            </div>
+        </article>
+    )
+}
+
+const LeaderPanel = ({ player }) => {
+    if (!player) {
+        return (
+            <div className="rating-leader-card rating-leader-card--empty">
+                <h2>Первое место</h2>
+                <p>Данные появятся после загрузки рейтинга.</p>
+            </div>
+        )
+    }
+
+    return (
+        <>
+            <div className="rating-leader-card">
+                <h2>Игрок Сезона</h2>
+                <RatingAvatar player={player} />
+                <strong>{player.username} <span>🇷🇺</span></strong>
+                <span className="rating-tier-pill">
+                    <RankTierImage tier={player.rankTier} className="rating-rank-tier-image rating-rank-tier-image--pill" />
+                    {player.rankTier?.label || 'Bronze'}
+                </span>
+                <b>{formatNumber(player.rating)} <small>MMR</small></b>
+            </div>
+
+            <div className="rating-leader-stats">
+                <h2>Рекорды сезона</h2>
+                <LeaderStat label="Максимальный MMR" value={formatNumber(player.mmr)} />
+                <LeaderStat label="Лучшие победы" value={formatNumber(player.wins)} />
+                <LeaderStat label="Лучший Win Rate" value={`${player.winRate}%`} />
+                <LeaderStat label="Solo рекорд" value={formatNumber(player.bestSoloScore)} />
+            </div>
+        </>
+    )
+}
+
+const LeaderStat = ({ label, value }) => (
+    <div className="rating-leader-stat">
+        <span>{label}</span>
+        <strong>{value}</strong>
+    </div>
+)
 
 const formatNumber = (value) => new Intl.NumberFormat('ru-RU').format(Number(value) || 0)
 
@@ -255,7 +340,7 @@ const renderAvatarMedia = (src, alt) => {
 
 const RatingAvatar = ({ player, small = false }) => (
     <span className={`rating-avatar ${small ? 'rating-avatar--small' : ''}`}>
-        {player.avatarUrl ? renderAvatarMedia(getAssetUrl(player.avatarUrl), player.username) : player.avatar}
+        {player.avatarUrl ? renderAvatarMedia(getAssetUrl(player.avatarUrl), player.username) : getAvatarFallback(player.username)}
     </span>
 )
 
@@ -272,6 +357,8 @@ const RankTierImage = ({ tier, className = '' }) => {
         </span>
     )
 }
+
+const getAvatarFallback = (username = '') => username.trim().slice(0, 1).toUpperCase() || '?'
 
 const getRankIcon = (rank) => {
     if (rank === 1) return '♛ 1'

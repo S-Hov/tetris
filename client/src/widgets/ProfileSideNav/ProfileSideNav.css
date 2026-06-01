@@ -71,6 +71,7 @@
             transform: translateY(-2px);
             filter: brightness(1.08);
             outline: none;
+            border: 1px dashed var(--turquoise);
 
             &::before {
                 opacity: 1;
