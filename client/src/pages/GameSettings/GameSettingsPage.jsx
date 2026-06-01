@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 import AppSwitch from '@/shared/ui/AppSwitch'
 import GlowEffect from '@/shared/ui/GlowEffect'
@@ -9,6 +10,7 @@ import { useTheme } from '@/shared/hooks/useTheme.js'
 import './GameSettingsPage.css'
 
 const GameSettingsPage = () => {
+    const { t } = useTranslation()
     const { isGlowEffectEnabled, toggleGlowEffect } = useGlowEffect()
     const { isDarkTheme, toggleTheme } = useTheme()
 
@@ -17,8 +19,8 @@ const GameSettingsPage = () => {
             <div className="container game-settings-page__container">
                 <div className="game-settings-page__topbar">
                     <div>
-                        <p className="game-settings-page__eyebrow">PVP Tetris</p>
-                        <h1>Настройки игры</h1>
+                        <p className="game-settings-page__eyebrow">{t('gameControls.common.eyebrow')}</p>
+                        <h1>{t('gameControls.settings.title')}</h1>
                     </div>
                 </div>
 
@@ -26,20 +28,20 @@ const GameSettingsPage = () => {
                     <section className="game-settings-page__section">
                         <div className="game-settings-page__section-head">
                             <i className="fas fa-keyboard"></i>
-                            <h2>Настройки управления</h2>
+                            <h2>{t('gameControls.settings.controlsTitle')}</h2>
                         </div>
 
                         <div className="game-settings-page__cards">
                             <SettingsCard
                                 icon="fas fa-desktop"
-                                title="Управление для ПК"
-                                description="Переназначение клавиш для движения, вращения, падения и паузы."
+                                title={t('gameControls.settings.pcTitle')}
+                                description={t('gameControls.settings.pcDescription')}
                                 to="/game/controls/pc"
                             />
                             <SettingsCard
                                 icon="fas fa-mobile-screen-button"
-                                title="Управление для мобильных"
-                                description="Жесты, чувствительность свайпов и назначение действий."
+                                title={t('gameControls.settings.mobileTitle')}
+                                description={t('gameControls.settings.mobileDescription')}
                                 to="/game/controls/mobile"
                             />
                         </div>
@@ -50,14 +52,14 @@ const GameSettingsPage = () => {
                     <section className="game-settings-page__section">
                         <div className="game-settings-page__section-head">
                             <i className="fas fa-sliders"></i>
-                            <h2>Общие</h2>
+                            <h2>{t('gameControls.settings.generalTitle')}</h2>
                         </div>
 
                         <div className="glow-effect game-settings-page__general">
                             <div className="game-settings-page__toggle game-settings-page__language-setting">
                                 <span>
-                                    <strong>Язык интерфейса</strong>
-                                    <small>Переключает язык текста в интерфейсе</small>
+                                    <strong>{t('gameControls.settings.languageTitle')}</strong>
+                                    <small>{t('gameControls.settings.languageDescription')}</small>
                                 </span>
                                 <InterfaceLanguageSelect className="game-settings-page__language-select" />
                             </div>
@@ -68,8 +70,8 @@ const GameSettingsPage = () => {
                                 onClick={toggleTheme}
                             >
                                 <span>
-                                    <strong>Тёмная тема</strong>
-                                    <small>Переключает цветовую схему интерфейса</small>
+                                    <strong>{t('gameControls.settings.darkThemeTitle')}</strong>
+                                    <small>{t('gameControls.settings.darkThemeDescription')}</small>
                                 </span>
                                 <AppSwitch checked={isDarkTheme} />
                             </button>
@@ -80,8 +82,8 @@ const GameSettingsPage = () => {
                                 onClick={toggleGlowEffect}
                             >
                                 <span>
-                                    <strong>Подсветка курсора</strong>
-                                    <small>Включает свечение элементов при движении курсора</small>
+                                    <strong>{t('gameControls.settings.glowTitle')}</strong>
+                                    <small>{t('gameControls.settings.glowDescription')}</small>
                                 </span>
                                 <AppSwitch checked={isGlowEffectEnabled} />
                             </button>

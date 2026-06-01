@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 import CustomSelect from '@/shared/ui/CustomSelect'
 import {
     DEFAULT_MOBILE_CONTROL_SETTINGS,
     MOBILE_CONTROL_METHODS,
-    TOUCH_ACTION_LABELS,
     TOUCH_ACTIONS,
-    TOUCH_GESTURE_LABELS,
     TOUCH_GESTURES,
     loadMobileControlSettings,
     saveMobileControlSettings,
@@ -15,25 +14,6 @@ import {
 
 import './MobileControlsPage.css'
 import GlowEffect from '@/shared/ui/GlowEffect'
-
-const methodOptions = [
-    {
-        value: MOBILE_CONTROL_METHODS.GESTURES,
-        label: 'Жесты',
-        icon: 'fas fa-hand-pointer',
-    },
-    {
-        value: MOBILE_CONTROL_METHODS.BUTTONS,
-        label: 'Кнопки',
-        icon: 'fas fa-gamepad',
-        description: 'Кнопочное управление добавим позже.',
-    },
-]
-
-const actionOptions = Object.values(TOUCH_ACTIONS).map((action) => ({
-    value: action,
-    label: TOUCH_ACTION_LABELS[action],
-}))
 
 const gestureOrder = [
     TOUCH_GESTURES.SWIPE_LEFT,
@@ -77,8 +57,26 @@ const sensitivityFields = [
 
 const MobileControlsPage = () => {
     const navigate = useNavigate()
+    const { t } = useTranslation()
     const [settings, setSettings] = useState(() => loadMobileControlSettings())
     const isGestures = settings.method === MOBILE_CONTROL_METHODS.GESTURES
+    const methodOptions = [
+        {
+            value: MOBILE_CONTROL_METHODS.GESTURES,
+            label: t('gameControls.mobile.gestures'),
+            icon: 'fas fa-hand-pointer',
+        },
+        {
+            value: MOBILE_CONTROL_METHODS.BUTTONS,
+            label: t('gameControls.mobile.buttons'),
+            icon: 'fas fa-gamepad',
+            description: t('gameControls.mobile.buttonsDescription'),
+        },
+    ]
+    const actionOptions = Object.values(TOUCH_ACTIONS).map((action) => ({
+        value: action,
+        label: t(`gameControls.mobile.actions.${action}`),
+    }))
 
     const updateSettings = (nextSettings) => {
         setSettings(saveMobileControlSettings(nextSettings))
@@ -122,24 +120,24 @@ const MobileControlsPage = () => {
                     <button
                         className="mobile-controls-page__back"
                         type="button"
-                        aria-label="Назад"
+                        aria-label={t('gameControls.common.back')}
                         onClick={() => navigate(-1)}
                     >
                         <i className="fas fa-arrow-left"></i>
                     </button>
                     <div>
-                        <span>Настройки управления</span>
-                        <h1>Управление для мобильных</h1>
+                        <span>{t('gameControls.common.controlsEyebrow')}</span>
+                        <h1>{t('gameControls.mobile.title')}</h1>
                     </div>
                     <button className="mobile-controls-page__reset" type="button" onClick={handleReset}>
-                        Сбросить
+                        {t('gameControls.mobile.reset')}
                     </button>
                 </header>
 
                 <div className="mobile-controls-page__grid">
                     <GlowEffect className="mobile-controls-page__panel__glow-effect">
                         <section className="mobile-controls-page__panel">
-                            <h2>Способ управления</h2>
+                            <h2>{t('gameControls.mobile.methodTitle')}</h2>
                             <CustomSelect
                                 value={settings.method}
                                 options={methodOptions}
@@ -147,7 +145,7 @@ const MobileControlsPage = () => {
                             />
                             {settings.method === MOBILE_CONTROL_METHODS.BUTTONS ? (
                                 <p className="mobile-controls-page__note">
-                                    Режим кнопок уже сохраняется, но сами игровые кнопки пока не добавлены.
+                                    {t('gameControls.mobile.buttonsNote')}
                                 </p>
                             ) : null}
                         </section>
@@ -157,7 +155,7 @@ const MobileControlsPage = () => {
                         <>
                             <GlowEffect className="mobile-controls-page__panel__glow-effect">
                                 <section className="mobile-controls-page__panel">
-                                    <h2>Чувствительность</h2>
+                                    <h2>{t('gameControls.mobile.sensitivityTitle')}</h2>
                                     <div className="mobile-controls-page__fields">
                                         {sensitivityFields.map((field) => (
                                             <label className="mobile-controls-page__field" key={field.key}>
@@ -180,11 +178,11 @@ const MobileControlsPage = () => {
                             </GlowEffect>
                             <GlowEffect className="mobile-controls-page__panel__glow-effect">
                                 <section className="mobile-controls-page__panel mobile-controls-page__panel--wide">
-                                    <h2>Назначение жестов</h2>
+                                    <h2>{t('gameControls.mobile.gesturesTitle')}</h2>
                                     <div className="mobile-controls-page__gesture-list">
                                         {gestureOrder.map((gesture) => (
                                             <div className="mobile-controls-page__gesture-row" key={gesture}>
-                                                <span>{TOUCH_GESTURE_LABELS[gesture]}</span>
+                                                <span>{t(`gameControls.mobile.gestureLabels.${gesture}`)}</span>
                                                 <CustomSelect
                                                     value={settings.gestureActions[gesture]}
                                                     options={actionOptions}

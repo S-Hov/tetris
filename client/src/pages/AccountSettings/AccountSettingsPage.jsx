@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import AppSwitch from '@/shared/ui/AppSwitch'
 import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
@@ -17,6 +18,7 @@ const AVATAR_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'ima
 
 const AccountSettingsPage = () => {
     const navigate = useNavigate()
+    const { t, i18n } = useTranslation()
     const avatarInputRef = useRef(null)
     const { checkAuth, logout, setUser, user } = useAuth()
     const { isGlowEffectEnabled, toggleGlowEffect } = useGlowEffect()
@@ -40,22 +42,23 @@ const AccountSettingsPage = () => {
     const [connections, setConnections] = useState(null)
     const [isConnectionsLoading, setIsConnectionsLoading] = useState(true)
     const [unlinkingProvider, setUnlinkingProvider] = useState('')
+    const currentLanguage = i18n.language === 'en' ? 'en' : 'ru'
 
     useEffect(() => {
         checkAuth({ silent: true })
     }, [checkAuth])
 
     const profile = useMemo(() => {
-        const displayName = user?.username || user?.email?.split('@')[0] || 'Игрок'
+        const displayName = user?.username || user?.email?.split('@')[0] || t('accountSettings.common.playerFallback')
 
         return {
             name: displayName,
-            email: user?.email || 'Почта не указана',
+            email: user?.email || t('accountSettings.common.emailFallback'),
             avatarUrl: getAssetUrl(user?.avatar_url),
-            country: 'Россия',
+            country: t('accountSettings.common.country'),
             status: user?.status || 'active',
         }
-    }, [user])
+    }, [t, user])
 
     useEffect(() => {
         setProfileForm({ username: profile.name })
@@ -88,7 +91,7 @@ const AccountSettingsPage = () => {
                 }
             } catch (error) {
                 if (!ignore) {
-                    notify(error.message || 'Не удалось загрузить историю входов', 'error')
+                    notify(error.message || t('accountSettings.notifications.historyLoadError'), 'error')
                 }
             } finally {
                 if (!ignore) {
@@ -102,7 +105,7 @@ const AccountSettingsPage = () => {
         return () => {
             ignore = true
         }
-    }, [])
+    }, [t])
 
     useEffect(() => {
         let ignore = false
@@ -118,7 +121,7 @@ const AccountSettingsPage = () => {
                 }
             } catch (error) {
                 if (!ignore) {
-                    notify(error.message || 'Не удалось загрузить способы входа', 'error')
+                    notify(error.message || t('accountSettings.notifications.connectionsLoadError'), 'error')
                 }
             } finally {
                 if (!ignore) {
@@ -132,7 +135,7 @@ const AccountSettingsPage = () => {
         return () => {
             ignore = true
         }
-    }, [])
+    }, [t])
 
     const handleAvatarChange = (event) => {
         const file = event.target.files?.[0]
@@ -142,13 +145,13 @@ const AccountSettingsPage = () => {
         }
 
         if (!AVATAR_TYPES.includes(file.type)) {
-            notify('Поддерживаются PNG, JPG, GIF, WEBP, AVIF и WEBM', 'error')
+            notify(t('accountSettings.notifications.unsupportedAvatar'), 'error')
             event.target.value = ''
             return
         }
 
         if (file.size > AVATAR_MAX_SIZE) {
-            notify('Аватарка не должна быть больше 2 МБ', 'error')
+            notify(t('accountSettings.notifications.avatarTooLarge'), 'error')
             event.target.value = ''
             return
         }
@@ -178,9 +181,9 @@ const AccountSettingsPage = () => {
 
             if (nextUser) {
                 setUser(nextUser)
-                notify('Профиль обновлён', 'success')
+                notify(t('accountSettings.notifications.profileUpdated'), 'success')
             } else {
-                notify('Нет изменений для сохранения', 'info')
+                notify(t('accountSettings.notifications.noChanges'), 'info')
             }
 
             setAvatarFile(null)
@@ -188,7 +191,7 @@ const AccountSettingsPage = () => {
                 avatarInputRef.current.value = ''
             }
         } catch (error) {
-            notify(error.message || 'Не удалось сохранить профиль', 'error')
+            notify(error.message || t('accountSettings.notifications.profileSaveError'), 'error')
         } finally {
             setIsSavingProfile(false)
         }
@@ -202,10 +205,10 @@ const AccountSettingsPage = () => {
             const response = await settingsAPI.requestEmailChange({ email: nextEmail })
 
             setUser(null)
-            notify('Почта обновлена. Введите код подтверждения', 'success')
+            notify(t('accountSettings.notifications.emailUpdated'), 'success')
             navigate(response.redirectTo || `/verify-email/${encodeURIComponent(response.email)}`, { replace: true })
         } catch (error) {
-            notify(error.message || 'Не удалось изменить почту', 'error')
+            notify(error.message || t('accountSettings.notifications.emailChangeError'), 'error')
         } finally {
             setIsChangingEmail(false)
         }
@@ -234,9 +237,9 @@ const AccountSettingsPage = () => {
                 newPassword: '',
                 confirmPassword: '',
             })
-            notify('Пароль обновлён', 'success')
+            notify(t('accountSettings.notifications.passwordUpdated'), 'success')
         } catch (error) {
-            notify(error.message || 'Не удалось обновить пароль', 'error')
+            notify(error.message || t('accountSettings.notifications.passwordUpdateError'), 'error')
         } finally {
             setIsSavingPassword(false)
         }
@@ -253,9 +256,9 @@ const AccountSettingsPage = () => {
         try {
             const response = await settingsAPI.unlinkConnection(provider)
             setConnections(response)
-            notify('Способ входа удалён', 'success')
+            notify(t('accountSettings.notifications.connectionRemoved'), 'success')
         } catch (error) {
-            notify(error.message || 'Не удалось удалить способ входа', 'error')
+            notify(error.message || t('accountSettings.notifications.connectionRemoveError'), 'error')
         } finally {
             setUnlinkingProvider('')
         }
@@ -269,23 +272,23 @@ const AccountSettingsPage = () => {
                 <div className="account-settings-content profile-layout-content">
                     <div className="account-settings-topbar">
                         <div>
-                            <p className="account-settings-eyebrow">Личный кабинет</p>
-                            <h1>Настройки аккаунта</h1>
+                            <p className="account-settings-eyebrow">{t('accountSettings.hero.eyebrow')}</p>
+                            <h1>{t('accountSettings.hero.title')}</h1>
                         </div>
                         <Link to="/profile" className="button account-settings-back">
                             <i className="fas fa-arrow-left"></i>
-                            Профиль
+                            {t('accountSettings.common.profile')}
                         </Link>
                     </div>
 
-                    <div className="account-settings-tabs" role="tablist" aria-label="Разделы настроек">
+                    <div className="account-settings-tabs" role="tablist" aria-label={t('accountSettings.tabs.aria')}>
                         <button
                             type="button"
                             className={activeTab === 'general' ? 'is-active' : ''}
                             onClick={() => setActiveTab('general')}
                         >
                             <i className="fas fa-sliders"></i>
-                            Общие
+                            {t('accountSettings.tabs.general')}
                         </button>
                         <button
                             type="button"
@@ -293,7 +296,7 @@ const AccountSettingsPage = () => {
                             onClick={() => setActiveTab('account')}
                         >
                             <i className="fas fa-user"></i>
-                            Аккаунт
+                            {t('accountSettings.tabs.account')}
                         </button>
                         <button
                             type="button"
@@ -301,7 +304,7 @@ const AccountSettingsPage = () => {
                             onClick={() => setActiveTab('security')}
                         >
                             <i className="fas fa-shield-alt"></i>
-                            Безопасность
+                            {t('accountSettings.tabs.security')}
                         </button>
                     </div>
 
@@ -311,12 +314,12 @@ const AccountSettingsPage = () => {
                                 <div className="glow-effect account-general-settings">
                                     <div className="account-section-title">
                                         <i className="fas fa-palette"></i>
-                                        Оформление
+                                        {t('accountSettings.general.title')}
                                     </div>
                                     <div className="account-theme-toggle account-language-setting">
                                         <span>
-                                            <strong>Язык интерфейса</strong>
-                                            <small>Переключает язык текста в интерфейсе</small>
+                                            <strong>{t('accountSettings.general.languageTitle')}</strong>
+                                            <small>{t('accountSettings.general.languageDescription')}</small>
                                         </span>
                                         <InterfaceLanguageSelect className="account-language-select" />
                                     </div>
@@ -327,8 +330,8 @@ const AccountSettingsPage = () => {
                                         onClick={toggleTheme}
                                     >
                                         <span>
-                                            <strong>Тёмная тема</strong>
-                                            <small>Переключает цветовую схему интерфейса</small>
+                                            <strong>{t('accountSettings.general.darkThemeTitle')}</strong>
+                                            <small>{t('accountSettings.general.darkThemeDescription')}</small>
                                         </span>
                                         <AppSwitch checked={isDarkTheme} />
                                     </button>
@@ -339,8 +342,8 @@ const AccountSettingsPage = () => {
                                         onClick={toggleGlowEffect}
                                     >
                                         <span>
-                                            <strong>Glow Effect</strong>
-                                            <small>Включает и выключает свечение карточек при движении курсора</small>
+                                            <strong>{t('accountSettings.general.glowTitle')}</strong>
+                                            <small>{t('accountSettings.general.glowDescription')}</small>
                                         </span>
                                         <AppSwitch checked={isGlowEffectEnabled} />
                                     </button>
@@ -364,7 +367,7 @@ const AccountSettingsPage = () => {
                                         <button
                                             type="button"
                                             className="account-avatar-edit"
-                                            aria-label="Выбрать новую аватарку"
+                                            aria-label={t('accountSettings.profile.avatarAria')}
                                             onClick={() => avatarInputRef.current?.click()}
                                         >
                                             <i className="fas fa-pen"></i>
@@ -378,7 +381,7 @@ const AccountSettingsPage = () => {
                                     </div>
 
                                     <label className="account-field account-field--username">
-                                        <span>Никнейм</span>
+                                        <span>{t('accountSettings.profile.nickname')}</span>
                                         <input
                                             type="text"
                                             value={profileForm.username}
@@ -389,17 +392,17 @@ const AccountSettingsPage = () => {
 
                                     <button type="submit" className="button account-save-button" disabled={isSavingProfile}>
                                         <i className="fas fa-save"></i>
-                                        {isSavingProfile ? 'Сохраняем...' : 'Сохранить'}
+                                        {isSavingProfile ? t('accountSettings.common.saving') : t('accountSettings.common.save')}
                                     </button>
 
                                     <div className="account-info-grid">
-                                        <InfoRow label="Почта" value={profile.email}>
+                                        <InfoRow label={t('accountSettings.profile.email')} value={profile.email}>
                                             <button type="button" onClick={() => setIsEmailModalOpen(true)}>
-                                                Изменить
+                                                {t('accountSettings.common.change')}
                                             </button>
                                         </InfoRow>
-                                        <InfoRow label="Страна" value={profile.country} />
-                                        <InfoRow label="Статус" value={formatStatus(profile.status)} />
+                                        <InfoRow label={t('accountSettings.profile.country')} value={profile.country} />
+                                        <InfoRow label={t('accountSettings.profile.status')} value={formatStatus(profile.status, t)} />
                                     </div>
                                 </form>
                             </GlowEffect>
@@ -412,12 +415,12 @@ const AccountSettingsPage = () => {
                                 <div className="glow-effect account-login-methods">
                                     <div className="account-section-title">
                                         <i className="fas fa-fingerprint"></i>
-                                        Способы входа
+                                        {t('accountSettings.security.loginMethods')}
                                     </div>
 
                                     <div className="account-login-method-list">
                                         {isConnectionsLoading ? (
-                                            <div className="account-empty-state">Загружаем способы входа...</div>
+                                            <div className="account-empty-state">{t('accountSettings.security.loadingMethods')}</div>
                                         ) : (
                                             <>
                                                 <article className="account-login-method">
@@ -425,10 +428,10 @@ const AccountSettingsPage = () => {
                                                         <i className="fas fa-envelope"></i>
                                                     </span>
                                                     <div>
-                                                        <strong>Почта и пароль</strong>
-                                                        <small>{connections?.hasPassword ? 'Основной способ входа' : 'Пароль ещё не установлен'}</small>
+                                                        <strong>{t('accountSettings.security.emailPassword')}</strong>
+                                                        <small>{connections?.hasPassword ? t('accountSettings.security.mainLogin') : t('accountSettings.security.passwordMissing')}</small>
                                                     </div>
-                                                    <span className="account-login-method__badge">Нельзя удалить</span>
+                                                    <span className="account-login-method__badge">{t('accountSettings.security.cannotDelete')}</span>
                                                 </article>
 
                                                 {(connections?.providers || []).map((provider) => (
@@ -443,8 +446,8 @@ const AccountSettingsPage = () => {
                                                             <strong>{provider.label}</strong>
                                                             <small>
                                                                 {provider.isConnected
-                                                                    ? `Подключён ${formatDateTime(provider.connectedAt)}`
-                                                                    : 'Не подключён'}
+                                                                    ? t('accountSettings.security.connectedAt', { date: formatDateTime(provider.connectedAt, currentLanguage, t) })
+                                                                    : t('accountSettings.security.notConnected')}
                                                             </small>
                                                         </div>
                                                         {provider.isConnected ? (
@@ -453,10 +456,10 @@ const AccountSettingsPage = () => {
                                                                 onClick={() => handleUnlinkConnection(provider.provider)}
                                                                 disabled={!provider.canUnlink || unlinkingProvider === provider.provider}
                                                             >
-                                                                {unlinkingProvider === provider.provider ? 'Удаляем...' : 'Удалить'}
+                                                                {unlinkingProvider === provider.provider ? t('accountSettings.security.deleting') : t('accountSettings.security.delete')}
                                                             </button>
                                                         ) : (
-                                                            <span className="account-login-method__badge">Нет</span>
+                                                            <span className="account-login-method__badge">{t('accountSettings.security.none')}</span>
                                                         )}
                                                     </article>
                                                 ))}
@@ -470,11 +473,11 @@ const AccountSettingsPage = () => {
                                 <form className="glow-effect account-password-form" onSubmit={handlePasswordSave}>
                                     <div className="account-section-title">
                                         <i className="fas fa-key"></i>
-                                        Изменение пароля
+                                        {t('accountSettings.security.passwordTitle')}
                                     </div>
 
                                     <label className="account-field">
-                                        <span>Текущий пароль</span>
+                                        <span>{t('accountSettings.security.currentPassword')}</span>
                                         <input
                                             type="password"
                                             value={passwordForm.currentPassword}
@@ -484,7 +487,7 @@ const AccountSettingsPage = () => {
                                         />
                                     </label>
                                     <label className="account-field">
-                                        <span>Новый пароль</span>
+                                        <span>{t('accountSettings.security.newPassword')}</span>
                                         <input
                                             type="password"
                                             value={passwordForm.newPassword}
@@ -494,7 +497,7 @@ const AccountSettingsPage = () => {
                                         />
                                     </label>
                                     <label className="account-field">
-                                        <span>Подтверждение нового пароля</span>
+                                        <span>{t('accountSettings.security.confirmPassword')}</span>
                                         <input
                                             type="password"
                                             value={passwordForm.confirmPassword}
@@ -506,7 +509,7 @@ const AccountSettingsPage = () => {
 
                                     <button type="submit" className="button account-save-button" disabled={isSavingPassword}>
                                         <i className="fas fa-save"></i>
-                                        {isSavingPassword ? 'Обновляем...' : 'Обновить пароль'}
+                                        {isSavingPassword ? t('accountSettings.security.updating') : t('accountSettings.security.updatePassword')}
                                     </button>
                                 </form>
                             </GlowEffect>
@@ -515,12 +518,12 @@ const AccountSettingsPage = () => {
                                 <div className="glow-effect account-login-history">
                                     <div className="account-section-title">
                                         <i className="fas fa-clock-rotate-left"></i>
-                                        История входа
+                                        {t('accountSettings.security.loginHistory')}
                                     </div>
 
                                     <div className="account-login-list">
                                         {isHistoryLoading ? (
-                                            <div className="account-empty-state">Загружаем историю...</div>
+                                            <div className="account-empty-state">{t('accountSettings.security.loadingHistory')}</div>
                                         ) : loginHistory.length > 0 ? (
                                             loginHistory.map((item) => (
                                                 <article key={item.id} className="account-login-item">
@@ -528,17 +531,17 @@ const AccountSettingsPage = () => {
                                                         <strong>{item.location}</strong>
                                                         <span>{item.device}</span>
                                                     </div>
-                                                    <time>{formatDateTime(item.createdAt)}</time>
+                                                    <time>{formatDateTime(item.createdAt, currentLanguage, t)}</time>
                                                 </article>
                                             ))
                                         ) : (
-                                            <div className="account-empty-state">История входов пока пуста</div>
+                                            <div className="account-empty-state">{t('accountSettings.security.emptyHistory')}</div>
                                         )}
                                     </div>
 
                                     <button type="button" className="button account-logout-button" onClick={handleLogout}>
                                         <i className="fas fa-sign-out-alt"></i>
-                                        Выйти из аккаунта
+                                        {t('accountSettings.security.logout')}
                                     </button>
                                 </div>
                             </GlowEffect>
@@ -550,9 +553,9 @@ const AccountSettingsPage = () => {
             {isEmailModalOpen && (
                 <div className="account-email-modal" role="dialog" aria-modal="true" aria-labelledby="account-email-title">
                     <form className="account-email-modal__panel" onSubmit={handleEmailChangeSubmit}>
-                        <h2 id="account-email-title">Изменить почту</h2>
+                        <h2 id="account-email-title">{t('accountSettings.emailModal.title')}</h2>
                         <label className="account-field">
-                            <span>Новая почта</span>
+                            <span>{t('accountSettings.emailModal.newEmail')}</span>
                             <input
                                 type="email"
                                 value={nextEmail}
@@ -563,7 +566,7 @@ const AccountSettingsPage = () => {
                         </label>
                         <div className="account-email-modal__actions">
                             <button type="submit" className="button" disabled={isChangingEmail}>
-                                {isChangingEmail ? 'Отправляем...' : 'Изменить'}
+                                {isChangingEmail ? t('accountSettings.emailModal.sending') : t('accountSettings.common.change')}
                             </button>
                             <button
                                 type="button"
@@ -571,7 +574,7 @@ const AccountSettingsPage = () => {
                                 onClick={() => setIsEmailModalOpen(false)}
                                 disabled={isChangingEmail}
                             >
-                                Отмена
+                                {t('accountSettings.common.cancel')}
                             </button>
                         </div>
                     </form>
@@ -628,25 +631,25 @@ const getProviderIcon = (provider) => {
     return icons[provider] || 'fas fa-link'
 }
 
-const formatStatus = (status) => {
-    if (status === 'active') return 'Активен'
-    if (status === 'pending_verification') return 'Ожидает подтверждения'
+const formatStatus = (status, t) => {
+    if (status === 'active') return t('accountSettings.common.active')
+    if (status === 'pending_verification') return t('accountSettings.common.pendingVerification')
 
-    return status || 'Активен'
+    return status || t('accountSettings.common.active')
 }
 
-const formatDateTime = (value) => {
+const formatDateTime = (value, language, t) => {
     if (!value) {
-        return 'Время не определено'
+        return t('accountSettings.common.unknownTime')
     }
 
     const date = new Date(value)
 
     if (Number.isNaN(date.getTime())) {
-        return 'Время не определено'
+        return t('accountSettings.common.unknownTime')
     }
 
-    return new Intl.DateTimeFormat('ru-RU', {
+    return new Intl.DateTimeFormat(language === 'en' ? 'en-US' : 'ru-RU', {
         day: 'numeric',
         month: 'short',
         year: 'numeric',

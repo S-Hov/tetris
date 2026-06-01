@@ -1,0 +1,86 @@
+{
+  "accountSettings": {
+    "common": {
+      "playerFallback": "Player",
+      "emailFallback": "Email is not set",
+      "country": "Russia",
+      "profile": "Profile",
+      "save": "Save",
+      "saving": "Saving...",
+      "change": "Change",
+      "cancel": "Cancel",
+      "unknownTime": "Time is unknown",
+      "active": "Active",
+      "pendingVerification": "Pending verification"
+    },
+    "hero": {
+      "eyebrow": "Personal account",
+      "title": "Account settings"
+    },
+    "tabs": {
+      "aria": "Settings sections",
+      "general": "General",
+      "account": "Account",
+      "security": "Security"
+    },
+    "general": {
+      "title": "Appearance",
+      "languageTitle": "Interface language",
+      "languageDescription": "Changes the text language in the interface",
+      "darkThemeTitle": "Dark theme",
+      "darkThemeDescription": "Switches the interface color scheme",
+      "glowTitle": "Glow Effect",
+      "glowDescription": "Turns card glow on and off while the cursor moves"
+    },
+    "profile": {
+      "avatarAria": "Choose a new avatar",
+      "nickname": "Nickname",
+      "email": "Email",
+      "country": "Country",
+      "status": "Status"
+    },
+    "security": {
+      "loginMethods": "Login methods",
+      "loadingMethods": "Loading login methods...",
+      "emailPassword": "Email and password",
+      "mainLogin": "Primary login method",
+      "passwordMissing": "Password is not set yet",
+      "cannotDelete": "Cannot delete",
+      "connectedAt": "Connected {{date}}",
+      "notConnected": "Not connected",
+      "deleting": "Deleting...",
+      "delete": "Delete",
+      "none": "No",
+      "passwordTitle": "Change password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "updating": "Updating...",
+      "updatePassword": "Update password",
+      "loginHistory": "Login history",
+      "loadingHistory": "Loading history...",
+      "emptyHistory": "Login history is empty",
+      "logout": "Log out"
+    },
+    "emailModal": {
+      "title": "Change email",
+      "newEmail": "New email",
+      "sending": "Sending..."
+    },
+    "notifications": {
+      "historyLoadError": "Could not load login history",
+      "connectionsLoadError": "Could not load login methods",
+      "unsupportedAvatar": "PNG, JPG, GIF, WEBP, AVIF and WEBM are supported",
+      "avatarTooLarge": "Avatar must not be larger than 2 MB",
+      "profileUpdated": "Profile updated",
+      "noChanges": "No changes to save",
+      "profileSaveError": "Could not save profile",
+      "emailUpdated": "Email updated. Enter the verification code",
+      "emailChangeError": "Could not change email",
+      "passwordUpdated": "Password updated",
+      "passwordUpdateError": "Could not update password",
+      "connectionRemoved": "Login method removed",
+      "connectionRemoveError": "Could not remove login method"
+    }
+  }
+}

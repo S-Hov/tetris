@@ -1,0 +1,72 @@
+{
+  "gameControls": {
+    "common": {
+      "eyebrow": "PVP Tetris",
+      "controlsEyebrow": "Control settings",
+      "back": "Back"
+    },
+    "settings": {
+      "title": "Game settings",
+      "controlsTitle": "Control settings",
+      "pcTitle": "PC controls",
+      "pcDescription": "Remap keys for movement, rotation, dropping and pause.",
+      "mobileTitle": "Mobile controls",
+      "mobileDescription": "Gestures, swipe sensitivity and action bindings.",
+      "generalTitle": "General",
+      "languageTitle": "Interface language",
+      "languageDescription": "Changes the text language in the interface",
+      "darkThemeTitle": "Dark theme",
+      "darkThemeDescription": "Switches the interface color scheme",
+      "glowTitle": "Cursor glow",
+      "glowDescription": "Enables element glow while the cursor moves"
+    },
+    "pc": {
+      "title": "PC controls",
+      "listen": "Press a key",
+      "unassigned": "Not assigned",
+      "save": "Save",
+      "reset": "Defaults",
+      "noChanges": "No changes to save",
+      "assignWarning": "Assign a key for \"{{action}}\"",
+      "assigned": "{{action}} assigned to {{key}}",
+      "keys": {
+        "space": "Space"
+      },
+      "actions": {
+        "moveLeft": "Move left",
+        "moveRight": "Move right",
+        "softDrop": "Soft drop",
+        "rotate": "Rotate piece",
+        "hardDrop": "Hard drop",
+        "pause": "Pause"
+      }
+    },
+    "mobile": {
+      "title": "Mobile controls",
+      "reset": "Reset",
+      "methodTitle": "Control method",
+      "gestures": "Gestures",
+      "buttons": "Buttons",
+      "buttonsDescription": "Button controls will be added later.",
+      "buttonsNote": "Button mode is already saved, but in-game buttons have not been added yet.",
+      "sensitivityTitle": "Sensitivity",
+      "gesturesTitle": "Gesture bindings",
+      "actions": {
+        "none": "No action",
+        "moveLeft": "Move left",
+        "moveRight": "Move right",
+        "softDrop": "Soft drop",
+        "rotate": "Rotate piece",
+        "hardDrop": "Hard drop"
+      },
+      "gestureLabels": {
+        "swipeLeft": "Swipe left",
+        "swipeRight": "Swipe right",
+        "swipeDownShort": "Short swipe down",
+        "swipeDownLong": "Long swipe down",
+        "tap": "Tap",
+        "doubleTap": "Double tap"
+      }
+    }
+  }
+}

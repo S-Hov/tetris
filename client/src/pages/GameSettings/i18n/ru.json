@@ -1,0 +1,72 @@
+{
+  "gameControls": {
+    "common": {
+      "eyebrow": "PVP Tetris",
+      "controlsEyebrow": "Настройки управления",
+      "back": "Назад"
+    },
+    "settings": {
+      "title": "Настройки игры",
+      "controlsTitle": "Настройки управления",
+      "pcTitle": "Управление для ПК",
+      "pcDescription": "Переназначение клавиш для движения, вращения, падения и паузы.",
+      "mobileTitle": "Управление для мобильных",
+      "mobileDescription": "Жесты, чувствительность свайпов и назначение действий.",
+      "generalTitle": "Общие",
+      "languageTitle": "Язык интерфейса",
+      "languageDescription": "Переключает язык текста в интерфейсе",
+      "darkThemeTitle": "Тёмная тема",
+      "darkThemeDescription": "Переключает цветовую схему интерфейса",
+      "glowTitle": "Подсветка курсора",
+      "glowDescription": "Включает свечение элементов при движении курсора"
+    },
+    "pc": {
+      "title": "Управление для ПК",
+      "listen": "Нажмите клавишу",
+      "unassigned": "Не назначено",
+      "save": "Сохранить",
+      "reset": "Стандартные",
+      "noChanges": "Нет изменений для сохранения",
+      "assignWarning": "Назначьте клавишу для действия \"{{action}}\"",
+      "assigned": "{{action}} назначено на {{key}}",
+      "keys": {
+        "space": "Пробел"
+      },
+      "actions": {
+        "moveLeft": "Движение влево",
+        "moveRight": "Движение вправо",
+        "softDrop": "Мягкое падение",
+        "rotate": "Вращение фигуры",
+        "hardDrop": "Мгновенное падение",
+        "pause": "Пауза"
+      }
+    },
+    "mobile": {
+      "title": "Управление для мобильных",
+      "reset": "Сбросить",
+      "methodTitle": "Способ управления",
+      "gestures": "Жесты",
+      "buttons": "Кнопки",
+      "buttonsDescription": "Кнопочное управление добавим позже.",
+      "buttonsNote": "Режим кнопок уже сохраняется, но сами игровые кнопки пока не добавлены.",
+      "sensitivityTitle": "Чувствительность",
+      "gesturesTitle": "Назначение жестов",
+      "actions": {
+        "none": "Без действия",
+        "moveLeft": "Движение влево",
+        "moveRight": "Движение вправо",
+        "softDrop": "Мягкое падение",
+        "rotate": "Вращение фигуры",
+        "hardDrop": "Мгновенное падение"
+      },
+      "gestureLabels": {
+        "swipeLeft": "Свайп влево",
+        "swipeRight": "Свайп вправо",
+        "swipeDownShort": "Короткий свайп вниз",
+        "swipeDownLong": "Длинный свайп вниз",
+        "tap": "Касание",
+        "doubleTap": "Двойное касание"
+      }
+    }
+  }
+}
