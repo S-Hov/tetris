@@ -37,10 +37,15 @@
 
 .simple-header-nav{
     display: flex;
+    align-items: center;
     gap: 10px;
     flex-wrap: nowrap;
     justify-content: flex-end;
     min-width: 0;
+}
+
+.simple-header-language-select {
+    width: 112px;
 }
 
 .back-link{
@@ -88,6 +93,10 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+    .simple-header-language-select {
+        width: 96px;
+    }
 }
 
 @media (max-width: 420px) {
@@ -102,5 +111,9 @@
 
     .simple-header-nav .back-link i {
         font-size: 0.9rem;
+    }
+
+    .simple-header-language-select {
+        width: 74px;
     }
 }

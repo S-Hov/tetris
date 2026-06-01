@@ -2,6 +2,10 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from './languages'
+import authEn from '../features/AuthForm/i18n/en.json'
+import authRu from '../features/AuthForm/i18n/ru.json'
+import emailVerificationEn from '../features/EmailVerification/i18n/en.json'
+import emailVerificationRu from '../features/EmailVerification/i18n/ru.json'
 import aboutEn from '../pages/About/i18n/en.json'
 import aboutRu from '../pages/About/i18n/ru.json'
 import homeEn from '../pages/Home/i18n/en.json'
@@ -20,6 +24,8 @@ import supportEn from '../pages/Support/i18n/en.json'
 import supportRu from '../pages/Support/i18n/ru.json'
 import supportRequestsEn from '../pages/SupportRequests/i18n/en.json'
 import supportRequestsRu from '../pages/SupportRequests/i18n/ru.json'
+import simpleHeaderEn from '../widgets/Header/SimpleHeader/i18n/en.json'
+import simpleHeaderRu from '../widgets/Header/SimpleHeader/i18n/ru.json'
 
 export { DEFAULT_LANGUAGE, LANGUAGES, SUPPORTED_LANGUAGES } from './languages'
 
@@ -45,8 +51,8 @@ i18n
     .use(initReactI18next)
     .init({
         resources: {
-            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...matchesRu, ...supportRequestsRu } },
-            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...matchesEn, ...supportRequestsEn } },
+            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...matchesRu, ...supportRequestsRu, ...authRu, ...emailVerificationRu, ...simpleHeaderRu } },
+            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...matchesEn, ...supportRequestsEn, ...authEn, ...emailVerificationEn, ...simpleHeaderEn } },
         },
         lng: getLanguageFromPathname(typeof window !== 'undefined' ? window.location.pathname : ''),
         fallbackLng: DEFAULT_LANGUAGE,

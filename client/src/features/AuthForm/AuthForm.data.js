@@ -1,57 +1,57 @@
-export const registerInputs = [
+export const getRegisterInputs = (t) => [
     {
-        key: 'username', type: 'text', placeholder: 'Игровой никнейм', errorBoxId: 'usernameError',
-        icon: 'fas fa-user-astronaut', ariaError: 'username-error', title: 'Игровой никнейм должен быть от 3 до 16 символов',
+        key: 'username', type: 'text', placeholder: t('auth.fields.username.placeholder'), errorBoxId: 'usernameError',
+        icon: 'fas fa-user-astronaut', ariaError: 'username-error', title: t('auth.fields.username.title'),
         validation: {
-            required: "Игровой никнейм должен быть от 3 до 16 символов",
-            minLength: { value: 3, message: "Слишком короткий логин" },
-            maxLength: { value: 16, message: "Слишком длинный логин" },
-            pattern: { value: /^[a-zA-Z0-9_]+$/, message: "Логин может содержать только латинские буквы, цифры и символ подчеркивания" }
+            required: t('auth.fields.username.required'),
+            minLength: { value: 3, message: t('auth.fields.username.minLength') },
+            maxLength: { value: 16, message: t('auth.fields.username.maxLength') },
+            pattern: { value: /^[a-zA-Z0-9_]+$/, message: t('auth.fields.username.pattern') }
         }
     },
     {
-        key: 'email', type: 'email', placeholder: 'Электронная почта', errorBoxId: 'emailError',
-        icon: 'fas fa-envelope', ariaError: 'email-error', title: 'Email должен быть в формате name@example.com',
+        key: 'email', type: 'email', placeholder: t('auth.fields.email.placeholder'), errorBoxId: 'emailError',
+        icon: 'fas fa-envelope', ariaError: 'email-error', title: t('auth.fields.email.title'),
         validation: {
-            required: "Введите электронную почту",
-            pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Email должен быть в формате name@example.com" }
+            required: t('auth.fields.email.required'),
+            pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: t('auth.fields.email.pattern') }
         }
     },
     {
-        key: 'password', type: 'password', placeholder: 'Пароль', errorBoxId: 'passwordError',
-        icon: 'fas fa-lock', ariaError: 'password-error', title: 'Пароль должен быть длиной от 8 до 16 символов',
+        key: 'password', type: 'password', placeholder: t('auth.fields.password.placeholder'), errorBoxId: 'passwordError',
+        icon: 'fas fa-lock', ariaError: 'password-error', title: t('auth.fields.password.title'),
         validation: {
-            required: "Введите пароль",
-            minLength: { value: 8, message: "Пароль должен быть не менее 8 символов" },
-            maxLength: { value: 16, message: "Пароль должен быть не более 20 символов" },
-            pattern: { value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/, message: "Пароль должен быть длиной от 8 до 16 символов, включать как минимум одну цифру, одну букву в нижнем и одну в верхнем регистре" }
+            required: t('auth.fields.password.required'),
+            minLength: { value: 8, message: t('auth.fields.password.minLength') },
+            maxLength: { value: 16, message: t('auth.fields.password.maxLength') },
+            pattern: { value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/, message: t('auth.fields.password.pattern') }
         }
     },
     {
-        key: 'confirmPassword', type: 'password', placeholder: 'Подтвердите пароль', errorBoxId: 'confirmError',
-        icon: 'fas fa-key', ariaError: 'confirm-error', title: 'Подтвердите пароль',
+        key: 'confirmPassword', type: 'password', placeholder: t('auth.fields.confirmPassword.placeholder'), errorBoxId: 'confirmError',
+        icon: 'fas fa-key', ariaError: 'confirm-error', title: t('auth.fields.confirmPassword.title'),
         validation: {
-            required: "Подтвердите пароль",
+            required: t('auth.fields.confirmPassword.required'),
         }
     },
 ]
 
-export const loginInputs = [
+export const getLoginInputs = (t) => [
     {
-        key: 'email', type: 'email', placeholder: 'Электронная почта',
+        key: 'email', type: 'email', placeholder: t('auth.fields.email.placeholder'),
         icon: 'fas fa-envelope',
         ariaError: 'login-email-error',
         validation: {
-            required: "Введите электронную почту",
-            pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Email должен быть в формате name@example.com" }
+            required: t('auth.fields.email.required'),
+            pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: t('auth.fields.email.pattern') }
         }
     },
     {
-        key: 'password', type: 'password', placeholder: 'Пароль',
+        key: 'password', type: 'password', placeholder: t('auth.fields.password.placeholder'),
         icon: 'fas fa-lock',
         ariaError: 'login-password-error',
         validation: {
-            required: "Введите пароль",
+            required: t('auth.fields.password.required'),
         }
     },
 ]

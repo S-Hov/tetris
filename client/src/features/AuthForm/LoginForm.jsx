@@ -1,4 +1,4 @@
-import { loginInputs } from "./AuthForm.data"
+import { getLoginInputs } from "./AuthForm.data"
 import AuthInput from "@/shared/ui/Auth/AuthInput"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
@@ -7,8 +7,10 @@ import { authenticationAPI } from "@/shared/api/auth"
 import { useCallback, useState } from "react"
 import notify from "@/utils/Notifications"
 import TurnstileWidget from "@/shared/ui/TurnstileWidget"
+import { useTranslation } from "react-i18next"
 
 const LoginForm = () => {
+    const { t } = useTranslation()
     const navigate = useNavigate()
     const { login } = useAuth()
     const [serverError, setServerError] = useState(null)
@@ -19,6 +21,7 @@ const LoginForm = () => {
     const [requiresTurnstile, setRequiresTurnstile] = useState(false)
     const [turnstileToken, setTurnstileToken] = useState('')
     const [turnstileResetSignal, setTurnstileResetSignal] = useState(0)
+    const loginInputs = getLoginInputs(t)
 
     const {
         register,
@@ -39,7 +42,7 @@ const LoginForm = () => {
 
     const onSubmit = async (data) => {
         if (requiresTurnstile && !turnstileToken) {
-            notify('Проверка безопасности не пройдена', 'error')
+            notify(t('auth.security.turnstile'), 'error')
             return
         }
 
@@ -52,11 +55,11 @@ const LoginForm = () => {
                 ...(requiresTurnstile ? { turnstileToken } : {}),
             })
             if (result.success) {
-                notify(result.message || 'Вы успешно вошли')
+                notify(result.message || t('auth.login.success'))
                 navigate('/profile', { replace: true })
                 return
             }
-            throw new Error(result.message || 'Не удалось войти')
+            throw new Error(result.message || t('auth.login.error'))
         } catch (error) {
             const responseData = error.data?.data
 
@@ -65,8 +68,8 @@ const LoginForm = () => {
                 return
             }
 
-            setServerError(error.message || 'Не удалось войти')
-            notify(error.message || 'Не удалось войти', 'error')
+            setServerError(error.message || t('auth.login.error'))
+            notify(error.message || t('auth.login.error'), 'error')
             setRequiresTurnstile((current) => current || responseData?.requiresTurnstile === true)
             resetTurnstile()
         } finally {
@@ -82,13 +85,13 @@ const LoginForm = () => {
         try {
             const response = await authenticationAPI.requestPasswordReset({ email: resetEmail })
 
-            notify('Код восстановления отправлен', 'success')
+            notify(t('auth.login.resetSuccess'), 'success')
             navigate(response.redirectTo || `/verify-email/${encodeURIComponent(response.email)}?mode=password-reset`, {
                 replace: true,
             })
         } catch (error) {
-            setServerError(error.message || 'Не удалось отправить код восстановления')
-            notify(error.message || 'Не удалось отправить код восстановления', 'error')
+            setServerError(error.message || t('auth.login.resetError'))
+            notify(error.message || t('auth.login.resetError'), 'error')
         } finally {
             setIsResetPending(false)
         }
@@ -115,7 +118,7 @@ const LoginForm = () => {
                 )}
 
                 <button type="submit" className="login-btn submit-btn" disabled={isPending || (requiresTurnstile && !turnstileToken)}>
-                    {isPending ? 'ВХОДИМ...' : 'ВОЙТИ'}
+                    {isPending ? t('auth.login.submitting') : t('auth.login.submit')}
                 </button>
 
                 <div className="options-row">
@@ -125,7 +128,7 @@ const LoginForm = () => {
                         id="forgotPasswordLink"
                         onClick={() => setIsResetModalOpen(true)}
                     >
-                        Забыли пароль?
+                        {t('auth.login.forgotPassword')}
                     </button>
                 </div>
             </form>
@@ -133,9 +136,9 @@ const LoginForm = () => {
             {isResetModalOpen && (
                 <div className="auth-modal" role="dialog" aria-modal="true" aria-labelledby="password-reset-title">
                     <form className="auth-modal__panel" onSubmit={handlePasswordReset}>
-                        <h3 id="password-reset-title">Восстановление пароля</h3>
+                        <h3 id="password-reset-title">{t('auth.login.resetTitle')}</h3>
                         <label>
-                            <span>Email аккаунта</span>
+                            <span>{t('auth.login.resetEmail')}</span>
                             <input
                                 type="email"
                                 value={resetEmail}
@@ -146,7 +149,7 @@ const LoginForm = () => {
                         </label>
                         <div className="auth-modal__actions">
                             <button type="submit" className="submit-btn" disabled={isResetPending}>
-                                {isResetPending ? 'Отправляем...' : 'Получить код'}
+                                {isResetPending ? t('auth.login.resetSubmitting') : t('auth.login.resetSubmit')}
                             </button>
                             <button
                                 type="button"
@@ -154,7 +157,7 @@ const LoginForm = () => {
                                 disabled={isResetPending}
                                 onClick={() => setIsResetModalOpen(false)}
                             >
-                                Отмена
+                                {t('auth.login.cancel')}
                             </button>
                         </div>
                     </form>

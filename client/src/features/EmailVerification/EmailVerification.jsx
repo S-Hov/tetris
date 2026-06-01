@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { authenticationAPI } from '@/shared/api/auth'
 import notify from '@/utils/Notifications'
@@ -8,6 +9,7 @@ import './EmailVerification.css'
 const DEFAULT_CODE_LENGTH = 6
 
 const EmailVerification = () => {
+    const { t } = useTranslation()
     const { email: emailParam } = useParams()
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
@@ -36,9 +38,9 @@ const EmailVerification = () => {
             setIsLoading(false)
             setMessage({
                 type: 'error',
-                text: 'Ссылка подтверждения некорректна. Зарегистрируйтесь ещё раз.',
+                text: t('emailVerification.invalidLink'),
             })
-            notify('Ссылка подтверждения некорректна. Зарегистрируйтесь ещё раз.', 'error')
+            notify(t('emailVerification.invalidLink'), 'error')
             return
         }
 
@@ -64,9 +66,9 @@ const EmailVerification = () => {
                 if (meta.isVerified) {
                     setMessage({
                         type: 'success',
-                        text: 'Почта уже подтверждена. Перенаправляем ко входу...',
+                        text: t('emailVerification.alreadyVerified'),
                     })
-                    notify('Почта уже подтверждена. Перенаправляем ко входу...')
+                    notify(t('emailVerification.alreadyVerified'))
                     window.setTimeout(() => navigate('/login', { replace: true }), 1200)
                 }
             } catch (error) {
@@ -74,9 +76,9 @@ const EmailVerification = () => {
 
                 setMessage({
                     type: 'error',
-                    text: error.message || 'Не удалось загрузить данные подтверждения',
+                    text: error.message || t('emailVerification.loadError'),
                 })
-                notify(error.message || 'Не удалось загрузить данные подтверждения', 'error')
+                notify(error.message || t('emailVerification.loadError'), 'error')
             } finally {
                 if (!ignore) {
                     setIsLoading(false)
@@ -89,7 +91,7 @@ const EmailVerification = () => {
         return () => {
             ignore = true
         }
-    }, [email, isPasswordResetMode, navigate])
+    }, [email, isPasswordResetMode, navigate, t])
 
     useEffect(() => {
         setNextEmail(email)
@@ -178,9 +180,9 @@ const EmailVerification = () => {
         if (!isCodeComplete) {
             setMessage({
                 type: 'error',
-                text: `Введите полный ${codeLength}-значный код`,
+                text: t('emailVerification.fullCode', { length: codeLength }),
             })
-            notify(`Введите полный ${codeLength}-значный код`, 'error')
+            notify(t('emailVerification.fullCode', { length: codeLength }), 'error')
             return
         }
 
@@ -195,12 +197,12 @@ const EmailVerification = () => {
             setMessage({
                 type: 'success',
                 text: isPasswordResetMode
-                    ? 'Проверка пройдена. Новый пароль отправлен на почту...'
-                    : 'Почта подтверждена. Перенаправляем ко входу...',
+                    ? t('emailVerification.passwordResetSuccess')
+                    : t('emailVerification.emailVerified'),
             })
             notify(isPasswordResetMode
-                ? 'Новый пароль отправлен на почту'
-                : 'Почта подтверждена. Перенаправляем ко входу...')
+                ? t('emailVerification.passwordResetNotify')
+                : t('emailVerification.emailVerified'))
 
             window.setTimeout(() => {
                 navigate(response.redirectTo || '/login', { replace: true })
@@ -208,9 +210,9 @@ const EmailVerification = () => {
         } catch (error) {
             setMessage({
                 type: 'error',
-                text: error.message || 'Не удалось подтвердить почту',
+                text: error.message || t('emailVerification.verifyError'),
             })
-            notify(error.message || 'Не удалось подтвердить почту', 'error')
+            notify(error.message || t('emailVerification.verifyError'), 'error')
         } finally {
             setIsSubmitting(false)
         }
@@ -233,16 +235,16 @@ const EmailVerification = () => {
             setSecondsLeft(Number(meta.expiresInSeconds) || 0)
             setMessage({
                 type: 'info',
-                text: 'Новый код отправлен на почту',
+                text: t('emailVerification.newCodeSent'),
             })
-            notify('Новый код отправлен на почту', 'info')
+            notify(t('emailVerification.newCodeSent'), 'info')
             inputRefs.current[0]?.focus()
         } catch (error) {
             setMessage({
                 type: 'error',
-                text: error.message || 'Не удалось отправить код повторно',
+                text: error.message || t('emailVerification.resendError'),
             })
-            notify(error.message || 'Не удалось отправить код повторно', 'error')
+            notify(error.message || t('emailVerification.resendError'), 'error')
         } finally {
             setIsResending(false)
         }
@@ -261,14 +263,14 @@ const EmailVerification = () => {
             })
 
             setIsEmailModalOpen(false)
-            notify('Почта обновлена. Новый код отправлен', 'success')
+            notify(t('emailVerification.emailUpdated'), 'success')
             navigate(meta.redirectTo || `/verify-email/${encodeURIComponent(meta.email)}`, { replace: true })
         } catch (error) {
             setMessage({
                 type: 'error',
-                text: error.message || 'Не удалось изменить почту',
+                text: error.message || t('emailVerification.emailChangeError'),
             })
-            notify(error.message || 'Не удалось изменить почту', 'error')
+            notify(error.message || t('emailVerification.emailChangeError'), 'error')
         } finally {
             setIsChangingEmail(false)
         }
@@ -283,9 +285,9 @@ const EmailVerification = () => {
                             <div className="glow-icon">
                                 <i className="fas fa-envelope"></i>
                             </div>
-                            <h2>{isPasswordResetMode ? 'Восстановление пароля' : 'Подтверждение почты'}</h2>
-                            <p>{isPasswordResetMode ? 'Введите код восстановления для адреса' : 'Мы отправили код на адрес'}</p>
-                            <div className="email-highlight">{email || 'email не найден'}</div>
+                            <h2>{isPasswordResetMode ? t('emailVerification.passwordResetTitle') : t('emailVerification.emailTitle')}</h2>
+                            <p>{isPasswordResetMode ? t('emailVerification.passwordResetSubtitle') : t('emailVerification.emailSubtitle')}</p>
+                            <div className="email-highlight">{email || t('emailVerification.emailMissing')}</div>
                         </div>
 
                         {message && (
@@ -296,7 +298,7 @@ const EmailVerification = () => {
 
                         <form className="verify-email-form" noValidate onSubmit={handleSubmit}>
                             <div className="code-input-group">
-                                <label htmlFor="verification-code-0">Код подтверждения</label>
+                                <label htmlFor="verification-code-0">{t('emailVerification.codeLabel')}</label>
                                 <div
                                     className="code-input-wrapper"
                                     style={{ gridTemplateColumns: `repeat(${codeLength}, minmax(0, 1fr))` }}
@@ -316,7 +318,7 @@ const EmailVerification = () => {
                                             value={digit}
                                             autoComplete={index === 0 ? 'one-time-code' : 'off'}
                                             disabled={isLoading || isSubmitting}
-                                            aria-label={`Цифра ${index + 1} из ${codeLength}`}
+                                            aria-label={t('emailVerification.digitAria', { index: index + 1, total: codeLength })}
                                             onChange={(event) => updateDigit(index, event.target.value)}
                                             onKeyDown={(event) => handleKeyDown(event, index)}
                                             onPaste={(event) => handlePaste(event, index)}
@@ -330,30 +332,30 @@ const EmailVerification = () => {
                                 className="verify-btn submit-btn"
                                 disabled={isLoading || isSubmitting || !isCodeComplete}
                             >
-                                {isSubmitting ? 'ПРОВЕРЯЕМ...' : 'ПОДТВЕРДИТЬ'}
+                                {isSubmitting ? t('emailVerification.submitting') : t('emailVerification.submit')}
                             </button>
                         </form>
 
                         <div className="resend-section">
-                            <p className="resend-text">Не пришёл код?</p>
+                            <p className="resend-text">{t('emailVerification.noCode')}</p>
                             <button
                                 type="button"
                                 className="resend-link"
                                 disabled={!canResend}
                                 onClick={handleResend}
                             >
-                                {isResending ? 'Отправляем...' : 'Отправить повторно'}
+                                {isResending ? t('emailVerification.resending') : t('emailVerification.resend')}
                             </button>
                             <div className="timer">
                                 {secondsLeft > 0
-                                    ? `Код действует ещё ${formatTimer(secondsLeft)}`
-                                    : 'Можно запросить новый код'}
+                                    ? t('emailVerification.codeActive', { time: formatTimer(secondsLeft) })
+                                    : t('emailVerification.canRequest')}
                             </div>
                         </div>
 
                         {isPasswordResetMode ? (
                             <Link to="/login" className="verify-email-back-link link">
-                                Вернуться ко входу
+                                {t('emailVerification.backToLogin')}
                             </Link>
                         ) : (
                             <button
@@ -361,7 +363,7 @@ const EmailVerification = () => {
                                 className="verify-email-back-link verify-email-link-button link"
                                 onClick={() => setIsEmailModalOpen(true)}
                             >
-                                Изменить почту
+                                {t('emailVerification.changeEmail')}
                             </button>
                         )}
                     </div>
@@ -371,13 +373,13 @@ const EmailVerification = () => {
             {isEmailModalOpen && (
                 <div className="verify-email-modal" role="dialog" aria-modal="true" aria-labelledby="change-email-title">
                     <form className="verify-email-modal__panel" onSubmit={handleEmailChangeSubmit}>
-                        <h3 id="change-email-title">Изменить почту</h3>
+                        <h3 id="change-email-title">{t('emailVerification.changeEmail')}</h3>
                         <label>
-                            <span>Текущая почта</span>
+                            <span>{t('emailVerification.currentEmail')}</span>
                             <input type="email" value={email} disabled />
                         </label>
                         <label>
-                            <span>Новая почта</span>
+                            <span>{t('emailVerification.newEmail')}</span>
                             <input
                                 type="email"
                                 value={nextEmail}
@@ -388,7 +390,7 @@ const EmailVerification = () => {
                         </label>
                         <div className="verify-email-modal__actions">
                             <button type="submit" className="submit-btn" disabled={isChangingEmail}>
-                                {isChangingEmail ? 'Сохраняем...' : 'Отправить новый код'}
+                                {isChangingEmail ? t('emailVerification.saving') : t('emailVerification.sendNewCode')}
                             </button>
                             <button
                                 type="button"
@@ -396,7 +398,7 @@ const EmailVerification = () => {
                                 onClick={() => setIsEmailModalOpen(false)}
                                 disabled={isChangingEmail}
                             >
-                                Отмена
+                                {t('emailVerification.cancel')}
                             </button>
                         </div>
                     </form>

@@ -1,0 +1,80 @@
+{
+  "auth": {
+    "seo": {
+      "loginTitle": "Login - PVP Tetris",
+      "loginDescription": "Sign in to your PVP Tetris account to play matches, track rating and manage your profile.",
+      "registerTitle": "Registration - PVP Tetris",
+      "registerDescription": "Create a PVP Tetris account to join matches, save progress and climb the rating."
+    },
+    "oauth": {
+      "loginWith": "Or sign in with",
+      "providerAria": "Sign in with {{provider}}"
+    },
+    "redirect": {
+      "noAccount": "No account?",
+      "create": "Create cyber account",
+      "hasAccount": "Already have an account?",
+      "login": "Sign in"
+    },
+    "login": {
+      "title": "WELCOME BACK",
+      "subtitle": "Enter the cyber arena and start the battle",
+      "submit": "SIGN IN",
+      "submitting": "SIGNING IN...",
+      "forgotPassword": "Forgot password?",
+      "resetTitle": "Password recovery",
+      "resetEmail": "Account email",
+      "resetSubmit": "Get code",
+      "resetSubmitting": "Sending...",
+      "cancel": "Cancel",
+      "success": "You have signed in successfully",
+      "error": "Could not sign in",
+      "resetSuccess": "Recovery code sent",
+      "resetError": "Could not send recovery code"
+    },
+    "register": {
+      "title": "CYBER REGISTRATION",
+      "subtitle": "Join the PvP Tetris elite",
+      "submit": "CREATE ACCOUNT",
+      "submitting": "LOADING...",
+      "passwordMismatch": "Passwords do not match",
+      "termsRequired": "Your consent is required",
+      "termsPrefix": "I agree to the",
+      "termsArena": "Arena Terms",
+      "termsMiddle": "and",
+      "termsSecurity": "Cyber Security Policy"
+    },
+    "security": {
+      "turnstile": "Security check has not passed"
+    },
+    "fields": {
+      "username": {
+        "placeholder": "Player nickname",
+        "title": "Player nickname must be 3 to 16 characters",
+        "required": "Player nickname must be 3 to 16 characters",
+        "minLength": "Login is too short",
+        "maxLength": "Login is too long",
+        "pattern": "Login can contain only Latin letters, digits and underscore"
+      },
+      "email": {
+        "placeholder": "Email",
+        "title": "Email must be in the name@example.com format",
+        "required": "Enter your email",
+        "pattern": "Email must be in the name@example.com format"
+      },
+      "password": {
+        "placeholder": "Password",
+        "title": "Password must be 8 to 16 characters",
+        "required": "Enter your password",
+        "minLength": "Password must be at least 8 characters",
+        "maxLength": "Password must be no more than 20 characters",
+        "pattern": "Password must be 8 to 16 characters and include at least one digit, one lowercase letter and one uppercase letter"
+      },
+      "confirmPassword": {
+        "placeholder": "Confirm password",
+        "title": "Confirm password",
+        "required": "Confirm password"
+      }
+    }
+  }
+}

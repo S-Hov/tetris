@@ -1,0 +1,41 @@
+{
+  "emailVerification": {
+    "seo": {
+      "title": "Email verification - PVP Tetris",
+      "description": "Enter the PVP Tetris verification code to activate your account or restore access."
+    },
+    "invalidLink": "The verification link is invalid. Please register again.",
+    "alreadyVerified": "Email is already verified. Redirecting to login...",
+    "loadError": "Could not load verification data",
+    "fullCode": "Enter the full {{length}}-digit code",
+    "passwordResetSuccess": "Verification passed. A new password has been sent to your email...",
+    "passwordResetNotify": "New password sent to email",
+    "emailVerified": "Email verified. Redirecting to login...",
+    "verifyError": "Could not verify email",
+    "newCodeSent": "New code sent to email",
+    "resendError": "Could not resend code",
+    "emailUpdated": "Email updated. New code sent",
+    "emailChangeError": "Could not change email",
+    "passwordResetTitle": "Password recovery",
+    "emailTitle": "Email verification",
+    "passwordResetSubtitle": "Enter the recovery code for",
+    "emailSubtitle": "We sent a code to",
+    "emailMissing": "email not found",
+    "codeLabel": "Verification code",
+    "digitAria": "Digit {{index}} of {{total}}",
+    "submit": "CONFIRM",
+    "submitting": "CHECKING...",
+    "noCode": "Did not get the code?",
+    "resend": "Resend",
+    "resending": "Sending...",
+    "codeActive": "Code is active for {{time}}",
+    "canRequest": "You can request a new code",
+    "backToLogin": "Back to login",
+    "changeEmail": "Change email",
+    "currentEmail": "Current email",
+    "newEmail": "New email",
+    "saving": "Saving...",
+    "sendNewCode": "Send new code",
+    "cancel": "Cancel"
+  }
+}

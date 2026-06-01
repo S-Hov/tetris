@@ -1,0 +1,12 @@
+{
+  "simpleHeader": {
+    "back": {
+      "home": "Home",
+      "login": "To login",
+      "profile": "To profile",
+      "matches": "To matches",
+      "mode": "To mode",
+      "requests": "To requests"
+    }
+  }
+}

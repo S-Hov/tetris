@@ -1,13 +1,15 @@
 import { useForm, useWatch } from "react-hook-form"
 import { useCallback, useState } from "react"
 import AuthInput from "@/shared/ui/Auth/AuthInput"
-import { registerInputs } from "./AuthForm.data"
+import { getRegisterInputs } from "./AuthForm.data"
 import { useRegister } from "@/shared/hooks/useAuth"
 import { useNavigate } from "react-router-dom"
 import notify from "@/utils/Notifications"
 import TurnstileWidget from "@/shared/ui/TurnstileWidget"
+import { useTranslation } from "react-i18next"
 
 const RegisterForm = () => {
+    const { t } = useTranslation()
     const navigate = useNavigate()
     const {
         register,
@@ -21,6 +23,7 @@ const RegisterForm = () => {
     const { mutate, isPending, error: serverError } = useRegister()
     const [turnstileToken, setTurnstileToken] = useState('')
     const [turnstileResetSignal, setTurnstileResetSignal] = useState(0)
+    const registerInputs = getRegisterInputs(t)
 
     const handleTurnstileTokenChange = useCallback((token) => {
         setTurnstileToken(token)
@@ -33,7 +36,7 @@ const RegisterForm = () => {
 
     const onSubmit = async (data) => {
         if (!turnstileToken) {
-            notify('Проверка безопасности не пройдена', 'error')
+            notify(t('auth.security.turnstile'), 'error')
             return
         }
 
@@ -52,7 +55,7 @@ const RegisterForm = () => {
             navigate(redirectTo)
         } catch (error) {
             resetTurnstile()
-            notify(error.message || 'Проверка безопасности не пройдена', 'error')
+            notify(error.message || t('auth.security.turnstile'), 'error')
         }
     };
     
@@ -65,7 +68,7 @@ const RegisterForm = () => {
 
                 if (input.key === "confirmPassword") {
                     validationRules.validate = (value) =>
-                        value === password || "Пароли не совпадают"
+                        value === password || t('auth.register.passwordMismatch')
                 }
 
                 return (
@@ -83,10 +86,10 @@ const RegisterForm = () => {
                     <input
                         type="checkbox"
                         id="termsCheckbox"
-                        {...register("terms", { required: "Необходимо ваше согласие" })}
+                        {...register("terms", { required: t('auth.register.termsRequired') })}
                     />
                     <label htmlFor="termsCheckbox">
-                        Я соглашаюсь с <span>Условиями Арены</span> и <span>Политикой Кибер-безопасности</span>
+                        {t('auth.register.termsPrefix')} <span>{t('auth.register.termsArena')}</span> {t('auth.register.termsMiddle')} <span>{t('auth.register.termsSecurity')}</span>
                     </label>
                 </div>
                 {errors.terms && <div className="form_error-msg">{errors.terms.message}</div>}
@@ -97,7 +100,7 @@ const RegisterForm = () => {
             <TurnstileWidget onTokenChange={handleTurnstileTokenChange} resetSignal={turnstileResetSignal} />
 
             <button type="submit" className="register-btn submit-btn" disabled={isPending || !turnstileToken}>
-                {isPending ? "ЗАГРУЗКА..." : "СОЗДАТЬ АККАУНТ"}
+                {isPending ? t('auth.register.submitting') : t('auth.register.submit')}
             </button>
         </form>
     )

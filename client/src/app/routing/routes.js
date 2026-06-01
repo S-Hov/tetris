@@ -46,6 +46,7 @@ export const routes = [
         component: LoginPage,
         layout: InnerPageLayout,
         guard: GuestRoute,
+        skipDocumentTitle: true,
     },
     {
         key: 'register',
@@ -54,6 +55,7 @@ export const routes = [
         component: RegisterPage,
         layout: InnerPageLayout,
         guard: GuestRoute,
+        skipDocumentTitle: true,
     },
     {
         key: 'profile',
@@ -140,6 +142,7 @@ export const routes = [
         component: VerifyEmailPage,
         layout: InnerPageLayout,
         guard: GuestRoute,
+        skipDocumentTitle: true,
     },
     {
         key: 'solo-play',
