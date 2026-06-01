@@ -137,12 +137,12 @@ const getLocalizedPath = (pathname, language) => {
             return `/${language}`
         }
 
-        return ['/about', '/profile', '/support'].includes(pathWithoutLanguage)
+        return ['/about', '/profile', '/rating', '/support'].includes(pathWithoutLanguage)
             ? `/${language}${pathWithoutLanguage}`
             : `/${language}`
     }
 
-    return ['/about', '/profile', '/support'].includes(pathname) ? `/${language}${pathname}` : `/${language}`
+    return ['/about', '/profile', '/rating', '/support'].includes(pathname) ? `/${language}${pathname}` : `/${language}`
 }
 
 const getNavItemPath = (item, homePath) => {
@@ -150,7 +150,7 @@ const getNavItemPath = (item, homePath) => {
         return homePath
     }
 
-    if (['about', 'profile', 'support'].includes(item.key)) {
+    if (['about', 'profile', 'leaderboard', 'support'].includes(item.key)) {
         return `${homePath}${item.to}`
     }
 

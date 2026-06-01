@@ -8,6 +8,8 @@ import homeEn from '../pages/Home/i18n/en.json'
 import homeRu from '../pages/Home/i18n/ru.json'
 import profileEn from '../pages/Profile/i18n/en.json'
 import profileRu from '../pages/Profile/i18n/ru.json'
+import ratingEn from '../pages/Rating/i18n/en.json'
+import ratingRu from '../pages/Rating/i18n/ru.json'
 import supportEn from '../pages/Support/i18n/en.json'
 import supportRu from '../pages/Support/i18n/ru.json'
 
@@ -23,8 +25,8 @@ i18n
     .use(initReactI18next)
     .init({
         resources: {
-            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...supportRu } },
-            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...supportEn } },
+            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...ratingRu, ...supportRu } },
+            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...ratingEn, ...supportEn } },
         },
         lng: getLanguageFromPathname(typeof window !== 'undefined' ? window.location.pathname : ''),
         fallbackLng: DEFAULT_LANGUAGE,

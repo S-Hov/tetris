@@ -1,0 +1,68 @@
+{
+  "rating": {
+    "seo": {
+      "title": "Рейтинг - PVP Tetris",
+      "description": "Смотрите рейтинг игроков PVP Tetris: очки ранга, победы, win rate, MMR и solo рекорды."
+    },
+    "sort": {
+      "rating": "Очки ранга",
+      "wins": "Победы",
+      "winRate": "Win rate",
+      "games": "Игры",
+      "mmr": "MMR",
+      "bestSolo": "Solo рекорд"
+    },
+    "hero": {
+      "title": "Зал легенд",
+      "summaryAria": "Статистика рейтинга",
+      "playersOnline": "игроков онлайн",
+      "matchesPlayed": "матчей сыграно",
+      "description": "Лучшие игроки арены. Докажи, что ты достоин быть среди них.",
+      "season": "Сезон 1"
+    },
+    "controls": {
+      "systemAria": "Система рейтинга",
+      "season": "Ranked season",
+      "sortAria": "Сортировка рейтинга",
+      "sortLabel": "Сортировать"
+    },
+    "podium": {
+      "ariaLabel": "Топ игроки",
+      "wins": "Побед",
+      "games": "Игры"
+    },
+    "board": {
+      "title": "Таблица лидеров",
+      "subtitle": "Глобальный рейтинг",
+      "sortPrefix": "сортировка",
+      "liveData": "Живые данные",
+      "loading": "Загружаем рейтинг...",
+      "loadError": "Не удалось загрузить рейтинг",
+      "empty": "Пока нет игроков для выбранной сортировки",
+      "footer": "Рейтинг обновляется автоматически по данным матчей.",
+      "headers": {
+        "player": "Игрок",
+        "rating": "Рейтинг",
+        "wins": "Победы",
+        "winRate": "Win rate",
+        "games": "Игры",
+        "rank": "Ранг",
+        "soloRecord": "Solo рекорд"
+      }
+    },
+    "sidebar": {
+      "ariaLabel": "Данные первого места",
+      "emptyTitle": "Первое место",
+      "emptyText": "Данные появятся после загрузки рейтинга.",
+      "leaderTitle": "Игрок Сезона",
+      "recordsTitle": "Рекорды сезона",
+      "maxMmr": "Максимальный MMR",
+      "bestWins": "Лучшие победы",
+      "bestWinRate": "Лучший Win Rate",
+      "soloRecord": "Solo рекорд"
+    },
+    "rankFallback": "Bronze",
+    "avatarAlt": "avatar",
+    "rankAlt": "rank"
+  }
+}

@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Navigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { Helmet } from 'react-helmet-async'
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '@/i18n'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { leaderboardAPI } from '@/shared/api/leaderboard'
 import seasonBg from './assets/backgrounds/season_bg.png'
@@ -7,26 +11,42 @@ import silverBg from './assets/leaders_bg/silver.png'
 import bronzeBg from './assets/leaders_bg/bronze.png'
 import './RatingPage.css'
 
-const sortOptions = [
-    { key: 'rating', label: 'Очки ранга', icon: 'fas fa-bolt' },
-    { key: 'wins', label: 'Победы', icon: 'fas fa-trophy' },
-    { key: 'winRate', label: 'Win rate', icon: 'fas fa-percentage' },
-    { key: 'games', label: 'Игры', icon: 'fas fa-gamepad' },
-    { key: 'mmr', label: 'MMR', icon: 'fas fa-wave-square' },
-    { key: 'bestSolo', label: 'Solo рекорд', icon: 'fas fa-star' },
+const SITE_URL = 'https://www.pvp-tetris.online'
+
+const sortOptionsMeta = [
+    { key: 'rating', icon: 'fas fa-bolt' },
+    { key: 'wins', icon: 'fas fa-trophy' },
+    { key: 'winRate', icon: 'fas fa-percentage' },
+    { key: 'games', icon: 'fas fa-gamepad' },
+    { key: 'mmr', icon: 'fas fa-wave-square' },
+    { key: 'bestSolo', icon: 'fas fa-star' },
 ]
 
 const podiumConfig = {
-    1: { bg: goldBg, label: 'Первое место', accent: 'gold' },
-    2: { bg: silverBg, label: 'Второе место', accent: 'silver' },
-    3: { bg: bronzeBg, label: 'Третье место', accent: 'bronze' },
+    1: { bg: goldBg, accent: 'gold' },
+    2: { bg: silverBg, accent: 'silver' },
+    3: { bg: bronzeBg, accent: 'bronze' },
 }
 
 const RatingPage = () => {
+    const { lang } = useParams()
+    const { t, i18n } = useTranslation()
     const [sort, setSort] = useState('rating')
     const [players, setPlayers] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState('')
+    const isSupportedLanguage = SUPPORTED_LANGUAGES.includes(lang)
+    const currentLanguage = isSupportedLanguage ? lang : DEFAULT_LANGUAGE
+    const sortOptions = useMemo(() => sortOptionsMeta.map((option) => ({
+        ...option,
+        label: t(`rating.sort.${option.key}`),
+    })), [t])
+
+    useEffect(() => {
+        if (i18n.language !== currentLanguage) {
+            i18n.changeLanguage(currentLanguage)
+        }
+    }, [currentLanguage, i18n])
 
     useEffect(() => {
         let ignore = false
@@ -44,7 +64,7 @@ const RatingPage = () => {
             } catch (requestError) {
                 if (!ignore) {
                     setPlayers([])
-                    setError(requestError?.message || 'Не удалось загрузить рейтинг')
+                    setError(requestError?.message || t('rating.board.loadError'))
                 }
             } finally {
                 if (!ignore) {
@@ -58,7 +78,7 @@ const RatingPage = () => {
         return () => {
             ignore = true
         }
-    }, [sort])
+    }, [sort, t])
 
     const topPlayers = useMemo(() => players.slice(0, 3), [players])
     const podiumPlayers = useMemo(() => {
@@ -72,8 +92,21 @@ const RatingPage = () => {
         [players]
     )
 
+    if (!isSupportedLanguage) {
+        return <Navigate to={`/${DEFAULT_LANGUAGE}/rating`} replace />
+    }
+
     return (
         <section className="section rating-page">
+            <Helmet htmlAttributes={{ lang: currentLanguage }}>
+                <title>{t('rating.seo.title')}</title>
+                <meta name="description" content={t('rating.seo.description')} />
+                <link rel="canonical" href={`${SITE_URL}/${currentLanguage}/rating`} />
+                <link rel="alternate" hrefLang="ru" href={`${SITE_URL}/ru/rating`} />
+                <link rel="alternate" hrefLang="en" href={`${SITE_URL}/en/rating`} />
+                <link rel="alternate" hrefLang="x-default" href={`${SITE_URL}/ru/rating`} />
+            </Helmet>
+
             <div className="container rating-container">
                 <section className="rating-hero">
                     <GlowEffect>
@@ -81,40 +114,42 @@ const RatingPage = () => {
                             <span className="rating-eyebrow">PvP Tetris</span>
 
                             <div className='rating-hero-header'>
-                                <h1 className='glow-text'>Зал легенд</h1>
-                                <div className="rating-summary" aria-label="Статистика рейтинга">
+                                <h1 className='glow-text'>{t('rating.hero.title')}</h1>
+                                <div className="rating-summary" aria-label={t('rating.hero.summaryAria')}>
                                     <span>
-                                        <strong>{formatNumber(players.length)}</strong>
-                                        игроков онлайн
+                                        <strong>{formatNumber(players.length, currentLanguage)}</strong>
+                                        {' '}
+                                        {t('rating.hero.playersOnline')}
                                     </span>
                                     <span>
-                                        <strong>{formatNumber(totalGames)}</strong>
-                                        матчей сыграно
+                                        <strong>{formatNumber(totalGames, currentLanguage)}</strong>
+                                        {' '}
+                                        {t('rating.hero.matchesPlayed')}
                                     </span>
                                 </div>
                             </div>
-                            <p>Лучшие игроки арены. Докажи, что ты достоин быть среди них.</p>
+                            <p>{t('rating.hero.description')}</p>
                         </div>
                     </GlowEffect>
 
 
                     <aside className="rating-season" style={{ backgroundImage: `url(${seasonBg})` }}>
-                        <span>Сезон 1</span>
+                        <span>{t('rating.hero.season')}</span>
                     </aside>
                 </section>
 
                 <section className="rating-controls-card">
                     <GlowEffect>
                         <div className="glow-effect rating-controls">
-                            <div className="rating-control-group" aria-label="Система рейтинга">
+                            <div className="rating-control-group" aria-label={t('rating.controls.systemAria')}>
                                 <span className="rating-chip rating-chip--active">
                                     <i className="fas fa-trophy"></i>
-                                    Ranked season
+                                    {t('rating.controls.season')}
                                 </span>
                             </div>
 
-                            <div className="rating-sort-panel" aria-label="Сортировка рейтинга">
-                                <span>Сортировать</span>
+                            <div className="rating-sort-panel" aria-label={t('rating.controls.sortAria')}>
+                                <span>{t('rating.controls.sortLabel')}</span>
                                 <div>
                                     {sortOptions.map((option) => (
                                         <button
@@ -135,9 +170,9 @@ const RatingPage = () => {
                 </section>
 
                 {podiumPlayers.length > 0 && (
-                    <section className="rating-podium" aria-label="Топ игроки">
+                    <section className="rating-podium" aria-label={t('rating.podium.ariaLabel')}>
                         {podiumPlayers.map((player) => (
-                            <PodiumCard key={player.id} player={player} />
+                            <PodiumCard key={player.id} player={player} currentLanguage={currentLanguage} />
                         ))}
                     </section>
                 )}
@@ -148,19 +183,19 @@ const RatingPage = () => {
                             <div className="glow-effect rating-board-inner">
                                 <div className="rating-board-header">
                                     <div>
-                                        <h2>Таблица лидеров</h2>
-                                        <p>Глобальный рейтинг | {getSortLabel(sort)}</p>
+                                        <h2>{t('rating.board.title')}</h2>
+                                        <p>{t('rating.board.subtitle')} | {getSortLabel(sort, sortOptions, t)}</p>
                                     </div>
                                     <span>
                                         <i className="fas fa-sync-alt"></i>
-                                        Живые данные
+                                        {t('rating.board.liveData')}
                                     </span>
                                 </div>
 
                                 {isLoading ? (
                                     <div className="rating-state">
                                         <i className="fas fa-sync-alt"></i>
-                                        Загружаем рейтинг...
+                                        {t('rating.board.loading')}
                                     </div>
                                 ) : error ? (
                                     <div className="rating-state rating-state--error">
@@ -170,7 +205,7 @@ const RatingPage = () => {
                                 ) : players.length === 0 ? (
                                     <div className="rating-state">
                                         <i className="fas fa-database"></i>
-                                        Пока нет игроков для выбранной сортировки
+                                        {t('rating.board.empty')}
                                     </div>
                                 ) : (
                                     <div className="rating-table-wrap">
@@ -178,13 +213,13 @@ const RatingPage = () => {
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>Игрок</th>
-                                                    <th>Рейтинг</th>
-                                                    <th>Победы</th>
-                                                    <th>Win rate</th>
-                                                    <th>Игры</th>
-                                                    <th>Ранг</th>
-                                                    <th>Solo рекорд</th>
+                                                    <th>{t('rating.board.headers.player')}</th>
+                                                    <th>{t('rating.board.headers.rating')}</th>
+                                                    <th>{t('rating.board.headers.wins')}</th>
+                                                    <th>{t('rating.board.headers.winRate')}</th>
+                                                    <th>{t('rating.board.headers.games')}</th>
+                                                    <th>{t('rating.board.headers.rank')}</th>
+                                                    <th>{t('rating.board.headers.soloRecord')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -200,21 +235,21 @@ const RatingPage = () => {
                                                                 <RatingAvatar player={player} small />
                                                                 <span>
                                                                     <strong>{player.username}</strong>
-                                                                    <small>MMR {formatNumber(player.mmr)}</small>
+                                                                    <small>MMR {formatNumber(player.mmr, currentLanguage)}</small>
                                                                 </span>
                                                             </div>
                                                         </td>
-                                                        <td className="rating-value">{formatNumber(player.rating)}</td>
-                                                        <td>{formatNumber(player.wins)}</td>
+                                                        <td className="rating-value">{formatNumber(player.rating, currentLanguage)}</td>
+                                                        <td>{formatNumber(player.wins, currentLanguage)}</td>
                                                         <td>{player.winRate}%</td>
-                                                        <td>{formatNumber(player.totalGames)}</td>
+                                                        <td>{formatNumber(player.totalGames, currentLanguage)}</td>
                                                         <td>
                                                             <span className="rating-rank-tier">
                                                                 <RankTierImage tier={player.rankTier} className="rating-rank-tier-image" />
-                                                                {player.rankTier?.label || 'Bronze'}
+                                                                {player.rankTier?.label || t('rating.rankFallback')}
                                                             </span>
                                                         </td>
-                                                        <td>{formatNumber(player.bestSoloScore)}</td>
+                                                        <td>{formatNumber(player.bestSoloScore, currentLanguage)}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -224,14 +259,14 @@ const RatingPage = () => {
 
                                 <footer className="rating-update-info">
                                     <i className="fas fa-shield-alt"></i>
-                                    Рейтинг обновляется автоматически по данным матчей.
+                                    {t('rating.board.footer')}
                                 </footer>
                             </div>
                         </GlowEffect>
                     </section>
 
-                    <aside className="rating-sidebar" aria-label="Данные первого места">
-                        <LeaderPanel player={leader} />
+                    <aside className="rating-sidebar" aria-label={t('rating.sidebar.ariaLabel')}>
+                        <LeaderPanel player={leader} currentLanguage={currentLanguage} />
                     </aside>
                 </div>
             </div>
@@ -239,7 +274,8 @@ const RatingPage = () => {
     )
 }
 
-const PodiumCard = ({ player }) => {
+const PodiumCard = ({ player, currentLanguage }) => {
+    const { t } = useTranslation()
     const config = podiumConfig[player.rank] || podiumConfig[3]
 
     return (
@@ -253,33 +289,35 @@ const PodiumCard = ({ player }) => {
             <span className="rating-player-country">🇷🇺</span>
             <span className="rating-tier-pill">
                 <RankTierImage tier={player.rankTier} className="rating-rank-tier-image rating-rank-tier-image--pill" />
-                {player.rankTier?.label || 'Bronze'}
+                {player.rankTier?.label || t('rating.rankFallback')}
             </span>
-            <strong>{formatNumber(player.rating)} <small>MMR</small></strong>
+            <strong>{formatNumber(player.rating, currentLanguage)} <small>MMR</small></strong>
             <div className="rating-podium-stats">
                 <span>
-                    <small>Win rate</small>
+                    <small>{t('rating.sort.winRate')}</small>
                     {player.winRate}%
                 </span>
                 <span>
-                    <small>Побед</small>
-                    {formatNumber(player.wins)}
+                    <small>{t('rating.podium.wins')}</small>
+                    {formatNumber(player.wins, currentLanguage)}
                 </span>
                 <span>
-                    <small>Игры</small>
-                    {formatNumber(player.totalGames)}
+                    <small>{t('rating.podium.games')}</small>
+                    {formatNumber(player.totalGames, currentLanguage)}
                 </span>
             </div>
         </article>
     )
 }
 
-const LeaderPanel = ({ player }) => {
+const LeaderPanel = ({ player, currentLanguage }) => {
+    const { t } = useTranslation()
+
     if (!player) {
         return (
             <div className="rating-leader-card rating-leader-card--empty">
-                <h2>Первое место</h2>
-                <p>Данные появятся после загрузки рейтинга.</p>
+                <h2>{t('rating.sidebar.emptyTitle')}</h2>
+                <p>{t('rating.sidebar.emptyText')}</p>
             </div>
         )
     }
@@ -287,22 +325,22 @@ const LeaderPanel = ({ player }) => {
     return (
         <>
             <div className="rating-leader-card">
-                <h2>Игрок Сезона</h2>
+                <h2>{t('rating.sidebar.leaderTitle')}</h2>
                 <RatingAvatar player={player} />
                 <strong>{player.username} <span>🇷🇺</span></strong>
                 <span className="rating-tier-pill">
                     <RankTierImage tier={player.rankTier} className="rating-rank-tier-image rating-rank-tier-image--pill" />
-                    {player.rankTier?.label || 'Bronze'}
+                    {player.rankTier?.label || t('rating.rankFallback')}
                 </span>
-                <b>{formatNumber(player.rating)} <small>MMR</small></b>
+                <b>{formatNumber(player.rating, currentLanguage)} <small>MMR</small></b>
             </div>
 
             <div className="rating-leader-stats">
-                <h2>Рекорды сезона</h2>
-                <LeaderStat label="Максимальный MMR" value={formatNumber(player.mmr)} />
-                <LeaderStat label="Лучшие победы" value={formatNumber(player.wins)} />
-                <LeaderStat label="Лучший Win Rate" value={`${player.winRate}%`} />
-                <LeaderStat label="Solo рекорд" value={formatNumber(player.bestSoloScore)} />
+                <h2>{t('rating.sidebar.recordsTitle')}</h2>
+                <LeaderStat label={t('rating.sidebar.maxMmr')} value={formatNumber(player.mmr, currentLanguage)} />
+                <LeaderStat label={t('rating.sidebar.bestWins')} value={formatNumber(player.wins, currentLanguage)} />
+                <LeaderStat label={t('rating.sidebar.bestWinRate')} value={`${player.winRate}%`} />
+                <LeaderStat label={t('rating.sidebar.soloRecord')} value={formatNumber(player.bestSoloScore, currentLanguage)} />
             </div>
         </>
     )
@@ -315,7 +353,7 @@ const LeaderStat = ({ label, value }) => (
     </div>
 )
 
-const formatNumber = (value) => new Intl.NumberFormat('ru-RU').format(Number(value) || 0)
+const formatNumber = (value, lang = DEFAULT_LANGUAGE) => new Intl.NumberFormat(lang === 'en' ? 'en-US' : 'ru-RU').format(Number(value) || 0)
 
 const getAssetUrl = (value) => {
     if (!value) return ''
@@ -368,10 +406,10 @@ const getRankIcon = (rank) => {
     return rank
 }
 
-const getSortLabel = (sort) => {
+const getSortLabel = (sort, sortOptions, t) => {
     const option = sortOptions.find((item) => item.key === sort)
 
-    return option ? `сортировка: ${option.label}` : 'сортировка: Рейтинг'
+    return `${t('rating.board.sortPrefix')}: ${option?.label || t('rating.sort.rating')}`
 }
 
 export default RatingPage

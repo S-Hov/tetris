@@ -82,10 +82,11 @@ export const routes = [
     },
     {
         key: 'rating',
-        path: '/rating',
+        path: '/:lang/rating',
         title: 'Рейтинг',
         component: RatingPage,
         layout: MainLayout,
+        skipDocumentTitle: true,
     },
     {
         key: 'about',

@@ -507,7 +507,7 @@
     border: var(--border);
     border-radius: 999px;
     background: var(--input-bg);
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     font-family: var(--font-1);
     font-size: 1rem;
     font-weight: 800;
@@ -565,16 +565,13 @@
 
 .rating-leader-card {
     min-height: 335px;
-    background:
-        radial-gradient(circle at 50% 38%, rgba(154, 34, 255, 0.34), transparent 34%),
-        linear-gradient(180deg, rgba(20, 8, 48, 0.88), rgba(5, 10, 24, 0.92));
 }
 
 .rating-leader-card h2,
 .rating-leader-stats h2 {
     width: 100%;
     margin: 0;
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     font-family: var(--font-1);
     font-size: 0.95rem;
     text-align: left;
@@ -588,7 +585,7 @@
 }
 
 .rating-leader-card > strong {
-    color: var(--text-active-color);
+    color: var(--text-color-1);
     font-family: var(--font-1);
     font-size: 1.1rem;
 }
