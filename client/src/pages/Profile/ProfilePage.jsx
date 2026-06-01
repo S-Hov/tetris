@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import { useTranslation } from 'react-i18next'
 import AppSwitch from '@/shared/ui/AppSwitch'
 import GlowEffect from '@/shared/ui/GlowEffect'
+import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
 import ProfileSideNav from '@/widgets/ProfileSideNav'
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '@/i18n'
 import { useAuth } from '@/shared/hooks/useAuth'
@@ -225,6 +226,14 @@ const ProfilePage = () => {
                                 action={<Link to="/account-settings">{t('profile.settings.all')}</Link>}
                             />
                             <div className="profile-quick-settings-grid">
+                                <div className="profile-settings-toggle profile-language-setting">
+                                    <span className="profile-settings-toggle__icon"><i className="fas fa-language"></i></span>
+                                    <span>
+                                        <strong>{t('profile.settings.language')}</strong>
+                                        <small>{t('profile.settings.languageDescription')}</small>
+                                    </span>
+                                    <InterfaceLanguageSelect className="profile-language-select" />
+                                </div>
                                 <button
                                     type="button"
                                     className="profile-settings-toggle"

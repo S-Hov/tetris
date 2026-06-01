@@ -59,7 +59,9 @@
       "darkTheme": "Dark theme",
       "darkThemeDescription": "Interface appearance",
       "glow": "Cursor glow",
-      "glowDescription": "Glow effect on panels"
+      "glowDescription": "Glow effect on panels",
+      "language": "Interface language",
+      "languageDescription": "Text language in the interface"
     },
     "account": {
       "title": "Account",

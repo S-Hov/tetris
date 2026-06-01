@@ -18,7 +18,19 @@ export { DEFAULT_LANGUAGE, LANGUAGES, SUPPORTED_LANGUAGES } from './languages'
 export const getLanguageFromPathname = (pathname = '') => {
     const [, maybeLanguage] = pathname.split('/')
 
-    return SUPPORTED_LANGUAGES.includes(maybeLanguage) ? maybeLanguage : DEFAULT_LANGUAGE
+    if (SUPPORTED_LANGUAGES.includes(maybeLanguage)) {
+        return maybeLanguage
+    }
+
+    if (typeof window !== 'undefined') {
+        const storedLanguage = window.localStorage.getItem('interfaceLanguage')
+
+        if (SUPPORTED_LANGUAGES.includes(storedLanguage)) {
+            return storedLanguage
+        }
+    }
+
+    return DEFAULT_LANGUAGE
 }
 
 i18n

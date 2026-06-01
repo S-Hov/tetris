@@ -59,7 +59,9 @@
       "darkTheme": "Темная тема",
       "darkThemeDescription": "Оформление интерфейса",
       "glow": "Подсветка курсора",
-      "glowDescription": "Glow effect на панелях"
+      "glowDescription": "Glow effect на панелях",
+      "language": "Язык интерфейса",
+      "languageDescription": "Язык текста в интерфейсе"
     },
     "account": {
       "title": "Аккаунт",

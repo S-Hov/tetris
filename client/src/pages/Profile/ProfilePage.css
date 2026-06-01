@@ -526,6 +526,21 @@
     }
 }
 
+.profile-language-setting {
+    cursor: default;
+
+    &:hover,
+    &:focus-visible {
+        transform: none;
+        filter: none;
+    }
+}
+
+.profile-language-select {
+    width: 120px;
+    justify-self: end;
+}
+
 .profile-account-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -669,6 +684,11 @@
 
     .profile-settings-toggle {
         justify-items: start;
+    }
+
+    .profile-language-select {
+        width: 100%;
+        justify-self: stretch;
     }
 
     .profile-hero-stats {

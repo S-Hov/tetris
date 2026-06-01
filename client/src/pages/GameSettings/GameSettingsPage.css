@@ -151,6 +151,20 @@
     outline: none;
 }
 
+.game-settings-page__language-setting {
+    cursor: default;
+}
+
+.game-settings-page__language-setting:hover,
+.game-settings-page__language-setting:focus-visible {
+    transform: none;
+}
+
+.game-settings-page__language-select {
+    width: 120px;
+    flex: 0 0 120px;
+}
+
 @media (max-width: 760px) {
     .game-settings-page__cards {
         grid-template-columns: 1fr;
@@ -174,5 +188,15 @@
 
     .game-settings-page__card-icon {
         display: none;
+    }
+
+    .game-settings-page__toggle {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .game-settings-page__language-select {
+        width: 100%;
+        flex-basis: auto;
     }
 }

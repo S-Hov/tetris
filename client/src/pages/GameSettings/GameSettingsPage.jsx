@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 
 import AppSwitch from '@/shared/ui/AppSwitch'
 import GlowEffect from '@/shared/ui/GlowEffect'
+import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
 import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
 
@@ -53,6 +54,13 @@ const GameSettingsPage = () => {
                         </div>
 
                         <div className="glow-effect game-settings-page__general">
+                            <div className="game-settings-page__toggle game-settings-page__language-setting">
+                                <span>
+                                    <strong>Язык интерфейса</strong>
+                                    <small>Переключает язык текста в интерфейсе</small>
+                                </span>
+                                <InterfaceLanguageSelect className="game-settings-page__language-select" />
+                            </div>
                             <button
                                 type="button"
                                 className="game-settings-page__toggle"

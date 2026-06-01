@@ -152,6 +152,19 @@
     }
 }
 
+.account-language-setting {
+    cursor: default;
+
+    &:hover {
+        transform: none;
+    }
+}
+
+.account-language-select {
+    width: 120px;
+    flex: 0 0 120px;
+}
+
 .account-profile-form {
     display: grid;
     grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
@@ -563,5 +576,15 @@
 
     .account-email-modal__actions {
         grid-template-columns: 1fr;
+    }
+
+    .account-language-setting {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .account-language-select {
+        width: 100%;
+        flex-basis: auto;
     }
 }

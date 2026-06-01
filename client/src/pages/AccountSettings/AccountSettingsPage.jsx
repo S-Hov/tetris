@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import AppSwitch from '@/shared/ui/AppSwitch'
+import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
 import ProfileSideNav from '@/widgets/ProfileSideNav'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
@@ -278,264 +279,270 @@ const AccountSettingsPage = () => {
                     </div>
 
                     <div className="account-settings-tabs" role="tablist" aria-label="Разделы настроек">
-                    <button
-                        type="button"
-                        className={activeTab === 'general' ? 'is-active' : ''}
-                        onClick={() => setActiveTab('general')}
-                    >
-                        <i className="fas fa-sliders"></i>
-                        Общие
-                    </button>
-                    <button
-                        type="button"
-                        className={activeTab === 'account' ? 'is-active' : ''}
-                        onClick={() => setActiveTab('account')}
-                    >
-                        <i className="fas fa-user"></i>
-                        Аккаунт
-                    </button>
-                    <button
-                        type="button"
-                        className={activeTab === 'security' ? 'is-active' : ''}
-                        onClick={() => setActiveTab('security')}
-                    >
-                        <i className="fas fa-shield-alt"></i>
-                        Безопасность
-                    </button>
+                        <button
+                            type="button"
+                            className={activeTab === 'general' ? 'is-active' : ''}
+                            onClick={() => setActiveTab('general')}
+                        >
+                            <i className="fas fa-sliders"></i>
+                            Общие
+                        </button>
+                        <button
+                            type="button"
+                            className={activeTab === 'account' ? 'is-active' : ''}
+                            onClick={() => setActiveTab('account')}
+                        >
+                            <i className="fas fa-user"></i>
+                            Аккаунт
+                        </button>
+                        <button
+                            type="button"
+                            className={activeTab === 'security' ? 'is-active' : ''}
+                            onClick={() => setActiveTab('security')}
+                        >
+                            <i className="fas fa-shield-alt"></i>
+                            Безопасность
+                        </button>
                     </div>
 
                     {activeTab === 'general' && (
-                    <section className="account-settings-panel">
-                        <GlowEffect>
-                            <div className="glow-effect account-general-settings">
-                                <div className="account-section-title">
-                                    <i className="fas fa-palette"></i>
-                                    Оформление
-                                </div>
-
-                                <button
-                                    type="button"
-                                    className="account-theme-toggle"
-                                    aria-pressed={isDarkTheme}
-                                    onClick={toggleTheme}
-                                >
-                                    <span>
-                                        <strong>Тёмная тема</strong>
-                                        <small>Переключает цветовую схему интерфейса</small>
-                                    </span>
-                                    <AppSwitch checked={isDarkTheme} />
-                                </button>
-                                <button
-                                    type="button"
-                                    className="account-theme-toggle"
-                                    aria-pressed={isGlowEffectEnabled}
-                                    onClick={toggleGlowEffect}
-                                >
-                                    <span>
-                                        <strong>Glow Effect</strong>
-                                        <small>Включает и выключает свечение карточек при движении курсора</small>
-                                    </span>
-                                    <AppSwitch checked={isGlowEffectEnabled} />
-                                </button>
-                            </div>
-                        </GlowEffect>
-                    </section>
-                    )}
-
-                    {activeTab === 'account' && (
-                    <section className="account-settings-panel">
-                        <GlowEffect>
-                            <form className="glow-effect account-profile-form" onSubmit={handleProfileSave}>
-                                <div className="account-avatar-block">
-                                    <div className="account-avatar">
-                                        {avatarPreview || profile.avatarUrl ? (
-                                            accountAvatarMedia(avatarPreview || profile.avatarUrl, profile.name)
-                                        ) : (
-                                            <i className="fas fa-user-astronaut"></i>
-                                        )}
+                        <section className="account-settings-panel">
+                            <GlowEffect>
+                                <div className="glow-effect account-general-settings">
+                                    <div className="account-section-title">
+                                        <i className="fas fa-palette"></i>
+                                        Оформление
+                                    </div>
+                                    <div className="account-theme-toggle account-language-setting">
+                                        <span>
+                                            <strong>Язык интерфейса</strong>
+                                            <small>Переключает язык текста в интерфейсе</small>
+                                        </span>
+                                        <InterfaceLanguageSelect className="account-language-select" />
                                     </div>
                                     <button
                                         type="button"
-                                        className="account-avatar-edit"
-                                        aria-label="Выбрать новую аватарку"
-                                        onClick={() => avatarInputRef.current?.click()}
+                                        className="account-theme-toggle"
+                                        aria-pressed={isDarkTheme}
+                                        onClick={toggleTheme}
                                     >
-                                        <i className="fas fa-pen"></i>
+                                        <span>
+                                            <strong>Тёмная тема</strong>
+                                            <small>Переключает цветовую схему интерфейса</small>
+                                        </span>
+                                        <AppSwitch checked={isDarkTheme} />
                                     </button>
-                                    <input
-                                        ref={avatarInputRef}
-                                        type="file"
-                                        accept="image/png,image/jpeg,image/gif,image/webp,image/avif,video/webm"
-                                        onChange={handleAvatarChange}
-                                    />
+                                    <button
+                                        type="button"
+                                        className="account-theme-toggle"
+                                        aria-pressed={isGlowEffectEnabled}
+                                        onClick={toggleGlowEffect}
+                                    >
+                                        <span>
+                                            <strong>Glow Effect</strong>
+                                            <small>Включает и выключает свечение карточек при движении курсора</small>
+                                        </span>
+                                        <AppSwitch checked={isGlowEffectEnabled} />
+                                    </button>
                                 </div>
+                            </GlowEffect>
+                        </section>
+                    )}
 
-                                <label className="account-field account-field--username">
-                                    <span>Никнейм</span>
-                                    <input
-                                        type="text"
-                                        value={profileForm.username}
-                                        maxLength={32}
-                                        onChange={(event) => setProfileForm({ username: event.target.value })}
-                                    />
-                                </label>
-
-                                <button type="submit" className="button account-save-button" disabled={isSavingProfile}>
-                                    <i className="fas fa-save"></i>
-                                    {isSavingProfile ? 'Сохраняем...' : 'Сохранить'}
-                                </button>
-
-                                <div className="account-info-grid">
-                                    <InfoRow label="Почта" value={profile.email}>
-                                        <button type="button" onClick={() => setIsEmailModalOpen(true)}>
-                                            Изменить
+                    {activeTab === 'account' && (
+                        <section className="account-settings-panel">
+                            <GlowEffect>
+                                <form className="glow-effect account-profile-form" onSubmit={handleProfileSave}>
+                                    <div className="account-avatar-block">
+                                        <div className="account-avatar">
+                                            {avatarPreview || profile.avatarUrl ? (
+                                                accountAvatarMedia(avatarPreview || profile.avatarUrl, profile.name)
+                                            ) : (
+                                                <i className="fas fa-user-astronaut"></i>
+                                            )}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            className="account-avatar-edit"
+                                            aria-label="Выбрать новую аватарку"
+                                            onClick={() => avatarInputRef.current?.click()}
+                                        >
+                                            <i className="fas fa-pen"></i>
                                         </button>
-                                    </InfoRow>
-                                    <InfoRow label="Страна" value={profile.country} />
-                                    <InfoRow label="Статус" value={formatStatus(profile.status)} />
-                                </div>
-                            </form>
-                        </GlowEffect>
-                    </section>
+                                        <input
+                                            ref={avatarInputRef}
+                                            type="file"
+                                            accept="image/png,image/jpeg,image/gif,image/webp,image/avif,video/webm"
+                                            onChange={handleAvatarChange}
+                                        />
+                                    </div>
+
+                                    <label className="account-field account-field--username">
+                                        <span>Никнейм</span>
+                                        <input
+                                            type="text"
+                                            value={profileForm.username}
+                                            maxLength={32}
+                                            onChange={(event) => setProfileForm({ username: event.target.value })}
+                                        />
+                                    </label>
+
+                                    <button type="submit" className="button account-save-button" disabled={isSavingProfile}>
+                                        <i className="fas fa-save"></i>
+                                        {isSavingProfile ? 'Сохраняем...' : 'Сохранить'}
+                                    </button>
+
+                                    <div className="account-info-grid">
+                                        <InfoRow label="Почта" value={profile.email}>
+                                            <button type="button" onClick={() => setIsEmailModalOpen(true)}>
+                                                Изменить
+                                            </button>
+                                        </InfoRow>
+                                        <InfoRow label="Страна" value={profile.country} />
+                                        <InfoRow label="Статус" value={formatStatus(profile.status)} />
+                                    </div>
+                                </form>
+                            </GlowEffect>
+                        </section>
                     )}
 
                     {activeTab === 'security' && (
-                    <section className="account-security-grid">
-                        <GlowEffect className="account-login-methods-wrap">
-                            <div className="glow-effect account-login-methods">
-                                <div className="account-section-title">
-                                    <i className="fas fa-fingerprint"></i>
-                                    Способы входа
-                                </div>
+                        <section className="account-security-grid">
+                            <GlowEffect className="account-login-methods-wrap">
+                                <div className="glow-effect account-login-methods">
+                                    <div className="account-section-title">
+                                        <i className="fas fa-fingerprint"></i>
+                                        Способы входа
+                                    </div>
 
-                                <div className="account-login-method-list">
-                                    {isConnectionsLoading ? (
-                                        <div className="account-empty-state">Загружаем способы входа...</div>
-                                    ) : (
-                                        <>
-                                            <article className="account-login-method">
-                                                <span className="account-login-method__icon">
-                                                    <i className="fas fa-envelope"></i>
-                                                </span>
-                                                <div>
-                                                    <strong>Почта и пароль</strong>
-                                                    <small>{connections?.hasPassword ? 'Основной способ входа' : 'Пароль ещё не установлен'}</small>
-                                                </div>
-                                                <span className="account-login-method__badge">Нельзя удалить</span>
-                                            </article>
-
-                                            {(connections?.providers || []).map((provider) => (
-                                                <article
-                                                    key={provider.provider}
-                                                    className={`account-login-method ${provider.isConnected ? 'is-connected' : ''}`}
-                                                >
+                                    <div className="account-login-method-list">
+                                        {isConnectionsLoading ? (
+                                            <div className="account-empty-state">Загружаем способы входа...</div>
+                                        ) : (
+                                            <>
+                                                <article className="account-login-method">
                                                     <span className="account-login-method__icon">
-                                                        <i className={getProviderIcon(provider.provider)}></i>
+                                                        <i className="fas fa-envelope"></i>
                                                     </span>
                                                     <div>
-                                                        <strong>{provider.label}</strong>
-                                                        <small>
-                                                            {provider.isConnected
-                                                                ? `Подключён ${formatDateTime(provider.connectedAt)}`
-                                                                : 'Не подключён'}
-                                                        </small>
+                                                        <strong>Почта и пароль</strong>
+                                                        <small>{connections?.hasPassword ? 'Основной способ входа' : 'Пароль ещё не установлен'}</small>
                                                     </div>
-                                                    {provider.isConnected ? (
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleUnlinkConnection(provider.provider)}
-                                                            disabled={!provider.canUnlink || unlinkingProvider === provider.provider}
-                                                        >
-                                                            {unlinkingProvider === provider.provider ? 'Удаляем...' : 'Удалить'}
-                                                        </button>
-                                                    ) : (
-                                                        <span className="account-login-method__badge">Нет</span>
-                                                    )}
+                                                    <span className="account-login-method__badge">Нельзя удалить</span>
                                                 </article>
-                                            ))}
-                                        </>
-                                    )}
+
+                                                {(connections?.providers || []).map((provider) => (
+                                                    <article
+                                                        key={provider.provider}
+                                                        className={`account-login-method ${provider.isConnected ? 'is-connected' : ''}`}
+                                                    >
+                                                        <span className="account-login-method__icon">
+                                                            <i className={getProviderIcon(provider.provider)}></i>
+                                                        </span>
+                                                        <div>
+                                                            <strong>{provider.label}</strong>
+                                                            <small>
+                                                                {provider.isConnected
+                                                                    ? `Подключён ${formatDateTime(provider.connectedAt)}`
+                                                                    : 'Не подключён'}
+                                                            </small>
+                                                        </div>
+                                                        {provider.isConnected ? (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleUnlinkConnection(provider.provider)}
+                                                                disabled={!provider.canUnlink || unlinkingProvider === provider.provider}
+                                                            >
+                                                                {unlinkingProvider === provider.provider ? 'Удаляем...' : 'Удалить'}
+                                                            </button>
+                                                        ) : (
+                                                            <span className="account-login-method__badge">Нет</span>
+                                                        )}
+                                                    </article>
+                                                ))}
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        </GlowEffect>
+                            </GlowEffect>
 
-                        <GlowEffect>
-                            <form className="glow-effect account-password-form" onSubmit={handlePasswordSave}>
-                                <div className="account-section-title">
-                                    <i className="fas fa-key"></i>
-                                    Изменение пароля
+                            <GlowEffect>
+                                <form className="glow-effect account-password-form" onSubmit={handlePasswordSave}>
+                                    <div className="account-section-title">
+                                        <i className="fas fa-key"></i>
+                                        Изменение пароля
+                                    </div>
+
+                                    <label className="account-field">
+                                        <span>Текущий пароль</span>
+                                        <input
+                                            type="password"
+                                            value={passwordForm.currentPassword}
+                                            autoComplete="current-password"
+                                            onChange={(event) => handlePasswordFormChange('currentPassword', event.target.value)}
+                                            required
+                                        />
+                                    </label>
+                                    <label className="account-field">
+                                        <span>Новый пароль</span>
+                                        <input
+                                            type="password"
+                                            value={passwordForm.newPassword}
+                                            autoComplete="new-password"
+                                            onChange={(event) => handlePasswordFormChange('newPassword', event.target.value)}
+                                            required
+                                        />
+                                    </label>
+                                    <label className="account-field">
+                                        <span>Подтверждение нового пароля</span>
+                                        <input
+                                            type="password"
+                                            value={passwordForm.confirmPassword}
+                                            autoComplete="new-password"
+                                            onChange={(event) => handlePasswordFormChange('confirmPassword', event.target.value)}
+                                            required
+                                        />
+                                    </label>
+
+                                    <button type="submit" className="button account-save-button" disabled={isSavingPassword}>
+                                        <i className="fas fa-save"></i>
+                                        {isSavingPassword ? 'Обновляем...' : 'Обновить пароль'}
+                                    </button>
+                                </form>
+                            </GlowEffect>
+
+                            <GlowEffect>
+                                <div className="glow-effect account-login-history">
+                                    <div className="account-section-title">
+                                        <i className="fas fa-clock-rotate-left"></i>
+                                        История входа
+                                    </div>
+
+                                    <div className="account-login-list">
+                                        {isHistoryLoading ? (
+                                            <div className="account-empty-state">Загружаем историю...</div>
+                                        ) : loginHistory.length > 0 ? (
+                                            loginHistory.map((item) => (
+                                                <article key={item.id} className="account-login-item">
+                                                    <div>
+                                                        <strong>{item.location}</strong>
+                                                        <span>{item.device}</span>
+                                                    </div>
+                                                    <time>{formatDateTime(item.createdAt)}</time>
+                                                </article>
+                                            ))
+                                        ) : (
+                                            <div className="account-empty-state">История входов пока пуста</div>
+                                        )}
+                                    </div>
+
+                                    <button type="button" className="button account-logout-button" onClick={handleLogout}>
+                                        <i className="fas fa-sign-out-alt"></i>
+                                        Выйти из аккаунта
+                                    </button>
                                 </div>
-
-                                <label className="account-field">
-                                    <span>Текущий пароль</span>
-                                    <input
-                                        type="password"
-                                        value={passwordForm.currentPassword}
-                                        autoComplete="current-password"
-                                        onChange={(event) => handlePasswordFormChange('currentPassword', event.target.value)}
-                                        required
-                                    />
-                                </label>
-                                <label className="account-field">
-                                    <span>Новый пароль</span>
-                                    <input
-                                        type="password"
-                                        value={passwordForm.newPassword}
-                                        autoComplete="new-password"
-                                        onChange={(event) => handlePasswordFormChange('newPassword', event.target.value)}
-                                        required
-                                    />
-                                </label>
-                                <label className="account-field">
-                                    <span>Подтверждение нового пароля</span>
-                                    <input
-                                        type="password"
-                                        value={passwordForm.confirmPassword}
-                                        autoComplete="new-password"
-                                        onChange={(event) => handlePasswordFormChange('confirmPassword', event.target.value)}
-                                        required
-                                    />
-                                </label>
-
-                                <button type="submit" className="button account-save-button" disabled={isSavingPassword}>
-                                    <i className="fas fa-save"></i>
-                                    {isSavingPassword ? 'Обновляем...' : 'Обновить пароль'}
-                                </button>
-                            </form>
-                        </GlowEffect>
-
-                        <GlowEffect>
-                            <div className="glow-effect account-login-history">
-                                <div className="account-section-title">
-                                    <i className="fas fa-clock-rotate-left"></i>
-                                    История входа
-                                </div>
-
-                                <div className="account-login-list">
-                                    {isHistoryLoading ? (
-                                        <div className="account-empty-state">Загружаем историю...</div>
-                                    ) : loginHistory.length > 0 ? (
-                                        loginHistory.map((item) => (
-                                            <article key={item.id} className="account-login-item">
-                                                <div>
-                                                    <strong>{item.location}</strong>
-                                                    <span>{item.device}</span>
-                                                </div>
-                                                <time>{formatDateTime(item.createdAt)}</time>
-                                            </article>
-                                        ))
-                                    ) : (
-                                        <div className="account-empty-state">История входов пока пуста</div>
-                                    )}
-                                </div>
-
-                                <button type="button" className="button account-logout-button" onClick={handleLogout}>
-                                    <i className="fas fa-sign-out-alt"></i>
-                                    Выйти из аккаунта
-                                </button>
-                            </div>
-                        </GlowEffect>
-                    </section>
+                            </GlowEffect>
+                        </section>
                     )}
                 </div>
             </div>

@@ -6,7 +6,8 @@ import HeaderNav from '@/features/HeaderNav'
 import HeaderBrand from '@/shared/ui/Header/HeaderBrand'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
-import { DEFAULT_LANGUAGE, LANGUAGES, getLanguageFromPathname } from '@/i18n'
+import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
+import { getLanguageFromPathname } from '@/i18n'
 import mobileLogo from '@/widgets/Header/assets/logo.png'
 import { useTranslation } from 'react-i18next'
 
@@ -29,14 +30,6 @@ export default function Header() {
         label: item.label,
         icon: item.icon,
     }))
-    const handleLanguageChange = (nextLanguage) => {
-        if (nextLanguage === currentLanguage) {
-            return
-        }
-
-        navigate(getLocalizedPath(pathname, nextLanguage || DEFAULT_LANGUAGE))
-    }
-
     const contextValue = {
         activePage,
         activeMode,
@@ -54,12 +47,7 @@ export default function Header() {
                         <HeaderNav type="nav" />
                         <HeaderNav type="mode" />
                     </HeaderNavContext.Provider>
-                    <CustomSelect
-                        className="header-language-select"
-                        value={currentLanguage}
-                        options={LANGUAGES}
-                        onChange={handleLanguageChange}
-                    />
+                    <InterfaceLanguageSelect className="header-language-select" />
 
                     {/* {stats && (
                         <div className="stats-panel">
@@ -110,39 +98,9 @@ export default function Header() {
                     menuPlacement="top"
                     onChange={(nextPath) => navigate(nextPath)}
                 />
-                <CustomSelect
-                    className="mobile-language-select"
-                    value={currentLanguage}
-                    options={LANGUAGES}
-                    menuPlacement="top"
-                    onChange={handleLanguageChange}
-                />
             </nav>
         </GlowEffect>
     )
-}
-
-const getLocalizedPath = (pathname, language) => {
-    if (!pathname || pathname === '/') {
-        return `/${language}`
-    }
-
-    const parts = pathname.split('/')
-    const pathWithoutLanguage = parts[1] === 'ru' || parts[1] === 'en'
-        ? `/${parts.slice(2).join('/')}`.replace(/\/+$/, '') || '/'
-        : pathname
-
-    if (parts[1] === 'ru' || parts[1] === 'en') {
-        if (pathWithoutLanguage === '/' || pathWithoutLanguage === '') {
-            return `/${language}`
-        }
-
-        return ['/about', '/profile', '/rating', '/support'].includes(pathWithoutLanguage)
-            ? `/${language}${pathWithoutLanguage}`
-            : `/${language}`
-    }
-
-    return ['/about', '/profile', '/rating', '/support'].includes(pathname) ? `/${language}${pathname}` : `/${language}`
 }
 
 const getNavItemPath = (item, homePath) => {
