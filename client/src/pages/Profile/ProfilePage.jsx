@@ -32,7 +32,7 @@ import platinumFrame from './assets/ranks_frames/platinum.png'
 import diamondFrame from './assets/ranks_frames/diamond.png'
 import masterFrame from './assets/ranks_frames/master.png'
 import legendFrame from './assets/ranks_frames/legend.png'
-import supportBanner from '@/pages/Support/assets/bunner.png'
+import supportBanner from '@/shared/assets/support/support-banner.png'
 import './ProfilePage.css'
 
 const SITE_URL = 'https://www.pvp-tetris.online'

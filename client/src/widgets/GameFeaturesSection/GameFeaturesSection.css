@@ -1,10 +1,38 @@
-.about-features {
+.game-features-section {
+    margin-top: 24px;
+}
+
+.game-features-section__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: clamp(1.35rem, 2vw, 2rem);
+    font-weight: 800;
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-shadow: var(--text-shadow);
+
+    &::before {
+        content: '';
+        width: 10px;
+        aspect-ratio: 1;
+        display: block;
+        background: var(--turquoise);
+        clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+        box-shadow: var(--lite-shadow);
+    }
+}
+
+.game-features-section__grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 18px;
 }
 
-.about-feature-card {
+.game-feature-card {
     overflow: hidden;
     border: var(--surface-panel-border);
     border-radius: var(--radius-panel);
@@ -17,7 +45,7 @@
     }
 }
 
-.about-feature-card__inner {
+.game-feature-card__inner {
     min-height: 190px;
     display: grid;
     grid-template-columns: 64px minmax(0, 1fr);
@@ -71,7 +99,7 @@
 }
 
 @media (max-width: 1280px) {
-    .about-features {
+    .game-features-section__grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
@@ -81,12 +109,12 @@
         grid-template-columns: 1fr;
     }
 
-    .about-feature-card__inner {
+    .game-feature-card__inner {
         grid-template-columns: 52px minmax(0, 1fr);
         padding: 20px;
     }
 
-    .about-feature-card__inner > i {
+    .game-feature-card__inner > i {
         font-size: 38px;
     }
 }

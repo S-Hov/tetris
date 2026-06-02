@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next'
 
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '@/i18n'
 
-import AboutFeatures from './components/AboutFeatures/AboutFeatures.jsx'
+import FutureArenasSection from '@/widgets/FutureArenasSection'
+import GameFeaturesSection from '@/widgets/GameFeaturesSection'
+
 import AboutHero from './components/AboutHero/AboutHero.jsx'
-import AboutSeasons from './components/AboutSeasons/AboutSeasons.jsx'
 import AboutStats from './components/AboutStats/AboutStats.jsx'
 import AboutSupportSection from './components/AboutSupportSection/AboutSupportSection.jsx'
 
@@ -42,8 +43,8 @@ const AboutPage = () => {
         <section className="section about-page">
             <div className="container about-container">
                 <AboutHero currentLanguage={currentLanguage} />
-                <AboutFeatures />
-                <AboutSeasons />
+                <GameFeaturesSection />
+                <FutureArenasSection />
                 <AboutStats />
                 <AboutSupportSection currentLanguage={currentLanguage} />
             </div>

@@ -2,11 +2,11 @@ import { useTranslation } from 'react-i18next'
 
 import GlowEffect from '@/shared/ui/GlowEffect'
 
-import { featureCardsMeta } from './aboutFeatures.data.js'
+import { featureCardsMeta } from './gameFeatures.data.js'
 
-import './AboutFeatures.css'
+import './GameFeaturesSection.css'
 
-const AboutFeatures = () => {
+const GameFeaturesSection = () => {
     const { t } = useTranslation()
     const featureCards = featureCardsMeta.map((feature) => ({
         ...feature,
@@ -16,13 +16,13 @@ const AboutFeatures = () => {
     }))
 
     return (
-        <section className="about-block" aria-labelledby="about-features-title">
-            <h2 className="about-block__title" id="about-features-title">{t('about.features.title')}</h2>
-            <div className="about-features">
+        <section className="game-features-section" aria-labelledby="game-features-title">
+            <h2 className="game-features-section__title" id="game-features-title">{t('about.features.title')}</h2>
+            <div className="game-features-section__grid">
                 {featureCards.map((feature) => (
-                    <article className="about-feature-card" key={feature.title}>
+                    <article className="game-feature-card" key={feature.title}>
                         <GlowEffect>
-                            <div className="glow-effect about-feature-card__inner">
+                            <div className="glow-effect game-feature-card__inner">
                                 <i className={feature.icon}></i>
                                 <div>
                                     <h3>{feature.title}</h3>
@@ -42,4 +42,4 @@ const AboutFeatures = () => {
     )
 }
 
-export default AboutFeatures
+export default GameFeaturesSection

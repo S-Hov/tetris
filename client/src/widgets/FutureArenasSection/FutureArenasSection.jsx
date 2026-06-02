@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
 
-import { seasonsMeta } from './aboutSeasons.data.js'
+import { seasonsMeta } from './futureArenas.data.js'
 
-import './AboutSeasons.css'
+import './FutureArenasSection.css'
 
-const AboutSeasons = () => {
+const FutureArenasSection = () => {
     const { t } = useTranslation()
     const seasons = seasonsMeta.map((season) => ({
         ...season,
@@ -13,14 +13,14 @@ const AboutSeasons = () => {
     }))
 
     return (
-        <section className="about-block" aria-labelledby="about-seasons-title">
-            <h2 className="about-block__title" id="about-seasons-title">{t('about.seasons.title')}</h2>
-            <div className="about-seasons">
+        <section className="future-arenas-section" aria-labelledby="future-arenas-title">
+            <h2 className="future-arenas-section__title" id="future-arenas-title">{t('about.seasons.title')}</h2>
+            <div className="future-arenas-section__grid">
                 {seasons.map((season) => (
-                    <article className="about-season-card" key={season.title}>
+                    <article className="future-arena-card" key={season.title}>
                         <img src={season.image} alt={season.title} />
-                        <div className="about-season-card__content">
-                            <div className="about-season-card__head">
+                        <div className="future-arena-card__content">
+                            <div className="future-arena-card__head">
                                 <h3>{season.title}</h3>
                                 <span>
                                     <i className={season.status === 'done' ? 'fas fa-check' : 'fas fa-circle'}></i>
@@ -39,4 +39,4 @@ const AboutSeasons = () => {
     )
 }
 
-export default AboutSeasons
+export default FutureArenasSection

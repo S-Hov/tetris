@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next'
 
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '@/i18n'
 import ArenaDashboardSection from '@/widgets/ArenaDashboardSection'
+import FutureArenasSection from '@/widgets/FutureArenasSection'
+import GameFeaturesSection from '@/widgets/GameFeaturesSection'
 import GameModesSection from '@/widgets/GameModesSection'
 import SupportProjectSection from '@/widgets/SupportProjectSection'
 
@@ -47,6 +49,8 @@ const HomePage = () => {
                 <HomeHero />
                 <GameModesSection />
                 <ArenaDashboardSection currentLanguage={currentLanguage} />
+                <GameFeaturesSection />
+                <FutureArenasSection />
                 <SupportProjectSection currentLanguage={currentLanguage} />
             </div>
         </section>

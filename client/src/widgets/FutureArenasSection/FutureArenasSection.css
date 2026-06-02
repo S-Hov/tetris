@@ -1,10 +1,38 @@
-.about-seasons {
+.future-arenas-section {
+    margin-top: 24px;
+}
+
+.future-arenas-section__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: clamp(1.35rem, 2vw, 2rem);
+    font-weight: 800;
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-shadow: var(--text-shadow);
+
+    &::before {
+        content: '';
+        width: 10px;
+        aspect-ratio: 1;
+        display: block;
+        background: var(--turquoise);
+        clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+        box-shadow: var(--lite-shadow);
+    }
+}
+
+.future-arenas-section__grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 18px;
 }
 
-.about-season-card {
+.future-arena-card {
     position: relative;
     min-height: 180px;
     overflow: hidden;
@@ -23,7 +51,7 @@
     }
 }
 
-.about-season-card__content {
+.future-arena-card__content {
     position: relative;
     z-index: 1;
     height: 100%;
@@ -32,7 +60,7 @@
     padding: 20px;
 }
 
-.about-season-card__head {
+.future-arena-card__head {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -57,7 +85,7 @@
     }
 }
 
-.about-season-card ul {
+.future-arena-card ul {
     display: grid;
     gap: 9px;
     margin: 0;
@@ -83,13 +111,13 @@
 }
 
 @media (max-width: 1280px) {
-    .about-seasons {
+    .future-arenas-section__grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 760px) {
-    .about-seasons {
+    .future-arenas-section__grid {
         grid-template-columns: 1fr;
     }
 }
