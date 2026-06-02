@@ -1,0 +1,196 @@
+.player-stats-panel {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    min-height: 310px;
+    display: flex;
+    flex-direction: column;
+    padding: 26px;
+    border: var(--border);
+    border-radius: var(--radius-panel);
+    background: var(--box-bg);
+    box-shadow: var(--shadow);
+    backdrop-filter: var(--medium-blur);
+}
+
+.arena-panel-state--stats {
+    flex: 1;
+}
+
+.arena-panel-button--filled {
+    border: none;
+    color: var(--text-active-color);
+    background: var(--btn-gradient-1);
+    box-shadow: 0 0 22px rgba(154, 66, 255, 0.22);
+}
+
+.player-stats {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 180px;
+    grid-template-areas:
+        "values rank"
+        "progress progress"
+        "button button";
+    align-items: center;
+    column-gap: 28px;
+}
+
+.player-stats__values {
+    grid-area: values;
+    display: grid;
+    gap: 14px;
+}
+
+.player-stats__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 16px;
+}
+
+.player-stats__row span {
+    color: var(--text-color);
+    font-size: 0.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.player-stats__row strong {
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: 1.28rem;
+    text-align: right;
+    text-transform: uppercase;
+}
+
+.player-stats__rank {
+    grid-area: rank;
+    justify-self: center;
+    width: min(180px, 100%);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+}
+
+.player-stats__rank img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 24px rgba(187, 73, 255, 0.62));
+}
+
+.player-stats__rank i {
+    color: #b751ff;
+    font-size: 4.4rem;
+    text-shadow: 0 0 26px rgba(183, 81, 255, 0.68);
+}
+
+.player-rank-progress {
+    grid-area: progress;
+    display: grid;
+    gap: 8px;
+    margin-top: 22px;
+}
+
+.player-rank-progress__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: rgba(220, 232, 255, 0.7);
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.player-rank-progress__bar {
+    height: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 229, 255, 0.24);
+    border-radius: 999px;
+    background: rgba(5, 17, 44, 0.9);
+}
+
+.player-rank-progress__bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #6e3cff, #df4cff, #23d6ff);
+    box-shadow: 0 0 18px rgba(187, 73, 255, 0.65);
+}
+
+.player-rank-progress--max {
+    color: var(--text-color-1);
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.player-stats .arena-panel-button {
+    grid-area: button;
+    width: 100%;
+    margin-top: 22px;
+}
+
+.player-stats--guest {
+    grid-template-columns: 150px minmax(0, 1fr);
+    grid-template-areas:
+        "rank text"
+        "button button";
+    align-content: center;
+}
+
+.player-stats--guest p {
+    grid-area: text;
+    margin: 0;
+    color: rgba(226, 237, 255, 0.82);
+    font-size: 0.95rem;
+    font-weight: 800;
+    line-height: 1.6;
+}
+
+.player-stats__rank--empty {
+    width: 128px;
+    border: 1px solid rgba(0, 229, 255, 0.24);
+    border-radius: 8px;
+    background: rgba(0, 229, 255, 0.07);
+}
+
+.player-stats__rank--empty i {
+    color: #40d8ff;
+    font-size: 3rem;
+}
+
+@media (max-width: 860px) {
+    .player-stats {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "rank"
+            "values"
+            "progress"
+            "button";
+    }
+
+    .player-stats--guest {
+        grid-template-areas:
+            "rank"
+            "text"
+            "button";
+    }
+
+    .player-stats__rank {
+        width: 150px;
+        margin-bottom: 18px;
+    }
+}
+
+@media (max-width: 560px) {
+    .player-stats-panel {
+        min-height: 0;
+        padding: 20px;
+    }
+
+    .player-stats__row strong {
+        font-size: 1.05rem;
+    }
+}
