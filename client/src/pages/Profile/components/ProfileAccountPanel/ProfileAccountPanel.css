@@ -1,0 +1,61 @@
+.profile-account-panel {
+    min-height: 0;
+}
+
+.profile-account-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.profile-info-line,
+.profile-logout {
+    min-height: 72px;
+    display: grid;
+    align-content: center;
+    gap: 4px;
+    padding: 12px;
+    border: var(--border);
+    border-radius: 22px;
+    background: var(--input-bg);
+    box-shadow: inset 0 0 18px rgba(0, 229, 255, 0.08);
+}
+
+.profile-info-line i {
+    color: var(--turquoise);
+}
+
+.profile-info-line span {
+    color: var(--text-color);
+    font-size: 0.74rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.profile-info-line strong {
+    overflow-wrap: anywhere;
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: 0.86rem;
+}
+
+.profile-logout {
+    color: var(--red);
+    font-family: var(--font-1);
+    font-weight: 900;
+    cursor: pointer;
+    transition: transform 180ms ease, filter 180ms ease;
+}
+
+.profile-logout:hover,
+.profile-logout:focus-visible {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    outline: none;
+}
+
+@media (max-width: 1060px) {
+    .profile-account-grid {
+        grid-template-columns: 1fr;
+    }
+}

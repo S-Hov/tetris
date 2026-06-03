@@ -1,0 +1,324 @@
+.profile-hero-glow {
+    border-radius: var(--radius-panel);
+}
+
+.profile-hero {
+    min-height: 510px;
+    display: grid;
+    grid-template-columns: minmax(220px, 0.8fr) minmax(300px, 1.2fr) minmax(210px, 0.72fr);
+    align-items: center;
+    gap: 28px;
+    position: relative;
+    overflow: hidden;
+    padding: 46px 46px 110px;
+    border-radius: var(--radius-panel);
+    background:
+        linear-gradient(90deg, rgba(5, 6, 24, 0), rgba(5, 8, 30, 0) 54%, rgba(1, 14, 34, 0.5)),
+        var(--profile-rank-bg) center / cover no-repeat;
+    box-shadow: inset 0 0 90px rgba(121, 25, 255, 0.22), 0 0 36px rgba(0, 229, 255, 0.08);
+    backdrop-filter: var(--medium-blur);
+}
+
+.profile-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 35% 32%, rgba(169, 57, 255, 0.24), transparent 30%),
+        linear-gradient(180deg, transparent 70%, rgba(2, 5, 19, 0.9));
+}
+
+.profile-hero__rank,
+.profile-hero__player,
+.profile-season-card,
+.profile-hero-stats {
+    z-index: 1;
+}
+
+.profile-hero__rank {
+    display: grid;
+    place-items: center;
+}
+
+.profile-hero__rank img {
+    width: min(100%, 360px);
+    filter: drop-shadow(0 0 34px rgba(187, 73, 255, 0.62));
+}
+
+.profile-rank-pill {
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 14px;
+    margin-bottom: 12px;
+    border: var(--border);
+    border-radius: var(--radius-card);
+    color: #779ab7;
+    background: var(--input-bg);
+    font-family: var(--font-1);
+    font-size: 0.78rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.profile-hero__name-row {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.profile-hero__name-row h1 {
+    margin: 0;
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: clamp(3rem, 5vw, 5rem);
+    line-height: 0.98;
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
+    text-transform: uppercase;
+    text-shadow: 0 0 18px rgba(141, 100, 255, 0.5);
+}
+
+.profile-edit-link {
+    width: 44px;
+    aspect-ratio: 1;
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid rgba(107, 153, 255, 0.32);
+    border-radius: var(--radius-card);
+    color: var(--text-color);
+    background: rgba(2, 11, 34, 0.52);
+    text-decoration: none;
+    box-shadow: inset 0 0 18px rgba(0, 229, 255, 0.08);
+    transition: transform 180ms ease, filter 180ms ease;
+}
+
+.profile-edit-link:hover,
+.profile-edit-link:focus-visible {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    outline: none;
+}
+
+.profile-hero__rating {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    margin-top: 12px;
+    color: var(--yellow);
+}
+
+.profile-hero__rating i,
+.profile-hero__rating strong {
+    font-size: 1.6rem;
+}
+
+.profile-hero__rating strong {
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+}
+
+.profile-hero__rating span {
+    color: var(--text-muted);
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.profile-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.profile-hero__meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border: 1px solid rgba(107, 153, 255, 0.24);
+    border-radius: var(--radius-panel);
+    color: var(--text-muted);
+    background: rgba(2, 11, 34, 0.52);
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.profile-season-card {
+    justify-self: end;
+    width: min(100%, 260px);
+    min-height: 180px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 8px;
+    position: relative;
+    padding: 42px 38px;
+    text-align: center;
+}
+
+.profile-season-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--profile-rank-frame) center / 100% 100% no-repeat;
+    filter: drop-shadow(0 0 24px rgba(187, 73, 255, 0.42));
+}
+
+.profile-season-card span,
+.profile-season-card strong {
+    display: block;
+    font-family: var(--font-1);
+    text-transform: uppercase;
+}
+
+.profile-season-card span {
+    color: var(--text-active-color);
+    font-size: 0.76rem;
+    font-weight: 900;
+}
+
+.profile-season-card strong {
+    color: var(--text-active-color);
+    font-size: 1.32rem;
+    text-shadow: 0 0 16px rgba(187, 73, 255, 0.62);
+}
+
+.profile-hero-stats {
+    width: max-content;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow: hidden;
+    border: 1px solid rgba(0, 229, 255, 0.18);
+    border-radius: var(--radius-panel);
+    background: linear-gradient(90deg, rgba(20, 17, 62, 0.36), rgba(3, 30, 54, 0.28));
+    box-shadow: 0 0 26px rgba(0, 229, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(18px);
+}
+
+.profile-hero-stat {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    color: #dce8ff;
+    border-right: 1px solid rgba(130, 153, 255, 0.14);
+}
+
+.profile-hero-stat:last-child {
+    border-right: 0;
+}
+
+.profile-hero-stat i {
+    width: 38px;
+    aspect-ratio: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    border-radius: 12px;
+    color: var(--turquoise);
+    background: rgba(0, 240, 255, 0.08);
+    text-shadow: 0 0 16px rgba(0, 240, 255, 0.85);
+    box-shadow: inset 0 0 0 1px rgba(0, 240, 255, 0.22);
+}
+
+.profile-hero-stat span,
+.profile-hero-stat strong {
+    display: block;
+    line-height: 1.15;
+}
+
+.profile-hero-stat span {
+    margin-top: 3px;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.profile-hero-stat strong {
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: 1.12rem;
+    text-transform: uppercase;
+}
+
+@media (max-width: 1280px) {
+    .profile-hero {
+        grid-template-columns: 220px minmax(0, 1fr);
+    }
+
+    .profile-hero .profile-season-card {
+        justify-self: start;
+    }
+}
+
+@media (max-width: 1220px) {
+    .profile-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-hero > div {
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 860px) {
+    .profile-hero {
+        min-height: 0;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 42px 24px 30px;
+    }
+
+    .profile-hero__rank img {
+        width: min(70vw, 240px);
+    }
+
+    .profile-hero__name-row {
+        align-items: flex-start;
+    }
+
+    .profile-hero__name-row h1 {
+        font-size: clamp(2.3rem, 11vw, 3.4rem);
+    }
+
+    .profile-season-card {
+        justify-self: start;
+        width: min(100%, 240px);
+    }
+
+    .profile-hero-stats {
+        position: static;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 8px;
+    }
+
+    .profile-hero-stat:nth-child(2n) {
+        border-right: 0;
+    }
+}
+
+@media (max-width: 560px) {
+    .profile-hero-stats .profile-hero-stat {
+        border-right: 0;
+        border-bottom: 1px solid rgba(130, 153, 255, 0.14);
+    }
+
+    .profile-hero-stats .profile-hero-stat:last-child {
+        border-bottom: 0;
+    }
+}
+
+@media (max-width: 390px) {
+    .profile-hero-stats {
+        grid-template-columns: 1fr;
+    }
+}
