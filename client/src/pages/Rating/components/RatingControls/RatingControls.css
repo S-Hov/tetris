@@ -1,0 +1,114 @@
+.rating-controls-card {
+    margin-bottom: 1rem;
+    border: var(--border);
+    border-radius: var(--radius-panel);
+    box-shadow: var(--shadow);
+    backdrop-filter: var(--medium-blur);
+}
+
+.rating-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+}
+
+.rating-control-group,
+.rating-sort-panel > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.52rem;
+}
+
+.rating-chip,
+.rating-sort-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 38px;
+    border: var(--border);
+    border-radius: 22px;
+    background: var(--input-bg);
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.rating-chip:hover,
+.rating-sort-button:hover {
+    color: var(--text-active-color);
+    border-color: var(--turquoise);
+    background: var(--hover-bg);
+    transform: translateY(-1px);
+    box-shadow: var(--hard-shadow);
+}
+
+.rating-chip {
+    padding: 0.55rem 0.9rem;
+}
+
+.rating-chip--active,
+.rating-sort-button--active {
+    color: var(--text-active-color);
+    border: none;
+    background: var(--btn-gradient-1);
+    box-shadow: var(--lite-shadow);
+}
+
+.rating-sort-panel {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.rating-sort-panel > span {
+    color: var(--turquoise-lite);
+    font-family: var(--font-1);
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.rating-sort-button {
+    width: 38px;
+    padding: 0;
+}
+
+.rating-sort-button span {
+    width: 1px;
+    height: 1px;
+    position: absolute;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+
+@media (max-width: 980px) {
+    .rating-controls,
+    .rating-sort-panel {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 760px) {
+    .rating-control-group,
+    .rating-sort-panel,
+    .rating-sort-panel > div {
+        width: 100%;
+        max-width: none;
+    }
+
+    .rating-chip {
+        flex: 1 1 130px;
+    }
+
+    .rating-sort-button {
+        flex: 1 1 38px;
+    }
+}

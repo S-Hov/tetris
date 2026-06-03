@@ -1,0 +1,143 @@
+.rating-hero {
+    min-height: 152px;
+    display: grid;
+    grid-template-columns: auto minmax(280px, 420px);
+    align-items: center;
+    gap: 1.6rem;
+    padding: 1.5rem 0;
+    margin-bottom: 1rem;
+    backdrop-filter: none;
+    border: none;
+    box-shadow: none;
+}
+
+.rating-hero-main {
+    border: var(--border);
+    padding: 1.5rem;
+    border-radius: var(--radius-panel);
+    backdrop-filter: var(--medium-blur);
+}
+
+.rating-hero-main h1 {
+    margin: 0 0 0.55rem;
+    font-family: var(--font-1);
+    font-size: clamp(2rem, 4vw, 3.35rem);
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.rating-hero-main p {
+    max-width: 620px;
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+}
+
+.rating-eyebrow {
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.42rem 0.72rem;
+    margin-bottom: 0.8rem;
+    border: 1px solid rgba(38, 210, 255, 0.34);
+    border-radius: 999px;
+    background: rgba(8, 19, 45, 0.78);
+    color: var(--turquoise-lite);
+    font-family: var(--font-1);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.rating-hero-header {
+    display: flex;
+    gap: 1.6rem;
+    margin-bottom: 1.6rem;
+}
+
+.rating-summary {
+    min-width: 240px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+}
+
+.rating-summary span {
+    min-height: 58px;
+    display: grid;
+    place-items: center;
+    gap: 0.12rem;
+    padding: 0.75rem;
+    border: var(--border);
+    border-radius: 22px;
+    background: var(--box-bg);
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-align: center;
+    text-transform: uppercase;
+    box-shadow: var(--lite-shadow);
+}
+
+.rating-summary strong {
+    color: var(--text-color-1);
+    font-size: 1.32rem;
+    line-height: 1;
+    text-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
+}
+
+.rating-season {
+    height: 100%;
+    min-height: 92px;
+    display: flex;
+    padding: 1.1rem 1.3rem;
+    border: var(--border);
+    border-radius: var(--radius-panel);
+    background-position: center right;
+    background-size: cover;
+    box-shadow: var(--lite-shadow);
+}
+
+.rating-season span {
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-shadow: var(--text-shadow);
+}
+
+@media (max-width: 1240px) {
+    .rating-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .rating-summary {
+        width: 100%;
+        max-width: 360px;
+    }
+
+    .rating-season {
+        max-width: 520px;
+    }
+}
+
+@media (max-width: 760px) {
+    .rating-hero {
+        align-items: flex-start;
+        padding: 1rem;
+    }
+
+    .rating-summary {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+@media (max-width: 520px) {
+    .rating-summary {
+        grid-template-columns: 1fr;
+    }
+}

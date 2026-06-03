@@ -1,0 +1,113 @@
+.rating-podium {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 1.18fr) minmax(0, 1fr);
+    align-items: end;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.rating-podium-card {
+    display: grid;
+    justify-items: center;
+    align-content: end;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    position: relative;
+    isolation: isolate;
+    background-position: center;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    text-align: center;
+    overflow: hidden;
+    border: none;
+    border-radius: var(--radius-panel);
+    aspect-ratio: 1.25/1;
+    box-shadow: none;
+    backdrop-filter: var(--medium-blur);
+}
+
+.rating-podium-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(2, 5, 14, 0.28) 44%, rgb(0, 0, 0));
+}
+
+.rating-podium-card h2 {
+    max-width: 100%;
+    margin: 0;
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: 1.18rem;
+    overflow-wrap: anywhere;
+    text-shadow: 0 0 14px rgba(255, 255, 255, 0.25);
+}
+
+.rating-player-country {
+    margin-top: -0.35rem;
+    font-size: 1.2rem;
+}
+
+.rating-podium-card strong {
+    color: #ffe900;
+    font-family: var(--font-1);
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    line-height: 1;
+    text-shadow: 0 0 16px rgba(255, 230, 0, 0.75);
+}
+
+.rating-podium-card strong small {
+    color: rgba(230, 240, 255, 0.74);
+    font-size: 0.58em;
+}
+
+.rating-podium-card--rank-1 .rating-avatar {
+    width: 160px;
+    box-shadow: 0 0 28px rgba(255, 228, 0, 0.42), 0 0 24px rgba(177, 45, 255, 0.4);
+}
+
+.rating-podium-stats {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+    margin-top: 0.35rem;
+}
+
+.rating-podium-stats span {
+    display: grid;
+    gap: 0.18rem;
+    padding: 0.68rem 0.45rem;
+    border: var(--border);
+    border-radius: 22px;
+    background: var(--input-bg);
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: 0.9rem;
+    font-weight: 900;
+    box-shadow: var(--shadow);
+    text-shadow: var(--text-shadow);
+}
+
+.rating-podium-stats small {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+@media (max-width: 980px) {
+    .rating-podium {
+        grid-template-columns: 1fr;
+    }
+
+    .rating-podium-card {
+        min-height: 360px;
+    }
+}
+
+@media (max-width: 520px) {
+    .rating-podium-stats {
+        grid-template-columns: 1fr;
+    }
+}
