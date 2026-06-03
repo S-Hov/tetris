@@ -1,0 +1,54 @@
+.account-settings-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.5rem 1.7rem;
+    border: var(--border);
+    border-radius: 28px;
+    background: var(--box-bg);
+    box-shadow: var(--lite-shadow);
+    backdrop-filter: var(--medium-blur);
+}
+
+.account-settings-topbar h1 {
+    margin: 0;
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: clamp(1.8rem, 4vw, 2.7rem);
+    line-height: 1.1;
+}
+
+.account-settings-eyebrow {
+    width: fit-content;
+    padding: 0.45rem 0.75rem;
+    margin-bottom: 0.55rem;
+    border: var(--border);
+    border-radius: 16px;
+    background: var(--elem-bg);
+    color: var(--turquoise-lite);
+    font-family: var(--font-1);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.account-settings-back {
+    min-width: 150px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+@media (max-width: 640px) {
+    .account-settings-topbar {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 1.2rem;
+    }
+
+    .account-settings-back {
+        width: 100%;
+    }
+}

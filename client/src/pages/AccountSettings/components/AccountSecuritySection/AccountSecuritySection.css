@@ -1,0 +1,177 @@
+.account-security-grid {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+    gap: 1.2rem;
+}
+
+.account-security-grid > .glow-wrapper,
+.account-security-grid > div {
+    overflow: hidden;
+    border: var(--border);
+    border-radius: 28px;
+    background: var(--box-bg);
+    box-shadow: var(--lite-shadow);
+    backdrop-filter: var(--medium-blur);
+}
+
+.account-login-methods-wrap {
+    grid-column: 1 / -1;
+}
+
+.account-login-methods,
+.account-password-form,
+.account-login-history {
+    padding: 1.4rem;
+}
+
+.account-login-method-list,
+.account-password-form,
+.account-login-list {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.account-login-method-list{
+    margin-top: 10px;
+}
+
+.account-login-method {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.9rem;
+    border: var(--border);
+    border-radius: 18px;
+    background: var(--elem-bg);
+}
+
+.account-login-method strong {
+    display: block;
+    color: var(--text-color-1);
+}
+
+.account-login-method small {
+    color: var(--text-color);
+    font-size: 0.8rem;
+}
+
+.account-login-method button {
+    min-height: 38px;
+    padding: 0.45rem 0.9rem;
+    border: var(--border);
+    border-radius: 12px;
+    color: var(--red);
+    background: rgba(219, 56, 56, 0.1);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.account-login-method button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.account-login-method.is-connected {
+    border-color: rgba(0, 255, 255, 0.28);
+}
+
+.account-login-method__icon {
+    width: 46px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border: var(--border);
+    border-radius: 16px;
+    color: var(--turquoise);
+    background: rgba(0, 255, 255, 0.08);
+    font-size: 1.1rem;
+}
+
+.account-login-method__badge {
+    padding: 0.45rem 0.75rem;
+    border: var(--border);
+    border-radius: 999px;
+    color: var(--text-color);
+    font-size: 0.78rem;
+}
+
+.account-login-history {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.account-login-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem;
+    border: var(--border);
+    border-radius: 18px;
+    background: var(--elem-bg);
+}
+
+.account-login-item div {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.account-login-item strong {
+    color: var(--text-color-1);
+}
+
+.account-login-item span,
+.account-login-item time {
+    color: var(--text-color);
+    font-size: 0.8rem;
+}
+
+.account-login-item time {
+    text-align: right;
+}
+
+.account-empty-state {
+    padding: 1rem;
+    border: var(--border);
+    border-radius: 18px;
+    color: var(--text-color);
+    background: var(--elem-bg);
+    text-align: center;
+}
+
+.account-logout-button {
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.account-logout-button:hover {
+    border-color: rgba(219, 56, 56, 0.65);
+    color: var(--red);
+    background: rgba(219, 56, 56, 0.18);
+}
+
+@media (max-width: 900px) {
+    .account-security-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .account-login-item,
+    .account-login-method {
+        align-items: flex-start;
+        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+
+    .account-login-item time {
+        text-align: left;
+    }
+}

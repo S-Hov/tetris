@@ -1,0 +1,46 @@
+:root,
+:root[data-theme="dark"] {
+    --account-settings-tab-bg: #00ffff24;
+}
+
+:root[data-theme="light"] {
+    --account-settings-tab-bg: var(--turquoise);
+}
+
+.account-settings-tabs {
+    width: fit-content;
+    display: inline-grid;
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+    gap: 0.4rem;
+    padding: 0.35rem;
+    border: var(--border);
+    border-radius: 18px;
+    background: var(--elem-bg);
+}
+
+.account-settings-tabs a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    border: 0;
+    border-radius: 14px;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.account-settings-tabs a:hover,
+.account-settings-tabs a.is-active {
+    background: var(--account-settings-tab-bg);
+    color: var(--text-active-color);
+    box-shadow: var(--revers-shadow);
+}
+
+@media (max-width: 640px) {
+    .account-settings-tabs {
+        width: 100%;
+        grid-template-columns: 1fr;
+    }
+}

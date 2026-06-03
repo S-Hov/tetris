@@ -1,0 +1,52 @@
+.account-email-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgba(2, 8, 18, 0.74);
+    backdrop-filter: blur(12px);
+}
+
+.account-email-modal__panel {
+    width: min(100%, 460px);
+    display: grid;
+    gap: 1rem;
+    padding: 1.4rem;
+    border: var(--border);
+    border-radius: 20px;
+    background: rgba(8, 17, 31, 0.96);
+    box-shadow: var(--lite-shadow);
+}
+
+.account-email-modal__panel h2 {
+    margin: 0;
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: 1.35rem;
+}
+
+.account-email-modal__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.account-email-modal__actions .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-active-color);
+}
+
+.account-email-modal__cancel:hover {
+    border-color: rgba(219, 56, 56, 0.42);
+    color: #ffd8d8;
+}
+
+@media (max-width: 640px) {
+    .account-email-modal__actions {
+        grid-template-columns: 1fr;
+    }
+}

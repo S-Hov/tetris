@@ -75,6 +75,14 @@ export const routes = [
         guard: ProtectedRoute,
     },
     {
+        key: 'account-settings-section',
+        path: '/account-settings/:section',
+        title: 'Настройки аккаунта',
+        component: AccountSettingsPage,
+        layout: MainLayout,
+        guard: ProtectedRoute,
+    },
+    {
         key: 'matches',
         path: '/matches',
         title: 'История матчей',

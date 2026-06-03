@@ -1,0 +1,65 @@
+.account-general-settings {
+    display: grid;
+    gap: 1rem;
+    padding: 1.4rem;
+}
+
+.account-theme-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    border: var(--border);
+    border-radius: 18px;
+    background: var(--elem-bg);
+    color: var(--text-color-1);
+    cursor: pointer;
+    text-align: left;
+    transition: var(--transition);
+}
+
+.account-theme-toggle > span {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.account-theme-toggle strong {
+    font-family: var(--font-1);
+    font-size: 0.94rem;
+}
+
+.account-theme-toggle small {
+    color: var(--text-color);
+    font-size: 0.82rem;
+}
+
+.account-theme-toggle:hover {
+    transform: translateY(-2px);
+}
+
+.account-language-setting {
+    cursor: default;
+}
+
+.account-language-setting:hover {
+    transform: none;
+}
+
+.account-language-select {
+    width: 120px;
+    flex: 0 0 120px;
+}
+
+@media (max-width: 640px) {
+    .account-language-setting {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .account-language-select {
+        width: 100%;
+        flex-basis: auto;
+    }
+}

@@ -16,7 +16,7 @@ const ProfileQuickSettingsPanel = ({
     <ProfilePanel
         className="profile-quick-settings-panel"
         title={t('profile.settings.title')}
-        action={<Link to="/account-settings">{t('profile.settings.all')}</Link>}
+        action={<Link to="/account-settings/general">{t('profile.settings.all')}</Link>}
     >
         <div className="profile-quick-settings-grid">
             <div className="profile-settings-toggle profile-language-setting">

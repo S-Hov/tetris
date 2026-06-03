@@ -19,7 +19,7 @@ const ProfileHero = ({ currentLanguage, profile, t }) => (
                 <span className="profile-rank-pill">{profile.rankName}</span>
                 <div className="profile-hero__name-row">
                     <h1>{profile.name}</h1>
-                    <Link className="profile-edit-link" to="/account-settings" aria-label={t('profile.hero.editAria')}>
+                    <Link className="profile-edit-link" to="/account-settings/account" aria-label={t('profile.hero.editAria')}>
                         <i className="fas fa-pen"></i>
                     </Link>
                 </div>
