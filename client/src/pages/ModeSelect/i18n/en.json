@@ -1,0 +1,178 @@
+{
+  "modeSelect": {
+    "aria": {
+      "playTypeNav": "Game type selection"
+    },
+    "modes": {
+      "solo": {
+        "title": "Solo Game",
+        "subtitle": "A classic survival run with match settings before launch.",
+        "online": "Solo practice",
+        "heroLabel": "Solo mode",
+        "cardMeta": {
+          "casual": ["Personal record", "No opponents", "Instant start"]
+        },
+        "settings": {
+          "abilities": {
+            "title": "Game tricks",
+            "description": "A preview of the future mode: the game may occasionally apply effects to the player."
+          },
+          "specialBlocks": {
+            "title": "Special blocks",
+            "description": "Adds special pieces to the pool and changes the familiar pace of the match."
+          }
+        }
+      },
+      "1v1": {
+        "title": "Duel 1 VS 1",
+        "subtitle": "Face an opponent in a tense battle of lines.",
+        "online": "1,234 players online",
+        "heroLabel": "1 VS 1 Mode",
+        "cardMeta": {
+          "ranked": ["Affects rating", "~5-10 min"],
+          "casual": ["No risk", "Fast queue"],
+          "room": ["Private room", "Up to 2 players"]
+        }
+      },
+      "2v2": {
+        "title": "Team Battle 2 VS 2",
+        "subtitle": "Work as a pair, combine attacks, and seize the tempo from the other team.",
+        "online": "876 players online",
+        "heroLabel": "2 VS 2 Mode",
+        "cardMeta": {
+          "ranked": ["Affects rating", "Team matchmaking"],
+          "casual": ["Free play", "2v2 lobby"],
+          "room": ["Private room", "Up to 4 players"]
+        }
+      },
+      "5v5": {
+        "title": "Arena 5 VS 5",
+        "subtitle": "A large team format where roles, tactics, and coordinated attacks matter.",
+        "online": "642 players online",
+        "heroLabel": "5 VS 5 Mode",
+        "cardMeta": {
+          "ranked": ["Season divisions", "Large matches"],
+          "casual": ["Unranked battles", "Role practice"],
+          "room": ["Coming later", "For custom battles"]
+        }
+      },
+      "royale": {
+        "title": "Tetris Royale",
+        "subtitle": "Survive longer than everyone else and push into the final duel for first place.",
+        "online": "1,908 players online",
+        "heroLabel": "Royale Mode",
+        "cardMeta": {
+          "ranked": ["Tournament format", "20 players"],
+          "casual": ["Open entry", "Quick sessions"],
+          "room": ["Coming later", "For private lobbies"]
+        }
+      }
+    },
+    "playOptions": {
+      "ranked": {
+        "title": "Ranked Match",
+        "description": "Play for rating. Win, climb the leaderboard, and earn rewards."
+      },
+      "casual": {
+        "title": "Casual Game",
+        "description": "A classic battle without rating pressure. Practice and play at your own pace."
+      },
+      "room": {
+        "title": "Room With Friends",
+        "description": "Create a private room, share the ID, and play with your own settings."
+      }
+    },
+    "settings": {
+      "title": "Match settings",
+      "fallbackAbilitiesTitle": "Abilities",
+      "fallbackAbilitiesDescription": "Energy, debuffs, and effect selection during the match.",
+      "fallbackSpecialBlocksTitle": "Special blocks",
+      "fallbackSpecialBlocksDescription": "Special shapes are added to the piece pool.",
+      "summaryLabel": "Current configuration",
+      "soloAbilitiesOn": "Tricks: preview on",
+      "soloAbilitiesOff": "Tricks: off",
+      "abilitiesOn": "Effects on",
+      "abilitiesOff": "Effects off",
+      "specialBlocksOn": "Special blocks on",
+      "specialBlocksOff": "Standard blocks"
+    },
+    "guest": {
+      "title": "Guest game",
+      "nicknameLabel": "Nickname for casual play",
+      "nicknameHint": "Ranked matches are available only for accounts.",
+      "placeholder": "Guest"
+    },
+    "launch": {
+      "roomTitle": "Room for friends",
+      "teamTitle": "Team matchmaking",
+      "readyTitle": "Ready to launch",
+      "roomText": "Open the lobby, configure the room, and invite players.",
+      "teamText": "Build your team first, then move on to opponent matchmaking.",
+      "readyText": "Match settings will be applied as soon as you start.",
+      "soon": "Coming soon",
+      "searching": "Searching",
+      "startSolo": "Start game",
+      "openLobby": "Open lobby",
+      "findTeam": "Find team",
+      "findRanked": "Find ranked match",
+      "findMatch": "Find match"
+    },
+    "team": {
+      "title": "Create team",
+      "description": "Build a squad for {{playType}} and invite teammates before the match.",
+      "button": "Create team"
+    },
+    "matchmaking": {
+      "rankedQueue": "Ranked queue",
+      "casualQueue": "Casual queue",
+      "title": "Searching for an opponent",
+      "text": "We account for the mode, abilities, and special blocks. A matching game will open automatically.",
+      "wait": "Wait",
+      "position": "Position",
+      "cancel": "Cancel search"
+    },
+    "table": {
+      "roomsTitle": "Open rooms",
+      "teamsTitle": "Teams in queue",
+      "openLobby": "Open lobby",
+      "goTeams": "To teams",
+      "room": "Room",
+      "team": "Team",
+      "players": "Players",
+      "composition": "Squad",
+      "type": "Type",
+      "status": "Status",
+      "teamNameAlpha": "{{mode}} Alpha",
+      "teamNamePulse": "{{mode}} Pulse",
+      "teamNameCore": "{{mode}} Core",
+      "roomName": "{{mode}} #{{number}}",
+      "freeComposition": "Open squad",
+      "private": "Private",
+      "friends": "With friends",
+      "custom": "Custom",
+      "looking": "Looking for player",
+      "ready": "Ready",
+      "open": "Open",
+      "waiting": "Waiting",
+      "opened": "Open",
+      "gathering": "Gathering"
+    },
+    "notifications": {
+      "cancelCurrentSearch": "Cancel the current search first",
+      "opponentFound": "Opponent found. The match is starting",
+      "loginForRanked": "Sign in to search for a ranked match",
+      "guestNicknameRequired": "Enter a nickname for casual play: 2-24 characters",
+      "startSearchFailed": "Failed to start search",
+      "connectionFailed": "Failed to connect to matchmaking",
+      "searchStarted": "Match search started",
+      "cancelSearchFailed": "Failed to cancel search",
+      "searchCancelled": "Search cancelled",
+      "searchAlreadyRunning": "Search is already running",
+      "roomsComingSoon": "Rooms for this mode are still in development",
+      "scenarioMock": "This scenario is currently a preview for future mode development"
+    },
+    "socket": {
+      "noResponse": "No response from server"
+    }
+  }
+}

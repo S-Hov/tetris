@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 import { DEFAULT_LANGUAGE, getLanguageFromPathname } from '@/i18n'
 import {
@@ -40,10 +41,10 @@ const modeBannerByKey = {
 
 const teamModeKeys = new Set([PLAY_MODE_KEYS.TEAM_2V2, PLAY_MODE_KEYS.SQUAD_5V5])
 
-const emitWithAck = (eventName, payload) => {
+const emitWithAck = (eventName, payload, fallbackMessage) => {
     return new Promise((resolve) => {
         socket.emit(eventName, payload, (response) => {
-            resolve(response || { success: false, message: 'Нет ответа от сервера' })
+            resolve(response || { success: false, message: fallbackMessage })
         })
     })
 }
@@ -52,10 +53,12 @@ const ModeSelectPage = () => {
     const location = useLocation()
     const navigate = useNavigate()
     const { mode } = useParams()
+    const { t, i18n } = useTranslation()
     const { isAuth, isLoading: isAuthLoading, user } = useAuth()
     const currentLanguage = getLanguageFromPathname(location.pathname) || DEFAULT_LANGUAGE
     const [guestNickname, setGuestNickname] = useState(() => getStoredGuestSession()?.nickname || '')
     const modeConfig = useMemo(() => getModeSelectionConfig(mode), [mode])
+    const translatedModeConfig = useMemo(() => buildTranslatedModeConfig(modeConfig, t), [modeConfig, t])
     const playerStats = useMemo(() => buildPlayerStats(user), [user])
     const isSoloMode = modeConfig.key === PLAY_MODE_KEYS.SOLO
     const hasTeams = teamModeKeys.has(modeConfig.key)
@@ -66,7 +69,11 @@ const ModeSelectPage = () => {
     }))
     const roomActionEnabled = modeConfig.roomSupported
     const availablePlayOptions = modeConfig.availablePlayOptions || playOptionCards.map((option) => option.key)
-    const visiblePlayOptions = playOptionCards.filter((option) => availablePlayOptions.includes(option.key))
+    const visiblePlayOptions = useMemo(() => (
+        playOptionCards
+            .filter((option) => availablePlayOptions.includes(option.key))
+            .map((option) => buildTranslatedPlayOption(option, t))
+    ), [availablePlayOptions, t])
     const [playTypeState, setPlayTypeState] = useState(() => ({
         modeKey: modeConfig.key,
         playType: defaultPlayType,
@@ -84,20 +91,26 @@ const ModeSelectPage = () => {
     const selectedPlayOption = visiblePlayOptions.find((option) => option.key === selectedPlayType) || visiblePlayOptions[0]
     const isRankedSelected = selectedPlayType === MATCH_PLAY_OPTIONS.RANKED
     const isRoomSelected = selectedPlayType === MATCH_PLAY_OPTIONS.ROOM
-    const settingsCopy = modeConfig.settingsCopy || {
+    const settingsCopy = translatedModeConfig.settingsCopy || {
         abilities: {
-            title: 'Способности',
-            description: 'Энергия, дебаффы и выбор эффектов во время матча.',
+            title: t('modeSelect.settings.fallbackAbilitiesTitle'),
+            description: t('modeSelect.settings.fallbackAbilitiesDescription'),
         },
         specialBlocks: {
-            title: 'Нестандартные блоки',
-            description: 'В пул фигур добавляются специальные нестандартные формы.',
+            title: t('modeSelect.settings.fallbackSpecialBlocksTitle'),
+            description: t('modeSelect.settings.fallbackSpecialBlocksDescription'),
         },
     }
 
+    useEffect(() => {
+        if (i18n.language !== currentLanguage) {
+            i18n.changeLanguage(currentLanguage)
+        }
+    }, [currentLanguage, i18n])
+
     const handleToggle = (key) => {
         if (matchmakingState.isSearching) {
-            notify('Сначала отмените текущий поиск', 'info')
+            notify(t('modeSelect.notifications.cancelCurrentSearch'), 'info')
             return
         }
 
@@ -158,7 +171,7 @@ const ModeSelectPage = () => {
                 queueSize: 0,
                 position: null,
             })
-            notify('Соперник найден. Матч начинается', 'success')
+            notify(t('modeSelect.notifications.opponentFound'), 'success')
 
             navigate(`/match/${payload.roomId}`, {
                 state: {
@@ -179,7 +192,7 @@ const ModeSelectPage = () => {
             socket.off('matchmaking:cancelled', handleCancelled)
             socket.off('matchmaking:found', handleFound)
         }
-    }, [modeConfig.key, navigate, selectedPlayType, settings])
+    }, [modeConfig.key, navigate, selectedPlayType, settings, t])
 
     useEffect(() => {
         return () => {
@@ -198,12 +211,12 @@ const ModeSelectPage = () => {
 
     const startMatchmaking = async (matchType) => {
         if (!user && matchType === MATCH_PLAY_OPTIONS.RANKED) {
-            notify('Войдите в аккаунт, чтобы искать рейтинговый матч', 'warning')
+            notify(t('modeSelect.notifications.loginForRanked'), 'warning')
             return
         }
 
         if (!user && !isValidGuestNickname(guestNickname)) {
-            notify('Введите никнейм для обычной игры: 2-24 символа', 'warning')
+            notify(t('modeSelect.notifications.guestNicknameRequired'), 'warning')
             return
         }
 
@@ -217,10 +230,10 @@ const ModeSelectPage = () => {
                     abilitiesEnabled: settings.abilitiesEnabled,
                     specialBlocksEnabled: settings.specialBlocksEnabled,
                 },
-            })
+            }, t('modeSelect.socket.noResponse'))
 
             if (!response.success) {
-                notify(response.message || 'Не удалось начать поиск', 'error')
+                notify(response.message || t('modeSelect.notifications.startSearchFailed'), 'error')
                 return
             }
 
@@ -233,18 +246,18 @@ const ModeSelectPage = () => {
                     queueSize: response.queueSize || 1,
                     position: response.position || 1,
                 })
-                notify('Поиск матча запущен', 'info')
+                notify(t('modeSelect.notifications.searchStarted'), 'info')
             }
         } catch (error) {
-            notify(error.message || 'Не удалось подключиться к поиску матча', 'error')
+            notify(error.message || t('modeSelect.notifications.connectionFailed'), 'error')
         }
     }
 
     const cancelMatchmaking = async () => {
-        const response = await emitWithAck('matchmaking:leave', {})
+        const response = await emitWithAck('matchmaking:leave', {}, t('modeSelect.socket.noResponse'))
 
         if (!response.success) {
-            notify(response.message || 'Не удалось отменить поиск', 'error')
+            notify(response.message || t('modeSelect.notifications.cancelSearchFailed'), 'error')
             return
         }
 
@@ -256,7 +269,7 @@ const ModeSelectPage = () => {
             position: null,
         })
         setWaitSeconds(0)
-        notify('Поиск отменён', 'info')
+        notify(t('modeSelect.notifications.searchCancelled'), 'info')
     }
 
     const getRoomSettings = (matchType) => ({
@@ -268,7 +281,7 @@ const ModeSelectPage = () => {
         navigate('/game/solo/play', {
             state: {
                 modeKey: modeConfig.key,
-                modeTitle: modeConfig.title,
+                modeTitle: translatedModeConfig.title,
                 modeIcon: modeConfig.icon,
                 roomSettings: {
                     abilitiesEnabled: false,
@@ -283,7 +296,7 @@ const ModeSelectPage = () => {
         navigate(`/game/${modeConfig.key}/party`, {
             state: {
                 modeKey: modeConfig.key,
-                modeTitle: modeConfig.title,
+                modeTitle: translatedModeConfig.title,
                 modeIcon: modeConfig.icon,
                 roomSettings: getRoomSettings(selectedPlayType),
                 partyIntent: intent,
@@ -293,14 +306,14 @@ const ModeSelectPage = () => {
 
     const openLobby = () => {
         if (!roomActionEnabled) {
-            notify('Комнаты для этого режима пока в разработке', 'info')
+            notify(t('modeSelect.notifications.roomsComingSoon'), 'info')
             return
         }
 
         navigate(`/game/${modeConfig.key}/lobby`, {
             state: {
                 modeKey: modeConfig.key,
-                modeTitle: modeConfig.title,
+                modeTitle: translatedModeConfig.title,
                 modeIcon: modeConfig.icon,
                 roomSettings: getRoomSettings('private'),
             },
@@ -309,7 +322,7 @@ const ModeSelectPage = () => {
 
     const handlePrimaryAction = async () => {
         if (matchmakingState.isSearching) {
-            notify('Поиск уже идёт', 'info')
+            notify(t('modeSelect.notifications.searchAlreadyRunning'), 'info')
             return
         }
 
@@ -329,7 +342,7 @@ const ModeSelectPage = () => {
         }
 
         if (!roomActionEnabled) {
-            notify('Этот сценарий пока открыт как макет для будущего развития режима', 'info')
+            notify(t('modeSelect.notifications.scenarioMock'), 'info')
             return
         }
 
@@ -342,22 +355,24 @@ const ModeSelectPage = () => {
                 <ModePlayTypeNav
                     disabled={matchmakingState.isSearching}
                     items={visiblePlayOptions}
-                    modeConfig={modeConfig}
+                    modeConfig={translatedModeConfig}
                     roomActionEnabled={roomActionEnabled}
                     selectedPlayType={selectedPlayType}
+                    t={t}
                     onSelect={selectPlayType}
                 />
 
                 <div className="mode-select-content profile-layout-content">
                     <ModeHeroBanner
                         banner={modeBannerByKey[modeConfig.key]}
-                        modeConfig={modeConfig}
+                        modeConfig={translatedModeConfig}
                         selectedPlayOption={selectedPlayOption}
                     />
 
                     {!user && !isSoloMode && (
                         <GuestNamePanel
                             guestNickname={guestNickname}
+                            t={t}
                             onGuestNicknameChange={setGuestNickname}
                         />
                     )}
@@ -375,10 +390,11 @@ const ModeSelectPage = () => {
 
                             <MatchSettingsPanel
                                 isSoloMode={isSoloMode}
-                                modeConfig={modeConfig}
+                                modeConfig={translatedModeConfig}
                                 selectedPlayOption={selectedPlayOption}
                                 settings={settings}
                                 settingsCopy={settingsCopy}
+                                t={t}
                                 onToggle={handleToggle}
                             />
                         </div>
@@ -389,16 +405,18 @@ const ModeSelectPage = () => {
                                 isRoomSelected={isRoomSelected}
                                 isSoloMode={isSoloMode}
                                 matchmakingState={matchmakingState}
-                                modeConfig={modeConfig}
+                                modeConfig={translatedModeConfig}
                                 roomActionEnabled={roomActionEnabled}
                                 selectedPlayOption={selectedPlayOption}
+                                t={t}
                                 onPrimaryAction={handlePrimaryAction}
                             />
 
                             {hasTeams && !isRoomSelected && (
                                 <TeamCreatePanel
-                                    modeConfig={modeConfig}
+                                    modeConfig={translatedModeConfig}
                                     selectedPlayOption={selectedPlayOption}
+                                    t={t}
                                     onCreate={() => openTeamQueue('create')}
                                 />
                             )}
@@ -408,21 +426,23 @@ const ModeSelectPage = () => {
                     {matchmakingState.isSearching && (
                         <MatchmakingPanel
                             matchmakingState={matchmakingState}
+                            t={t}
                             onCancel={cancelMatchmaking}
                             waitSeconds={waitSeconds}
                         />
                     )}
 
-                    {/* {(hasTeams || isRoomSelected) && (
+                    {(hasTeams || isRoomSelected) && (
                         <ModeTablePanel
                             hasTeams={hasTeams}
                             isRoomSelected={isRoomSelected}
-                            modeConfig={modeConfig}
+                            modeConfig={translatedModeConfig}
                             selectedPlayOption={selectedPlayOption}
+                            t={t}
                             onOpenLobby={openLobby}
                             onOpenTeamQueue={() => openTeamQueue('join')}
                         />
-                    )} */}
+                    )}
                 </div>
             </div>
         </section>
@@ -435,9 +455,10 @@ const ModePlayTypeNav = ({
     modeConfig,
     roomActionEnabled,
     selectedPlayType,
+    t,
     onSelect,
 }) => (
-    <aside className="profile-sidebar mode-playtype-nav" aria-label="Выбор типа игры">
+    <aside className="profile-sidebar mode-playtype-nav" aria-label={t('modeSelect.aria.playTypeNav')}>
         {items.map((item) => {
             const isUnavailable = item.key === MATCH_PLAY_OPTIONS.ROOM && !roomActionEnabled
             const metaItems = modeConfig.cardMeta[item.key] || []
@@ -453,7 +474,6 @@ const ModePlayTypeNav = ({
                     <i className={item.icon}></i>
                     <span>{item.title}</span>
                     <small>{metaItems[0] || item.description}</small>
-                    ${selectedPlayType === item.key ? <div class="border-glow"></div> : ''}
                 </button>
             )
         })}
@@ -482,25 +502,25 @@ const ModeHeroBanner = ({ banner, modeConfig, selectedPlayOption }) => (
     </section>
 )
 
-const GuestNamePanel = ({ guestNickname, onGuestNicknameChange }) => (
+const GuestNamePanel = ({ guestNickname, t, onGuestNicknameChange }) => (
     <section className="mode-panel mode-guest-panel">
         <GlowEffect>
             <div className="glow-effect mode-panel__content">
                 <div className="profile-section-title">
                     <i className="fas fa-user-astronaut"></i>
-                    Гостевая игра
+                    {t('modeSelect.guest.title')}
                 </div>
 
                 <label className="mode-setting-row mode-setting-row--input">
                     <span>
-                        <strong>Никнейм для обычной игры</strong>
-                        <small>Рейтинговый матч остаётся только для аккаунтов.</small>
+                        <strong>{t('modeSelect.guest.nicknameLabel')}</strong>
+                        <small>{t('modeSelect.guest.nicknameHint')}</small>
                     </span>
                     <input
                         type="text"
                         value={guestNickname}
                         onChange={(event) => onGuestNicknameChange(normalizeGuestNickname(event.target.value))}
-                        placeholder="Guest"
+                        placeholder={t('modeSelect.guest.placeholder')}
                         maxLength={24}
                     />
                 </label>
@@ -515,6 +535,7 @@ const MatchSettingsPanel = ({
     selectedPlayOption,
     settings,
     settingsCopy,
+    t,
     onToggle,
 }) => (
     <section className="mode-panel mode-settings-panel">
@@ -522,7 +543,7 @@ const MatchSettingsPanel = ({
             <div className="glow-effect mode-panel__content">
                 <div className="profile-section-title">
                     <i className="fas fa-sliders-h"></i>
-                    Настройки матча
+                    {t('modeSelect.settings.title')}
                 </div>
 
                 <div className="mode-settings-grid">
@@ -543,17 +564,17 @@ const MatchSettingsPanel = ({
 
                 <div className="mode-select-summary">
                     <div>
-                        <span>Текущая конфигурация</span>
+                        <span>{t('modeSelect.settings.summaryLabel')}</span>
                         <strong>{modeConfig.title} / {selectedPlayOption?.title}</strong>
                     </div>
                     <div className="mode-select-pills">
                         <span className={`mode-select-pill ${settings.abilitiesEnabled ? 'is-active' : ''}`}>
                             {isSoloMode
-                                ? settings.abilitiesEnabled ? 'Подлянки: макет вкл.' : 'Подлянки: выкл.'
-                                : settings.abilitiesEnabled ? 'С эффектами' : 'Без эффектов'}
+                                ? settings.abilitiesEnabled ? t('modeSelect.settings.soloAbilitiesOn') : t('modeSelect.settings.soloAbilitiesOff')
+                                : settings.abilitiesEnabled ? t('modeSelect.settings.abilitiesOn') : t('modeSelect.settings.abilitiesOff')}
                         </span>
                         <span className={`mode-select-pill ${settings.specialBlocksEnabled ? 'is-active' : ''}`}>
-                            {settings.specialBlocksEnabled ? 'Нестандартные блоки вкл.' : 'Стандартные блоки'}
+                            {settings.specialBlocksEnabled ? t('modeSelect.settings.specialBlocksOn') : t('modeSelect.settings.specialBlocksOff')}
                         </span>
                     </div>
                 </div>
@@ -570,6 +591,7 @@ const LaunchPanel = ({
     modeConfig,
     roomActionEnabled,
     selectedPlayOption,
+    t,
     onPrimaryAction,
 }) => {
     const isUnavailable = !isSoloMode && !hasTeams && !roomActionEnabled
@@ -580,6 +602,7 @@ const LaunchPanel = ({
         isSearching: matchmakingState.isSearching,
         modeKey: modeConfig.key,
         selectedPlayType: selectedPlayOption?.key,
+        t,
     })
 
     return (
@@ -592,13 +615,13 @@ const LaunchPanel = ({
 
                     <div>
                         <span className="mode-action-kicker">{selectedPlayOption?.title}</span>
-                        <h2>{isRoomSelected ? 'Комната для друзей' : hasTeams ? 'Командный подбор' : 'Готово к старту'}</h2>
+                        <h2>{isRoomSelected ? t('modeSelect.launch.roomTitle') : hasTeams ? t('modeSelect.launch.teamTitle') : t('modeSelect.launch.readyTitle')}</h2>
                         <p>
                             {isRoomSelected
-                                ? 'Откройте лобби, настройте комнату и пригласите игроков.'
+                                ? t('modeSelect.launch.roomText')
                                 : hasTeams
-                                    ? 'Сначала соберите команду, затем переходите к подбору соперников.'
-                                    : 'Параметры матча применятся сразу после запуска.'}
+                                    ? t('modeSelect.launch.teamText')
+                                    : t('modeSelect.launch.readyText')}
                         </p>
                     </div>
 
@@ -609,7 +632,7 @@ const LaunchPanel = ({
                         onClick={onPrimaryAction}
                     >
                         <i className={isRoomSelected ? 'fas fa-arrow-right' : 'fas fa-play'}></i>
-                        {isUnavailable ? 'Скоро будет' : buttonLabel}
+                        {isUnavailable ? t('modeSelect.launch.soon') : buttonLabel}
                     </button>
                 </div>
             </GlowEffect>
@@ -617,26 +640,26 @@ const LaunchPanel = ({
     )
 }
 
-const TeamCreatePanel = ({ modeConfig, selectedPlayOption, onCreate }) => (
+const TeamCreatePanel = ({ modeConfig, selectedPlayOption, t, onCreate }) => (
     <section className="mode-panel mode-create-team-panel">
         <GlowEffect>
             <div className="glow-effect mode-panel__content mode-create-team-panel__content">
                 <div>
                     <span className="mode-action-kicker">{modeConfig.heroLabel}</span>
-                    <h2>Создать команду</h2>
-                    <p>Соберите состав под {selectedPlayOption?.title?.toLowerCase()} и пригласите напарников перед матчем.</p>
+                    <h2>{t('modeSelect.team.title')}</h2>
+                    <p>{t('modeSelect.team.description', { playType: selectedPlayOption?.title?.toLowerCase() })}</p>
                 </div>
 
                 <button type="button" className="mode-secondary-button" onClick={onCreate}>
                     <i className="fas fa-plus"></i>
-                    Создать команду
+                    {t('modeSelect.team.button')}
                 </button>
             </div>
         </GlowEffect>
     </section>
 )
 
-const MatchmakingPanel = ({ matchmakingState, onCancel, waitSeconds }) => (
+const MatchmakingPanel = ({ matchmakingState, t, onCancel, waitSeconds }) => (
     <section className="mode-matchmaking-panel" aria-live="polite">
         <GlowEffect>
             <div className="glow-effect mode-matchmaking-panel__content">
@@ -647,25 +670,25 @@ const MatchmakingPanel = ({ matchmakingState, onCancel, waitSeconds }) => (
                 </div>
 
                 <div className="mode-matchmaking-copy">
-                    <span>{matchmakingState.matchType === MATCH_PLAY_OPTIONS.RANKED ? 'Ranked queue' : 'Casual queue'}</span>
-                    <h2>Ищем соперника</h2>
-                    <p>Учитываем режим, способности и нестандартные блоки. Подходящий матч откроется автоматически.</p>
+                    <span>{matchmakingState.matchType === MATCH_PLAY_OPTIONS.RANKED ? t('modeSelect.matchmaking.rankedQueue') : t('modeSelect.matchmaking.casualQueue')}</span>
+                    <h2>{t('modeSelect.matchmaking.title')}</h2>
+                    <p>{t('modeSelect.matchmaking.text')}</p>
                 </div>
 
                 <div className="mode-matchmaking-meta">
                     <div>
-                        <span>Ожидание</span>
+                        <span>{t('modeSelect.matchmaking.wait')}</span>
                         <strong>{formatWaitTime(waitSeconds)}</strong>
                     </div>
                     <div>
-                        <span>Позиция</span>
+                        <span>{t('modeSelect.matchmaking.position')}</span>
                         <strong>{matchmakingState.position || 1}</strong>
                     </div>
                 </div>
 
                 <button type="button" className="mode-matchmaking-cancel" onClick={onCancel}>
                     <i className="fas fa-times"></i>
-                    Отменить поиск
+                    {t('modeSelect.matchmaking.cancel')}
                 </button>
             </div>
         </GlowEffect>
@@ -677,10 +700,11 @@ const ModeTablePanel = ({
     isRoomSelected,
     modeConfig,
     selectedPlayOption,
+    t,
     onOpenLobby,
     onOpenTeamQueue,
 }) => {
-    const rows = isRoomSelected ? getRoomRows(modeConfig) : getTeamRows(modeConfig, selectedPlayOption)
+    const rows = isRoomSelected ? getRoomRows(modeConfig, t) : getTeamRows(modeConfig, selectedPlayOption, t)
 
     return (
         <section className="mode-panel mode-table-panel">
@@ -689,7 +713,7 @@ const ModeTablePanel = ({
                     <div className="mode-table-heading">
                         <div className="profile-section-title">
                             <i className={isRoomSelected ? 'fas fa-door-open' : 'fas fa-users'}></i>
-                            {isRoomSelected ? 'Открытые комнаты' : 'Команды в подборе'}
+                            {isRoomSelected ? t('modeSelect.table.roomsTitle') : t('modeSelect.table.teamsTitle')}
                         </div>
 
                         <button
@@ -698,16 +722,16 @@ const ModeTablePanel = ({
                             onClick={isRoomSelected ? onOpenLobby : onOpenTeamQueue}
                         >
                             <i className="fas fa-arrow-right"></i>
-                            {isRoomSelected ? 'Открыть лобби' : 'К командам'}
+                            {isRoomSelected ? t('modeSelect.table.openLobby') : t('modeSelect.table.goTeams')}
                         </button>
                     </div>
 
                     <div className="mode-table">
                         <div className="mode-table__row mode-table__row--head">
-                            <span>{isRoomSelected ? 'Комната' : 'Команда'}</span>
-                            <span>{hasTeams && !isRoomSelected ? 'Состав' : 'Игроки'}</span>
-                            <span>Тип</span>
-                            <span>Статус</span>
+                            <span>{isRoomSelected ? t('modeSelect.table.room') : t('modeSelect.table.team')}</span>
+                            <span>{hasTeams && !isRoomSelected ? t('modeSelect.table.composition') : t('modeSelect.table.players')}</span>
+                            <span>{t('modeSelect.table.type')}</span>
+                            <span>{t('modeSelect.table.status')}</span>
                         </div>
 
                         {rows.map((row) => (
@@ -742,57 +766,117 @@ const getPrimaryButtonLabel = ({
     isSearching,
     modeKey,
     selectedPlayType,
+    t,
 }) => {
-    if (isSearching) return 'Идёт поиск'
-    if (isSoloMode) return 'Начать игру'
-    if (isRoomSelected) return 'Открыть лобби'
-    if (hasTeams) return 'Найти команду'
-    if (modeKey === PLAY_MODE_KEYS.DUEL_1V1 && selectedPlayType === MATCH_PLAY_OPTIONS.RANKED) return 'Найти рейтинговый матч'
+    if (isSearching) return t('modeSelect.launch.searching')
+    if (isSoloMode) return t('modeSelect.launch.startSolo')
+    if (isRoomSelected) return t('modeSelect.launch.openLobby')
+    if (hasTeams) return t('modeSelect.launch.findTeam')
+    if (modeKey === PLAY_MODE_KEYS.DUEL_1V1 && selectedPlayType === MATCH_PLAY_OPTIONS.RANKED) return t('modeSelect.launch.findRanked')
 
-    return 'Найти матч'
+    return t('modeSelect.launch.findMatch')
 }
 
-const getTeamRows = (modeConfig, selectedPlayOption) => [
+const getTeamRows = (modeConfig, selectedPlayOption, t) => [
     {
-        name: `${modeConfig.key.toUpperCase()} Alpha`,
+        name: t('modeSelect.table.teamNameAlpha', { mode: modeConfig.key.toUpperCase() }),
         players: modeConfig.key === PLAY_MODE_KEYS.SQUAD_5V5 ? '4 / 5' : '1 / 2',
-        type: selectedPlayOption?.title || 'Подбор',
-        status: 'Ищут игрока',
+        type: selectedPlayOption?.title || t('modeSelect.launch.findMatch'),
+        status: t('modeSelect.table.looking'),
     },
     {
-        name: `${modeConfig.key.toUpperCase()} Pulse`,
+        name: t('modeSelect.table.teamNamePulse', { mode: modeConfig.key.toUpperCase() }),
         players: modeConfig.key === PLAY_MODE_KEYS.SQUAD_5V5 ? '3 / 5' : '2 / 2',
-        type: selectedPlayOption?.title || 'Подбор',
-        status: 'Готовы',
+        type: selectedPlayOption?.title || t('modeSelect.launch.findMatch'),
+        status: t('modeSelect.table.ready'),
     },
     {
-        name: `${modeConfig.key.toUpperCase()} Core`,
+        name: t('modeSelect.table.teamNameCore', { mode: modeConfig.key.toUpperCase() }),
         players: modeConfig.key === PLAY_MODE_KEYS.SQUAD_5V5 ? '2 / 5' : '1 / 2',
-        type: 'Свободный состав',
-        status: 'Открыто',
+        type: t('modeSelect.table.freeComposition'),
+        status: t('modeSelect.table.open'),
     },
 ]
 
-const getRoomRows = (modeConfig) => [
+const getRoomRows = (modeConfig, t) => [
     {
-        name: `${modeConfig.title} #1042`,
+        name: t('modeSelect.table.roomName', { mode: modeConfig.title, number: '1042' }),
         players: modeConfig.key === PLAY_MODE_KEYS.DUEL_1V1 ? '1 / 2' : '2 / 4',
-        type: 'Приватная',
-        status: 'Ожидает',
+        type: t('modeSelect.table.private'),
+        status: t('modeSelect.table.waiting'),
     },
     {
-        name: `${modeConfig.title} #1043`,
+        name: t('modeSelect.table.roomName', { mode: modeConfig.title, number: '1043' }),
         players: modeConfig.key === PLAY_MODE_KEYS.DUEL_1V1 ? '0 / 2' : '1 / 4',
-        type: 'С друзьями',
-        status: 'Открыта',
+        type: t('modeSelect.table.friends'),
+        status: t('modeSelect.table.opened'),
     },
     {
-        name: `${modeConfig.title} #1044`,
+        name: t('modeSelect.table.roomName', { mode: modeConfig.title, number: '1044' }),
         players: modeConfig.key === PLAY_MODE_KEYS.DUEL_1V1 ? '1 / 2' : '3 / 4',
-        type: 'Кастом',
-        status: 'Сбор',
+        type: t('modeSelect.table.custom'),
+        status: t('modeSelect.table.gathering'),
     },
 ]
+
+const buildTranslatedModeConfig = (modeConfig, t) => {
+    const modeKey = modeConfig.key
+    const modePath = `modeSelect.modes.${modeKey}`
+
+    return {
+        ...modeConfig,
+        title: t(`${modePath}.title`, { defaultValue: modeConfig.title }),
+        subtitle: t(`${modePath}.subtitle`, { defaultValue: modeConfig.subtitle }),
+        online: t(`${modePath}.online`, { defaultValue: modeConfig.online }),
+        heroLabel: t(`${modePath}.heroLabel`, { defaultValue: modeConfig.heroLabel }),
+        cardMeta: buildTranslatedCardMeta(modeConfig, t),
+        settingsCopy: buildTranslatedSettingsCopy(modeConfig, t),
+    }
+}
+
+const buildTranslatedCardMeta = (modeConfig, t) => {
+    return Object.values(MATCH_PLAY_OPTIONS).reduce((result, playType) => {
+        const translatedMeta = t(`modeSelect.modes.${modeConfig.key}.cardMeta.${playType}`, {
+            defaultValue: modeConfig.cardMeta?.[playType] || [],
+            returnObjects: true,
+        })
+
+        result[playType] = Array.isArray(translatedMeta)
+            ? translatedMeta
+            : modeConfig.cardMeta?.[playType] || []
+
+        return result
+    }, {})
+}
+
+const buildTranslatedSettingsCopy = (modeConfig, t) => {
+    const settingsPath = `modeSelect.modes.${modeConfig.key}.settings`
+
+    return {
+        abilities: {
+            title: t(`${settingsPath}.abilities.title`, {
+                defaultValue: modeConfig.settingsCopy?.abilities?.title || t('modeSelect.settings.fallbackAbilitiesTitle'),
+            }),
+            description: t(`${settingsPath}.abilities.description`, {
+                defaultValue: modeConfig.settingsCopy?.abilities?.description || t('modeSelect.settings.fallbackAbilitiesDescription'),
+            }),
+        },
+        specialBlocks: {
+            title: t(`${settingsPath}.specialBlocks.title`, {
+                defaultValue: modeConfig.settingsCopy?.specialBlocks?.title || t('modeSelect.settings.fallbackSpecialBlocksTitle'),
+            }),
+            description: t(`${settingsPath}.specialBlocks.description`, {
+                defaultValue: modeConfig.settingsCopy?.specialBlocks?.description || t('modeSelect.settings.fallbackSpecialBlocksDescription'),
+            }),
+        },
+    }
+}
+
+const buildTranslatedPlayOption = (option, t) => ({
+    ...option,
+    title: t(`modeSelect.playOptions.${option.key}.title`, { defaultValue: option.title }),
+    description: t(`modeSelect.playOptions.${option.key}.description`, { defaultValue: option.description }),
+})
 
 const formatWaitTime = (seconds) => {
     const minutes = Math.floor(seconds / 60)
