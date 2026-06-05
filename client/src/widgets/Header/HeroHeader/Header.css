@@ -197,7 +197,7 @@
 
     .mobile-mode-select .custom-select__option {
         padding: 0.68rem 0.75rem;
-        var(--radius-card-2);
+        border-radius: var(--radius-card-2);
         font-size: 0.78rem;
     }
 }

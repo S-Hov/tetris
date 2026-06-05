@@ -9,7 +9,7 @@
 }
 
 .account-settings-panel {
-    overflow: hidden;
+    overflow: visible;
     border: var(--border);
     border-radius: var(--radius-panel);
     background: var(--box-bg);

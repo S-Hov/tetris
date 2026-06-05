@@ -234,7 +234,7 @@
     border: 1px solid rgba(255, 112, 112, 0.48);
     background: rgba(22, 5, 8, 0.7);
     box-shadow: 0 0 18px rgba(255, 64, 64, 0.18);
-    backdrop-filter: blur(10px);
+    backdrop-filter: var(--medium-blur);
 }
 
 .board-danger-status span {

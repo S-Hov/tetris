@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import ProfileSideNav from '@/widgets/ProfileSideNav'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
+import { useInterfaceRadius } from '@/shared/hooks/useInterfaceRadius.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
 import { authenticationAPI } from '@/shared/api/auth'
 import { settingsAPI } from '@/shared/api/settings'
@@ -33,6 +34,7 @@ const AccountSettingsPage = () => {
     const avatarInputRef = useRef(null)
     const { checkAuth, logout, setUser, user } = useAuth()
     const { isGlowEffectEnabled, toggleGlowEffect } = useGlowEffect()
+    const { radiusSettings, setRadiusSetting } = useInterfaceRadius()
     const { isDarkTheme, toggleTheme } = useTheme()
     const [profileForm, setProfileForm] = useState({ username: '' })
     const [avatarFile, setAvatarFile] = useState(null)
@@ -296,7 +298,9 @@ const AccountSettingsPage = () => {
                             isDarkTheme={isDarkTheme}
                             isGlowEffectEnabled={isGlowEffectEnabled}
                             onGlowEffectToggle={toggleGlowEffect}
+                            onRadiusSettingChange={setRadiusSetting}
                             onThemeToggle={toggleTheme}
+                            radiusSettings={radiusSettings}
                             t={t}
                         />
                     )}

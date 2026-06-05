@@ -6,7 +6,7 @@
     place-items: center;
     padding: 1rem;
     background: rgba(2, 8, 18, 0.74);
-    backdrop-filter: blur(12px);
+    backdrop-filter: var(--medium-blur);
 }
 
 .account-email-modal__panel {

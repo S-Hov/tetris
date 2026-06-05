@@ -30,7 +30,16 @@
       "darkThemeTitle": "Тёмная тема",
       "darkThemeDescription": "Переключает цветовую схему интерфейса",
       "glowTitle": "Glow Effect",
-      "glowDescription": "Включает и выключает свечение карточек при движении курсора"
+      "glowDescription": "Включает и выключает свечение карточек при движении курсора",
+      "radiusTitle": "Управление закруглением",
+      "radiusDescription": "Меняет CSS-переменные радиуса элементов интерфейса",
+      "radiusLabels": {
+        "panel": "Панели",
+        "card1": "Карточки 1",
+        "card2": "Карточки 2"
+      },
+      "radiusValueAria": "Значение радиуса: {{name}}",
+      "radiusUnitAria": "Единица радиуса: {{name}}"
     },
     "profile": {
       "avatarAria": "Выбрать новую аватарку",

@@ -52,6 +52,102 @@
     flex: 0 0 120px;
 }
 
+.account-radius-settings {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
+    border: var(--border);
+    border-radius: var(--radius-card-1);
+    background: var(--elem-bg);
+    color: var(--text-color-1);
+}
+
+.account-radius-settings__head {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.account-radius-settings__head strong,
+.account-radius-control > span {
+    font-family: var(--font-1);
+    font-size: 0.94rem;
+}
+
+.account-radius-settings__head small {
+    color: var(--text-color);
+    font-size: 0.82rem;
+}
+
+.account-radius-settings__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.account-radius-control {
+    display: grid;
+    gap: 0.45rem;
+    min-width: 0;
+}
+
+.account-radius-control__inputs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 72px;
+    gap: 0.45rem;
+}
+
+.account-radius-control input,
+.account-radius-unit-select .custom-select__trigger {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    border: var(--border);
+    border-radius: var(--radius-card-1);
+    background: var(--input-bg);
+    color: var(--text-color-1);
+    font: inherit;
+    outline: none;
+}
+
+.account-radius-control input {
+    padding: 0 0.75rem;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.account-radius-control input::-webkit-inner-spin-button,
+.account-radius-control input::-webkit-outer-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+}
+
+.account-radius-unit-select {
+    width: 72px;
+    min-width: 0;
+}
+
+.account-radius-unit-select .custom-select__trigger {
+    padding: 0 0.55rem;
+    font-family: var(--font-1);
+    font-size: 0.82rem;
+    justify-content: center;
+}
+
+.account-radius-unit-select .custom-select__trigger span {
+    min-width: 0;
+}
+
+.account-radius-unit-select .custom-select__option {
+    padding: 0.65rem 0.55rem;
+    border-radius: var(--radius-card-2);
+    justify-content: center;
+}
+
+.account-radius-control input:focus,
+.account-radius-unit-select .custom-select__trigger:focus-visible {
+    box-shadow: var(--lite-shadow);
+}
+
 @media (max-width: 640px) {
     .account-language-setting {
         align-items: stretch;
@@ -61,5 +157,9 @@
     .account-language-select {
         width: 100%;
         flex-basis: auto;
+    }
+
+    .account-radius-settings__grid {
+        grid-template-columns: 1fr;
     }
 }

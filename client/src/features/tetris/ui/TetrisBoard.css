@@ -28,7 +28,7 @@
     box-sizing: border-box;
     background: var(--board-bg);
     border: 2px solid var(--turquoise);
-    backdrop-filter: blur(12px);
+    backdrop-filter: var(--medium-blur);
     border-radius: clamp(10px, 1.4vmin, 15px);
     box-shadow: var(--lite-shadow);
 }

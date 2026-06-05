@@ -30,7 +30,16 @@
       "darkThemeTitle": "Dark theme",
       "darkThemeDescription": "Switches the interface color scheme",
       "glowTitle": "Glow Effect",
-      "glowDescription": "Turns card glow on and off while the cursor moves"
+      "glowDescription": "Turns card glow on and off while the cursor moves",
+      "radiusTitle": "Rounding control",
+      "radiusDescription": "Changes interface corner radius variables",
+      "radiusLabels": {
+        "panel": "Panels",
+        "card1": "Cards 1",
+        "card2": "Cards 2"
+      },
+      "radiusValueAria": "{{name}} radius value",
+      "radiusUnitAria": "{{name}} radius unit"
     },
     "profile": {
       "avatarAria": "Choose a new avatar",

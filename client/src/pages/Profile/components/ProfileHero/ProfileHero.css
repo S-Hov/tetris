@@ -198,7 +198,7 @@
     border-radius: var(--radius-panel);
     background: linear-gradient(90deg, rgba(20, 17, 62, 0.36), rgba(3, 30, 54, 0.28));
     box-shadow: 0 0 26px rgba(0, 229, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(18px);
+    backdrop-filter: var(--hard-blur);
 }
 
 .profile-hero-stat {

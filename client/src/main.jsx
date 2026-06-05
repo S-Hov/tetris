@@ -12,10 +12,12 @@ import './i18n'
 import App from './app/App.jsx'
 import { AuthProvider } from './shared/context/AuthContext.jsx'
 import { initGlowEffect } from './shared/lib/glow-effect/glowEffect.js'
+import { initInterfaceRadiusSettings } from './shared/lib/interface-radius/radius.js'
 import { initTheme } from './shared/lib/theme/theme.js'
 
 initTheme()
 initGlowEffect()
+initInterfaceRadiusSettings()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
