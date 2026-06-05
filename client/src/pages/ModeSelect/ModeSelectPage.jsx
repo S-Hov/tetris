@@ -474,6 +474,7 @@ const ModePlayTypeNav = ({
                     <i className={item.icon}></i>
                     <span>{item.title}</span>
                     <small>{metaItems[0] || item.description}</small>
+                    {selectedPlayType === item.key ? <div class="border-glow"></div> : ''}
                 </button>
             )
         })}
