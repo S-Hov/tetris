@@ -76,6 +76,14 @@
             &::before {
                 opacity: 1;
             }
+
+            &:has(div.border-glow){
+                border: none;
+            }
+
+            & div.border-glow{
+                border-radius: 22px;
+            }
         }
     }
 }
