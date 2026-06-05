@@ -7,7 +7,7 @@
 .support-requests-empty {
     overflow: hidden;
     border: var(--border);
-    border-radius: 32px;
+    border-radius: var(--radius-panel);
     background: var(--box-bg);
     box-shadow: var(--lite-shadow);
     backdrop-filter: var(--medium-blur);
@@ -41,7 +41,7 @@
     padding: 0.45rem 0.75rem;
     margin-bottom: 0.55rem;
     border: var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-bg);
     color: var(--turquoise-lite);
     font-family: var(--font-1);
@@ -71,7 +71,7 @@
 }
 
 .support-request-item-glow-effect{
-    border-radius: 32px;
+    border-radius: var(--radius-panel);
 }
 
 .support-request-item__content {

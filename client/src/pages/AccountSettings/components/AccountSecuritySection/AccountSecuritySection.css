@@ -8,7 +8,7 @@
 .account-security-grid > div {
     overflow: hidden;
     border: var(--border);
-    border-radius: 28px;
+    border-radius: var(--radius-panel);
     background: var(--box-bg);
     box-shadow: var(--lite-shadow);
     backdrop-filter: var(--medium-blur);
@@ -42,7 +42,7 @@
     gap: 0.85rem;
     padding: 0.9rem;
     border: var(--border);
-    border-radius: 18px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-bg);
 }
 
@@ -60,7 +60,7 @@
     min-height: 38px;
     padding: 0.45rem 0.9rem;
     border: var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius-card-1);
     color: var(--red);
     background: rgba(219, 56, 56, 0.1);
     cursor: pointer;
@@ -82,7 +82,7 @@
     display: grid;
     place-items: center;
     border: var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-card-1);
     color: var(--turquoise);
     background: rgba(0, 255, 255, 0.08);
     font-size: 1.1rem;
@@ -110,7 +110,7 @@
     gap: 1rem;
     padding: 0.9rem;
     border: var(--border);
-    border-radius: 18px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-bg);
 }
 
@@ -136,7 +136,7 @@
 .account-empty-state {
     padding: 1rem;
     border: var(--border);
-    border-radius: 18px;
+    border-radius: var(--radius-card-1);
     color: var(--text-color);
     background: var(--elem-bg);
     text-align: center;

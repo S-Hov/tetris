@@ -11,7 +11,7 @@
 .effects-hero,
 .effect-card {
     border: var(--border);
-    border-radius: 36px;
+    border-radius: var(--radius-panel);
     background: var(--box-bg);
     box-shadow: var(--lite-shadow);
     backdrop-filter: var(--medium-blur);
@@ -29,7 +29,7 @@
     width: fit-content;
     padding: 0.45rem 0.8rem;
     border: var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-bg);
     color: var(--turquoise-lite);
     font-family: var(--font-1);
@@ -93,7 +93,7 @@
     display: grid;
     place-items: center;
     border: var(--border);
-    border-radius: 22px;
+    border-radius: var(--radius-card-1);
     background:
         radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.2), transparent 28%),
         linear-gradient(135deg, rgba(0, 255, 255, 0.22), rgba(255, 58, 212, 0.18));

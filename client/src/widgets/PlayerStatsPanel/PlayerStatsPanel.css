@@ -211,7 +211,7 @@
 .player-stats__rank--empty {
     width: 128px;
     border: 1px solid rgba(0, 229, 255, 0.24);
-    border-radius: 8px;
+    border-radius: var(--radius-card-1);
     background: rgba(0, 229, 255, 0.07);
 }
 

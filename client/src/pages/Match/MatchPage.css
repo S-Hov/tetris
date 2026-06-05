@@ -74,7 +74,7 @@
     gap: 1.2rem;
     padding: 1.5rem;
     border: var(--border);
-    border-radius: 36px;
+    border-radius: var(--radius-panel);
     background: var(--easy-background);
     box-shadow: var(--hover-shadow);
     overflow: hidden;
@@ -127,7 +127,7 @@
     gap: 0.75rem;
     padding: 1.2rem;
     border: var(--border);
-    border-radius: 28px;
+    border-radius: var(--radius-panel);
     background: var(--elem-bg);
     text-align: center;
 
@@ -176,7 +176,7 @@
         display: grid;
         gap: 0.15rem;
         padding: 0.55rem;
-        border-radius: 14px;
+        border-radius: var(--radius-card-1);
         background: rgba(255, 255, 255, 0.06);
         color: var(--text-color);
     }

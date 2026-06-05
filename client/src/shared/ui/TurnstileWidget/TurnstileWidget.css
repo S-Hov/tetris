@@ -10,7 +10,7 @@
     color: var(--red);
     background: rgba(219, 56, 56, 0.08);
     border: 1px solid rgba(219, 56, 56, 0.45);
-    border-radius: 8px;
+    border-radius: var(--radius-card-1);
     padding: 0.7rem 0.85rem;
     font-size: 0.85rem;
     line-height: 1.4;

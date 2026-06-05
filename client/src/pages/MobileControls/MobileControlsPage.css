@@ -8,28 +8,44 @@
 }
 
 .mobile-controls-page__header {
+    border: var(--border);
+    border-radius: var(--radius-panel);
+    background: var(--box-bg);
+    box-shadow: var(--lite-shadow);
+    backdrop-filter: var(--medium-blur);
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
-    gap: 14px;
-    margin-bottom: clamp(16px, 3vw, 28px);
+    gap: 1rem;
+    padding: 1.5rem 1.7rem;
+    margin-bottom: 14px;
 }
 
-.mobile-controls-page__header span {
-    display: block;
-    color: var(--description-color);
-    font-size: 0.78rem;
-    letter-spacing: 0.12em;
+.mobile-controls-page__header p {
+    width: fit-content;
+    padding: 0.45rem 0.75rem;
+    margin-bottom: 0.55rem;
+    border: var(--border);
+    border-radius: var(--radius-card-1);
+    background: var(--elem-bg);
+    color: var(--turquoise-lite);
+    font-family: var(--font-1);
+    font-size: 0.72rem;
+    font-weight: 800;
     text-transform: uppercase;
-    text-shadow: var(--text-shadow);
 }
 
 .mobile-controls-page__header h1 {
     margin: 0;
-    color: var(--text-color);
-    font-size: clamp(1.65rem, 4vw, 2.8rem);
-    line-height: 1.08;
-    text-shadow: var(--text-shadow);
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: clamp(1.8rem, 4vw, 2.7rem);
+    line-height: 1.1;
+}
+
+.mobile-controls-page__header > div{
+    display: grid;
+    grid-template-columns: 1fr auto;
 }
 
 .mobile-controls-page__back,
@@ -38,7 +54,7 @@
     display: inline-grid;
     place-items: center;
     border: var(--border);
-    border-radius: 32px;
+    border-radius: var(--radius-panel);
     background: var(--input-bg);
     color: var(--text-color-1);
     text-decoration: none;
@@ -75,7 +91,7 @@
 }
 
 .mobile-controls-page__panel__glow-effect{
-    border-radius: 32px;
+    border-radius: var(--radius-panel);
 
     & .mobile-controls-page__panel{
         height: 100%!important;
@@ -90,7 +106,7 @@
     min-width: 0;
     padding: clamp(14px, 2vw, 20px);
     border: var(--border);
-    border-radius: 32px;
+    border-radius: var(--radius-panel);
     background: var(--easy-background);
     box-shadow: var(--lite-shadow);
     backdrop-filter: var(--medium-blur);

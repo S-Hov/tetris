@@ -11,7 +11,7 @@
 .account-settings-panel {
     overflow: hidden;
     border: var(--border);
-    border-radius: 28px;
+    border-radius: var(--radius-panel);
     background: var(--box-bg);
     box-shadow: var(--lite-shadow);
     backdrop-filter: var(--medium-blur);

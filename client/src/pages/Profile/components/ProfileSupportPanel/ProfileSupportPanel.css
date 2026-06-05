@@ -57,7 +57,7 @@
     align-items: center;
     gap: 9px;
     border: var(--border);
-    border-radius: 22px;
+    border-radius: var(--radius-card-1);
     color: var(--text-active-color);
     background: rgba(2, 11, 34, 0.54);
     font-family: var(--font-1);

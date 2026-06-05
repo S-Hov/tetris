@@ -31,7 +31,7 @@
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    border-radius: 12px;
+    border-radius: var(--radius-card-1);
     color: #00f0ff;
     background: rgba(0, 240, 255, 0.08);
     text-shadow: 0 0 16px rgba(0, 240, 255, 0.85);
@@ -137,7 +137,7 @@
     justify-content: center;
     gap: 12px;
     padding: 0 30px;
-    border-radius: 32px;
+    border-radius: var(--radius-panel);
     color: #f7fbff;
     font-family: var(--font-1);
     font-size: 0.98rem;
@@ -176,7 +176,7 @@
     width: min(100%, 850px);
     overflow: hidden;
     border: 1px solid rgba(0, 229, 255, 0.34);
-    border-radius: 28px;
+    border-radius: var(--radius-panel);
     background: rgba(3, 7, 31, 0.72);
     box-shadow: 0 0 36px rgba(0, 229, 255, 0.26), 0 0 42px rgba(171, 47, 255, 0.28);
 }

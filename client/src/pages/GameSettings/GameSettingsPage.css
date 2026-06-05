@@ -1,5 +1,5 @@
 .game-settings-page__section__glow-effect{
-    border-radius: 32px;
+    border-radius: var(--radius-panel);
 }
 
 .game-settings-page__layout {
@@ -30,7 +30,7 @@
 .game-settings-page__topbar,
 .game-settings-page__section {
     border: var(--border);
-    border-radius: 28px;
+    border-radius: var(--radius-panel);
     background: var(--box-bg);
     box-shadow: var(--lite-shadow);
     backdrop-filter: var(--medium-blur);
@@ -53,7 +53,7 @@
     padding: 0.45rem 0.75rem;
     margin-bottom: 0.55rem;
     border: var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-bg);
     color: var(--turquoise-lite);
     font-family: var(--font-1);
@@ -100,7 +100,7 @@
     gap: 1rem;
     padding: 1rem;
     border: var(--border);
-    border-radius: 18px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-bg);
     color: var(--text-color);
     text-decoration: none;
@@ -121,7 +121,7 @@
     display: grid;
     place-items: center;
     border: var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-card-1);
     background: rgba(0, 255, 255, 0.08);
     color: var(--turquoise);
     font-size: 1.2rem;
@@ -156,7 +156,7 @@
     gap: 1rem;
     padding: 1rem;
     border: var(--border);
-    border-radius: 18px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-bg);
     color: var(--text-color-1);
     cursor: pointer;
@@ -197,7 +197,7 @@
 @media (max-width: 520px) {
     .game-settings-page__topbar,
     .game-settings-page__section {
-        border-radius: 22px;
+        border-radius: var(--radius-card-1);
         padding: 1rem;
     }
 

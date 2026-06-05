@@ -87,7 +87,7 @@
         align-items: center;
         justify-content: center;
         gap: 20px;
-        border-radius: 24px;
+        border-radius: var(--radius-card-1);
         color: var(--text-active-color);
         background: var(--cta-gradient);
         box-shadow: var(--cta-shadow);
@@ -223,7 +223,7 @@
         & .home-donation__button {
             min-height: 62px;
             gap: 12px;
-            border-radius: 20px;
+            border-radius: var(--radius-card-1);
         }
 
         & .home-donation__note {

@@ -7,7 +7,7 @@
 .pc-controls-page__topbar,
 .pc-controls-page__panel {
     border: var(--border);
-    border-radius: 28px;
+    border-radius: var(--radius-panel);
     background: var(--box-bg);
     box-shadow: var(--lite-shadow);
     backdrop-filter: var(--medium-blur);
@@ -34,7 +34,7 @@
     padding: 0.45rem 0.75rem;
     margin-bottom: 0.55rem;
     border: var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-bg);
     color: var(--turquoise-lite);
     font-family: var(--font-1);
@@ -54,6 +54,7 @@
     color: var(--text-color-1);
     cursor: pointer;
     transition: var(--transition);
+    box-shadow: var(--lite-shadow);
 }
 
 .pc-controls-page__back:hover,
@@ -81,7 +82,7 @@
     gap: 1rem;
     padding: 0.9rem;
     border: var(--border);
-    border-radius: 18px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-bg);
 }
 
@@ -96,7 +97,7 @@
     min-height: 48px;
     padding: 0.75rem 1rem;
     border: var(--border);
-    border-radius: 14px;
+    border-radius: var(--radius-card-1);
     background: var(--input-bg);
     color: var(--text-color-1);
     cursor: pointer;
@@ -135,7 +136,7 @@
 @media (max-width: 640px) {
     .pc-controls-page__topbar,
     .pc-controls-page__panel {
-        border-radius: 22px;
+        border-radius: var(--radius-card-1);
         padding: 1rem;
     }
 

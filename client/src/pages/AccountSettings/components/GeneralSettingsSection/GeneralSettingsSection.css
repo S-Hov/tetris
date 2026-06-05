@@ -12,7 +12,7 @@
     gap: 1rem;
     padding: 1rem;
     border: var(--border);
-    border-radius: 18px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-bg);
     color: var(--text-color-1);
     cursor: pointer;

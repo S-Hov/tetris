@@ -80,7 +80,7 @@
     gap: 0.18rem;
     padding: 0.68rem 0.45rem;
     border: var(--border);
-    border-radius: 22px;
+    border-radius: var(--radius-card-1);
     background: var(--input-bg);
     color: var(--text-active-color);
     font-family: var(--font-1);

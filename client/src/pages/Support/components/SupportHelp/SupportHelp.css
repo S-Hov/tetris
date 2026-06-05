@@ -48,7 +48,7 @@
     align-items: center;
     justify-content: center;
     border: 1px solid var(--card-border, rgba(0, 229, 255, 0.24));
-    border-radius: 18px;
+    border-radius: var(--radius-card-1);
     color: var(--card-color, var(--turquoise));
     background: var(--card-bg, rgba(0, 229, 255, 0.08));
     font-size: 1.35rem;

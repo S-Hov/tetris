@@ -18,7 +18,7 @@
     overflow: hidden;
     background:var(--box-bg);
     border: var(--border);
-    border-radius: 34px;
+    border-radius: var(--radius-panel);
     box-shadow: var(--lite-shadow);
     backdrop-filter: var(--medium-blur);
 }
@@ -37,7 +37,7 @@
     position: absolute;
     inset: 1rem;
     border: 1px solid rgba(0, 255, 255, 0.08);
-    border-radius: 26px;
+    border-radius: var(--radius-panel);
     pointer-events: none;
 }
 
@@ -93,7 +93,7 @@
     justify-content: center;
     gap: 0.9rem;
     padding: 1.35rem;
-    border-radius: 24px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-bg);
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -169,7 +169,7 @@
 .lobby-field input {
     min-height: 50px;
     padding: 0.9rem 1rem;
-    border-radius: 16px;
+    border-radius: var(--radius-card-1);
     border: 1px solid rgba(0, 255, 255, 0.16);
     background: var(--box-bg);
     color: var(--text-color-1);
@@ -253,7 +253,7 @@
     gap: 0.5rem;
     min-height: 122px;
     padding: 1rem;
-    border-radius: 18px;
+    border-radius: var(--radius-card-1);
     background: var(--input-bg);
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -287,7 +287,7 @@
     display: grid;
     gap: 0.9rem;
     padding: 1rem 1.1rem;
-    border-radius: 24px;
+    border-radius: var(--radius-card-1);
     background: var(--input-bg);
     border: var(--border);
 }
@@ -383,7 +383,7 @@
 .lobby-empty-state {
     min-height: 112px;
     padding: 1rem 1.1rem;
-    border-radius: 24px;
+    border-radius: var(--radius-card-1);
     background: var(--input-bg);
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -442,7 +442,7 @@
     width: 36px;
     height: 30px;
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 6px;
+    border-radius: var(--radius-card-1);
     background: rgba(255, 255, 255, 0.06);
     color: var(--text-color);
     font-weight: 800;
@@ -509,7 +509,7 @@
     .lobby-hero,
     .lobby-card,
     .lobby-room-card {
-        border-radius: 26px;
+        border-radius: var(--radius-panel);
         padding: 1rem;
     }
 
@@ -517,7 +517,7 @@
     .lobby-card::before,
     .lobby-room-card::before {
         inset: 0.7rem;
-        border-radius: 18px;
+        border-radius: var(--radius-card-1);
     }
 
     .lobby-title {

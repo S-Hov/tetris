@@ -13,7 +13,7 @@
     overflow: hidden;
     background: var(--box-bg);
     border: var(--border);
-    border-radius: 38px;
+    border-radius: var(--radius-panel);
     box-shadow: var(--lite-shadow);
     backdrop-filter: var(--medium-blur);
 }
@@ -64,7 +64,7 @@
     justify-items: center;
     gap: 0.25rem;
     padding: 1rem 1.2rem;
-    border-radius: 28px;
+    border-radius: var(--radius-panel);
     background: var(--elem-gradient-1);
     border: var(--border);
     
@@ -212,7 +212,7 @@
     gap: 1rem;
     align-items: center;
     padding: 1.1rem 1.15rem;
-    border-radius: 26px;
+    border-radius: var(--radius-panel);
     border: 1px solid rgba(0, 255, 255, 0.12);
     background: var(--glass-gradient);
     text-decoration: none;
@@ -337,7 +337,7 @@
 
 .matches-skeleton {
     height: 106px;
-    border-radius: 24px;
+    border-radius: var(--radius-card-1);
     background: linear-gradient(90deg, rgba(0, 255, 255, 0.08), rgba(255, 255, 255, 0.05), rgba(0, 255, 255, 0.08));
     background-size: 200% 100%;
     animation: matchesShimmer 1.6s linear infinite;

@@ -11,7 +11,7 @@
     overflow: hidden;
     background: var(--box-bg);
     border: var(--border);
-    border-radius: 38px;
+    border-radius: var(--radius-panel);
     box-shadow: var(--lite-shadow);
     backdrop-filter: var(--medium-blur);
 }
@@ -63,7 +63,7 @@
     justify-items: center;
     gap: 0.2rem;
     padding: 1rem 1.2rem;
-    border-radius: 28px;
+    border-radius: var(--radius-panel);
     border: 1px solid rgba(0, 255, 255, 0.2);
     background: var(--input-bg);
     
@@ -142,7 +142,7 @@
     display: grid;
     gap: 0.45rem;
     padding: 1.2rem;
-    border-radius: 28px;
+    border-radius: var(--radius-panel);
     border: var(--border);
     background: var(--input-bg);
 }
@@ -243,7 +243,7 @@
     gap: 0.85rem;
     align-items: start;
     padding: 0.95rem 1rem;
-    border-radius: 22px;
+    border-radius: var(--radius-card-1);
     background: var(--glass-gradient);
     border: 1px solid rgba(0, 255, 255, 0.08);
 }
@@ -254,7 +254,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 18px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-gradient-1);
     color: var(--turquoise);
 }
@@ -295,7 +295,7 @@
 }
 
 .match-details-skeleton {
-    border-radius: 34px;
+    border-radius: var(--radius-panel);
     background: linear-gradient(90deg, rgba(0, 255, 255, 0.08), rgba(255, 255, 255, 0.05), rgba(0, 255, 255, 0.08));
     background-size: 200% 100%;
     animation: matchDetailsShimmer 1.5s linear infinite;

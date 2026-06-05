@@ -27,7 +27,7 @@
 .email-highlight {
     display: inline-block;
     padding: 0.2rem 0.8rem;
-    border-radius: 20px;
+    border-radius: var(--radius-card-1);
     font-weight: 500;
     margin-top: 0.5rem;
     font-size: 0.85rem;

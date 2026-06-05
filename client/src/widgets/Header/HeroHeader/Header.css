@@ -25,7 +25,7 @@
 .header-language-select .custom-select__trigger {
     min-height: 42px;
     padding: 0.55rem 0.7rem;
-    border-radius: 32px;
+    border-radius: var(--radius-panel);
     font-family: var(--font-1);
     font-size: 0.78rem;
     font-weight: 900;
@@ -114,7 +114,7 @@
         gap: 0.5rem;
         padding: 0.5rem;
         border: var(--border);
-        border-radius: 24px;
+        border-radius: var(--radius-card-1);
         background: var(--easy-background);
         box-shadow: var(--hover-shadow);
         backdrop-filter: var(--hard-blur);
@@ -128,7 +128,7 @@
         width: 42px;
         height: 42px;
         border: var(--border);
-        border-radius: 16px;
+        border-radius: var(--radius-card-1);
         background: var(--input-bg);
         color: var(--text-color);
         text-decoration: none;
@@ -159,7 +159,7 @@
         flex: 1 1 0;
         min-width: 0;
         max-width: 44px;
-        border-radius: 14px;
+        border-radius: var(--radius-card-1);
     }
 
     .mobile-bottom-nav__link--active {
@@ -177,7 +177,7 @@
     .mobile-mode-select .custom-select__trigger {
         min-height: 42px;
         padding: 0.55rem 0.65rem;
-        border-radius: 16px;
+        border-radius: var(--radius-card-1);
         font-size: 0.72rem;
     }
 
@@ -192,12 +192,12 @@
         min-width: 170px;
         left: auto;
         max-height: min(280px, calc(100vh - 150px));
-        border-radius: 18px;
+        border-radius: var(--radius-card-1);
     }
 
     .mobile-mode-select .custom-select__option {
         padding: 0.68rem 0.75rem;
-        border-radius: 13px;
+        var(--radius-card-2);
         font-size: 0.78rem;
     }
 }
@@ -209,7 +209,7 @@
         padding: 0.42rem;
         width: 100%;
         left: 0;
-        border-radius: 18px;
+        border-radius: var(--radius-card-1);
         bottom: 0;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;

@@ -41,8 +41,9 @@
     --glow-effect: rgba(0, 255, 255, 0.15), rgba(8, 12, 25, 0);
     --surface-panel-bg: rgba(4, 11, 30, 0.72);
     --surface-panel-border: 1px solid rgba(126, 58, 255, 0.34);
-    --radius-panel: 32px;
-    --radius-card: 8px;
+    --radius-panel: 28px;
+    --radius-card-1: 18px;
+    --radius-card-2: 8px;
     --text-muted: rgba(220, 232, 255, 0.68);
     --cta-gradient: linear-gradient(100deg, var(--pink) 0%, #8f44ff 48%, #17d7ff 100%);
     --cta-shadow: 0 0 28px rgba(199, 46, 255, 0.48), 0 0 42px rgba(0, 229, 255, 0.2);
@@ -84,8 +85,9 @@
     --glow-effect: rgba(0, 255, 255, 0.05), rgba(8, 12, 25, 0);
     --surface-panel-bg: rgba(255, 255, 255, 0.66);
     --surface-panel-border: 1px solid rgba(0, 111, 150, 0.22);
-    --radius-panel: 32px;
-    --radius-card: 8px;
+    --radius-panel: 28px;
+    --radius-card-1: 18px;
+    --radius-card-2: 8px;
     --text-muted: rgb(25 32 39 / 68%);
     --cta-gradient: linear-gradient(100deg, #f064ff 0%, #7c5cff 48%, #00aede 100%);
     --cta-shadow: 0 18px 38px rgba(49, 89, 118, 0.2), 0 0 30px rgba(0, 143, 181, 0.18);

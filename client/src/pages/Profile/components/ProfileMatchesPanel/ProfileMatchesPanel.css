@@ -12,7 +12,7 @@
     gap: 12px;
     padding: 10px 12px;
     border-left: 3px solid var(--red);
-    border-radius: var(--radius-card);
+    border-radius: var(--radius-card-2);
     color: #eff6ff;
     background: linear-gradient(90deg, rgba(219, 56, 56, 0.16), rgba(2, 11, 34, 0.52));
     text-decoration: none;

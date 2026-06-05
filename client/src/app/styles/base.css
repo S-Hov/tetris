@@ -92,7 +92,7 @@ main {
 .glass-card {
     background: var(--glass-card-bg);
     backdrop-filter: var(--medium-blur);
-    border-radius: 48px;
+    border-radius: var(--radius-panel);
     border: var(--border);
     padding: 2.5rem 2rem;
     box-shadow: var(--lite-shadow);
@@ -167,7 +167,7 @@ main {
     font-size: 0.85rem;
     color: var(--text-color);
     cursor: pointer;
-    border-radius: 40px;
+    border-radius: var(--radius-panel);
     transition: all 0.2s ease;
     text-decoration: none;
 
@@ -227,7 +227,7 @@ input:-webkit-autofill:focus {
         height: .2px;
         background: var(--turquoise);
         transition: var(--transition);
-        border-radius: 10px;
+        border-radius: var(--radius-card-1);
         z-index: -1;
         bottom: 0;
         left: 50%;

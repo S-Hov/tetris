@@ -68,7 +68,7 @@
     min-height: 56px;
     padding: 0 18px;
     border: var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-card-1);
     background: var(--input-bg);
     color: var(--text-color-1);
     font: inherit;
@@ -115,7 +115,7 @@
     min-height: 86px;
     padding: 16px 18px;
     border: var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius-card-1);
     background: var(--input-bg);
     color: var(--text-color-1);
     cursor: pointer;
@@ -168,7 +168,7 @@
     min-height: 58px;
     padding: 14px 18px;
     border: var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-card-1);
     background: var(--input-bg);
 }
 
@@ -193,7 +193,7 @@
     justify-content: center;
     gap: 14px;
     border: 0;
-    border-radius: 16px;
+    border-radius: var(--radius-card-1);
     color: var(--text-active-color);
     background: var(--cta-gradient);
     box-shadow: var(--cta-shadow);
@@ -213,7 +213,7 @@
     gap: 12px;
     padding: 16px;
     border: 1px solid rgba(111, 255, 177, 0.24);
-    border-radius: 12px;
+    border-radius: var(--radius-card-1);
     background: rgba(111, 255, 177, 0.08);
     color: var(--text-active-color);
     font-weight: 800;
@@ -270,7 +270,7 @@
     gap: 14px;
     padding: 0 18px;
     border: var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-card-1);
     background: var(--input-bg);
     color: var(--text-color-1);
     font: inherit;
@@ -343,7 +343,7 @@
     display: grid;
     place-items: center;
     flex: 0 0 auto;
-    border-radius: 12px;
+    border-radius: var(--radius-card-1);
     color: var(--turquoise);
     background: rgba(0, 229, 255, 0.1);
     text-shadow: var(--text-shadow);

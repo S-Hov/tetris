@@ -126,12 +126,14 @@ const MobileControlsPage = () => {
                         <i className="fas fa-arrow-left"></i>
                     </button>
                     <div>
-                        <span>{t('gameControls.common.controlsEyebrow')}</span>
-                        <h1>{t('gameControls.mobile.title')}</h1>
+                        <div>
+                            <p>{t('gameControls.common.controlsEyebrow')}</p>
+                            <h1>{t('gameControls.mobile.title')}</h1>
+                        </div>
+                        <button className="mobile-controls-page__reset" type="button" onClick={handleReset}>
+                            {t('gameControls.mobile.reset')}
+                        </button>
                     </div>
-                    <button className="mobile-controls-page__reset" type="button" onClick={handleReset}>
-                        {t('gameControls.mobile.reset')}
-                    </button>
                 </header>
 
                 <div className="mobile-controls-page__grid">

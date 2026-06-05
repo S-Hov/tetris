@@ -3,7 +3,7 @@
     isolation: isolate;
     background: var(--box-bg);
     backdrop-filter: var(--medium-blur);
-    border-radius: 32px;
+    border-radius: var(--radius-panel);
     margin-top: 20px;
 }
 

@@ -7,11 +7,11 @@
 }
 
 .support-request-chat-glow-effect{
-    border-radius: 32px;
+    border-radius: var(--radius-panel);
 }
 
 .support-request-info-card-glow-effect{
-    border-radius: 32px;
+    border-radius: var(--radius-panel);
 }
 
 .support-request-details-head,
@@ -20,7 +20,7 @@
 .support-request-details-empty {
     overflow: hidden;
     border: var(--border);
-    border-radius: 32px;
+    border-radius: var(--radius-panel);
     background: var(--box-bg);
     box-shadow: var(--lite-shadow);
     backdrop-filter: var(--medium-blur);
@@ -59,7 +59,7 @@
     padding: 0.45rem 0.75rem;
     margin-bottom: 0.55rem;
     border: var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-bg);
     color: var(--turquoise-lite);
     font-family: var(--font-1);
@@ -159,7 +159,7 @@
     gap: 0.45rem;
     padding: 0.95rem;
     border: var(--border);
-    border-radius: 20px;
+    border-radius: var(--radius-card-1);
     background: var(--elem-bg);
 
     & p {
@@ -202,7 +202,7 @@
     gap: 1rem;
     padding: 1rem;
     border: var(--border);
-    border-radius: 20px;
+    border-radius: var(--radius-card-1);
     background: rgba(0, 255, 170, 0.08);
     color: var(--text-color-1);
     line-height: 1.5;
