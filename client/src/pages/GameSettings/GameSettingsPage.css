@@ -2,10 +2,29 @@
     border-radius: 32px;
 }
 
+.game-settings-page__layout {
+    background: transparent;
+}
+
 .game-settings-page__container {
     display: grid;
     gap: 1.2rem;
     background: transparent;
+}
+
+.game-settings-sidebar {
+    & .game-settings-sidebar__item small {
+        position: relative;
+        z-index: 1;
+        display: block;
+        max-width: 100%;
+        color: rgba(226, 237, 255, 0.68);
+        font-family: var(--font);
+        font-size: 0.64rem;
+        font-weight: 700;
+        line-height: 1.25;
+        text-transform: none;
+    }
 }
 
 .game-settings-page__topbar,

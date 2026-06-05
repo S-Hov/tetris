@@ -359,6 +359,7 @@ const ModeSelectPage = () => {
                     roomActionEnabled={roomActionEnabled}
                     selectedPlayType={selectedPlayType}
                     t={t}
+                    onOpenSettings={() => navigate('/game/controls')}
                     onSelect={selectPlayType}
                 />
 
@@ -432,7 +433,7 @@ const ModeSelectPage = () => {
                         />
                     )}
 
-                    {(hasTeams || isRoomSelected) && (
+                    {/* {(hasTeams || isRoomSelected) && (
                         <ModeTablePanel
                             hasTeams={hasTeams}
                             isRoomSelected={isRoomSelected}
@@ -442,7 +443,7 @@ const ModeSelectPage = () => {
                             onOpenLobby={openLobby}
                             onOpenTeamQueue={() => openTeamQueue('join')}
                         />
-                    )}
+                    )} */}
                 </div>
             </div>
         </section>
@@ -456,6 +457,7 @@ const ModePlayTypeNav = ({
     roomActionEnabled,
     selectedPlayType,
     t,
+    onOpenSettings,
     onSelect,
 }) => (
     <aside className="profile-sidebar mode-playtype-nav" aria-label={t('modeSelect.aria.playTypeNav')}>
@@ -478,6 +480,15 @@ const ModePlayTypeNav = ({
                 </button>
             )
         })}
+        <button
+            type="button"
+            className="profile-sidebar__item mode-playtype-nav__item"
+            onClick={onOpenSettings}
+        >
+            <i className="fas fa-gear"></i>
+            <span>{t('gameControls.settings.title')}</span>
+            <small>{t('gameControls.settings.controlsTitle')}</small>
+        </button>
     </aside>
 )
 

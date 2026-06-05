@@ -24,9 +24,10 @@ const ProfileSideNav = () => {
                     key={item.key}
                     className={`profile-sidebar__item ${isItemActive(item.key, location) ? 'profile-sidebar__item--active' : ''}`}
                     to={getItemPath(item, profilePath)}
-                >
+                    >
                     <i className={item.icon}></i>
                     <span>{t(item.labelKey)}</span>
+                    {isItemActive(item.key, location) ? <div class="border-glow"></div> : ''}
                 </Link>
             ))}
         </aside>
