@@ -1,5 +1,5 @@
 .rating-controls-card {
-    margin-bottom: 1rem;
+    margin: 1rem 0;
     border: var(--border);
     border-radius: var(--radius-panel);
     box-shadow: var(--shadow);

@@ -101,6 +101,8 @@
 @media (max-width: 1280px) {
     .game-features-section__grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10
+        px;
     }
 }
 
@@ -116,5 +118,15 @@
 
     .game-feature-card__inner > i {
         font-size: 38px;
+    }
+}
+
+@media (max-width: 560px) {
+    .game-feature-card__inner {
+        grid-template-columns: 1fr;
+    }
+
+    .game-features-section__grid{
+        gap: 5px;
     }
 }

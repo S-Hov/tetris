@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import GlowEffect from '@/shared/ui/GlowEffect'
 
-import { formatNumber } from '../../arenaDashboard.utils.js'
+import { formatNumber } from './playerStatsPanel.utils.js'
 
 import './PlayerStatsPanel.css'
 

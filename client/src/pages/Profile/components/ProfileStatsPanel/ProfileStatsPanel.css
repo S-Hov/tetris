@@ -20,7 +20,7 @@
 .profile-stat-tile__icon {
     width: 38px;
     aspect-ratio: 1;
-    display: grid;
+    display: grid!important;
     flex: 0 0 auto;
     place-items: center;
     border-radius: 12px;

@@ -13,8 +13,67 @@
     backdrop-filter: var(--medium-blur);
 }
 
+.arena-panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.arena-panel-heading h2 {
+    margin: 0;
+    color: var(--text-color);
+    font-family: var(--font-1);
+    font-size: 1.18rem;
+    text-transform: uppercase;
+    text-shadow: 0 0 14px rgba(64, 166, 255, 0.55);
+}
+
+.arena-panel-heading span {
+    color: var(--text-color);
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.arena-panel-state {
+    min-height: 150px;
+    display: grid;
+    place-items: center;
+    gap: 10px;
+    color: rgba(220, 232, 255, 0.78);
+    font-weight: 900;
+    text-align: center;
+}
+
+.arena-panel-state i {
+    color: #40d8ff;
+    font-size: 1.4rem;
+}
+
 .arena-panel-state--stats {
     flex: 1;
+}
+
+.arena-panel-button {
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto;
+    padding: 0 20px;
+    border: 1px solid rgba(64, 166, 255, 0.36);
+    border-radius: var(--radius-panel);
+    color: rgba(237, 246, 255, 0.88);
+    background: rgba(4, 14, 44, 0.58);
+    font-family: var(--font-1);
+    font-size: 0.78rem;
+    font-weight: 900;
+    text-decoration: none;
+    text-transform: uppercase;
+    box-shadow: inset 0 0 18px rgba(64, 166, 255, 0.08);
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
 .arena-panel-button--filled {

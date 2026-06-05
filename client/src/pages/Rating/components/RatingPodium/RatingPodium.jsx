@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { RatingAvatar, RankTierImage } from '../RatingPlayerMedia/RatingPlayerMedia.jsx'
 import { formatNumber } from '../../rating.utils.js'
+import { DEFAULT_COUNTRY_LABEL } from '../../ratingPage.config.js'
 import { podiumConfig } from './ratingPodium.config.js'
 
 import './RatingPodium.css'
@@ -37,7 +38,7 @@ const PodiumCard = ({ player, currentLanguage }) => {
         >
             <RatingAvatar player={player} />
             <h2>{player.username}</h2>
-            <span className="rating-player-country">рџ‡·рџ‡є</span>
+            <span className="rating-player-country">{player.country || DEFAULT_COUNTRY_LABEL}</span>
             <span className="rating-tier-pill">
                 <RankTierImage tier={player.rankTier} className="rating-rank-tier-image rating-rank-tier-image--pill" />
                 {player.rankTier?.label || t('rating.rankFallback')}

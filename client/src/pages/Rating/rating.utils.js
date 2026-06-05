@@ -18,7 +18,7 @@ export const getAssetUrl = (value) => {
 export const getAvatarFallback = (username = '') => username.trim().slice(0, 1).toUpperCase() || '?'
 
 export const getRankIcon = (rank) => {
-    if (rank === 1) return '♛ 1'
+    if (rank === 1) return '#1'
     if (rank === 2) return '2'
     if (rank === 3) return '3'
 

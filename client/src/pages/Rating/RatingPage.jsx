@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next'
 
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '@/i18n'
 import { leaderboardAPI } from '@/shared/api/leaderboard'
+import { useAuth } from '@/shared/hooks/useAuth'
+import PlayerStatsPanel, { buildPlayerStats } from '@/widgets/PlayerStatsPanel'
 
 import RatingBoard from './components/RatingBoard/RatingBoard.jsx'
 import RatingControls from './components/RatingControls/RatingControls.jsx'
@@ -18,6 +20,7 @@ import './RatingPage.css'
 const RatingPage = () => {
     const { lang } = useParams()
     const { t, i18n } = useTranslation()
+    const { isAuth, isLoading: isAuthLoading, user } = useAuth()
     const [sort, setSort] = useState('rating')
     const [players, setPlayers] = useState([])
     const [isLoading, setIsLoading] = useState(true)
@@ -74,6 +77,7 @@ const RatingPage = () => {
         () => players.reduce((sum, player) => sum + Number(player.totalGames || 0), 0),
         [players]
     )
+    const playerStats = useMemo(() => buildPlayerStats(user), [user])
 
     if (!isSupportedLanguage) {
         return <Navigate to={`/${DEFAULT_LANGUAGE}/rating`} replace />
@@ -95,6 +99,12 @@ const RatingPage = () => {
                     currentLanguage={currentLanguage}
                     playersCount={players.length}
                     totalGames={totalGames}
+                />
+                <PlayerStatsPanel
+                    currentLanguage={currentLanguage}
+                    isAuth={isAuth}
+                    isLoading={isAuthLoading}
+                    playerStats={playerStats}
                 />
                 <RatingControls sort={sort} onSortChange={setSort} />
                 <RatingPodium currentLanguage={currentLanguage} players={podiumPlayers} />
