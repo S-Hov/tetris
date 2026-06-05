@@ -39,7 +39,20 @@
         "card2": "Карточки 2"
       },
       "radiusValueAria": "Значение радиуса: {{name}}",
-      "radiusUnitAria": "Единица радиуса: {{name}}"
+      "radiusUnitAria": "Единица радиуса: {{name}}",
+      "blurTitle": "Размытие",
+      "blurDescription": "Меняет силу размытия стеклянных панелей",
+      "blurLabels": {
+        "easy": "Лёгкое",
+        "medium": "Среднее",
+        "hard": "Сильное"
+      },
+      "blurValueAria": "Значение размытия: {{name}}",
+      "accentTitle": "Акцентный цвет",
+      "accentDescription": "Меняет акцентный цвет сайта",
+      "accentTurquoise": "Turquoise",
+      "accentColorAria": "Выбрать акцентный цвет",
+      "accentHexAria": "Текущий HEX акцентного цвета"
     },
     "profile": {
       "avatarAria": "Выбрать новую аватарку",

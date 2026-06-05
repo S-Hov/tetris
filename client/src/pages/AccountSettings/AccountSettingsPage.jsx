@@ -3,8 +3,10 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import ProfileSideNav from '@/widgets/ProfileSideNav'
+import { useAccentColor } from '@/shared/hooks/useAccentColor.js'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
+import { useInterfaceBlur } from '@/shared/hooks/useInterfaceBlur.js'
 import { useInterfaceRadius } from '@/shared/hooks/useInterfaceRadius.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
 import { authenticationAPI } from '@/shared/api/auth'
@@ -33,6 +35,8 @@ const AccountSettingsPage = () => {
     const { t, i18n } = useTranslation()
     const avatarInputRef = useRef(null)
     const { checkAuth, logout, setUser, user } = useAuth()
+    const { accentColor, setAccentColor } = useAccentColor()
+    const { blurSettings, setBlurSetting } = useInterfaceBlur()
     const { isGlowEffectEnabled, toggleGlowEffect } = useGlowEffect()
     const { radiusSettings, setRadiusSetting } = useInterfaceRadius()
     const { isDarkTheme, toggleTheme } = useTheme()
@@ -295,8 +299,12 @@ const AccountSettingsPage = () => {
 
                     {activeSection === 'general' && (
                         <GeneralSettingsSection
+                            accentColor={accentColor}
+                            blurSettings={blurSettings}
                             isDarkTheme={isDarkTheme}
                             isGlowEffectEnabled={isGlowEffectEnabled}
+                            onAccentColorChange={setAccentColor}
+                            onBlurSettingChange={setBlurSetting}
                             onGlowEffectToggle={toggleGlowEffect}
                             onRadiusSettingChange={setRadiusSetting}
                             onThemeToggle={toggleTheme}

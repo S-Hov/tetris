@@ -2,6 +2,7 @@ import AppSwitch from '@/shared/ui/AppSwitch'
 import CustomSelect from '@/shared/ui/CustomSelect'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
+import { BLUR_VARIABLES } from '@/shared/lib/interface-blur/blur.js'
 import { RADIUS_UNITS, RADIUS_VARIABLES } from '@/shared/lib/interface-radius/radius.js'
 
 import './GeneralSettingsSection.css'
@@ -12,8 +13,12 @@ const RADIUS_UNIT_OPTIONS = [
 ]
 
 const GeneralSettingsSection = ({
+    accentColor,
+    blurSettings,
     isDarkTheme,
     isGlowEffectEnabled,
+    onAccentColorChange,
+    onBlurSettingChange,
     onGlowEffectToggle,
     onRadiusSettingChange,
     onThemeToggle,
@@ -95,6 +100,58 @@ const GeneralSettingsSection = ({
                             )
                         })}
                     </div>
+                </div>
+                <div className="account-radius-settings account-blur-settings">
+                    <div className="account-radius-settings__head">
+                        <strong>{t('accountSettings.general.blurTitle')}</strong>
+                        <small>{t('accountSettings.general.blurDescription')}</small>
+                    </div>
+                    <div className="account-blur-settings__grid">
+                        {BLUR_VARIABLES.map((variable) => (
+                            <label className="account-blur-control" key={variable.key}>
+                                <span>{t(`accountSettings.general.blurLabels.${variable.key}`)}</span>
+                                <div className="account-blur-control__inputs">
+                                    <input
+                                        aria-label={t('accountSettings.general.blurValueAria', {
+                                            name: t(`accountSettings.general.blurLabels.${variable.key}`),
+                                        })}
+                                        max={variable.max}
+                                        min="0"
+                                        onChange={(event) => onBlurSettingChange(variable.key, event.target.value)}
+                                        step="1"
+                                        type="range"
+                                        value={blurSettings[variable.key]}
+                                    />
+                                    <output>{blurSettings[variable.key]}</output>
+                                </div>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+                <div className="account-radius-settings account-accent-settings">
+                    <div className="account-radius-settings__head">
+                        <strong>{t('accountSettings.general.accentTitle')}</strong>
+                        <small>{t('accountSettings.general.accentDescription')}</small>
+                    </div>
+                    <label className="account-accent-control">
+                        <span>{t('accountSettings.general.accentTurquoise')}</span>
+                        <div className="account-accent-control__inputs">
+                            <input
+                                aria-label={t('accountSettings.general.accentColorAria')}
+                                className="account-accent-control__picker"
+                                onChange={(event) => onAccentColorChange(event.target.value)}
+                                type="color"
+                                value={accentColor}
+                            />
+                            <input
+                                aria-label={t('accountSettings.general.accentHexAria')}
+                                maxLength="7"
+                                readOnly
+                                type="text"
+                                value={accentColor}
+                            />
+                        </div>
+                    </label>
                 </div>
             </div>
         </GlowEffect>

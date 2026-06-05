@@ -148,6 +148,85 @@
     box-shadow: var(--lite-shadow);
 }
 
+.account-blur-settings__grid {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.account-blur-control,
+.account-accent-control {
+    display: grid;
+    gap: 0.55rem;
+    min-width: 0;
+}
+
+.account-blur-control > span,
+.account-accent-control > span {
+    font-family: var(--font-1);
+    font-size: 0.94rem;
+}
+
+.account-blur-control__inputs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 42px;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.account-blur-control input[type="range"] {
+    width: 100%;
+    min-width: 0;
+    accent-color: var(--turquoise);
+    cursor: pointer;
+}
+
+.account-blur-control output {
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border);
+    border-radius: var(--radius-card-2);
+    background: var(--input-bg);
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: 0.82rem;
+}
+
+.account-accent-control__inputs {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 150px);
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.account-accent-control__picker {
+    width: 56px;
+    height: 42px;
+    padding: 0;
+    border: var(--border);
+    border-radius: var(--radius-card-2);
+    background: var(--input-bg);
+    cursor: pointer;
+}
+
+.account-accent-control input[type="text"] {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    padding: 0 0.75rem;
+    border: var(--border);
+    border-radius: var(--radius-card-2);
+    background: var(--input-bg);
+    color: var(--text-color-1);
+    font: inherit;
+    outline: none;
+}
+
+.account-accent-control input[type="text"]:focus {
+    box-shadow: var(--lite-shadow);
+}
+
 @media (max-width: 640px) {
     .account-language-setting {
         align-items: stretch;
@@ -161,5 +240,9 @@
 
     .account-radius-settings__grid {
         grid-template-columns: 1fr;
+    }
+
+    .account-accent-control__inputs {
+        grid-template-columns: 56px minmax(0, 1fr);
     }
 }

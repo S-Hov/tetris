@@ -11,13 +11,17 @@ import './i18n'
 
 import App from './app/App.jsx'
 import { AuthProvider } from './shared/context/AuthContext.jsx'
+import { initAccentColor } from './shared/lib/accent-color/accentColor.js'
 import { initGlowEffect } from './shared/lib/glow-effect/glowEffect.js'
+import { initInterfaceBlurSettings } from './shared/lib/interface-blur/blur.js'
 import { initInterfaceRadiusSettings } from './shared/lib/interface-radius/radius.js'
 import { initTheme } from './shared/lib/theme/theme.js'
 
 initTheme()
 initGlowEffect()
 initInterfaceRadiusSettings()
+initInterfaceBlurSettings()
+initAccentColor()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

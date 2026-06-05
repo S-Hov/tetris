@@ -39,7 +39,20 @@
         "card2": "Cards 2"
       },
       "radiusValueAria": "{{name}} radius value",
-      "radiusUnitAria": "{{name}} radius unit"
+      "radiusUnitAria": "{{name}} radius unit",
+      "blurTitle": "Blur",
+      "blurDescription": "Changes glass panel blur strength",
+      "blurLabels": {
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard"
+      },
+      "blurValueAria": "{{name}} blur value",
+      "accentTitle": "Accent color",
+      "accentDescription": "Changes the accent color of the website",
+      "accentTurquoise": "Turquoise",
+      "accentColorAria": "Choose accent color",
+      "accentHexAria": "Current accent color HEX"
     },
     "profile": {
       "avatarAria": "Choose a new avatar",
