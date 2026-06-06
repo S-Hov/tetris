@@ -16,6 +16,8 @@ import accountSettingsEn from '../pages/AccountSettings/i18n/en.json'
 import accountSettingsRu from '../pages/AccountSettings/i18n/ru.json'
 import matchesEn from '../pages/Matches/i18n/en.json'
 import matchesRu from '../pages/Matches/i18n/ru.json'
+import lobbyEn from '../pages/Lobby/i18n/en.json'
+import lobbyRu from '../pages/Lobby/i18n/ru.json'
 import modeSelectEn from '../pages/ModeSelect/i18n/en.json'
 import modeSelectRu from '../pages/ModeSelect/i18n/ru.json'
 import profileEn from '../pages/Profile/i18n/en.json'
@@ -26,6 +28,8 @@ import supportEn from '../pages/Support/i18n/en.json'
 import supportRu from '../pages/Support/i18n/ru.json'
 import supportRequestsEn from '../pages/SupportRequests/i18n/en.json'
 import supportRequestsRu from '../pages/SupportRequests/i18n/ru.json'
+import teamQueueEn from '../pages/TeamQueue/i18n/en.json'
+import teamQueueRu from '../pages/TeamQueue/i18n/ru.json'
 import simpleHeaderEn from '../widgets/Header/SimpleHeader/i18n/en.json'
 import simpleHeaderRu from '../widgets/Header/SimpleHeader/i18n/ru.json'
 
@@ -49,12 +53,20 @@ export const getLanguageFromPathname = (pathname = '') => {
     return DEFAULT_LANGUAGE
 }
 
+export const getLocalizedGamePath = (path, language = getLanguageFromPathname(typeof window !== 'undefined' ? window.location.pathname : '')) => {
+    if (!path.startsWith('/game')) {
+        return path
+    }
+
+    return `/${language}${path}`
+}
+
 i18n
     .use(initReactI18next)
     .init({
         resources: {
-            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...matchesRu, ...modeSelectRu, ...supportRequestsRu, ...authRu, ...emailVerificationRu, ...simpleHeaderRu } },
-            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...matchesEn, ...modeSelectEn, ...supportRequestsEn, ...authEn, ...emailVerificationEn, ...simpleHeaderEn } },
+            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...matchesRu, ...lobbyRu, ...modeSelectRu, ...supportRequestsRu, ...teamQueueRu, ...authRu, ...emailVerificationRu, ...simpleHeaderRu } },
+            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...matchesEn, ...lobbyEn, ...modeSelectEn, ...supportRequestsEn, ...teamQueueEn, ...authEn, ...emailVerificationEn, ...simpleHeaderEn } },
         },
         lng: getLanguageFromPathname(typeof window !== 'undefined' ? window.location.pathname : ''),
         fallbackLng: DEFAULT_LANGUAGE,

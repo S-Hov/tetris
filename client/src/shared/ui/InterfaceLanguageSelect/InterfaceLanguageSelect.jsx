@@ -5,6 +5,7 @@ import { DEFAULT_LANGUAGE, LANGUAGES, SUPPORTED_LANGUAGES } from '@/i18n'
 import './InterfaceLanguageSelect.css'
 
 const LOCALIZED_PATHS = ['/about', '/profile', '/rating', '/support']
+const LOCALIZED_PATH_PREFIXES = ['/game']
 const LANGUAGE_STORAGE_KEY = 'interfaceLanguage'
 
 const InterfaceLanguageSelect = ({ className = '', menuPlacement = 'bottom' }) => {
@@ -75,7 +76,7 @@ const getLocalizedPath = (pathname, language) => {
         ? `/${pathname.split('/').slice(2).join('/')}`.replace(/\/+$/, '') || '/'
         : pathname
 
-    if (LOCALIZED_PATHS.includes(pathWithoutLanguage)) {
+    if (LOCALIZED_PATHS.includes(pathWithoutLanguage) || isLocalizedPathPrefix(pathWithoutLanguage)) {
         return `/${language}${pathWithoutLanguage}`
     }
 
@@ -85,5 +86,9 @@ const getLocalizedPath = (pathname, language) => {
 
     return pathname
 }
+
+const isLocalizedPathPrefix = (pathname = '') => (
+    LOCALIZED_PATH_PREFIXES.some((pathPrefix) => pathname === pathPrefix || pathname.startsWith(`${pathPrefix}/`))
+)
 
 export default InterfaceLanguageSelect

@@ -277,8 +277,10 @@ const ModeSelectPage = () => {
         matchType,
     })
 
+    const getGamePath = (path) => `/${currentLanguage}${path}`
+
     const openSoloGame = () => {
-        navigate('/game/solo/play', {
+        navigate(getGamePath('/game/solo/play'), {
             state: {
                 modeKey: modeConfig.key,
                 modeTitle: translatedModeConfig.title,
@@ -293,7 +295,7 @@ const ModeSelectPage = () => {
     }
 
     const openTeamQueue = (intent = 'join') => {
-        navigate(`/game/${modeConfig.key}/party`, {
+        navigate(getGamePath(`/game/${modeConfig.key}/party`), {
             state: {
                 modeKey: modeConfig.key,
                 modeTitle: translatedModeConfig.title,
@@ -310,7 +312,7 @@ const ModeSelectPage = () => {
             return
         }
 
-        navigate(`/game/${modeConfig.key}/lobby`, {
+        navigate(getGamePath(`/game/${modeConfig.key}/lobby`), {
             state: {
                 modeKey: modeConfig.key,
                 modeTitle: translatedModeConfig.title,
@@ -359,7 +361,7 @@ const ModeSelectPage = () => {
                     roomActionEnabled={roomActionEnabled}
                     selectedPlayType={selectedPlayType}
                     t={t}
-                    onOpenSettings={() => navigate('/game/controls')}
+                    onOpenSettings={() => navigate(getGamePath('/game/controls'))}
                     onSelect={selectPlayType}
                 />
 

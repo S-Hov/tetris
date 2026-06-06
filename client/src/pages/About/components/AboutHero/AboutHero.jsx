@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import GlowEffect from '@/shared/ui/GlowEffect'
+import { getLocalizedGamePath } from '@/i18n'
 
 import aboutHeroImage from './assets/about-hero.png'
 
@@ -22,7 +23,7 @@ const AboutHero = ({ currentLanguage }) => {
                     <p className="about-hero__lead glow-text">{t('about.hero.lead')}</p>
                     <p>{t('about.hero.description')}</p>
                     <div className="about-hero__actions">
-                        <Link to="/game/1v1" className="button about-button about-button--primary">
+                        <Link to={getLocalizedGamePath('/game/1v1', currentLanguage)} className="button about-button about-button--primary">
                             <i className="fas fa-play"></i>
                             {t('about.hero.play')}
                         </Link>

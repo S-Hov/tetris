@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
+import { DEFAULT_LANGUAGE, getLanguageFromPathname } from '@/i18n'
 import { useAuth } from '@/shared/hooks/useAuth'
 import {
     ensureSocketSession,
@@ -15,16 +17,16 @@ import { getModeSelectionConfig } from '@/shared/config/gameModes.js'
 
 import './LobbyPage.css'
 
-const emitWithAck = (eventName, payload) => {
+const emitWithAck = (eventName, payload, fallbackMessage = 'No response from server') => {
     return new Promise((resolve) => {
         socket.emit(eventName, payload, (response) => {
-            resolve(response || { success: false, message: 'Нет ответа от сервера' })
+            resolve(response || { success: false, message: fallbackMessage })
         })
     })
 }
 
-const getPlayerDisplayName = (user, nickname) => {
-    return user?.username || user?.email || normalizeGuestNickname(nickname) || 'Гость'
+const getPlayerDisplayName = (user, nickname, t) => {
+    return user?.username || user?.email || normalizeGuestNickname(nickname) || t('lobby.profile.guest')
 }
 
 const getClientUserId = (user) => {
@@ -51,7 +53,7 @@ const getRoomPlayers = (room) => {
 
 const getModeRosterSize = (modeKey) => (modeKey === '2v2' ? 4 : 2)
 
-const getTeamLabel = (teamId) => (teamId === 'team_2' ? 'Команда 2' : 'Команда 1')
+const getTeamLabel = (teamId, t) => (teamId === 'team_2' ? t('lobby.teams.team2') : t('lobby.teams.team1'))
 
 const getAssetUrl = (value) => {
     if (!value) return ''
@@ -88,7 +90,9 @@ const LobbyPage = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { mode } = useParams()
+    const { t, i18n } = useTranslation()
     const { user } = useAuth()
+    const currentLanguage = getLanguageFromPathname(location.pathname) || DEFAULT_LANGUAGE
     const [roomId, setRoomId] = useState('')
     const [currentRoom, setCurrentRoom] = useState(null)
     const [joinRoomId, setJoinRoomId] = useState('')
@@ -102,7 +106,17 @@ const LobbyPage = () => {
     const roomIdFromMatch = location.state?.roomId || ''
     const modeKey = location.state?.modeKey || currentRoom?.modeKey || mode || '1v1'
     const modeConfig = getModeSelectionConfig(modeKey)
+    const modeTitle = t(`modeSelect.modes.${modeConfig.key}.title`, { defaultValue: modeConfig.title })
     const [roomSettings, setRoomSettings] = useState(() => normalizeMatchSettings(location.state?.roomSettings || defaultMatchSettings))
+    const emit = useCallback((eventName, payload) => (
+        emitWithAck(eventName, payload, t('lobby.notifications.noResponse'))
+    ), [t])
+
+    useEffect(() => {
+        if (i18n.language !== currentLanguage) {
+            i18n.changeLanguage(currentLanguage)
+        }
+    }, [currentLanguage, i18n])
 
     useEffect(() => {
         if (user?.username || user?.email) {
@@ -122,9 +136,9 @@ const LobbyPage = () => {
         }
 
         ensureSocketSession({ user }).catch((error) => {
-            notify(error.message || 'Не удалось подключиться к арене', 'error')
+            notify(error.message || t('lobby.notifications.connectArenaFailed'), 'error')
         })
-    }, [user])
+    }, [t, user])
 
     useEffect(() => {
         if (!matchResult) {
@@ -133,8 +147,8 @@ const LobbyPage = () => {
 
         notify(
             matchResult === 'win'
-                ? 'Раунд завершён. Вы победили и вернулись в лобби'
-                : 'Раунд завершён. Вы проиграли и вернулись в лобби',
+                ? t('lobby.notifications.matchWinReturn')
+                : t('lobby.notifications.matchLoseReturn'),
             matchResult === 'win' ? 'success' : 'warning'
         )
 
@@ -142,22 +156,22 @@ const LobbyPage = () => {
             replace: true,
             state: {},
         })
-    }, [location.pathname, matchResult, navigate])
+    }, [location.pathname, matchResult, navigate, t])
 
     useEffect(() => {
         const handleConnect = () => {
             setConnectionState('connected')
-            notify('Подключение к игровой арене установлено', 'info')
+            notify(t('lobby.notifications.connected'), 'info')
         }
 
         const handleDisconnect = () => {
             setConnectionState('disconnected')
-            notify('Соединение с игровой ареной потеряно', 'warning')
+            notify(t('lobby.notifications.disconnected'), 'warning')
         }
 
         const handleConnectError = (error) => {
             setConnectionState('error')
-            notify(error.message || 'Не удалось подключиться к сокет-серверу', 'error')
+            notify(error.message || t('lobby.notifications.socketConnectFailed'), 'error')
         }
 
         socket.on('connect', handleConnect)
@@ -169,7 +183,7 @@ const LobbyPage = () => {
             socket.off('disconnect', handleDisconnect)
             socket.off('connect_error', handleConnectError)
         }
-    }, [])
+    }, [t])
 
     useEffect(() => {
         const handleRoomState = (room) => {
@@ -183,13 +197,13 @@ const LobbyPage = () => {
 
         const handlePlayerJoined = ({ username, userId }) => {
             if (userId !== clientUserId) {
-                notify(`${username} подключился к комнате`, 'info')
+                notify(t('lobby.notifications.playerJoined', { username }), 'info')
             }
         }
 
         const handlePlayerLeft = ({ username, userId, roomId: leftRoomId }) => {
             if (currentRoom?.id === leftRoomId && userId !== clientUserId) {
-                notify(`${username} вышел из комнаты`, 'warning')
+                notify(t('lobby.notifications.playerLeft', { username }), 'warning')
             }
         }
 
@@ -205,7 +219,7 @@ const LobbyPage = () => {
             if (notifiedRoomRef.current !== startedRoomId) {
                 notifiedRoomRef.current = startedRoomId
                 notify(
-                    modeKey === '2v2' ? 'Все игроки готовы. Матч начинается' : 'Оба игрока готовы. Матч начинается',
+                    modeKey === '2v2' ? t('lobby.notifications.matchStartTeam') : t('lobby.notifications.matchStartDuel'),
                     'success'
                 )
             }
@@ -231,7 +245,7 @@ const LobbyPage = () => {
             socket.off('room:left', handleRoomLeft)
             socket.off('match:start', handleMatchStart)
         }
-    }, [clientUserId, currentRoom?.id, currentRoom?.modeKey, currentRoom?.settings, modeKey, navigate, roomId, roomSettings])
+    }, [clientUserId, currentRoom?.id, currentRoom?.modeKey, currentRoom?.settings, modeKey, navigate, roomId, roomSettings, t])
 
     const ensurePlayableIdentity = useCallback(async () => {
         if (user) {
@@ -239,11 +253,11 @@ const LobbyPage = () => {
         }
 
         if (!isValidGuestNickname(nickname)) {
-            throw new Error('Введите корректный никнейм: 2-24 символа, буквы, цифры, пробел, ., -, _')
+            throw new Error(t('lobby.notifications.invalidNickname'))
         }
 
         return await ensureSocketSession({ nickname })
-    }, [nickname, user])
+    }, [nickname, t, user])
 
     useEffect(() => {
         if (!roomIdFromMatch || restoredRoomRef.current === roomIdFromMatch) {
@@ -256,10 +270,10 @@ const LobbyPage = () => {
             try {
                 await ensurePlayableIdentity()
 
-                const response = await emitWithAck('room:join', { roomId: roomIdFromMatch })
+                const response = await emit('room:join', { roomId: roomIdFromMatch })
 
                 if (!response.success) {
-                    notify(response.message || 'Не удалось восстановить комнату после матча', 'error')
+                    notify(response.message || t('lobby.notifications.restoreRoomFailed'), 'error')
                     return
                 }
 
@@ -270,25 +284,25 @@ const LobbyPage = () => {
                     setRoomSettings(normalizeMatchSettings(response.room.settings))
                 }
             } catch (error) {
-                notify(error.message || 'Не удалось восстановить комнату после матча', 'error')
+                notify(error.message || t('lobby.notifications.restoreRoomFailed'), 'error')
             }
         }
 
         restoreRoom()
-    }, [ensurePlayableIdentity, roomIdFromMatch])
+    }, [emit, ensurePlayableIdentity, roomIdFromMatch, t])
 
     const handleCreateRoom = async () => {
         setIsBusy(true)
 
         try {
             await ensurePlayableIdentity()
-            const response = await emitWithAck('room:create', {
+            const response = await emit('room:create', {
                 modeKey,
                 settings: roomSettings,
             })
 
             if (!response.success) {
-                notify(response.message || 'Не удалось создать комнату', 'error')
+                notify(response.message || t('lobby.notifications.createRoomFailed'), 'error')
                 return
             }
 
@@ -297,9 +311,9 @@ const LobbyPage = () => {
             if (response.room?.settings) {
                 setRoomSettings(normalizeMatchSettings(response.room.settings))
             }
-            notify(response.message || 'Комната создана', 'success')
+            notify(response.message || t('lobby.notifications.roomCreated'), 'success')
         } catch (error) {
-            notify(error.message || 'Не удалось создать комнату', 'error')
+            notify(error.message || t('lobby.notifications.createRoomFailed'), 'error')
         } finally {
             setIsBusy(false)
         }
@@ -310,10 +324,10 @@ const LobbyPage = () => {
 
         try {
             await ensurePlayableIdentity()
-            const response = await emitWithAck('room:join', { roomId: joinRoomId.trim() })
+            const response = await emit('room:join', { roomId: joinRoomId.trim() })
 
             if (!response.success) {
-                notify(response.message || 'Не удалось подключиться к комнате', 'error')
+                notify(response.message || t('lobby.notifications.joinRoomFailed'), 'error')
                 return
             }
 
@@ -322,9 +336,9 @@ const LobbyPage = () => {
             if (response.room?.settings) {
                 setRoomSettings(normalizeMatchSettings(response.room.settings))
             }
-            notify(response.message || 'Вы вошли в комнату', 'success')
+            notify(response.message || t('lobby.notifications.roomJoined'), 'success')
         } catch (error) {
-            notify(error.message || 'Не удалось подключиться к комнате', 'error')
+            notify(error.message || t('lobby.notifications.joinRoomFailed'), 'error')
         } finally {
             setIsBusy(false)
         }
@@ -335,14 +349,14 @@ const LobbyPage = () => {
             return
         }
 
-        const response = await emitWithAck('player:ready', { roomId })
+        const response = await emit('player:ready', { roomId })
 
         if (!response.success) {
-            notify(response.message || 'Не удалось обновить готовность', 'error')
+            notify(response.message || t('lobby.notifications.readyFailed'), 'error')
             return
         }
 
-        notify(response.message || 'Статус готовности обновлён', response.isReady ? 'success' : 'info')
+        notify(response.message || t('lobby.notifications.readyUpdated'), response.isReady ? 'success' : 'info')
     }
 
     const handleLeaveRoom = async () => {
@@ -350,17 +364,17 @@ const LobbyPage = () => {
             return
         }
 
-        const response = await emitWithAck('room:leave', { roomId })
+        const response = await emit('room:leave', { roomId })
 
         if (!response.success) {
-            notify(response.message || 'Не удалось выйти из лобби', 'error')
+            notify(response.message || t('lobby.notifications.leaveFailed'), 'error')
             return
         }
 
         setCurrentRoom(null)
         setRoomId('')
         setJoinRoomId('')
-        notify(response.message || 'Вы вышли из лобби', 'info')
+        notify(response.message || t('lobby.notifications.left'), 'info')
     }
 
     const handleSetTeam = async (player, teamId) => {
@@ -368,38 +382,38 @@ const LobbyPage = () => {
             return
         }
 
-        const response = await emitWithAck('room:set-team', {
+        const response = await emit('room:set-team', {
             roomId,
             userId: player.userId,
             teamId,
         })
 
         if (!response.success) {
-            notify(response.message || 'Не удалось поменять команду', 'error')
+            notify(response.message || t('lobby.notifications.setTeamFailed'), 'error')
             return
         }
 
         if (response.room) {
             setCurrentRoom(response.room)
         }
-        notify(response.message || 'Команда обновлена', 'success')
+        notify(response.message || t('lobby.notifications.teamUpdated'), 'success')
     }
 
     const handleCopyRoomId = async () => {
         if (!roomId || !navigator?.clipboard) {
-            notify('Скопировать ID комнаты не удалось', 'error')
+            notify(t('lobby.notifications.copyRoomFailed'), 'error')
             return
         }
 
         try {
             await navigator.clipboard.writeText(roomId)
-            notify('ID комнаты скопирован', 'info')
+            notify(t('lobby.notifications.roomCopied'), 'info')
         } catch {
-            notify('Скопировать ID комнаты не удалось', 'error')
+            notify(t('lobby.notifications.copyRoomFailed'), 'error')
         }
     }
 
-    const activePlayerName = getPlayerDisplayName(user, nickname)
+    const activePlayerName = getPlayerDisplayName(user, nickname, t)
     const roomPlayers = getRoomPlayers(currentRoom)
     const activePlayer = roomPlayers.find((player) => player.socketId === socket.id)
     const isRoomOwner = Boolean(currentRoom) &&
@@ -419,24 +433,23 @@ const LobbyPage = () => {
                 <header className="lobby-hero">
                     <div className="lobby-hero-copy">
                         <span className={`lobby-status-chip lobby-status-chip--${connectionState}`}>
-                            {connectionState === 'connected' && 'Arena online'}
-                            {connectionState === 'disconnected' && 'Arena offline'}
-                            {connectionState === 'error' && 'Arena error'}
+                            {connectionState === 'connected' && t('lobby.status.connected')}
+                            {connectionState === 'disconnected' && t('lobby.status.disconnected')}
+                            {connectionState === 'error' && t('lobby.status.error')}
                         </span>
-                        <h1 className="lobby-title">{modeConfig.title}</h1>
+                        <h1 className="lobby-title">{modeTitle}</h1>
                         <p className="lobby-lead">
-                            Авторизованный игрок заходит по своему аккаунту, гость играет по никнейму.
-                            Права не подделываются. Лобби универсальное, а настройки режима сохраняются в самой комнате.
+                            {t('lobby.hero.lead')}
                         </p>
                     </div>
                     <div className="lobby-hero-panel">
-                        <div className="lobby-panel-label">Ваш профиль</div>
+                        <div className="lobby-panel-label">{t('lobby.profile.label')}</div>
                         <div className="lobby-player-name">{activePlayerName}</div>
                         <div className="lobby-player-meta">
-                            <span>{isGuest ? 'Guest session' : 'Authenticated session'}</span>
-                            <span>Role: {user?.role || 'guest'}</span>
-                            <span>{roomSettings.abilitiesEnabled ? 'Эффекты: ON' : 'Эффекты: OFF'}</span>
-                            <span>{roomSettings.specialBlocksEnabled ? 'Нестандартные блоки: ON' : 'Нестандартные блоки: OFF'}</span>
+                            <span>{isGuest ? t('lobby.profile.guestSession') : t('lobby.profile.authSession')}</span>
+                            <span>{t('lobby.profile.role', { role: user?.role || 'guest' })}</span>
+                            <span>{roomSettings.abilitiesEnabled ? t('lobby.settings.effectsOn') : t('lobby.settings.effectsOff')}</span>
+                            <span>{roomSettings.specialBlocksEnabled ? t('lobby.settings.specialBlocksOn') : t('lobby.settings.specialBlocksOff')}</span>
                         </div>
                     </div>
                 </header>
@@ -444,34 +457,34 @@ const LobbyPage = () => {
                 <div className="lobby-grid">
                     <section className="lobby-card lobby-card--identity">
                         <div className="lobby-card-header">
-                            <h2>Кто играет</h2>
-                            <p>Выберите, под каким именем входить в комнату.</p>
+                            <h2>{t('lobby.identity.title')}</h2>
+                            <p>{t('lobby.identity.description')}</p>
                         </div>
 
                         {isGuest ? (
                             <label className="lobby-field">
-                                <span>Никнейм гостя</span>
+                                <span>{t('lobby.identity.nicknameLabel')}</span>
                                 <input
                                     type="text"
                                     value={nickname}
                                     maxLength={24}
-                                    placeholder="Например, NeonStack"
+                                    placeholder={t('lobby.identity.nicknamePlaceholder')}
                                     onChange={(event) => setNickname(event.target.value)}
                                 />
                             </label>
                         ) : (
                             <div className="lobby-identity-lock">
-                                <span className="lobby-identity-badge">Account locked</span>
+                                <span className="lobby-identity-badge">{t('lobby.identity.accountLocked')}</span>
                                 <strong>{activePlayerName}</strong>
-                                <p>Имя для комнаты берётся с сервера, а не с клиента.</p>
+                                <p>{t('lobby.identity.accountLockedDescription')}</p>
                             </div>
                         )}
                     </section>
 
                     <section className="lobby-card flex">
                         <div className="lobby-card-header">
-                            <h2>Создать комнату</h2>
-                            <p>Откройте комнату и отправьте ID друзьям.</p>
+                            <h2>{t('lobby.create.title')}</h2>
+                            <p>{t('lobby.create.description')}</p>
                         </div>
 
                         <button
@@ -480,22 +493,22 @@ const LobbyPage = () => {
                             onClick={handleCreateRoom}
                             disabled={isBusy}
                         >
-                            Создать комнату
+                            {t('lobby.create.button')}
                         </button>
                     </section>
 
                     <section className="lobby-card">
                         <div className="lobby-card-header">
-                            <h2>Присоединиться</h2>
-                            <p>Введите ID комнаты, чтобы подключиться к уже созданному матчу.</p>
+                            <h2>{t('lobby.join.title')}</h2>
+                            <p>{t('lobby.join.description')}</p>
                         </div>
 
                         <label className="lobby-field">
-                            <span>ID комнаты</span>
+                            <span>{t('lobby.join.roomIdLabel')}</span>
                             <input
                                 type="text"
                                 value={joinRoomId}
-                                placeholder="Вставьте room id"
+                                placeholder={t('lobby.join.roomIdPlaceholder')}
                                 onChange={(event) => setJoinRoomId(event.target.value)}
                             />
                         </label>
@@ -506,7 +519,7 @@ const LobbyPage = () => {
                             onClick={handleJoinRoom}
                             disabled={isBusy || !joinRoomId.trim()}
                         >
-                            Подключиться к комнате
+                            {t('lobby.join.button')}
                         </button>
                     </section>
                 </div>
@@ -514,8 +527,8 @@ const LobbyPage = () => {
                 <section className="lobby-room-card">
                     <div className="lobby-room-header">
                         <div>
-                            <div className="lobby-panel-label">Текущая комната</div>
-                            <h2>{roomId || 'Комната пока не выбрана'}</h2>
+                            <div className="lobby-panel-label">{t('lobby.room.currentLabel')}</div>
+                            <h2>{roomId || t('lobby.room.emptyTitle')}</h2>
                         </div>
                         <div className="lobby-room-actions">
                             <button
@@ -524,7 +537,7 @@ const LobbyPage = () => {
                                 onClick={handleLeaveRoom}
                                 disabled={!roomId}
                             >
-                                Выйти из лобби
+                                {t('lobby.room.leave')}
                             </button>
                             <button
                                 type="button"
@@ -532,7 +545,7 @@ const LobbyPage = () => {
                                 onClick={handleCopyRoomId}
                                 disabled={!roomId}
                             >
-                                Скопировать ID
+                                {t('lobby.room.copyId')}
                             </button>
                             <button
                                 type="button"
@@ -540,26 +553,26 @@ const LobbyPage = () => {
                                 onClick={handleReadyToggle}
                                 disabled={!currentRoom}
                             >
-                                {activePlayer?.isReady ? 'Снять готовность' : 'Я готов'}
+                                {activePlayer?.isReady ? t('lobby.room.unready') : t('lobby.room.ready')}
                             </button>
                         </div>
                     </div>
 
                     <div className="lobby-settings-panel">
                         <div className="lobby-settings-panel__header">
-                            <span className="lobby-panel-label">Конфигурация матча</span>
-                            <strong>{modeConfig.title}</strong>
-                            <span>{roomPlayers.length}/{maxPlayers} игроков</span>
+                            <span className="lobby-panel-label">{t('lobby.settings.matchConfig')}</span>
+                            <strong>{modeTitle}</strong>
+                            <span>{t('lobby.settings.playersCount', { count: roomPlayers.length, max: maxPlayers })}</span>
                         </div>
 
                         <div className="lobby-settings-pills">
                             <span className={`lobby-settings-pill ${roomSettings.abilitiesEnabled ? 'is-active' : ''}`}>
                                 <i className="fas fa-bolt"></i>
-                                {roomSettings.abilitiesEnabled ? 'Способности включены' : 'Без способностей'}
+                                {roomSettings.abilitiesEnabled ? t('lobby.settings.abilitiesEnabled') : t('lobby.settings.abilitiesDisabled')}
                             </span>
                             <span className={`lobby-settings-pill ${roomSettings.specialBlocksEnabled ? 'is-active' : ''}`}>
                                 <i className="fas fa-shapes"></i>
-                                {roomSettings.specialBlocksEnabled ? 'Нестандартные блоки включены' : 'Только стандартные блоки'}
+                                {roomSettings.specialBlocksEnabled ? t('lobby.settings.specialBlocksEnabled') : t('lobby.settings.specialBlocksDisabled')}
                             </span>
                         </div>
                     </div>
@@ -568,8 +581,8 @@ const LobbyPage = () => {
                         {teamRoster.map((team) => (
                             <section key={team.id} className="lobby-team-column">
                                 <div className="lobby-team-column__header">
-                                    <strong>{getTeamLabel(team.id)}</strong>
-                                    <span>{Number(team.score) || 0} pts</span>
+                                    <strong>{getTeamLabel(team.id, t)}</strong>
+                                    <span>{t('lobby.teams.points', { points: Number(team.score) || 0 })}</span>
                                 </div>
 
                                 {(team.players || []).map((player) => (
@@ -578,13 +591,13 @@ const LobbyPage = () => {
                                             <PlayerAvatar player={player} />
                                             <div>
                                                 <h3>{player.username}</h3>
-                                                <p>{player.userId === clientUserId ? 'Это вы' : getTeamLabel(team.id)}</p>
+                                                <p>{player.userId === clientUserId ? t('lobby.teams.you') : getTeamLabel(team.id, t)}</p>
                                             </div>
                                         </div>
 
                                         <div className="lobby-player-card__actions">
                                             {isRoomOwner && modeKey === '2v2' ? (
-                                                <div className="lobby-team-switcher" aria-label="Выбор команды">
+                                                <div className="lobby-team-switcher" aria-label={t('lobby.teams.teamSelectAria')}>
                                                     {['team_1', 'team_2'].map((nextTeamId) => (
                                                         <button
                                                             key={nextTeamId}
@@ -599,7 +612,7 @@ const LobbyPage = () => {
                                                 </div>
                                             ) : null}
                                             <span className={`lobby-ready-badge ${player.isReady ? 'is-ready' : ''}`}>
-                                                {player.isReady ? 'Ready' : 'Waiting'}
+                                                {player.isReady ? t('lobby.teams.ready') : t('lobby.teams.waiting')}
                                             </span>
                                         </div>
                                     </article>
@@ -607,7 +620,7 @@ const LobbyPage = () => {
 
                                 {(team.players || []).length === 0 && currentRoom ? (
                                     <div className="lobby-empty-state">
-                                        Место свободно.
+                                        {t('lobby.teams.emptySlot')}
                                     </div>
                                 ) : null}
                             </section>
@@ -615,7 +628,7 @@ const LobbyPage = () => {
 
                         {!currentRoom && (
                             <div className="lobby-empty-state">
-                                Создайте комнату или подключитесь к существующей, чтобы увидеть состав игроков.
+                                {t('lobby.room.emptyRoster')}
                             </div>
                         )}
                     </div>

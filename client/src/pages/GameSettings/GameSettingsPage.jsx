@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import AppSwitch from '@/shared/ui/AppSwitch'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
+import { getLocalizedGamePath } from '@/i18n'
 import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
 import '@/widgets/ProfileSideNav/ProfileSideNav.css'
@@ -40,13 +41,13 @@ const GameSettingsPage = () => {
                                     icon="fas fa-desktop"
                                     title={t('gameControls.settings.pcTitle')}
                                     description={t('gameControls.settings.pcDescription')}
-                                    to="/game/controls/pc"
+                                    to={getLocalizedGamePath('/game/controls/pc')}
                                 />
                                 <SettingsCard
                                     icon="fas fa-mobile-screen-button"
                                     title={t('gameControls.settings.mobileTitle')}
                                     description={t('gameControls.settings.mobileDescription')}
-                                    to="/game/controls/mobile"
+                                    to={getLocalizedGamePath('/game/controls/mobile')}
                                 />
                             </div>
                         </section>
@@ -106,35 +107,35 @@ const GameSettingsSideNav = ({ t }) => (
             icon="fas fa-user"
             label={t('modeSelect.modes.solo.title')}
             meta={t('modeSelect.modes.solo.heroLabel')}
-            to="/game/solo"
+            to={getLocalizedGamePath('/game/solo')}
         />
         <GameSettingsSideNavItem
             icon="fas fa-fist-raised"
             label={t('modeSelect.modes.1v1.title')}
             meta={t('modeSelect.modes.1v1.heroLabel')}
-            to="/game/1v1"
+            to={getLocalizedGamePath('/game/1v1')}
         />
         <GameSettingsSideNavItem
             icon="fas fa-users"
             label={t('modeSelect.modes.2v2.title')}
             meta={t('modeSelect.modes.2v2.heroLabel')}
-            to="/game/2v2"
+            to={getLocalizedGamePath('/game/2v2')}
         />
         <GameSettingsSideNavItem
             icon="fas fa-gamepad"
             label={t('modeSelect.modes.5v5.title')}
             meta={t('modeSelect.modes.5v5.heroLabel')}
-            to="/game/5v5"
+            to={getLocalizedGamePath('/game/5v5')}
         />
         <GameSettingsSideNavItem
             icon="fas fa-crown"
             label={t('modeSelect.modes.royale.title')}
             meta={t('modeSelect.modes.royale.heroLabel')}
-            to="/game/royale"
+            to={getLocalizedGamePath('/game/royale')}
         />
         <Link
             className="profile-sidebar__item profile-sidebar__item--active game-settings-sidebar__item"
-            to="/game/controls"
+            to={getLocalizedGamePath('/game/controls')}
         >
             <i className="fas fa-gear"></i>
             <span>{t('gameControls.settings.title')}</span>

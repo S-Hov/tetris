@@ -22,10 +22,14 @@ export default function Header() {
         label: t(item.labelKey),
         to: getNavItemPath(item, homePath),
     }))
-    const activeMode = getActiveItemKey(modeItems, pathname)
+    const localizedModeItems = modeItems.map((item) => ({
+        ...item,
+        to: getGamePath(item.to, currentLanguage),
+    }))
+    const activeMode = getActiveItemKey(localizedModeItems, pathname)
     const activePage = activeMode ? null : getActiveItemKey(localizedNavItems, pathname)
-    const activeModeItem = modeItems.find((item) => item.key === activeMode) || modeItems[0]
-    const mobileModeOptions = modeItems.map((item) => ({
+    const activeModeItem = localizedModeItems.find((item) => item.key === activeMode) || localizedModeItems[0]
+    const mobileModeOptions = localizedModeItems.map((item) => ({
         value: item.to,
         label: item.label,
         icon: item.icon,
@@ -34,7 +38,7 @@ export default function Header() {
         activePage,
         activeMode,
         navItems: localizedNavItems,
-        modeItems,
+        modeItems: localizedModeItems,
         modeStats,
     }
 
@@ -113,6 +117,14 @@ const getNavItemPath = (item, homePath) => {
     }
 
     return item.to
+}
+
+const getGamePath = (path, language) => {
+    if (!path.startsWith('/game')) {
+        return path
+    }
+
+    return `/${language}${path}`
 }
 
 const getActiveItemKey = (items, pathname) => {

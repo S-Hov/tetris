@@ -22,12 +22,12 @@ export const simpleHeaderConfig = [
         secondaryLabelKey: 'simpleHeader.back.home',
     },
     {
-        match: (pathname) => /^\/game\/[^/]+$/.test(pathname) && pathname !== '/game/solo',
+        match: (pathname) => /^\/(ru|en)\/game\/[^/]+$/.test(pathname) && !/^\/(ru|en)\/game\/solo\/?$/.test(pathname),
         backTo: '/',
         backLabelKey: 'simpleHeader.back.home',
     },
     {
-        match: (pathname) => /^\/game\/[^/]+\/(lobby|party)$/.test(pathname),
+        match: (pathname) => /^\/(ru|en)\/game\/[^/]+\/(lobby|party)$/.test(pathname),
         backTo: (pathname) => pathname.replace(/\/(lobby|party)$/, ''),
         backLabelKey: 'simpleHeader.back.mode',
         secondaryTo: '/',

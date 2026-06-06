@@ -4,6 +4,7 @@ import { routes } from './routes.js'
 import NotFoundPage from '@/pages/NotFound/NotFoundPage.jsx'
 import { trackPageView } from '@/shared/api/analytics'
 import InnerPageLayout from '../layouts/InnerPageLayout.jsx'
+import { getLanguageFromPathname } from '@/i18n'
 
 const APP_TITLE = 'PVP Tetris'
 
@@ -23,6 +24,7 @@ const AppRouter = () => {
             <Route path="/profile" element={<Navigate to="/ru/profile" replace />} />
             <Route path="/rating" element={<Navigate to="/ru/rating" replace />} />
             <Route path="/support" element={<Navigate to="/ru/support" replace />} />
+            <Route path="/game/*" element={<GameLanguageRedirect />} />
             {routes.map((route) => {
                 const PageComponent = route.component
                 const Layout = route.layout || DefaultLayout
@@ -59,6 +61,19 @@ const AppRouter = () => {
 
 const DefaultLayout = ({ children }) => children
 const NoGuard = ({ children }) => children
+
+const GameLanguageRedirect = () => {
+    const location = useLocation()
+    const language = getLanguageFromPathname(location.pathname)
+
+    return (
+        <Navigate
+            to={`/${language}${location.pathname}${location.search}`}
+            replace
+            state={location.state}
+        />
+    )
+}
 
 const DocumentTitle = ({ title }) => {
     const params = useParams()

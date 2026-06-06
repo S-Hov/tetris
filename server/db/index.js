@@ -87,6 +87,16 @@ const getDatabaseSslMode = () => {
     }
 }
 
+const getPoolMax = () => {
+    const poolMax = Number.parseInt(process.env.DB_POOL_MAX || '', 10)
+
+    if (Number.isInteger(poolMax) && poolMax > 0) {
+        return poolMax
+    }
+
+    return getDatabaseMode() === DATABASE_MODE.PRODUCTION ? 3 : 10
+}
+
 const shouldUseSsl = () => {
     const explicitSsl = normalizeBoolean(getExplicitSslValue())
 
@@ -117,6 +127,7 @@ const getPoolConfig = () => {
         return {
             connectionString: databaseUrl,
             ssl,
+            max: getPoolMax(),
         }
     }
 
@@ -128,6 +139,7 @@ const getPoolConfig = () => {
             password: getLocalDatabaseValue('DB_PASSWORD'),
             port: getLocalDatabaseValue('DB_PORT') ? Number(getLocalDatabaseValue('DB_PORT')) : undefined,
             ssl,
+            max: getPoolMax(),
         }
     }
 
@@ -138,6 +150,7 @@ const getPoolConfig = () => {
         password: process.env.DB_PASSWORD,
         port: process.env.DB_PORT ? Number(process.env.DB_PORT) : undefined,
         ssl,
+        max: getPoolMax(),
     }
 }
 

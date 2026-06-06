@@ -32,6 +32,7 @@ import PlayerSummaryPanel from '@/features/tetris/ui/PlayerSummaryPanel.jsx'
 import SoloDebuffTimerPanel from '@/features/tetris/ui/SoloDebuffTimerPanel.jsx'
 import StatsPanel from '@/features/tetris/ui/StatsPanel.jsx'
 import TetrisBoard from '@/features/tetris/ui/TetrisBoard.jsx'
+import { getLocalizedGamePath } from '@/i18n'
 import { useAuth } from '@/shared/hooks/useAuth.js'
 import { socket } from '@/shared/api/socket'
 import { matchesAPI } from '@/shared/api/matches'
@@ -477,7 +478,7 @@ const MatchPageGame = ({
     const introPlayers = getIntroPlayers(matchRoom)
 
     const handleBackToModeSelect = () => {
-        navigate('/game/solo', {
+        navigate(getLocalizedGamePath('/game/solo'), {
             state: {
                 roomSettings,
             },
@@ -666,7 +667,7 @@ const MatchPageGame = ({
             {derivedState.isPaused ? (
                 <Link
                     className="mobile-controls-link mobile-controls-link--match"
-                    to="/game/controls"
+                    to={getLocalizedGamePath('/game/controls')}
                     aria-label="Mobile control settings"
                 >
                     <i className="fas fa-gear"></i>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { socket } from '@/shared/api/socket/index.js'
 import notify from '@/utils/Notifications'
+import { getLocalizedGamePath } from '@/i18n'
 
 const MATCH_END_REDIRECT_DELAY_MS = 5200
 
@@ -39,7 +40,7 @@ export const useMatchResult = ({
             }
 
             redirectTimeoutRef.current = setTimeout(() => {
-                navigate(shouldReturnToLobby ? `/game/${modeKey}/lobby` : `/game/${modeKey}`, {
+                navigate(getLocalizedGamePath(shouldReturnToLobby ? `/game/${modeKey}/lobby` : `/game/${modeKey}`), {
                     replace: true,
                     state: shouldReturnToLobby
                         ? {

@@ -1,4 +1,5 @@
 import { pool } from '../db/index.js'
+import { isIP } from 'net'
 
 export const registerUserRepo = async (username, email, passwordHash, roleId, status = 'pending_verification') => {
     const result = await pool.query(
@@ -547,16 +548,26 @@ export const createAuthLogRepo = async ({
     ipAddress = null,
     userAgent = null,
 }) => {
+    const normalizedIpAddress = normalizeIpAddress(ipAddress)
     const result = await pool.query(
         `
         INSERT INTO auth_logs (user_id, event_type, ip_address, user_agent)
         VALUES ($1, $2, NULLIF($3, '')::inet, $4)
         RETURNING id, user_id, event_type, ip_address, user_agent, created_at
         `,
-        [userId, eventType, ipAddress, userAgent]
+        [userId, eventType, normalizedIpAddress, userAgent]
     )
 
     return result.rows[0]
+}
+
+const normalizeIpAddress = (value) => {
+    const normalizedValue = String(value || '')
+        .split(',')[0]
+        .trim()
+        .replace(/^::ffff:/, '')
+
+    return isIP(normalizedValue) ? normalizedValue : null
 }
 
 export const getRecentLoginHistoryRepo = async (userId, limit = 5) => {

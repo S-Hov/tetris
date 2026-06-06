@@ -1,0 +1,92 @@
+{
+  "teamQueue": {
+    "hero": {
+      "rankedChip": "Ranked game",
+      "casualChip": "Casual game",
+      "rankedLead": "Build a team or start solo search: the match affects every player's rating and MMR.",
+      "casualLead": "Start solo search so the system finds an ally, or build a pair and search for opponents as a ready team."
+    },
+    "config": {
+      "label": "Configuration",
+      "rankedName": "Ranked team queue",
+      "casualName": "2 / 2 team queue",
+      "ratingOn": "Rating: ON",
+      "ratingOff": "Rating: OFF",
+      "effectsOn": "Effects: ON",
+      "effectsOff": "Effects: OFF",
+      "specialBlocksOn": "Special blocks: ON",
+      "specialBlocksOff": "Special blocks: OFF",
+      "alliesCount": "{{count}}/2 allies"
+    },
+    "solo": {
+      "title": "Play solo",
+      "rankedDescription": "The server will find a ranked ally, form your team, and match you against opponents.",
+      "casualDescription": "The server will find another solo player, form your team, and then match you against opponents.",
+      "button": "Start solo search"
+    },
+    "friend": {
+      "title": "Play with a friend",
+      "rankedDescription": "Create a ranked ally lobby, send the ID to a friend, and search as a ready team.",
+      "casualDescription": "Create an ally lobby, send the ID to a friend, and search as a ready team.",
+      "createButton": "Create lobby",
+      "partyIdLabel": "Lobby ID",
+      "partyIdPlaceholder": "Paste party id",
+      "joinButton": "Join ally"
+    },
+    "party": {
+      "label": "Your team",
+      "emptyTitle": "Ally lobby has not been created yet",
+      "copyId": "Copy ID",
+      "leave": "Leave lobby",
+      "search": "Search as team",
+      "statusLabel": "Team status",
+      "searching": "Search started",
+      "waitingStart": "Waiting to start",
+      "playersCount": "{{count}}/2 players",
+      "ranked": "Match affects rating",
+      "unranked": "Unranked",
+      "abilitiesEnabled": "Abilities enabled",
+      "abilitiesDisabled": "No abilities",
+      "specialBlocksEnabled": "Special blocks enabled",
+      "specialBlocksDisabled": "Standard blocks only"
+    },
+    "slots": {
+      "waitingPlayer": "Waiting for player",
+      "leader": "Team leader",
+      "ally": "Ally",
+      "free": "Open",
+      "slot": "Slot {{number}}"
+    },
+    "matchmaking": {
+      "rankedQueue": "Ranked queue",
+      "casualQueue": "Casual queue",
+      "findingOpponents": "Finding an opponent team",
+      "findingAlly": "Finding an ally",
+      "rankedDescription": "When the team reaches 2/2, the system will match ranked opponents with the same settings.",
+      "casualDescription": "When the team reaches 2/2, the system will match another team with the same settings.",
+      "wait": "Wait",
+      "team": "Team",
+      "cancel": "Cancel search"
+    },
+    "notifications": {
+      "noResponse": "No response from server",
+      "loginRequired": "Sign in to search for a 2v2 match",
+      "connectArenaFailed": "Could not connect to the arena",
+      "matchFound": "Teams found. Match starts now",
+      "startSearchFailed": "Could not start search",
+      "soloSearchStarted": "Searching for an ally and an opponent team",
+      "createPartyFailed": "Could not create ally lobby",
+      "partyCreated": "Ally lobby created",
+      "joinPartyFailed": "Could not join",
+      "partyJoined": "You are on the team",
+      "partySearchFailed": "Could not start team search",
+      "partySearchStarted": "Searching for an opponent team",
+      "cancelSearchFailed": "Could not cancel search",
+      "searchCancelled": "Search cancelled",
+      "leaveFailed": "Could not leave the lobby",
+      "left": "You left the lobby",
+      "copyFailed": "Could not copy ID",
+      "copied": "Lobby ID copied"
+    }
+  }
+}

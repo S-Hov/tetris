@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
+import { DEFAULT_LANGUAGE, getLanguageFromPathname } from '@/i18n'
 import { useAuth } from '@/shared/hooks/useAuth.js'
 import {
     ensureSocketSession,
@@ -14,10 +16,10 @@ import '@/pages/Lobby/LobbyPage.css'
 import '@/pages/ModeSelect/ModeSelectPage.css'
 import './TeamQueuePage.css'
 
-const emitWithAck = (eventName, payload) => {
+const emitWithAck = (eventName, payload, fallbackMessage = 'No response from server') => {
     return new Promise((resolve) => {
         socket.emit(eventName, payload, (response) => {
-            resolve(response || { success: false, message: 'Нет ответа от сервера' })
+            resolve(response || { success: false, message: fallbackMessage })
         })
     })
 }
@@ -64,9 +66,12 @@ const TeamQueuePage = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { mode } = useParams()
+    const { t, i18n } = useTranslation()
     const { user } = useAuth()
+    const currentLanguage = getLanguageFromPathname(location.pathname) || DEFAULT_LANGUAGE
     const modeKey = location.state?.modeKey || mode || '2v2'
     const modeConfig = useMemo(() => getModeSelectionConfig(modeKey), [modeKey])
+    const modeTitle = t(`modeSelect.modes.${modeConfig.key}.title`, { defaultValue: modeConfig.title })
     const [settings] = useState(() => normalizeMatchSettings(location.state?.roomSettings || defaultMatchSettings))
     const matchType = settings.matchType === 'ranked' ? 'ranked' : 'casual'
     const isRanked = matchType === 'ranked'
@@ -81,14 +86,23 @@ const TeamQueuePage = () => {
     })
     const [waitSeconds, setWaitSeconds] = useState(0)
     const searchingRef = useRef(false)
+    const emit = useCallback((eventName, payload) => (
+        emitWithAck(eventName, payload, t('teamQueue.notifications.noResponse'))
+    ), [t])
+
+    useEffect(() => {
+        if (i18n.language !== currentLanguage) {
+            i18n.changeLanguage(currentLanguage)
+        }
+    }, [currentLanguage, i18n])
 
     const ensurePlayerSession = useCallback(async () => {
         if (!user) {
-            throw new Error('Войдите в аккаунт, чтобы искать 2v2 матч')
+            throw new Error(t('teamQueue.notifications.loginRequired'))
         }
 
         return await ensureSocketSession({ user })
-    }, [user])
+    }, [t, user])
 
     useEffect(() => {
         if (!user) {
@@ -96,9 +110,9 @@ const TeamQueuePage = () => {
         }
 
         ensureSocketSession({ user }).catch((error) => {
-            notify(error.message || 'Не удалось подключиться к арене', 'error')
+            notify(error.message || t('teamQueue.notifications.connectArenaFailed'), 'error')
         })
-    }, [user])
+    }, [t, user])
 
     useEffect(() => {
         searchingRef.current = searchState.isSearching
@@ -152,7 +166,7 @@ const TeamQueuePage = () => {
                 position: null,
             })
             setWaitSeconds(0)
-            notify('Команды найдены. Матч начинается', 'success')
+            notify(t('teamQueue.notifications.matchFound'), 'success')
 
             navigate(`/match/${payload.roomId}`, {
                 state: {
@@ -175,7 +189,7 @@ const TeamQueuePage = () => {
             socket.off('matchmaking:cancelled', handleCancelled)
             socket.off('matchmaking:found', handleFound)
         }
-    }, [modeKey, navigate, party?.players?.length, settings])
+    }, [modeKey, navigate, party?.players?.length, settings, t])
 
     useEffect(() => {
         return () => {
@@ -191,22 +205,22 @@ const TeamQueuePage = () => {
 
         try {
             await ensurePlayerSession()
-            const response = await emitWithAck('matchmaking:join', {
+            const response = await emit('matchmaking:join', {
                 modeKey,
                 matchType,
                 settings,
             })
 
             if (!response.success) {
-                notify(response.message || 'Не удалось начать поиск', 'error')
+                notify(response.message || t('teamQueue.notifications.startSearchFailed'), 'error')
                 return
             }
 
             if (response.searching) {
-                notify(response.message || 'Ищем союзника и команду соперников', 'info')
+                notify(response.message || t('teamQueue.notifications.soloSearchStarted'), 'info')
             }
         } catch (error) {
-            notify(error.message || 'Не удалось начать поиск', 'error')
+            notify(error.message || t('teamQueue.notifications.startSearchFailed'), 'error')
         } finally {
             setIsBusy(false)
         }
@@ -217,21 +231,21 @@ const TeamQueuePage = () => {
 
         try {
             await ensurePlayerSession()
-            const response = await emitWithAck('party:create', {
+            const response = await emit('party:create', {
                 modeKey,
                 settings,
             })
 
             if (!response.success) {
-                notify(response.message || 'Не удалось создать лобби союзника', 'error')
+                notify(response.message || t('teamQueue.notifications.createPartyFailed'), 'error')
                 return
             }
 
             setParty(response.party)
             setPartyIdInput(response.party.id)
-            notify(response.message || 'Лобби союзника создано', 'success')
+            notify(response.message || t('teamQueue.notifications.partyCreated'), 'success')
         } catch (error) {
-            notify(error.message || 'Не удалось создать лобби союзника', 'error')
+            notify(error.message || t('teamQueue.notifications.createPartyFailed'), 'error')
         } finally {
             setIsBusy(false)
         }
@@ -242,19 +256,19 @@ const TeamQueuePage = () => {
 
         try {
             await ensurePlayerSession()
-            const response = await emitWithAck('party:join', {
+            const response = await emit('party:join', {
                 partyId: partyIdInput.trim(),
             })
 
             if (!response.success) {
-                notify(response.message || 'Не удалось присоединиться', 'error')
+                notify(response.message || t('teamQueue.notifications.joinPartyFailed'), 'error')
                 return
             }
 
             setParty(response.party)
-            notify(response.message || 'Вы в команде', 'success')
+            notify(response.message || t('teamQueue.notifications.partyJoined'), 'success')
         } catch (error) {
-            notify(error.message || 'Не удалось присоединиться', 'error')
+            notify(error.message || t('teamQueue.notifications.joinPartyFailed'), 'error')
         } finally {
             setIsBusy(false)
         }
@@ -265,32 +279,32 @@ const TeamQueuePage = () => {
             return
         }
 
-            const response = await emitWithAck('party:start-search', {
+            const response = await emit('party:start-search', {
                 partyId: party.id,
             matchType,
         })
 
         if (!response.success) {
-            notify(response.message || 'Не удалось начать командный поиск', 'error')
+            notify(response.message || t('teamQueue.notifications.partySearchFailed'), 'error')
             return
         }
 
         if (response.searching) {
-            notify(response.message || 'Ищем команду соперников', 'info')
+            notify(response.message || t('teamQueue.notifications.partySearchStarted'), 'info')
         }
     }
 
     const handleCancelSearch = async () => {
         const response = party?.id
-            ? await emitWithAck('party:cancel-search', { partyId: party.id })
-            : await emitWithAck('matchmaking:leave', {})
+            ? await emit('party:cancel-search', { partyId: party.id })
+            : await emit('matchmaking:leave', {})
 
         if (!response.success) {
-            notify(response.message || 'Не удалось отменить поиск', 'error')
+            notify(response.message || t('teamQueue.notifications.cancelSearchFailed'), 'error')
             return
         }
 
-        notify('Поиск отменён', 'info')
+        notify(t('teamQueue.notifications.searchCancelled'), 'info')
     }
 
     const handleLeaveParty = async () => {
@@ -299,13 +313,13 @@ const TeamQueuePage = () => {
         }
 
         if (searchState.isSearching) {
-            await emitWithAck('party:cancel-search', { partyId: party.id })
+            await emit('party:cancel-search', { partyId: party.id })
         }
 
-        const response = await emitWithAck('party:leave', {})
+        const response = await emit('party:leave', {})
 
         if (!response.success) {
-            notify(response.message || 'Не удалось выйти из лобби', 'error')
+            notify(response.message || t('teamQueue.notifications.leaveFailed'), 'error')
             return
         }
 
@@ -318,20 +332,20 @@ const TeamQueuePage = () => {
             position: null,
         })
         setWaitSeconds(0)
-        notify('Вы вышли из лобби', 'info')
+        notify(t('teamQueue.notifications.left'), 'info')
     }
 
     const handleCopyPartyId = async () => {
         if (!party?.id || !navigator?.clipboard) {
-            notify('Скопировать ID не удалось', 'error')
+            notify(t('teamQueue.notifications.copyFailed'), 'error')
             return
         }
 
         try {
             await navigator.clipboard.writeText(party.id)
-            notify('ID лобби скопирован', 'info')
+            notify(t('teamQueue.notifications.copied'), 'info')
         } catch {
-            notify('Скопировать ID не удалось', 'error')
+            notify(t('teamQueue.notifications.copyFailed'), 'error')
         }
     }
 
@@ -345,24 +359,24 @@ const TeamQueuePage = () => {
                 <header className="lobby-hero">
                     <div className="lobby-hero-copy">
                         <span className="lobby-status-chip lobby-status-chip--connected">
-                            {isRanked ? 'Рейтинговая игра' : 'Обычная игра'}
+                            {isRanked ? t('teamQueue.hero.rankedChip') : t('teamQueue.hero.casualChip')}
                         </span>
-                        <h1 className="lobby-title">{modeConfig.title}</h1>
+                        <h1 className="lobby-title">{modeTitle}</h1>
                         <p className="lobby-lead">
                             {isRanked
-                                ? 'Соберите команду или начните поиск соло: матч повлияет на рейтинг и MMR всех игроков.'
-                                : 'Начните поиск соло, чтобы система нашла союзника, или соберите пару и ищите соперников готовой командой.'}
+                                ? t('teamQueue.hero.rankedLead')
+                                : t('teamQueue.hero.casualLead')}
                         </p>
                     </div>
 
                     <div className="lobby-hero-panel">
-                        <div className="lobby-panel-label">Конфигурация</div>
-                        <div className="lobby-player-name">{isRanked ? 'ranked team queue' : '2 / 2 team queue'}</div>
+                        <div className="lobby-panel-label">{t('teamQueue.config.label')}</div>
+                        <div className="lobby-player-name">{isRanked ? t('teamQueue.config.rankedName') : t('teamQueue.config.casualName')}</div>
                         <div className="lobby-player-meta">
-                            <span>{isRanked ? 'Рейтинг: ON' : 'Рейтинг: OFF'}</span>
-                            <span>{settings.abilitiesEnabled ? 'Эффекты: ON' : 'Эффекты: OFF'}</span>
-                            <span>{settings.specialBlocksEnabled ? 'Нестандартные блоки: ON' : 'Нестандартные блоки: OFF'}</span>
-                            <span>{partyPlayers.length || 1}/2 союзников</span>
+                            <span>{isRanked ? t('teamQueue.config.ratingOn') : t('teamQueue.config.ratingOff')}</span>
+                            <span>{settings.abilitiesEnabled ? t('teamQueue.config.effectsOn') : t('teamQueue.config.effectsOff')}</span>
+                            <span>{settings.specialBlocksEnabled ? t('teamQueue.config.specialBlocksOn') : t('teamQueue.config.specialBlocksOff')}</span>
+                            <span>{t('teamQueue.config.alliesCount', { count: partyPlayers.length || 1 })}</span>
                         </div>
                     </div>
                 </header>
@@ -370,11 +384,11 @@ const TeamQueuePage = () => {
                 <div className="lobby-grid team-queue-grid">
                     <section className="lobby-card flex">
                         <div className="lobby-card-header">
-                            <h2>Играть одному</h2>
+                            <h2>{t('teamQueue.solo.title')}</h2>
                             <p>
                                 {isRanked
-                                    ? 'Сервер найдёт рейтингового союзника, сформирует вашу команду и подберёт команду соперников.'
-                                    : 'Сервер найдёт второго одиночного игрока, сформирует вашу команду и затем подберёт соперников.'}
+                                    ? t('teamQueue.solo.rankedDescription')
+                                    : t('teamQueue.solo.casualDescription')}
                             </p>
                         </div>
 
@@ -384,17 +398,17 @@ const TeamQueuePage = () => {
                             onClick={handleSoloSearch}
                             disabled={isBusy || searchState.isSearching}
                         >
-                            Начать поиск соло
+                            {t('teamQueue.solo.button')}
                         </button>
                     </section>
 
                     <section className="lobby-card">
                         <div className="lobby-card-header">
-                            <h2>Играть с другом</h2>
+                            <h2>{t('teamQueue.friend.title')}</h2>
                             <p>
                                 {isRanked
-                                    ? 'Создайте рейтинговое лобби союзника, отправьте ID другу и запускайте поиск готовой командой.'
-                                    : 'Создайте лобби союзника, отправьте ID другу и запускайте поиск как готовая команда.'}
+                                    ? t('teamQueue.friend.rankedDescription')
+                                    : t('teamQueue.friend.casualDescription')}
                             </p>
                         </div>
 
@@ -405,15 +419,15 @@ const TeamQueuePage = () => {
                                 onClick={handleCreateParty}
                                 disabled={isBusy || Boolean(party)}
                             >
-                                Создать лобби
+                                {t('teamQueue.friend.createButton')}
                             </button>
 
                             <label className="lobby-field">
-                                <span>ID лобби</span>
+                                <span>{t('teamQueue.friend.partyIdLabel')}</span>
                                 <input
                                     type="text"
                                     value={partyIdInput}
-                                    placeholder="Вставьте party id"
+                                    placeholder={t('teamQueue.friend.partyIdPlaceholder')}
                                     onChange={(event) => setPartyIdInput(event.target.value)}
                                     disabled={searchState.isSearching}
                                 />
@@ -425,7 +439,7 @@ const TeamQueuePage = () => {
                                 onClick={handleJoinParty}
                                 disabled={isBusy || !partyIdInput.trim() || searchState.isSearching}
                             >
-                                Войти к союзнику
+                                {t('teamQueue.friend.joinButton')}
                             </button>
                         </div>
                     </section>
@@ -434,8 +448,8 @@ const TeamQueuePage = () => {
                     <section className="lobby-room-card">
                         <div className="lobby-room-header">
                             <div>
-                                <div className="lobby-panel-label">Ваша команда</div>
-                                <h2>{party?.id || 'Лобби союзника ещё не создано'}</h2>
+                                <div className="lobby-panel-label">{t('teamQueue.party.label')}</div>
+                                <h2>{party?.id || t('teamQueue.party.emptyTitle')}</h2>
                             </div>
 
                             <div className="lobby-room-actions">
@@ -445,7 +459,7 @@ const TeamQueuePage = () => {
                                 onClick={handleCopyPartyId}
                                 disabled={!party?.id}
                             >
-                                Скопировать ID
+                                {t('teamQueue.party.copyId')}
                             </button>
                             <button
                                 type="button"
@@ -453,7 +467,7 @@ const TeamQueuePage = () => {
                                 onClick={handleLeaveParty}
                                 disabled={!party?.id}
                             >
-                                Выйти из лобби
+                                {t('teamQueue.party.leave')}
                             </button>
                             <button
                                 type="button"
@@ -461,30 +475,30 @@ const TeamQueuePage = () => {
                                     onClick={handlePartySearch}
                                     disabled={!canStartPartySearch}
                                 >
-                                    Искать командой
+                                    {t('teamQueue.party.search')}
                                 </button>
                             </div>
                         </div>
 
                         <div className="lobby-settings-panel">
                             <div className="lobby-settings-panel__header">
-                            <span className="lobby-panel-label">Статус команды</span>
-                            <strong>{party?.status === 'searching' ? 'Поиск запущен' : 'Ожидает запуска'}</strong>
-                            <span>{partyPlayers.length}/2 игроков</span>
+                            <span className="lobby-panel-label">{t('teamQueue.party.statusLabel')}</span>
+                            <strong>{party?.status === 'searching' ? t('teamQueue.party.searching') : t('teamQueue.party.waitingStart')}</strong>
+                            <span>{t('teamQueue.party.playersCount', { count: partyPlayers.length })}</span>
                             </div>
 
                         <div className="lobby-settings-pills">
                             <span className={`lobby-settings-pill ${isRanked ? 'is-active' : ''}`}>
                                 <i className="fas fa-trophy"></i>
-                                {isRanked ? 'Матч влияет на рейтинг' : 'Без рейтинга'}
+                                {isRanked ? t('teamQueue.party.ranked') : t('teamQueue.party.unranked')}
                             </span>
                             <span className={`lobby-settings-pill ${settings.abilitiesEnabled ? 'is-active' : ''}`}>
                                 <i className="fas fa-bolt"></i>
-                                    {settings.abilitiesEnabled ? 'Способности включены' : 'Без способностей'}
+                                    {settings.abilitiesEnabled ? t('teamQueue.party.abilitiesEnabled') : t('teamQueue.party.abilitiesDisabled')}
                                 </span>
                                 <span className={`lobby-settings-pill ${settings.specialBlocksEnabled ? 'is-active' : ''}`}>
                                     <i className="fas fa-shapes"></i>
-                                    {settings.specialBlocksEnabled ? 'Нестандартные блоки включены' : 'Только стандартные блоки'}
+                                    {settings.specialBlocksEnabled ? t('teamQueue.party.specialBlocksEnabled') : t('teamQueue.party.specialBlocksDisabled')}
                                 </span>
                             </div>
                         </div>
@@ -498,12 +512,12 @@ const TeamQueuePage = () => {
                                     <div className="lobby-player-card__identity">
                                         <PlayerAvatar player={player} />
                                         <div>
-                                            <h3>{player?.username || 'Ожидает игрока'}</h3>
-                                            <p>{player?.isOwner ? 'Лидер команды' : player ? 'Союзник' : 'Свободно'}</p>
+                                            <h3>{player?.username || t('teamQueue.slots.waitingPlayer')}</h3>
+                                            <p>{player?.isOwner ? t('teamQueue.slots.leader') : player ? t('teamQueue.slots.ally') : t('teamQueue.slots.free')}</p>
                                         </div>
                                     </div>
                                     <span className={`lobby-ready-badge ${player ? 'is-ready' : ''}`}>
-                                        Слот {slotIndex + 1}
+                                        {t('teamQueue.slots.slot', { number: slotIndex + 1 })}
                                         </span>
                                     </article>
                                 )
@@ -521,29 +535,29 @@ const TeamQueuePage = () => {
                             </div>
 
                             <div className="mode-matchmaking-copy">
-                                <span>{isRanked ? 'Ranked queue' : 'Casual queue'}</span>
-                                <h2>{searchState.teamSize >= 2 ? 'Ищем команду соперников' : 'Ищем союзника'}</h2>
+                                <span>{isRanked ? t('teamQueue.matchmaking.rankedQueue') : t('teamQueue.matchmaking.casualQueue')}</span>
+                                <h2>{searchState.teamSize >= 2 ? t('teamQueue.matchmaking.findingOpponents') : t('teamQueue.matchmaking.findingAlly')}</h2>
                                 <p>
                                     {isRanked
-                                        ? 'Когда команда будет 2/2, система подберёт рейтинговых соперников с такими же настройками.'
-                                        : 'Когда команда будет 2/2, система подберёт вторую команду с такими же настройками.'}
+                                        ? t('teamQueue.matchmaking.rankedDescription')
+                                        : t('teamQueue.matchmaking.casualDescription')}
                                 </p>
                             </div>
 
                             <div className="mode-matchmaking-meta">
                                 <div>
-                                    <span>Ожидание</span>
+                                    <span>{t('teamQueue.matchmaking.wait')}</span>
                                     <strong>{formatWaitTime(waitSeconds)}</strong>
                                 </div>
                                 <div>
-                                    <span>Команда</span>
+                                    <span>{t('teamQueue.matchmaking.team')}</span>
                                     <strong>{Math.min(searchState.teamSize, 2)}/2</strong>
                                 </div>
                             </div>
 
                             <button type="button" className="mode-matchmaking-cancel" onClick={handleCancelSearch}>
                                 <i className="fas fa-times"></i>
-                                Отменить поиск
+                                {t('teamQueue.matchmaking.cancel')}
                             </button>
                         </div>
                     </section>

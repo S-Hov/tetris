@@ -24,6 +24,14 @@ const getRequestMeta = (req) => ({
     userAgent: req.get('user-agent') || null,
 })
 
+const safeCreateAuthLog = async (payload) => {
+    try {
+        await createAuthLogService(payload)
+    } catch (error) {
+        console.error('OAuth auth log error:', error)
+    }
+}
+
 const AUTHENTICATE_OPTIONS = {
     google: {
         scope: ['profile', 'email'],
@@ -138,7 +146,7 @@ export const handleOAuthCallback = asyncHandler(async (req, res, next) => {
                 ? 'oauth_link_success'
                 : 'oauth_login_success'
 
-            await createAuthLogService({
+            await safeCreateAuthLog({
                 userId: result.user.id,
                 eventType,
                 ...getRequestMeta(req),
@@ -151,7 +159,7 @@ export const handleOAuthCallback = asyncHandler(async (req, res, next) => {
                 statePayload.mode === 'link' ? '/profile' : '/profile'
             ))
         } catch (serviceError) {
-            await createAuthLogService({
+            await safeCreateAuthLog({
                 userId: statePayload.userId || null,
                 eventType: statePayload.mode === 'link'
                     ? 'oauth_link_failed'
@@ -159,7 +167,31 @@ export const handleOAuthCallback = asyncHandler(async (req, res, next) => {
                 ...getRequestMeta(req),
             })
 
-            return redirectWithError(serviceError.message || 'OAuth login failed')
+            return redirectWithError(getOAuthServiceErrorMessage(serviceError))
         }
     })(req, res, next)
 })
+
+const getOAuthServiceErrorMessage = (error) => {
+    if (error?.legacyMessage) {
+        return error.legacyMessage
+    }
+
+    if (isApiMessageCode(error?.code)) {
+        return 'Не удалось завершить вход через OAuth'
+    }
+
+    if (isDatabaseErrorCode(error?.code)) {
+        return 'Не удалось завершить вход через OAuth. Попробуйте позже'
+    }
+
+    return error?.message || 'OAuth login failed'
+}
+
+const isApiMessageCode = (code) => (
+    typeof code === 'string' && /^[A-Z]+(?:\.[A-Z0-9_]+)+$/.test(code)
+)
+
+const isDatabaseErrorCode = (code) => (
+    typeof code === 'string' && /^[0-9A-Z]{5}$/.test(code)
+)

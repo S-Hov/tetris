@@ -8,6 +8,8 @@ const serverRoot = path.resolve(__dirname, '..')
 
 loadEnv({ path: path.join(serverRoot, '.env'), quiet: true })
 
+process.env.DB_POOL_MAX = process.env.DB_POOL_MAX || '1'
+
 const { runPendingMigrations } = await import('../services/migrationService.js')
 
 runPendingMigrations({ closePool: true }).catch((error) => {

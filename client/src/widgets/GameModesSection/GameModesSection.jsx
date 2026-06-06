@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
+import { getLocalizedGamePath } from '@/i18n'
 import { gameModesMeta } from './homeModes.data.js'
 
 import './GameModesSection.css'
@@ -13,6 +14,7 @@ const GameModesSection = () => {
         label: t(`home.modes.items.${mode.key}.label`, { defaultValue: '' }),
         description: t(`home.modes.items.${mode.key}.description`),
         queue: t(`home.modes.items.${mode.key}.queue`, { defaultValue: '' }),
+        to: getLocalizedGamePath(mode.to),
     }))
 
     return (

@@ -1,0 +1,97 @@
+{
+  "lobby": {
+    "status": {
+      "connected": "Arena online",
+      "disconnected": "Arena offline",
+      "error": "Arena error"
+    },
+    "hero": {
+      "lead": "Signed-in players enter through their account, guests play by nickname. Permissions cannot be faked. The lobby is universal, and mode settings are stored inside the room."
+    },
+    "profile": {
+      "label": "Your profile",
+      "guest": "Guest",
+      "guestSession": "Guest session",
+      "authSession": "Authenticated session",
+      "role": "Role: {{role}}"
+    },
+    "identity": {
+      "title": "Player identity",
+      "description": "Choose the name you will use to enter the room.",
+      "nicknameLabel": "Guest nickname",
+      "nicknamePlaceholder": "For example, NeonStack",
+      "accountLocked": "Account locked",
+      "accountLockedDescription": "The room name comes from the server, not from the client."
+    },
+    "create": {
+      "title": "Create room",
+      "description": "Open a room and send the ID to friends.",
+      "button": "Create room"
+    },
+    "join": {
+      "title": "Join",
+      "description": "Enter a room ID to connect to an existing match.",
+      "roomIdLabel": "Room ID",
+      "roomIdPlaceholder": "Paste room id",
+      "button": "Join room"
+    },
+    "room": {
+      "currentLabel": "Current room",
+      "emptyTitle": "No room selected yet",
+      "leave": "Leave lobby",
+      "copyId": "Copy ID",
+      "ready": "Ready",
+      "unready": "Cancel ready",
+      "emptyRoster": "Create a room or join an existing one to see the player roster."
+    },
+    "settings": {
+      "effectsOn": "Effects: ON",
+      "effectsOff": "Effects: OFF",
+      "specialBlocksOn": "Special blocks: ON",
+      "specialBlocksOff": "Special blocks: OFF",
+      "matchConfig": "Match configuration",
+      "playersCount": "{{count}}/{{max}} players",
+      "abilitiesEnabled": "Abilities enabled",
+      "abilitiesDisabled": "No abilities",
+      "specialBlocksEnabled": "Special blocks enabled",
+      "specialBlocksDisabled": "Standard blocks only"
+    },
+    "teams": {
+      "team1": "Team 1",
+      "team2": "Team 2",
+      "points": "{{points}} pts",
+      "you": "You",
+      "teamSelectAria": "Team selection",
+      "ready": "Ready",
+      "waiting": "Waiting",
+      "emptySlot": "Slot is open."
+    },
+    "notifications": {
+      "noResponse": "No response from server",
+      "connectArenaFailed": "Could not connect to the arena",
+      "matchWinReturn": "Round finished. You won and returned to the lobby",
+      "matchLoseReturn": "Round finished. You lost and returned to the lobby",
+      "connected": "Connected to the game arena",
+      "disconnected": "Connection to the game arena was lost",
+      "socketConnectFailed": "Could not connect to the socket server",
+      "playerJoined": "{{username}} joined the room",
+      "playerLeft": "{{username}} left the room",
+      "matchStartTeam": "All players are ready. Match starts now",
+      "matchStartDuel": "Both players are ready. Match starts now",
+      "invalidNickname": "Enter a valid nickname: 2-24 characters, letters, numbers, space, ., -, _",
+      "restoreRoomFailed": "Could not restore the room after the match",
+      "createRoomFailed": "Could not create the room",
+      "roomCreated": "Room created",
+      "joinRoomFailed": "Could not join the room",
+      "roomJoined": "You joined the room",
+      "readyFailed": "Could not update ready status",
+      "readyUpdated": "Ready status updated",
+      "leaveFailed": "Could not leave the lobby",
+      "left": "You left the lobby",
+      "setTeamFailed": "Could not change team",
+      "teamUpdated": "Team updated",
+      "copyRoomFailed": "Could not copy room ID",
+      "roomCopied": "Room ID copied"
+    }
+  }
+}

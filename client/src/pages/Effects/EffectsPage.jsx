@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
+import { getLocalizedGamePath } from '@/i18n'
 import { effectsAPI } from '@/shared/api/effects'
 import { getBaseUrl } from '@/shared/api/apiClient.js'
 import './EffectsPage.css'
@@ -50,7 +51,7 @@ const EffectsPage = () => {
                                 В режимах с эффектами игроки копят энергию и выбирают дебаффы для соперника:
                                 ускорение, затемнение поля, сбитое управление и другие тактические помехи.
                             </p>
-                            <Link className="button effects-hero__button" to="/game/1v1">
+                            <Link className="button effects-hero__button" to={getLocalizedGamePath('/game/1v1')}>
                                 <i className="fas fa-play"></i>
                                 Играть с эффектами
                             </Link>
