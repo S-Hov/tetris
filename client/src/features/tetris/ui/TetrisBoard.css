@@ -3,7 +3,7 @@
     --board-bg: rgba(0, 0, 0, 0.4);
     --cell-bg: rgba(255, 255, 255, 0.08);
     --cell-gost-bg: rgba(255, 255, 255, 0.12);
-    --cell-gost-border: 1px dashed rgba(0, 255, 255, 0.7);
+    --cell-gost-border: 1px dashed var(--turquoise-border-intense);
 }
 
 :root[data-theme="light"] {
@@ -47,11 +47,11 @@
     border-radius: var(--tetris-cell-radius);
     
     &.filled {
-        background: cyan;
+        background: var(--turquoise);
     }
 
     &.ghost {
-        background: rgba(0, 255, 255, 0.18);
+        background: var(--turquoise-tint-medium);
         border: var(--cell-gost-border);
     }
 }

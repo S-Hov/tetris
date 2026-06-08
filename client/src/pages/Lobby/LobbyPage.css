@@ -36,7 +36,7 @@
     content: '';
     position: absolute;
     inset: 1rem;
-    border: 1px solid rgba(0, 255, 255, 0.08);
+    border: 1px solid var(--turquoise-tint-soft);
     border-radius: var(--radius-panel);
     pointer-events: none;
 }
@@ -170,7 +170,7 @@
     min-height: 50px;
     padding: 0.9rem 1rem;
     border-radius: var(--radius-card-1);
-    border: 1px solid rgba(0, 255, 255, 0.16);
+    border: 1px solid var(--turquoise-tint-medium);
     background: var(--box-bg);
     color: var(--text-color-1);
     font-size: 1rem;
@@ -180,8 +180,8 @@
 }
 
 .lobby-field input:focus {
-    border-color: rgba(0, 255, 255, 0.4);
-    box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.12);
+    border-color: var(--turquoise-border-strong);
+    box-shadow: 0 0 0 3px var(--turquoise-tint-muted);
 }
 
 .lobby-primary-button,
@@ -272,7 +272,7 @@
     width: fit-content;
     padding: 0.35rem 0.65rem;
     border-radius: 999px;
-    background: rgba(0, 255, 255, 0.12);
+    background: var(--turquoise-tint-muted);
     color: var(--turquoise-lite);
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -331,8 +331,8 @@
 
 .lobby-settings-pill.is-active {
     color: var(--text-active-color);
-    background: rgba(0, 255, 255, 0.16);
-    box-shadow: inset 0 0 0 1px rgba(0, 255, 255, 0.12);
+    background: var(--turquoise-tint-medium);
+    box-shadow: inset 0 0 0 1px var(--turquoise-tint-muted);
 }
 
 .lobby-room-header {
@@ -410,10 +410,10 @@
     place-items: center;
     overflow: hidden;
     border-radius: 50%;
-    background: rgba(0, 255, 255, 0.1);
-    border: 1px solid rgba(0, 255, 255, 0.22);
+    background: var(--turquoise-tint-muted);
+    border: 1px solid var(--turquoise-border-soft);
     color: var(--turquoise-lite);
-    box-shadow: inset 0 0 18px rgba(0, 255, 255, 0.08);
+    box-shadow: inset 0 0 18px var(--turquoise-tint-soft);
 }
 
 .lobby-player-avatar img,
@@ -452,8 +452,8 @@
 .lobby-team-switcher button.is-active,
 .lobby-team-switcher button:disabled {
     color: var(--turquoise-lite);
-    border-color: rgba(0, 255, 255, 0.35);
-    background: rgba(0, 255, 255, 0.12);
+    border-color: var(--turquoise-border);
+    background: var(--turquoise-tint-muted);
     cursor: default;
 }
 
@@ -476,7 +476,7 @@
 }
 
 .lobby-ready-badge.is-ready {
-    background: rgba(0, 255, 255, 0.14);
+    background: var(--turquoise-tint-muted);
     color: var(--turquoise-lite);
 }
 

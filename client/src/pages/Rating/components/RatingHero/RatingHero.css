@@ -38,7 +38,7 @@
     align-items: center;
     padding: 0.42rem 0.72rem;
     margin-bottom: 0.8rem;
-    border: 1px solid rgba(38, 210, 255, 0.34);
+    border: 1px solid var(--turquoise-border);
     border-radius: 999px;
     background: rgba(8, 19, 45, 0.78);
     color: var(--turquoise-lite);
@@ -84,7 +84,7 @@
     color: var(--text-color-1);
     font-size: 1.32rem;
     line-height: 1;
-    text-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
+    text-shadow: 0 0 12px var(--turquoise-border-intense);
 }
 
 .rating-season {

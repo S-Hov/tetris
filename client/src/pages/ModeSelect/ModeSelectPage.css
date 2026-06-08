@@ -13,7 +13,7 @@
 
 .mode-playtype-nav {
     & .mode-playtype-nav__item {
-        border: 1px solid rgba(0, 229, 255, 0.08);
+        border: 1px solid var(--turquoise-tint-soft);
         cursor: pointer;
 
         & small {
@@ -64,7 +64,7 @@
     inset: 0;
     z-index: -1;
     background:
-        radial-gradient(circle at 18% 22%, rgba(0, 229, 255, 0.18), transparent 28%),
+        radial-gradient(circle at 18% 22%, var(--turquoise-tint-medium), transparent 28%),
         linear-gradient(180deg, transparent, rgba(2, 6, 18, 0.58));
     pointer-events: none;
 }
@@ -128,7 +128,7 @@
     gap: 10px;
     min-height: 46px;
     padding: 0 18px;
-    border: 1px solid rgba(0, 229, 255, 0.22);
+    border: 1px solid var(--turquoise-border-soft);
     border-radius: var(--radius-panel);
     background: rgba(5, 17, 44, 0.74);
     color: var(--text-active-color);
@@ -222,7 +222,7 @@
 
 .mode-setting-row input:focus {
     border-color: var(--turquoise-lite);
-    box-shadow: 0 0 0 3px rgba(25, 251, 255, 0.14);
+    box-shadow: 0 0 0 3px var(--turquoise-tint-muted);
 }
 
 .mode-select-summary {
@@ -274,7 +274,7 @@
 
 .mode-select-pill.is-active {
     color: var(--text-color-1);
-    background: rgba(0, 229, 255, 0.16);
+    background: var(--turquoise-tint-medium);
 }
 
 .mode-launch-panel__content,
@@ -288,9 +288,9 @@
     aspect-ratio: 1;
     display: grid;
     place-items: center;
-    border: 1px solid rgba(0, 229, 255, 0.26);
+    border: 1px solid var(--turquoise-border-soft);
     border-radius: var(--radius-panel);
-    background: rgba(0, 229, 255, 0.08);
+    background: var(--turquoise-tint-soft);
     color: var(--turquoise);
     font-size: 1.55rem;
     text-shadow: var(--text-shadow);
@@ -338,7 +338,7 @@
 
 .mode-secondary-button,
 .mode-table-action {
-    border: 1px solid rgba(0, 229, 255, 0.28);
+    border: 1px solid var(--turquoise-border);
     background: rgba(4, 14, 44, 0.7);
 }
 
@@ -370,15 +370,15 @@
     position: relative;
     display: grid;
     place-items: center;
-    border: 1px solid rgba(0, 255, 255, 0.24);
+    border: 1px solid var(--turquoise-border-soft);
     border-radius: 50%;
-    background: rgba(0, 255, 255, 0.08);
+    background: var(--turquoise-tint-soft);
     box-shadow: var(--revers-shadow);
 
     & span {
         position: absolute;
         inset: 8px;
-        border: 1px solid rgba(0, 255, 255, 0.35);
+        border: 1px solid var(--turquoise-border);
         border-radius: 50%;
         animation: matchmaking-pulse 1.7s ease-out infinite;
 
@@ -505,7 +505,7 @@
 
 .mode-table__row--head {
     min-height: 44px;
-    background: rgba(0, 229, 255, 0.08);
+    background: var(--turquoise-tint-soft);
     color: var(--turquoise-lite);
     font-size: 0.72rem;
     font-family: var(--font-1);
@@ -519,7 +519,7 @@
     align-items: center;
     padding: 0 10px;
     border-radius: 999px;
-    background: rgba(0, 229, 255, 0.12);
+    background: var(--turquoise-tint-muted);
     color: var(--text-color-1);
     font-size: 0.72rem;
     text-transform: uppercase;

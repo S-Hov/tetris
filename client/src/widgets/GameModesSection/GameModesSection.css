@@ -16,7 +16,7 @@
 }
 
 .home-modes h2 i {
-    color: #00f0ff;
+    color: var(--turquoise-bright);
     text-shadow: 0 0 14px rgba(178, 70, 255, 0.9);
 }
 
@@ -78,7 +78,7 @@
     left: 0;
     padding: 7px 16px;
     border-radius: 0 0 var(--radius-card) 0;
-    background: linear-gradient(90deg, #884dff, #42d7ff);
+    background: linear-gradient(90deg, #884dff, var(--turquoise-bright));
     color: #f9fbff;
     font-size: 0.64rem;
     font-weight: 900;

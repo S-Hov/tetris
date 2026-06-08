@@ -156,7 +156,7 @@
 
 .mobile-controls-page__field input {
     width: 100%;
-    accent-color: #00f0ff;
+    accent-color: var(--turquoise);
 }
 
 .mobile-controls-page__gesture-list {

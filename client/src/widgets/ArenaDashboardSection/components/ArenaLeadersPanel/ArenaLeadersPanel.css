@@ -65,13 +65,13 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    border: 1px solid rgba(0, 229, 255, 0.35);
+    border: 1px solid var(--turquoise-border);
     border-radius: var(--radius-card-2);
     color: #dce8ff;
-    background: rgba(0, 229, 255, 0.1);
+    background: var(--turquoise-tint-muted);
     font-size: 0.78rem;
     font-weight: 900;
-    box-shadow: inset 0 0 14px rgba(0, 229, 255, 0.12);
+    box-shadow: inset 0 0 14px var(--turquoise-tint-muted);
 }
 
 .arena-leader-row__avatar img,
@@ -116,7 +116,7 @@
 }
 
 .arena-panel-state i {
-    color: #40d8ff;
+    color: var(--turquoise-bright);
     font-size: 1.4rem;
 }
 

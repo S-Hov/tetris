@@ -14,7 +14,7 @@
         linear-gradient(90deg, rgba(4, 7, 24, 0.92) 0%, rgba(5, 8, 30, 0.72) 42%, rgba(5, 8, 30, 0.18) 100%),
         var(--support-bunner) center center / cover no-repeat,
         var(--surface-panel-bg);
-    box-shadow: 0 0 34px rgba(126, 58, 255, 0.32), inset 0 0 30px rgba(0, 229, 255, 0.12);
+    box-shadow: 0 0 34px rgba(126, 58, 255, 0.32), inset 0 0 30px var(--turquoise-tint-muted);
     isolation: isolate;
 }
 

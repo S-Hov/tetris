@@ -73,7 +73,7 @@
 }
 
 .account-login-method.is-connected {
-    border-color: rgba(0, 255, 255, 0.28);
+    border-color: var(--turquoise-border);
 }
 
 .account-login-method__icon {
@@ -84,7 +84,7 @@
     border: var(--border);
     border-radius: var(--radius-card-1);
     color: var(--turquoise);
-    background: rgba(0, 255, 255, 0.08);
+    background: var(--turquoise-tint-soft);
     font-size: 1.1rem;
 }
 

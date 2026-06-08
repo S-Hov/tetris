@@ -11,7 +11,7 @@
     font-family: var(--font-1);
     font-size: 1.35rem;
     font-weight: 900;
-    box-shadow: 0 0 22px rgba(0, 229, 255, 0.44);
+    box-shadow: 0 0 22px var(--turquoise-glow-strong);
     overflow: hidden;
 }
 

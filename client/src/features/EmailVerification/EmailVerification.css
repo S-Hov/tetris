@@ -44,7 +44,7 @@
 
 .verify-email-message--info {
     color: var(--turquoise-lite);
-    background: rgba(0, 255, 255, 0.1);
+    background: var(--turquoise-tint-muted);
 }
 
 .code-input-group {
@@ -82,7 +82,7 @@
     color: var(--text-active-color);
     outline: none;
     transition: var(--transition);
-    box-shadow: inset 0 0 12px rgba(0, 255, 255, 0.08);
+    box-shadow: inset 0 0 12px var(--turquoise-tint-soft);
 }
 
 .code-digit:focus {
@@ -106,7 +106,7 @@
     text-align: center;
     margin-top: 1.5rem;
     padding-top: 1rem;
-    border-top: 1px dashed rgba(0, 255, 255, 0.25);
+    border-top: 1px dashed var(--turquoise-border-soft);
 }
 
 .resend-text {
@@ -131,7 +131,7 @@
 }
 
 .resend-link:disabled {
-    color: rgba(204, 244, 255, 0.5);
+    color: color-mix(in srgb, var(--turquoise-lite) 50%, transparent);
     cursor: not-allowed;
 }
 

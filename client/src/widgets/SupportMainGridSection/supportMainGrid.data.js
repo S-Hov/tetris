@@ -23,9 +23,9 @@ export const contactItems = [
     },
     {
         titleKey: 'support.contacts.email',
-        text: 'support@pvptetris.com',
+        text: 'support.pvptetris@gmail.com',
         icon: 'fa-solid fa-envelope',
-        href: 'mailto:support@pvptetris.com',
+        href: 'mailto:support.pvptetris@gmail.com',
     },
 ]
 

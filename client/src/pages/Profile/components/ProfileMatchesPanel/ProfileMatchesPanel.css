@@ -69,7 +69,7 @@
 }
 
 .profile-empty i {
-    color: #40d8ff;
+    color: var(--turquoise-bright);
     font-size: 1.4rem;
 }
 

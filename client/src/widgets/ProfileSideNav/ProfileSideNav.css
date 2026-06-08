@@ -16,10 +16,10 @@
     display: grid;
     gap: 10px;
     padding: 10px;
-    border: 1px solid rgba(0, 229, 255, 0.18);
+    border: var(--border);
     border-radius: var(--radius-panel);
     background: var(--box-bg);
-    box-shadow: 0 0 26px rgba(0, 229, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow: var(--shadow);
     backdrop-filter: var(--medium-blur);
 
     & .profile-sidebar__item {

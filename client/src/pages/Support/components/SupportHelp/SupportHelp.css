@@ -47,10 +47,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--card-border, rgba(0, 229, 255, 0.24));
+    border: 1px solid var(--card-border, var(--turquoise-border-soft));
     border-radius: var(--radius-card-1);
     color: var(--card-color, var(--turquoise));
-    background: var(--card-bg, rgba(0, 229, 255, 0.08));
+    background: var(--card-bg, var(--turquoise-tint-soft));
     font-size: 1.35rem;
     text-shadow: 0 0 14px currentColor;
 }
@@ -62,9 +62,9 @@
 }
 
 .support-card--cyan {
-    --card-color: #20d8ff;
-    --card-bg: rgba(32, 216, 255, 0.1);
-    --card-border: rgba(32, 216, 255, 0.28);
+    --card-color: var(--turquoise-bright);
+    --card-bg: var(--turquoise-tint-muted);
+    --card-border: var(--turquoise-border);
 }
 
 .support-card--violet {

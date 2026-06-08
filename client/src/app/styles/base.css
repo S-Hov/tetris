@@ -54,7 +54,7 @@ main {
 .mobile-controls-link:hover,
 .mobile-controls-link:focus-visible {
     transform: translateY(-1px);
-    border-color: rgba(0, 255, 255, 0.4);
+    border-color: var(--turquoise-border-strong);
     box-shadow: var(--hover-shadow);
     outline: none;
 }

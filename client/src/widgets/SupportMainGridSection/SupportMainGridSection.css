@@ -123,9 +123,9 @@
 }
 
 .support-channel-option:has(input:checked) {
-    border-color: rgba(0, 229, 255, 0.58);
-    background: linear-gradient(90deg, rgba(0, 229, 255, 0.12), rgba(194, 77, 255, 0.12));
-    box-shadow: 0 0 22px rgba(0, 229, 255, 0.12);
+    border-color: var(--turquoise-border-intense);
+    background: linear-gradient(90deg, var(--turquoise-tint-muted), rgba(194, 77, 255, 0.12));
+    box-shadow: 0 0 22px var(--turquoise-tint-muted);
 }
 
 .support-channel-option input {
@@ -312,13 +312,13 @@
 .support-outline-button:hover {
     transform: translateY(-2px);
     border-color: var(--turquoise);
-    background: rgba(0, 229, 255, 0.1);
+    background: var(--turquoise-tint-muted);
 }
 
 .support-faq-link[aria-expanded="true"] {
-    border-color: rgba(0, 229, 255, 0.38);
+    border-color: var(--turquoise-border-strong);
     border-radius: 10px 10px 0 0;
-    background: rgba(0, 229, 255, 0.1);
+    background: var(--turquoise-tint-muted);
 }
 
 .support-faq-link[aria-expanded="true"] i:last-child {
@@ -334,7 +334,7 @@
 
 .support-contact-link {
     min-height: 70px;
-    background: linear-gradient(90deg, rgba(0, 229, 255, 0.08), rgba(194, 77, 255, 0.12));
+    background: linear-gradient(90deg, var(--turquoise-tint-soft), rgba(194, 77, 255, 0.12));
 }
 
 .support-contact-link>i:first-child {
@@ -345,7 +345,7 @@
     flex: 0 0 auto;
     border-radius: var(--radius-card-1);
     color: var(--turquoise);
-    background: rgba(0, 229, 255, 0.1);
+    background: var(--turquoise-tint-muted);
     text-shadow: var(--text-shadow);
 }
 

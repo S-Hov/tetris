@@ -1,6 +1,6 @@
 :root,
 :root[data-theme="dark"] {
-    --account-settings-tab-bg: #00ffff24;
+    --account-settings-tab-bg: var(--turquoise-tint-muted);
 }
 
 :root[data-theme="light"] {

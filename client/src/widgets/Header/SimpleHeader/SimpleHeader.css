@@ -3,7 +3,7 @@
     inset: 0;
     border-radius: 60px;
     padding: 2px;
-    background: linear-gradient(90deg, #00ffff, #ff00cc, #ffaa00, #00ffff);
+    background: linear-gradient(90deg, var(--turquoise), #ff00cc, #ffaa00, var(--turquoise));
     background-size: 300% 300%;
     animation: borderFlow 6s ease infinite;
     opacity: 0.7;

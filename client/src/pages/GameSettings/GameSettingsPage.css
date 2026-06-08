@@ -122,7 +122,7 @@
     place-items: center;
     border: var(--border);
     border-radius: var(--radius-card-1);
-    background: rgba(0, 255, 255, 0.08);
+    background: var(--turquoise-tint-soft);
     color: var(--turquoise);
     font-size: 1.2rem;
 }

@@ -84,7 +84,7 @@
 }
 
 .support-request-item:hover .support-request-item__content {
-    border-color: rgba(0, 255, 255, 0.35);
+    border-color: var(--turquoise-border);
     transform: translateY(-2px);
 }
 
@@ -121,7 +121,7 @@
     padding: 0.45rem 0.75rem;
     border: var(--border);
     border-radius: 999px;
-    background: rgba(0, 255, 255, 0.08);
+    background: var(--turquoise-tint-soft);
     color: var(--turquoise-lite);
     font-size: 0.78rem;
     font-weight: 700;

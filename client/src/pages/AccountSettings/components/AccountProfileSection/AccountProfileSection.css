@@ -113,7 +113,7 @@
     gap: 0.2rem;
     margin-top: 0.4rem;
     padding-top: 1rem;
-    border-top: 1px dashed rgba(0, 255, 255, 0.25);
+    border-top: 1px dashed var(--turquoise-border-soft);
 }
 
 .account-info-row {
@@ -122,7 +122,7 @@
     align-items: center;
     gap: 1rem;
     padding: 0.85rem 0;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.14);
+    border-bottom: 1px solid var(--turquoise-tint-muted);
 }
 
 .account-info-row:last-child {
@@ -145,7 +145,7 @@
     border: var(--border);
     border-radius: var(--radius-card-1);
     color: var(--turquoise-lite);
-    background: rgba(0, 255, 255, 0.08);
+    background: var(--turquoise-tint-soft);
     cursor: pointer;
     transition: var(--transition);
 }

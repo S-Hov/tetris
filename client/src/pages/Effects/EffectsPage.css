@@ -96,7 +96,7 @@
     border-radius: var(--radius-card-1);
     background:
         radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.2), transparent 28%),
-        linear-gradient(135deg, rgba(0, 255, 255, 0.22), rgba(255, 58, 212, 0.18));
+        linear-gradient(135deg, var(--turquoise-border-soft), rgba(255, 58, 212, 0.18));
     overflow: hidden;
 }
 
@@ -109,7 +109,7 @@
 .effect-card__media i {
     color: var(--text-active-color);
     font-size: clamp(2rem, 6vw, 5rem);
-    text-shadow: 0 0 24px rgba(0, 255, 255, 0.45);
+    text-shadow: 0 0 24px var(--turquoise-glow-strong);
 }
 
 .effect-card__media--darkness {
@@ -121,7 +121,7 @@
 }
 
 .effect-card__media--speed {
-    background: linear-gradient(135deg, rgba(0, 255, 255, 0.34), rgba(31, 84, 255, 0.2));
+    background: linear-gradient(135deg, var(--turquoise-border), rgba(31, 84, 255, 0.2));
 }
 
 .effect-card__body {

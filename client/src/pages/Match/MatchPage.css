@@ -62,7 +62,7 @@
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 50% 38%, rgba(0, 255, 255, 0.18), transparent 32%),
+        radial-gradient(circle at 50% 38%, var(--turquoise-tint-medium), transparent 32%),
         rgba(3, 5, 11, 0.76);
     backdrop-filter: var(--medium-blur);
 }
@@ -209,7 +209,7 @@
     opacity: 1;
     border-color: rgba(83, 245, 255, 0.55);
     box-shadow:
-        0 0 22px rgba(0, 240, 255, 0.25),
+        0 0 22px var(--turquoise-border-soft),
         0 0 70px rgba(83, 245, 255, 0.12);
 }
 

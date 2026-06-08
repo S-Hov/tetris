@@ -83,7 +83,7 @@
 
     &:hover {
         transform: scale(1.02);
-        box-shadow: 0 0 25px cyan;
+        box-shadow: 0 0 25px var(--turquoise);
         filter: brightness(1.05);
 
         & i {

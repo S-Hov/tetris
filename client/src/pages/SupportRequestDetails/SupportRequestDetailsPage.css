@@ -72,7 +72,7 @@
     padding: 0.55rem 0.85rem;
     border: var(--border);
     border-radius: 999px;
-    background: rgba(0, 255, 255, 0.08);
+    background: var(--turquoise-tint-soft);
     color: var(--turquoise-lite);
     font-weight: 700;
 }
@@ -172,7 +172,7 @@
 
 .support-request-message--admin,
 .support-request-message--system {  
-    background: rgba(0, 255, 255, 0.08);
+    background: var(--turquoise-tint-soft);
 }
 
 .support-request-message--client{

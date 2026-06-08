@@ -28,8 +28,8 @@
         top: -50%;
         left: -50%;
         background-image:
-            linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            linear-gradient(var(--turquoise-tint-faint) 1px, transparent 1px),
+            linear-gradient(90deg, var(--turquoise-tint-faint) 1px, transparent 1px);
         background-size: 50px 50px;
         animation: gridMove 10s linear infinite;
         transform: rotateX(45deg) rotateZ(15deg);
@@ -42,8 +42,8 @@
     --mosaic-left-edge: rgba(231, 80, 255, 0.22);
     --mosaic-left-glow: rgba(184, 63, 255, 0.24);
     --mosaic-right-color: rgba(44, 207, 255, 0.16);
-    --mosaic-right-edge: rgba(0, 255, 255, 0.2);
-    --mosaic-right-glow: rgba(0, 255, 255, 0.18);
+    --mosaic-right-edge: var(--turquoise-tint-medium);
+    --mosaic-right-glow: var(--turquoise-tint-medium);
     --mosaic-cell-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
@@ -184,7 +184,7 @@
     &.orb2 {
         width: 35vw;
         height: 35vw;
-        background: #00ffff50;
+        background: var(--turquoise-border);
         bottom: -15vh;
         right: -5vw;
         animation-duration: 18s;
