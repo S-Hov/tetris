@@ -23,6 +23,22 @@ export const TOUCH_GESTURES = {
     DOUBLE_TAP: 'doubleTap',
 }
 
+export const MOBILE_BUTTON_IDS = {
+    MOVE_LEFT: 'moveLeft',
+    MOVE_RIGHT: 'moveRight',
+    SOFT_DROP: 'softDrop',
+    ROTATE: 'rotate',
+    HARD_DROP: 'hardDrop',
+}
+
+export const MOBILE_BUTTON_ORDER = [
+    MOBILE_BUTTON_IDS.MOVE_LEFT,
+    MOBILE_BUTTON_IDS.MOVE_RIGHT,
+    MOBILE_BUTTON_IDS.SOFT_DROP,
+    MOBILE_BUTTON_IDS.ROTATE,
+    MOBILE_BUTTON_IDS.HARD_DROP,
+]
+
 export const TOUCH_ACTION_LABELS = {
     [TOUCH_ACTIONS.NONE]: 'Без действия',
     [TOUCH_ACTIONS.MOVE_LEFT]: 'Движение влево',
@@ -41,9 +57,55 @@ export const TOUCH_GESTURE_LABELS = {
     [TOUCH_GESTURES.DOUBLE_TAP]: 'Двойное касание',
 }
 
+export const MOBILE_BUTTON_LABELS = {
+    [MOBILE_BUTTON_IDS.MOVE_LEFT]: 'Left',
+    [MOBILE_BUTTON_IDS.MOVE_RIGHT]: 'Right',
+    [MOBILE_BUTTON_IDS.SOFT_DROP]: 'Down',
+    [MOBILE_BUTTON_IDS.ROTATE]: 'Rotate',
+    [MOBILE_BUTTON_IDS.HARD_DROP]: 'Drop',
+}
+
+export const DEFAULT_MOBILE_BUTTON_LAYOUT = {
+    [MOBILE_BUTTON_IDS.MOVE_LEFT]: {
+        action: TOUCH_ACTIONS.MOVE_LEFT,
+        label: '<',
+        x: 14,
+        y: 92,
+        size: 50,
+    },
+    [MOBILE_BUTTON_IDS.MOVE_RIGHT]: {
+        action: TOUCH_ACTIONS.MOVE_RIGHT,
+        label: '>',
+        x: 35,
+        y: 92,
+        size: 50,
+    },
+    [MOBILE_BUTTON_IDS.SOFT_DROP]: {
+        action: TOUCH_ACTIONS.SOFT_DROP,
+        label: 'v',
+        x: 24,
+        y: 82,
+        size: 50,
+    },
+    [MOBILE_BUTTON_IDS.ROTATE]: {
+        action: TOUCH_ACTIONS.ROTATE,
+        label: 'R',
+        x: 69,
+        y: 82,
+        size: 62,
+    },
+    [MOBILE_BUTTON_IDS.HARD_DROP]: {
+        action: TOUCH_ACTIONS.HARD_DROP,
+        label: 'DROP',
+        x: 86,
+        y: 92,
+        size: 62,
+    },
+}
+
 export const DEFAULT_MOBILE_CONTROL_SETTINGS = {
     description: 'PVP Tetris mobile control settings. Gestures are enabled by default for touch screens.',
-    method: MOBILE_CONTROL_METHODS.GESTURES,
+    method: MOBILE_CONTROL_METHODS.BUTTONS,
     sensitivity: {
         minSwipe: 24,
         repeatStep: 32,
@@ -58,7 +120,22 @@ export const DEFAULT_MOBILE_CONTROL_SETTINGS = {
         [TOUCH_GESTURES.TAP]: TOUCH_ACTIONS.ROTATE,
         [TOUCH_GESTURES.DOUBLE_TAP]: TOUCH_ACTIONS.HARD_DROP,
     },
+    buttonControls: {
+        opacity: 91,
+        layout: DEFAULT_MOBILE_BUTTON_LAYOUT,
+    },
 }
+
+const normalizeMobileButtonLayout = (layout = {}) => (
+    MOBILE_BUTTON_ORDER.reduce((normalizedLayout, buttonId) => {
+        normalizedLayout[buttonId] = {
+            ...DEFAULT_MOBILE_BUTTON_LAYOUT[buttonId],
+            ...(layout[buttonId] || {}),
+        }
+
+        return normalizedLayout
+    }, {})
+)
 
 export const normalizeMobileControlSettings = (settings = {}) => ({
     ...DEFAULT_MOBILE_CONTROL_SETTINGS,
@@ -70,6 +147,11 @@ export const normalizeMobileControlSettings = (settings = {}) => ({
     gestureActions: {
         ...DEFAULT_MOBILE_CONTROL_SETTINGS.gestureActions,
         ...(settings.gestureActions || {}),
+    },
+    buttonControls: {
+        ...DEFAULT_MOBILE_CONTROL_SETTINGS.buttonControls,
+        ...(settings.buttonControls || {}),
+        layout: normalizeMobileButtonLayout(settings.buttonControls?.layout),
     },
 })
 

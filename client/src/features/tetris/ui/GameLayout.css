@@ -222,6 +222,10 @@
     margin-right: 5px;
 }
 
+.game-actions-panel__button--mobile-only {
+    display: none;
+}
+
 .solo-debuff-panel {
     display: flex;
     flex-direction: column;
@@ -1335,9 +1339,15 @@
 @media (max-width: 620px) {
     .game-layout--solo .game-layout__container,
     .game-layout--versus .game-layout__container {
-        --game-board-width: min(88vw, calc((100dvh - 178px) / 2), 320px);
-        --game-sidebar-width: var(--game-board-width);
-        --next-piece-cell-size: clamp(11px, calc(var(--game-board-width) / 22), 15px);
+        --mobile-side-width: clamp(52px, 15vw, 68px);
+        --mobile-stage-gap: 6px;
+        --game-board-width: min(
+            calc(100vw - (var(--mobile-side-width) * 2) - (var(--mobile-stage-gap) * 2) - 16px),
+            calc((100dvh - 118px) / 2),
+            320px
+        );
+        --game-sidebar-width: var(--mobile-side-width);
+        --next-piece-cell-size: clamp(8px, calc(var(--mobile-side-width) / 5.6), 12px);
         height: 100%;
         padding: max(6px, env(safe-area-inset-top)) 8px max(6px, env(safe-area-inset-bottom));
         overflow: hidden;
@@ -1349,7 +1359,7 @@
     }
 
     .game-layout__header {
-        width: min(94vw, 340px);
+        width: min(94vw, 100%);
         display: grid;
         gap: 0;
         justify-content: stretch;
@@ -1426,19 +1436,22 @@
     }
 
     .game-layout__stage {
-        flex-direction: column;
-        align-items: center;
-        gap: 6px;
+        display: grid;
+        grid-template-columns: var(--mobile-side-width) var(--game-board-width) var(--mobile-side-width);
+        align-items: start;
+        justify-content: center;
+        gap: var(--mobile-stage-gap);
         min-height: 0;
     }
 
+    .game-layout__board-shell {
+        grid-column: 2;
+        grid-row: 1 / span 4;
+        justify-self: center;
+    }
+
     .game-layout__sidebar {
-        width: var(--game-sidebar-width);
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        grid-auto-rows: min-content;
-        align-items: stretch;
-        gap: 6px;
+        display: contents;
     }
 
     .game-layout__sidebar > .game-stats-panel {
@@ -1446,11 +1459,18 @@
     }
 
     .game-layout__sidebar .game-actions-panel {
-        grid-column: 1 / -1;
+        grid-column: 1;
+        grid-row: 1;
     }
 
     .game-layout__sidebar .solo-debuff-panel {
-        grid-column: auto;
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .game-layout__sidebar .game-next-piece-panel {
+        grid-column: 3;
+        grid-row: 1;
     }
 
     .game-energy-panel {
@@ -1474,14 +1494,17 @@
     }
 
     .game-panel {
-        padding: 6px;
+        width: 100%;
+        min-width: 0;
+        padding: 5px;
         border-radius: var(--radius-card-1);
     }
 
     .game-next-piece-panel {
         min-height: 0;
-        height: 70px;
+        height: var(--mobile-side-width);
         gap: 0;
+        justify-self: stretch;
     }
 
     .game-panel__title {
@@ -1497,12 +1520,16 @@
     }
 
     .solo-debuff-panel {
-        height: 70px;
-        justify-content: center;
-        gap: 6px;
+        height: calc((var(--game-board-width) * 2) - (var(--mobile-side-width) * 3) - 18px);
+        min-height: 0;
+        justify-content: start;
+        align-items: center;
+        gap: 7px;
+        justify-self: stretch;
     }
 
     .solo-debuff-panel__header {
+        width: 100%;
         justify-content: center;
     }
 
@@ -1512,22 +1539,63 @@
     }
 
     .solo-debuff-panel__header strong {
-        font-size: 1.25rem;
+        font-size: 1.18rem;
         text-align: center;
     }
 
     .solo-debuff-panel__progress {
-        height: 6px;
+        width: 8px;
+        flex: 1;
+        min-height: 42px;
+        height: auto;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .solo-debuff-panel__progress span {
+        width: 100% !important;
+        height: calc(var(--debuff-progress, 0) * 100%);
     }
 
     .game-actions-panel {
+        width: var(--mobile-side-width);
+        display: grid;
+        grid-template-columns: 1fr;
         gap: 6px;
+        justify-self: stretch;
     }
 
     .game-actions-panel__button {
-        min-height: 34px;
-        padding: 0.42rem 0.5rem;
-        font-size: 0.72rem;
+        width: var(--mobile-side-width);
+        min-height: var(--mobile-side-width);
+        padding: 0;
+        display: grid;
+        place-items: center;
+        align-items: center;
+        justify-content: center;
+        font-size: 0;
+        border-radius: var(--radius-card-1);
+        aspect-ratio: 1;
+        border: 2px solid var(--turquoise);
+        box-shadow: var(--lite-shadow);
+    }
+
+    .game-actions-panel__button--mobile-only {
+        display: grid;
+    }
+
+    .game-actions-panel__button i {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .game-actions-panel__button span {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
     }
 
     .game-stats-panel__row {

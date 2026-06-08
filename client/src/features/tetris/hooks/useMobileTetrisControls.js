@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import {
     MOBILE_CONTROL_METHODS,
@@ -50,9 +50,41 @@ export const useMobileTetrisControls = ({
         disabledRef.current = disabled
     }, [disabled])
 
+    const settings = useMemo(() => loadMobileControlSettings(), [])
+    const runAction = useCallback((action) => {
+        const tetrisAction = getActionCode(action)
+
+        if (!tetrisAction) {
+            return
+        }
+
+        setGameState((prevState) => {
+            const state = withDerivedState(prevState)
+
+            if (
+                disabledRef.current ||
+                state.isClearing ||
+                state.isGameOver ||
+                state.isPaused ||
+                state.isChoosingAbility
+            ) {
+                return prevState
+            }
+
+            if (hasEffect(state, EFFECT_TYPES.DELAY_INPUT)) {
+                setTimeout(() => {
+                    setGameState((latestState) => applyTetrisAction(latestState, tetrisAction, { randomPiece }))
+                }, 150)
+
+                return prevState
+            }
+
+            return applyTetrisAction(prevState, tetrisAction, { randomPiece })
+        })
+    }, [randomPiece, setGameState])
+
     useEffect(() => {
         const target = targetRef?.current
-        const settings = loadMobileControlSettings()
 
         if (!target || !getTouchPointsSupported() || settings.method !== MOBILE_CONTROL_METHODS.GESTURES) {
             return undefined
@@ -65,38 +97,6 @@ export const useMobileTetrisControls = ({
         let consumedX = 0
         let consumedY = 0
         let hasMoved = false
-
-        const runAction = (action) => {
-            const tetrisAction = getActionCode(action)
-
-            if (!tetrisAction) {
-                return
-            }
-
-            setGameState((prevState) => {
-                const state = withDerivedState(prevState)
-
-                if (
-                    disabledRef.current ||
-                    state.isClearing ||
-                    state.isGameOver ||
-                    state.isPaused ||
-                    state.isChoosingAbility
-                ) {
-                    return prevState
-                }
-
-                if (hasEffect(state, EFFECT_TYPES.DELAY_INPUT)) {
-                    setTimeout(() => {
-                        setGameState((latestState) => applyTetrisAction(latestState, tetrisAction, { randomPiece }))
-                    }, 150)
-
-                    return prevState
-                }
-
-                return applyTetrisAction(prevState, tetrisAction, { randomPiece })
-            })
-        }
 
         const runGesture = (gesture) => runAction(settings.gestureActions[gesture])
 
@@ -231,5 +231,11 @@ export const useMobileTetrisControls = ({
             target.removeEventListener('pointerup', handlePointerUp)
             target.removeEventListener('pointercancel', handlePointerCancel)
         }
-    }, [randomPiece, setGameState, targetRef])
+    }, [runAction, settings, targetRef])
+
+    return {
+        isButtonsEnabled: getTouchPointsSupported() && settings.method === MOBILE_CONTROL_METHODS.BUTTONS,
+        runAction,
+        settings,
+    }
 }

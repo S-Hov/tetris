@@ -47,10 +47,39 @@
       "methodTitle": "Control method",
       "gestures": "Gestures",
       "buttons": "Buttons",
-      "buttonsDescription": "Button controls will be added later.",
-      "buttonsNote": "Button mode is already saved, but in-game buttons have not been added yet.",
+      "buttonsDescription": "On-screen buttons with editable position and size.",
+      "buttonsNote": "Button controls are enabled in the game on touch screens.",
+      "buttonsPreviewTitle": "Button preview",
+      "buttonsLayoutTitle": "Button layout",
+      "selectedButtonTitle": "Selected button",
+      "showAdvancedSettings": "Show alternative settings",
+      "hideAdvancedSettings": "Hide alternative settings",
+      "dragHint": "Tap a button to select it, then drag it around the preview.",
+      "selectButtonHint": "Select a button on the preview to open its settings.",
+      "screenSize": "Preview uses your screen proportions: {{width}} × {{height}}",
       "sensitivityTitle": "Sensitivity",
       "gesturesTitle": "Gesture bindings",
+      "sensitivityFields": {
+        "minSwipe": "Minimum swipe",
+        "repeatStep": "Repeat step",
+        "tapMaxTime": "Maximum tap time",
+        "tapMaxMove": "Maximum tap movement"
+      },
+      "buttonFields": {
+        "opacity": "Button opacity",
+        "x": "Horizontal position",
+        "y": "Vertical position",
+        "size": "Button size",
+        "label": "Button label",
+        "action": "Button action"
+      },
+      "buttonNames": {
+        "moveLeft": "Move left",
+        "moveRight": "Move right",
+        "softDrop": "Soft drop",
+        "rotate": "Rotate",
+        "hardDrop": "Hard drop"
+      },
       "actions": {
         "none": "No action",
         "moveLeft": "Move left",

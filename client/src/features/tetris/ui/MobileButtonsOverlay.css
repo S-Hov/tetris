@@ -1,0 +1,55 @@
+.mobile-buttons-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 42;
+    pointer-events: none;
+}
+
+.mobile-buttons-overlay__button {
+    position: absolute;
+    left: var(--button-x);
+    top: var(--button-y);
+    width: var(--button-size);
+    height: var(--button-size);
+    translate: -50% -50%;
+    display: inline-grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.24), transparent 34%),
+        rgba(13, 20, 33, var(--mobile-buttons-opacity));
+    color: #ffffff;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38), inset 0 0 18px rgba(45, 228, 255, 0.2);
+    font-family: var(--font-1);
+    font-size: clamp(0.78rem, 3.2vw, 1.2rem);
+    font-weight: 900;
+    letter-spacing: 0;
+    pointer-events: auto;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.mobile-buttons-overlay__button span {
+    max-width: 92%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mobile-buttons-overlay__button:active {
+    scale: 0.94;
+    border-color: rgba(45, 228, 255, 0.7);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42), inset 0 0 22px rgba(45, 228, 255, 0.42);
+}
+
+.mobile-buttons-overlay__button:disabled {
+    opacity: 0.42;
+}
+
+@media (min-width: 900px) {
+    .mobile-buttons-overlay {
+        display: none;
+    }
+}

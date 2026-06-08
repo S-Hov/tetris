@@ -159,6 +159,10 @@
     accent-color: var(--turquoise);
 }
 
+.mobile-controls-page__field--opacity {
+    margin-top: 14px;
+}
+
 .mobile-controls-page__gesture-list {
     display: grid;
     gap: 10px;
@@ -169,6 +173,163 @@
     grid-template-columns: minmax(140px, 0.7fr) minmax(160px, 1fr);
     align-items: center;
     gap: 12px;
+}
+
+.mobile-controls-page__phone-preview {
+    position: relative;
+    width: min(100%, var(--mobile-preview-width), 390px);
+    margin: 0 auto;
+    overflow: hidden;
+    border: var(--border);
+    border-radius: 26px;
+    background:
+        linear-gradient(180deg, rgba(18, 26, 43, 0.88), rgba(6, 12, 22, 0.96)),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 28px);
+    box-shadow: inset 0 0 42px rgba(0, 0, 0, 0.46), var(--lite-shadow);
+}
+
+.mobile-controls-page__phone-preview::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 8px;
+    width: 76px;
+    height: 18px;
+    translate: -50% 0;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.36);
+}
+
+.mobile-controls-page__phone-preview::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 18%;
+    width: 38%;
+    height: 48%;
+    translate: -50% 0;
+    border: 1px solid rgba(45, 228, 255, 0.18);
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.mobile-controls-page__preview-button {
+    position: absolute;
+    left: var(--button-x);
+    top: var(--button-y);
+    z-index: 1;
+    width: var(--button-size);
+    height: var(--button-size);
+    translate: -50% -50%;
+    display: inline-grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 50%;
+    background: rgba(13, 20, 33, var(--mobile-preview-opacity));
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-weight: 900;
+    letter-spacing: 0;
+    box-shadow: inset 0 0 18px rgba(45, 228, 255, 0.22);
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.mobile-controls-page__preview-button:active {
+    cursor: grabbing;
+}
+
+.mobile-controls-page__preview-button--active {
+    border-color: rgba(45, 228, 255, 0.82);
+    color: var(--text-active-color);
+    box-shadow:
+        0 0 0 4px rgba(45, 228, 255, 0.16),
+        inset 0 0 22px rgba(45, 228, 255, 0.34);
+}
+
+.mobile-controls-page__preview-meta {
+    margin: 12px 0 0;
+    color: var(--description-color);
+    font-size: 0.82rem;
+    text-align: center;
+}
+
+.mobile-controls-page__selected-card {
+    display: grid;
+    gap: 12px;
+    padding: 14px;
+    border: var(--border);
+    border-radius: var(--radius-card-1);
+    background: var(--elem-bg);
+}
+
+.mobile-controls-page__advanced-toggle {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 12px;
+    display: inline-grid;
+    place-items: center;
+    border: var(--border);
+    border-radius: var(--radius-card-1);
+    background: var(--input-bg);
+    color: var(--text-color-1);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.mobile-controls-page__advanced-toggle:hover,
+.mobile-controls-page__advanced-toggle:focus-visible {
+    background: var(--hover-bg);
+    color: var(--text-active-color);
+    outline: none;
+}
+
+.mobile-controls-page__button-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.mobile-controls-page__button-card {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+    padding: 14px;
+    border: var(--border);
+    border-radius: var(--radius-card-1);
+    background: var(--elem-bg);
+}
+
+.mobile-controls-page__button-card-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(56px, 86px);
+    align-items: center;
+    gap: 10px;
+}
+
+.mobile-controls-page__button-card-header strong {
+    color: var(--text-color);
+    font-size: 0.92rem;
+}
+
+.mobile-controls-page__button-card-header input {
+    width: 100%;
+    min-height: 36px;
+    border: var(--border);
+    border-radius: var(--radius-card-1);
+    background: var(--input-bg);
+    color: var(--text-color-1);
+    font: inherit;
+    font-weight: 800;
+    text-align: center;
+}
+
+.mobile-controls-page__button-fields {
+    display: grid;
+    gap: 10px;
 }
 
 @media (max-width: 700px) {
@@ -188,5 +349,9 @@
     .mobile-controls-page__reset {
         grid-column: 1 / -1;
         justify-self: stretch;
+    }
+
+    .mobile-controls-page__button-list {
+        grid-template-columns: 1fr;
     }
 }

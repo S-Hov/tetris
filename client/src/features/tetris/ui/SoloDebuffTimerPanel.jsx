@@ -13,6 +13,7 @@ const SoloDebuffTimerPanel = ({
             <div
                 className="solo-debuff-panel__progress"
                 aria-hidden="true"
+                style={{ '--debuff-progress': Math.min(Math.max(progress, 0), 1) }}
             >
                 <span style={{ width: `${Math.min(Math.max(progress, 0), 1) * 100}%` }} />
             </div>

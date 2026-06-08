@@ -27,6 +27,7 @@ import EnergyPanel from '@/features/tetris/ui/EnergyPanel.jsx'
 import GameCountdownOverlay from '@/features/tetris/ui/GameCountdownOverlay.jsx'
 import GameLayout from '@/features/tetris/ui/GameLayout.jsx'
 import MatchResultBanner from '@/features/tetris/ui/MatchResultBanner.jsx'
+import MobileButtonsOverlay from '@/features/tetris/ui/MobileButtonsOverlay.jsx'
 import NextPiecePanel from '@/features/tetris/ui/NextPiecePanel.jsx'
 import PlayerSummaryPanel from '@/features/tetris/ui/PlayerSummaryPanel.jsx'
 import SoloDebuffTimerPanel from '@/features/tetris/ui/SoloDebuffTimerPanel.jsx'
@@ -241,7 +242,7 @@ const MatchPageGame = ({
         randomPiece: randomPieceGenerator,
         setGameState,
     })
-    useMobileTetrisControls({
+    const mobileControls = useMobileTetrisControls({
         disabled: isIntroVisible || isMatchFinished || isCountingDown || Boolean(targetChoice),
         randomPiece: randomPieceGenerator,
         setGameState,
@@ -515,6 +516,13 @@ const MatchPageGame = ({
             label: 'Restart',
             onClick: handleRestart,
         },
+        {
+            key: 'controls',
+            icon: 'fa-gear',
+            label: 'Controls',
+            mobileOnly: true,
+            onClick: () => navigate(getLocalizedGamePath('/game/controls')),
+        },
     ] : []
 
     const sidebar = (
@@ -664,15 +672,12 @@ const MatchPageGame = ({
             {shouldShowCountdown ? <GameCountdownOverlay value={countdownValue} /> : null}
             {onlineResultOverlay}
             {soloResultOverlay}
-            {derivedState.isPaused ? (
-                <Link
-                    className="mobile-controls-link mobile-controls-link--match"
-                    to={getLocalizedGamePath('/game/controls')}
-                    aria-label="Mobile control settings"
-                >
-                    <i className="fas fa-gear"></i>
-                </Link>
-            ) : null}
+            <MobileButtonsOverlay
+                controls={mobileControls.settings.buttonControls}
+                disabled={isIntroVisible || isMatchFinished || isCountingDown || Boolean(targetChoice)}
+                onAction={mobileControls.runAction}
+                visible={mobileControls.isButtonsEnabled}
+            />
         </>
     )
 

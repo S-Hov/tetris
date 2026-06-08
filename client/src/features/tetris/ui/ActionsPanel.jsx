@@ -1,3 +1,5 @@
+const joinClassNames = (...classNames) => classNames.filter(Boolean).join(' ')
+
 const ActionsPanel = ({ actions }) => {
     return (
         <section className="game-actions-panel">
@@ -5,13 +7,17 @@ const ActionsPanel = ({ actions }) => {
                 <button
                     key={action.key}
                     type="button"
-                    className="game-actions-panel__button action-item button"
+                    className={joinClassNames(
+                        'game-actions-panel__button action-item button',
+                        action.mobileOnly ? 'game-actions-panel__button--mobile-only' : ''
+                    )}
                     onClick={action.onClick}
                     disabled={action.disabled}
                     aria-pressed={action.pressed}
+                    aria-label={action.label}
                 >
                     {action.icon ? <i className={`fa-solid ${action.icon}`}></i> : null}
-                    {action.label}
+                    <span>{action.label}</span>
                 </button>
             ))}
         </section>
