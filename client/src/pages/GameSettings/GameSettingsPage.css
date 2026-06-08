@@ -184,6 +184,24 @@
     flex: 0 0 120px;
 }
 
+@media (max-width: 1060px) {
+    .section{
+        padding-top: 0;
+    }
+
+    .profile-sidebar{
+        top: 3px;
+    }
+
+    .game-settings-sidebar {
+        & .profile-sidebar__item {
+            & small {
+                display: none;
+            }
+        }
+    }
+}
+
 @media (max-width: 760px) {
     .game-settings-page__cards {
         grid-template-columns: 1fr;
@@ -191,6 +209,26 @@
 
     .game-settings-page__card {
         grid-template-columns: 46px minmax(0, 1fr) auto;
+    }
+}
+
+
+@media (max-width: 560px) {
+    .game-settings-sidebar {
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        backdrop-filter: none;
+        position: relative;
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .game-settings-sidebar {
+        & .profile-sidebar__item {
+            border: var(--border);
+            box-shadow: var(--shadow);
+            backdrop-filter: var(--medium-blur);
+        }
     }
 }
 
