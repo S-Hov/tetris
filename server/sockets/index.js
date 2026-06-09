@@ -59,6 +59,12 @@ export const registerSocketHandlers = (io) => {
             console.error('socket session tracking error', error)
         })
 
+        socket.on('ping:measure', (_payload = {}, callback) => {
+            callback?.({
+                serverTime: Date.now(),
+            })
+        })
+
         registerLobbyHandlers(io, socket)
         registerGameHandlers(io, socket)
         registerMatchmakingHandlers(io, socket)

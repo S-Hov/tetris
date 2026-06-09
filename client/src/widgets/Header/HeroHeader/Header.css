@@ -120,6 +120,21 @@
         backdrop-filter: var(--hard-blur);
     }
 
+    .mobile-bottom-nav__ping {
+        position: absolute;
+        right: 0;
+        bottom: calc(100% + 0.45rem);
+        width: auto;
+        min-height: 34px;
+        padding: 0.4rem 0.55rem;
+        border-radius: var(--radius-card-1);
+        font-size: 0.68rem;
+    }
+
+    .mobile-bottom-nav__ping .server-ping__value {
+        min-width: 38px;
+    }
+
     .mobile-bottom-nav__brand,
     .mobile-bottom-nav__link {
         display: inline-flex;

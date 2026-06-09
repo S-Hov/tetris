@@ -1,0 +1,89 @@
+.server-ping {
+    --server-ping-color: var(--turquoise-lite);
+
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex: 0 0 auto;
+    padding: 0.5rem 0.7rem;
+    border: var(--border);
+    border-radius: var(--radius-panel);
+    background: var(--elem-bg);
+    color: var(--text-color);
+    font-family: var(--font-1);
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0;
+    backdrop-filter: var(--medium-blur);
+    white-space: nowrap;
+}
+
+.server-ping__dot {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+    background: var(--server-ping-color);
+    box-shadow: 0 0 10px var(--server-ping-color);
+}
+
+.server-ping--checking .server-ping__dot {
+    animation: server-ping-pulse 0.9s ease-in-out infinite;
+}
+
+.server-ping__label {
+    color: var(--text-color);
+    font-size: 0.68rem;
+}
+
+.server-ping__value {
+    min-width: 44px;
+    color: var(--server-ping-color);
+    text-align: right;
+}
+
+.server-ping--good {
+    --server-ping-color: var(--turquoise-lite);
+}
+
+.server-ping--medium {
+    --server-ping-color: #ffcc80;
+}
+
+.server-ping--bad,
+.server-ping--offline {
+    --server-ping-color: var(--red);
+}
+
+@keyframes server-ping-pulse {
+    0%,
+    100% {
+        opacity: 0.55;
+        transform: scale(0.85);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 1770px) and (min-width: 701px) {
+    .server-ping {
+        width: 42px;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .server-ping__label,
+    .server-ping__value {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+        clip-path: inset(50%);
+    }
+}
