@@ -334,6 +334,14 @@ export const registerLobbyHandlers = (io, socket) => {
                 return
             }
 
+            if (room.status === 'closed') {
+                callback?.({
+                    success: false,
+                    message: 'Room is closed',
+                })
+                return
+            }
+
             if (isSocketRoomParticipant(room, socket)) {
                 callback?.({
                     success: true,
@@ -519,6 +527,11 @@ export const registerLobbyHandlers = (io, socket) => {
                 return
             }
 
+            if (room.status === 'closed') {
+                callback?.({ success: false, message: 'Room is closed' })
+                return
+            }
+
             if (!isSocketRoomParticipant(room, socket)) {
                 callback?.({ success: false, message: 'Player is not in this room' })
                 return
@@ -587,6 +600,11 @@ export const registerLobbyHandlers = (io, socket) => {
 
             if (!room) {
                 callback?.({ success: false, message: 'Room not found' })
+                return
+            }
+
+            if (room.status === 'closed') {
+                callback?.({ success: false, message: 'Room is closed' })
                 return
             }
 
