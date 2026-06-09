@@ -345,7 +345,7 @@ widgets/
   ArenaDashboardSection/
     ArenaDashboardSection.jsx
     ArenaDashboardSection.css
-    homeDashboard.config.js
+    arenaDashboard.utils.js
 
   SupportProjectSection/
     SupportProjectSection.jsx

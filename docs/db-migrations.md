@@ -44,6 +44,10 @@ npm run db:migrate
 | `012_feedback_channels_and_support_blocks.sql` | feedback preferred channels, Telegram continuation tokens/URLs, support-only user blocks |
 | `013_support_request_telegram_link.sql` | Telegram user/chat link fields for support requests |
 | `014_support_request_messages.sql` | Message history for support requests across Telegram/email/admin replies |
+| `015_game_effects_catalog.sql` | Catalog of game effects with labels, visuals, images, duration and status |
+| `016_rank_tiers_catalog.sql` | Rank tiers catalog with point ranges, localized labels, images and status |
+| `017_uploaded_assets_storage.sql` | Uploaded asset metadata storage for files served from `/uploads` |
+| `018_enable_public_table_rls.sql` | Enables public-table RLS policies where the schema expects public read access |
 
 Миграции используют `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`
 и `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, поэтому baseline можно применить
@@ -57,7 +61,7 @@ npm run db:migrate
 префиксом, например:
 
 ```text
-007_add_user_profile_flags.sql
+019_add_user_profile_flags.sql
 ```
 
 Не изменяйте уже примененные миграции: для production-подхода история должна
