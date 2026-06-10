@@ -69,21 +69,8 @@
     }
 }
 
-@media (max-width: 1770px) and (min-width: 701px) {
-    .server-ping {
-        width: 42px;
-        justify-content: center;
-        padding: 0;
-    }
-
-    .server-ping__label,
-    .server-ping__value {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        clip: rect(0 0 0 0);
-        white-space: nowrap;
-        clip-path: inset(50%);
+@media (max-width: 890px) {
+    .server-ping__label{
+        display: none;
     }
 }
