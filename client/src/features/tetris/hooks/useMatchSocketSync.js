@@ -131,12 +131,18 @@ export const useMatchSocketSync = ({
             setRoomSnapshot(room || null)
         }
 
+        const handlePersistenceError = ({ message } = {}) => {
+            notify(message || 'Не удалось сохранить данные матча', 'error')
+        }
+
         socket.on('opponent:update', handleOpponentUpdate)
         socket.on('room:state', handleRoomState)
+        socket.on('persistence:error', handlePersistenceError)
 
         return () => {
             socket.off('opponent:update', handleOpponentUpdate)
             socket.off('room:state', handleRoomState)
+            socket.off('persistence:error', handlePersistenceError)
         }
     }, [enabled])
 

@@ -1,6 +1,14 @@
-import { pool } from '../db/index.js'
+import {
+    createGameRoomRepo,
+    deleteGameRoomRepo,
+    findGameRoomIdBySocketIdRepo,
+    getGameRoomIdsRepo,
+    getGameRoomRepo,
+    updateGameRoomRepo,
+} from '../repositories/roomRepository.js'
 
 export const TEAM_IDS = ['team_1', 'team_2']
+const roomCache = new Map()
 
 export const getMaxPlayersForMode = (modeKey = '1v1') => (modeKey === '2v2' ? 4 : 2)
 
@@ -77,6 +85,17 @@ export const normalizeRoom = (room) => {
     }
 }
 
+const rememberRoom = (room) => {
+    if (!room?.id) {
+        return room
+    }
+
+    const normalizedRoom = normalizeRoom(room)
+    roomCache.set(normalizedRoom.id, normalizedRoom)
+
+    return normalizedRoom
+}
+
 export const isSocketRoomParticipant = (room, socketOrSocketId) => {
     if (!room || !socketOrSocketId) {
         return false
@@ -105,290 +124,42 @@ export const getRoomPlayerBySocketId = (room, socketId) => {
     return getRoomPlayers(room).find((player) => player.socketId === socketId) || null
 }
 
-const toUserKey = (player) => {
-    if (player?.userId) {
-        return String(player.userId)
-    }
-
-    return player?.socketId ? `socket:${player.socketId}` : null
-}
-
-const parseJsonValue = (value, fallback) => {
-    if (value === null || value === undefined) {
-        return fallback
-    }
-
-    if (typeof value === 'object') {
-        return value
-    }
-
-    try {
-        return JSON.parse(value)
-    } catch {
-        return fallback
-    }
-}
-
-const mapRoomRow = (roomRow, playerRows = []) => {
-    if (!roomRow) {
-        return null
-    }
-
-    const room = {
-        id: roomRow.id,
-        status: roomRow.status,
-        matchId: roomRow.match_id,
-        modeKey: roomRow.mode_key,
-        ownerSocketId: roomRow.owner_socket_id,
-        ownerUserId: roomRow.owner_user_key,
-        settings: parseJsonValue(roomRow.settings, {}),
-        players: playerRows.map((playerRow) => ({
-            socketId: playerRow.socket_id,
-            userId: playerRow.user_id ?? playerRow.user_key,
-            isRegistered: Boolean(playerRow.is_registered),
-            username: playerRow.username,
-            avatarUrl: playerRow.avatar_url,
-            rankStats: parseJsonValue(playerRow.rank_stats, null),
-            isReady: Boolean(playerRow.is_ready),
-            gameState: parseJsonValue(playerRow.game_state, null),
-            teamId: playerRow.team_id,
-            teamNumber: playerRow.team_number,
-            teamSlot: playerRow.team_slot,
-            matchPlayerId: playerRow.match_player_id,
-        })),
-    }
-
-    return normalizeRoom(room)
-}
-
-const getRoomByIdWithClient = async (client, roomId, { forUpdate = false } = {}) => {
-    const roomResult = await client.query(
-        `
-        SELECT id, status, match_id, mode_key, owner_socket_id, owner_user_key, settings, metadata,
-               created_at, updated_at
-        FROM game_rooms
-        WHERE id = $1
-        ${forUpdate ? 'FOR UPDATE' : ''}
-        `,
-        [roomId]
-    )
-    const roomRow = roomResult.rows[0]
-
-    if (!roomRow) {
-        return null
-    }
-
-    const playersResult = await client.query(
-        `
-        SELECT id, room_id, socket_id, user_key, user_id, is_registered, username, avatar_url,
-               rank_stats, is_ready, game_state, team_id, team_number, team_slot, match_player_id,
-               joined_at, updated_at
-        FROM game_room_players
-        WHERE room_id = $1
-        ORDER BY joined_at ASC, id ASC
-        ${forUpdate ? 'FOR UPDATE' : ''}
-        `,
-        [roomId]
-    )
-
-    return mapRoomRow(roomRow, playersResult.rows)
-}
-
-const persistRoomWithClient = async (client, room) => {
-    const normalizedRoom = normalizeRoom(room)
-    const players = getRoomPlayers(normalizedRoom)
-    const playerSocketIds = players.map((player) => player.socketId).filter(Boolean)
-
-    await client.query(
-        `
-        INSERT INTO game_rooms (
-            id,
-            status,
-            match_id,
-            mode_key,
-            owner_socket_id,
-            owner_user_key,
-            settings,
-            metadata
-        )
-        VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8::jsonb)
-        ON CONFLICT (id) DO UPDATE
-        SET status = EXCLUDED.status,
-            match_id = EXCLUDED.match_id,
-            mode_key = EXCLUDED.mode_key,
-            owner_socket_id = EXCLUDED.owner_socket_id,
-            owner_user_key = EXCLUDED.owner_user_key,
-            settings = EXCLUDED.settings,
-            metadata = EXCLUDED.metadata,
-            updated_at = NOW()
-        `,
-        [
-            normalizedRoom.id,
-            normalizedRoom.status || 'waiting',
-            normalizedRoom.matchId || null,
-            normalizedRoom.modeKey || '1v1',
-            normalizedRoom.ownerSocketId || null,
-            normalizedRoom.ownerUserId ? String(normalizedRoom.ownerUserId) : null,
-            JSON.stringify(normalizedRoom.settings || {}),
-            JSON.stringify(normalizedRoom.metadata || {}),
-        ]
-    )
-
-    for (const player of players) {
-        const userId = Number.isInteger(player.userId) ? player.userId : null
-        const userKey = toUserKey(player)
-
-        await client.query(
-            `
-            INSERT INTO game_room_players (
-                room_id,
-                socket_id,
-                user_key,
-                user_id,
-                is_registered,
-                username,
-                avatar_url,
-                rank_stats,
-                is_ready,
-                game_state,
-                team_id,
-                team_number,
-                team_slot,
-                match_player_id,
-                metadata
-            )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9, $10::jsonb, $11, $12, $13, $14, $15::jsonb)
-            ON CONFLICT (room_id, user_key) DO UPDATE
-            SET socket_id = EXCLUDED.socket_id,
-                user_id = EXCLUDED.user_id,
-                is_registered = EXCLUDED.is_registered,
-                username = EXCLUDED.username,
-                avatar_url = EXCLUDED.avatar_url,
-                rank_stats = EXCLUDED.rank_stats,
-                is_ready = EXCLUDED.is_ready,
-                game_state = EXCLUDED.game_state,
-                team_id = EXCLUDED.team_id,
-                team_number = EXCLUDED.team_number,
-                team_slot = EXCLUDED.team_slot,
-                match_player_id = EXCLUDED.match_player_id,
-                metadata = EXCLUDED.metadata,
-                updated_at = NOW()
-            `,
-            [
-                normalizedRoom.id,
-                player.socketId,
-                userKey,
-                userId,
-                Boolean(player.isRegistered),
-                player.username || 'Player',
-                player.avatarUrl || null,
-                player.rankStats ? JSON.stringify(player.rankStats) : null,
-                Boolean(player.isReady),
-                player.gameState ? JSON.stringify(player.gameState) : null,
-                player.teamId || null,
-                player.teamNumber || null,
-                player.teamSlot || getTeamIdByNumber(player.teamNumber || 1),
-                player.matchPlayerId || null,
-                JSON.stringify(player.metadata || {}),
-            ]
-        )
-    }
-
-    if (playerSocketIds.length > 0) {
-        await client.query(
-            `
-            DELETE FROM game_room_players
-            WHERE room_id = $1
-              AND socket_id <> ALL($2::text[])
-            `,
-            [normalizedRoom.id, playerSocketIds]
-        )
-    } else {
-        await client.query(
-            'DELETE FROM game_room_players WHERE room_id = $1',
-            [normalizedRoom.id]
-        )
-    }
-
-    return await getRoomByIdWithClient(client, normalizedRoom.id)
-}
-
 export const roomStore = {
     async createRoom(room) {
-        const client = await pool.connect()
-
-        try {
-            await client.query('BEGIN')
-            const persistedRoom = await persistRoomWithClient(client, room)
-            await client.query('COMMIT')
-
-            return persistedRoom
-        } catch (error) {
-            await client.query('ROLLBACK')
-            throw error
-        } finally {
-            client.release()
-        }
+        return rememberRoom(await createGameRoomRepo(normalizeRoom(room)))
     },
 
     async getRoom(roomId) {
-        const client = await pool.connect()
-
-        try {
-            return await getRoomByIdWithClient(client, roomId)
-        } finally {
-            client.release()
+        if (roomCache.has(roomId)) {
+            return roomCache.get(roomId)
         }
+
+        return rememberRoom(await getGameRoomRepo(roomId))
+    },
+
+    getCachedRoom(roomId) {
+        return roomCache.get(roomId) || null
     },
 
     async updateRoom(roomId, updater) {
-        const client = await pool.connect()
+        return rememberRoom(await updateGameRoomRepo(roomId, (room) => {
+            const updatedRoom = updater(normalizeRoom(room))
 
-        try {
-            await client.query('BEGIN')
-            const room = await getRoomByIdWithClient(client, roomId, { forUpdate: true })
-
-            if (!room) {
-                await client.query('COMMIT')
-                return null
-            }
-
-            const updatedRoom = updater(room)
-
-            if (!updatedRoom) {
-                await client.query('COMMIT')
-                return null
-            }
-
-            const persistedRoom = await persistRoomWithClient(client, updatedRoom)
-            await client.query('COMMIT')
-
-            return persistedRoom
-        } catch (error) {
-            await client.query('ROLLBACK')
-            throw error
-        } finally {
-            client.release()
-        }
+            return updatedRoom ? normalizeRoom(updatedRoom) : null
+        }))
     },
 
     async deleteRoom(roomId) {
-        await pool.query('DELETE FROM game_rooms WHERE id = $1', [roomId])
+        roomCache.delete(roomId)
+        await deleteGameRoomRepo(roomId)
     },
 
     async getAllRooms() {
-        const result = await pool.query(
-            `
-            SELECT id
-            FROM game_rooms
-            ORDER BY updated_at DESC
-            `
-        )
-
+        const roomIds = await getGameRoomIdsRepo()
         const rooms = []
 
-        for (const row of result.rows) {
-            const room = await this.getRoom(row.id)
+        for (const roomId of roomIds) {
+            const room = await this.getRoom(roomId)
 
             if (room) {
                 rooms.push(room)
@@ -398,18 +169,30 @@ export const roomStore = {
         return rooms
     },
 
+    updateCachedRoom(roomId, updater) {
+        const room = roomCache.get(roomId)
+
+        if (!room) {
+            return null
+        }
+
+        const updatedRoom = updater(room)
+
+        if (!updatedRoom) {
+            return null
+        }
+
+        return rememberRoom(updatedRoom)
+    },
+
     async findRoomBySocketId(socketId) {
-        const result = await pool.query(
-            `
-            SELECT room_id
-            FROM game_room_players
-            WHERE socket_id = $1
-            ORDER BY updated_at DESC
-            LIMIT 1
-            `,
-            [socketId]
-        )
-        const roomId = result.rows[0]?.room_id
+        const cachedRoom = [...roomCache.values()].find((room) => isSocketRoomParticipant(room, socketId))
+
+        if (cachedRoom) {
+            return cachedRoom
+        }
+
+        const roomId = await findGameRoomIdBySocketIdRepo(socketId)
 
         return roomId ? await this.getRoom(roomId) : null
     },
@@ -452,6 +235,15 @@ export const roomStore = {
 
     async updatePlayer(roomId, socketId, updater) {
         return await this.updateRoom(roomId, (room) => ({
+            ...room,
+            players: getRoomPlayers(room).map((player) => (
+                player.socketId === socketId ? updater(player) : player
+            )),
+        }))
+    },
+
+    updateCachedPlayer(roomId, socketId, updater) {
+        return this.updateCachedRoom(roomId, (room) => ({
             ...room,
             players: getRoomPlayers(room).map((player) => (
                 player.socketId === socketId ? updater(player) : player
