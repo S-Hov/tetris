@@ -9,6 +9,7 @@ import {
     recordMatchEventService,
 } from '../services/matchService.js'
 import { getActiveGameEffectByKeyRepo } from '../repositories/gameEffectsRepository.js'
+import { publishActivityEvent, publishPlayerActivityEvent } from '../services/activityFeedService.js'
 
 const PLAYER_SNAPSHOT_PERSIST_DELAY_MS = 1500
 const pendingPlayerSnapshotPersists = new Map()
@@ -194,6 +195,15 @@ export const registerGameHandlers = (io, socket) => {
             winnerTeamId: winnerTeam?.id || null,
             matchType: room.settings?.matchType || 'private',
         })
+        publishActivityEvent({
+            type: 'match_finished',
+            actor: winner?.username || 'Игрок',
+            target: loser?.username || null,
+            mode: room.modeKey,
+            matchType: room.settings?.matchType || 'private',
+            roomId,
+            detail: winner ? 'победа' : 'матч завершен',
+        })
 
         runPersistenceTask(
             io,
@@ -275,6 +285,17 @@ export const registerGameHandlers = (io, socket) => {
             effect: {
                 ...effect,
                 sourceSocketId: socket.id,
+            },
+        })
+        publishPlayerActivityEvent('ability_used', {
+            socket,
+            player: sourcePlayer,
+            room,
+            detail: `${ability.name || abilityId} -> ${targetPlayer.username}`,
+            metadata: {
+                abilityId,
+                effectType: effect.type,
+                targetSocketId: targetPlayer.socketId,
             },
         })
 

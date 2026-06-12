@@ -5,6 +5,7 @@ import CyberBg from '@/features/CyberBg'
 import HeroHeader from '@/widgets/Header/HeroHeader'
 import SiteFooter from '@/shared/ui/SiteFooter'
 import { getLocalizedGamePath } from '@/i18n'
+import SideRailLayout from './SideRailLayout.jsx'
 
 const MainLayout = ({ children, hideFooter = false }) => {
     const location = useLocation()
@@ -18,6 +19,12 @@ const MainLayout = ({ children, hideFooter = false }) => {
         normalizedPathname.startsWith('/game/') ||
         location.pathname.startsWith('/match/')
     ) && !normalizedPathname.startsWith('/game/controls') && !isGamePlayPage
+    const content = (
+        <>
+            {children}
+            {!hideFooter && <SiteFooter />}
+        </>
+    )
 
     return (
         <>
@@ -29,8 +36,11 @@ const MainLayout = ({ children, hideFooter = false }) => {
                         <i className="fas fa-gear"></i>
                     </Link>
                 ) : null}
-                {children}
-                {!hideFooter && <SiteFooter />}
+                {isGamePlayPage ? content : (
+                    <SideRailLayout>
+                        {content}
+                    </SideRailLayout>
+                )}
             </main>
         </>
     )

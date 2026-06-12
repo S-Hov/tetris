@@ -19,6 +19,7 @@ import {
     startRoomMatchService,
 } from '../services/matchService.js'
 import { recordGameActivityEventRepo } from '../repositories/analyticsRepository.js'
+import { publishPlayerActivityEvent } from '../services/activityFeedService.js'
 
 const createRoomPlayer = (socket) => {
     const user = socket.data.user
@@ -294,6 +295,12 @@ export const registerLobbyHandlers = (io, socket) => {
                 socket,
                 player,
             })
+            publishPlayerActivityEvent('room_created', {
+                socket,
+                player,
+                room: normalizedRoom,
+                detail: `${normalizedRoom.modeKey} ${normalizedRoom.settings?.matchType || 'private'}`,
+            })
 
             callback?.({
                 success: true,
@@ -375,6 +382,13 @@ export const registerLobbyHandlers = (io, socket) => {
                     player: existingPlayer,
                     metadata: { rejoined: true },
                 })
+                publishPlayerActivityEvent('room_joined', {
+                    socket,
+                    player: existingPlayer,
+                    room: normalizedRoom,
+                    detail: 'вернулся в комнату',
+                    metadata: { rejoined: true },
+                })
 
                 callback?.({
                     success: true,
@@ -441,6 +455,11 @@ export const registerLobbyHandlers = (io, socket) => {
                 socket,
                 player: boundPlayer,
             })
+            publishPlayerActivityEvent('room_joined', {
+                socket,
+                player: boundPlayer,
+                room: normalizedRoom,
+            })
 
             callback?.({
                 success: true,
@@ -490,6 +509,11 @@ export const registerLobbyHandlers = (io, socket) => {
                 room: result.previousRoom,
                 socket,
                 player: result.removedPlayer,
+            })
+            publishPlayerActivityEvent('room_left', {
+                socket,
+                player: result.removedPlayer,
+                room: result.previousRoom,
             })
 
             callback?.({
@@ -567,6 +591,12 @@ export const registerLobbyHandlers = (io, socket) => {
                 trackRoomEvent('match_started', {
                     room: playingRoom,
                     socket,
+                    metadata: { source: 'ready' },
+                })
+                publishPlayerActivityEvent('match_started', {
+                    socket,
+                    room: playingRoom,
+                    detail: 'все готовы',
                     metadata: { source: 'ready' },
                 })
 

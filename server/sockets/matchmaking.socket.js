@@ -9,6 +9,7 @@ import {
     startRoomMatchService,
 } from '../services/matchService.js'
 import { recordGameActivityEventRepo } from '../repositories/analyticsRepository.js'
+import { publishPlayerActivityEvent } from '../services/activityFeedService.js'
 
 const queue = []
 const parties = new Map()
@@ -183,6 +184,13 @@ const createMatchedRoom = async ({ io, firstEntry, secondEntry }) => {
                 room: normalizedRoom,
                 player,
                 socket: player.socket,
+                metadata: { source: 'matchmaking' },
+            })
+            publishPlayerActivityEvent('match_started', {
+                socket: player.socket,
+                player,
+                room: normalizedRoom,
+                detail: 'матч найден',
                 metadata: { source: 'matchmaking' },
             })
         }
@@ -407,6 +415,18 @@ export const registerMatchmakingHandlers = (io, socket) => {
             })
             const result = await enqueueOrMatchEntry(io, entry)
 
+            if (result.searching) {
+                publishPlayerActivityEvent('matchmaking_started', {
+                    socket,
+                    player: entry.players[0],
+                    detail: `${modeKey} ${matchType}`,
+                    metadata: {
+                        mode: modeKey,
+                        matchType,
+                    },
+                })
+            }
+
             callback?.({
                 success: true,
                 searching: result.searching,
@@ -432,6 +452,10 @@ export const registerMatchmakingHandlers = (io, socket) => {
 
             socket.emit('matchmaking:cancelled', {
                 wasSearching: true,
+            })
+            publishPlayerActivityEvent('matchmaking_cancelled', {
+                socket,
+                player: removedEntry.players.find((player) => player.socketId === socket.id),
             })
 
             if (isSystemMatchedTeam && remainingPlayers.length > 0) {
@@ -486,6 +510,11 @@ export const registerMatchmakingHandlers = (io, socket) => {
 
         parties.set(party.id, party)
         emitPartyState(io, party)
+        publishPlayerActivityEvent('party_created', {
+            socket,
+            detail: party.modeKey,
+            metadata: { mode: party.modeKey },
+        })
         callback?.({ success: true, message: 'Лобби союзников создано', party: serializeParty(party) })
     })
 
@@ -525,6 +554,11 @@ export const registerMatchmakingHandlers = (io, socket) => {
         leavePartyBySocketId(io, socket.id)
         party.players.push({ socket })
         emitPartyState(io, party)
+        publishPlayerActivityEvent('party_joined', {
+            socket,
+            detail: party.modeKey,
+            metadata: { mode: party.modeKey },
+        })
         callback?.({ success: true, message: 'Вы присоединились к союзнику', party: serializeParty(party) })
     })
 
@@ -570,6 +604,17 @@ export const registerMatchmakingHandlers = (io, socket) => {
 
             const result = await enqueueOrMatchEntry(io, entry)
 
+            if (result.searching) {
+                publishPlayerActivityEvent('party_search_started', {
+                    socket,
+                    detail: `${party.modeKey} ${normalizeMatchType(matchType)}`,
+                    metadata: {
+                        mode: party.modeKey,
+                        matchType: normalizeMatchType(matchType),
+                    },
+                })
+            }
+
             callback?.({
                 success: true,
                 searching: result.searching,
@@ -598,6 +643,11 @@ export const registerMatchmakingHandlers = (io, socket) => {
                     wasSearching: true,
                 })
             }
+            publishPlayerActivityEvent('matchmaking_cancelled', {
+                socket,
+                player: removedEntry.players.find((player) => player.socketId === socket.id),
+                metadata: { partyId },
+            })
         }
 
         callback?.({ success: true, wasSearching: Boolean(removedEntry) })
