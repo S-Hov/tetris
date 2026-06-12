@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next'
 
 import { getLocalizedGamePath } from '@/i18n'
 import { arenaStatsMeta } from './homeHero.data.js'
+import SandHeroAnimation from './SandHeroAnimation.jsx'
 
 import bannerBackground from './assets/bunner_bg.png'
-import bannerPreview from './assets/bunner_img.png'
 
 import './HomeHero.css'
 
@@ -55,7 +55,7 @@ const HomeHero = () => {
             </div>
 
             <div className="home-hero__preview" aria-label={t('home.hero.previewAriaLabel')}>
-                <img src={bannerPreview} alt="" />
+                <SandHeroAnimation />
             </div>
         </section>
     )
