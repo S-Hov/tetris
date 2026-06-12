@@ -105,6 +105,7 @@ const MatchPage = ({
     playMode = MATCH_PLAY_MODES.ONLINE,
     roomId: roomIdProp,
 }) => {
+    
     const location = useLocation()
     const navigate = useNavigate()
     const params = useParams()
