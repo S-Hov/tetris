@@ -13,7 +13,10 @@ import {
     cancelRoomMatchService,
     markRoomPlayerLeftService,
 } from '../services/matchService.js'
-import { upsertUserSessionRepo } from '../repositories/analyticsRepository.js'
+import {
+    isAnalyticsTransientDbError,
+    upsertUserSessionRepo,
+} from '../repositories/analyticsRepository.js'
 import { setSupportRealtimeIo } from '../services/supportRealtimeService.js'
 import {
     getRecentActivityEvents,
@@ -62,6 +65,11 @@ export const registerSocketHandlers = (io) => {
                 role: socket.data.user?.role || null,
             },
         }).catch((error) => {
+            if (isAnalyticsTransientDbError(error)) {
+                console.warn('socket session tracking skipped:', error.message)
+                return
+            }
+
             console.error('socket session tracking error', error)
         })
 

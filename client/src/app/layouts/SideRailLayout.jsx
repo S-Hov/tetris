@@ -1,4 +1,5 @@
 import ActivityFeed from '@/widgets/ActivityFeed'
+import FriendsRail from '@/widgets/FriendsRail'
 import './SideRailLayout.css'
 
 const SideRailLayout = ({ children }) => {
@@ -10,6 +11,10 @@ const SideRailLayout = ({ children }) => {
 
             <div className="side-rail-layout__content">
                 {children}
+            </div>
+
+            <div className="side-rail-layout__rail side-rail-layout__rail--right">
+                <FriendsRail />
             </div>
         </div>
     )

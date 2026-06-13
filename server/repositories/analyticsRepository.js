@@ -3,6 +3,8 @@ import { pool } from '../db/index.js'
 const ACTIVE_SESSION_WINDOW_MINUTES = 15
 
 const hasTableCache = new Map()
+const TABLE_CHECK_RETRY_DELAY_MS = 30_000
+let tableCheckPausedUntil = 0
 
 export const getActiveSessionWindowMinutes = () => ACTIVE_SESSION_WINDOW_MINUTES
 
@@ -191,15 +193,46 @@ export const recordGameActivityEventRepo = async ({
 }
 
 async function tableExists(tableName) {
+    if (Date.now() < tableCheckPausedUntil) {
+        return false
+    }
+
     if (hasTableCache.has(tableName)) {
         return hasTableCache.get(tableName)
     }
 
-    const { rows } = await pool.query('SELECT to_regclass($1) AS table_name', [tableName])
+    let rows
+
+    try {
+        const result = await pool.query('SELECT to_regclass($1) AS table_name', [tableName])
+        rows = result.rows
+    } catch (error) {
+        if (isAnalyticsTransientDbError(error)) {
+            tableCheckPausedUntil = Date.now() + TABLE_CHECK_RETRY_DELAY_MS
+            return false
+        }
+
+        throw error
+    }
+
     const exists = Boolean(rows[0]?.table_name)
 
     hasTableCache.set(tableName, exists)
     return exists
+}
+
+export function isConnectionCapacityError(error) {
+    return error?.code === '53300' ||
+        (error?.code === 'XX000' && String(error?.message || '').includes('max clients'))
+}
+
+export function isAnalyticsTransientDbError(error) {
+    const message = String(error?.message || '')
+
+    return isConnectionCapacityError(error) ||
+        message.includes('Connection terminated unexpectedly') ||
+        message.includes('Connection terminated') ||
+        message.includes('Connection ended unexpectedly')
 }
 
 function getIntegerUserId(userId) {

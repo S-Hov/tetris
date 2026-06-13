@@ -87,11 +87,21 @@ const getDatabaseSslMode = () => {
     }
 }
 
+const isSupabasePoolerHost = () => {
+    const host = getDatabaseHost()
+
+    return Boolean(host?.includes('pooler.supabase.'))
+}
+
 const getPoolMax = () => {
     const poolMax = Number.parseInt(process.env.DB_POOL_MAX || '', 10)
 
     if (Number.isInteger(poolMax) && poolMax > 0) {
         return poolMax
+    }
+
+    if (isSupabasePoolerHost()) {
+        return 1
     }
 
     return getDatabaseMode() === DATABASE_MODE.PRODUCTION ? 3 : 10
@@ -155,3 +165,7 @@ const getPoolConfig = () => {
 }
 
 export const pool = new Pool(getPoolConfig())
+
+pool.on('error', (error) => {
+    console.warn('Database idle client error:', error.message)
+})
