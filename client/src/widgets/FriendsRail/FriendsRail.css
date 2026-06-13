@@ -99,21 +99,27 @@
 
 .friends-rail__title small,
 .friends-rail__item small,
-.friends-rail__guest p {
+.friends-rail__guest p,
+.friends-rail__section h3,
+.friends-rail__section-empty {
     color: var(--text-muted);
     font-size: 10px;
     line-height: 1.25;
 }
 
-.friends-rail__title small {
+.friends-rail__title small,
+.friends-rail__section h3 {
     text-transform: uppercase;
     letter-spacing: 0;
 }
 
 .friends-rail__title strong {
+    overflow: hidden;
     color: var(--text-color-1);
     font-size: 15px;
     line-height: 1.1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .friends-rail__badge {
@@ -142,48 +148,102 @@
 
 .friends-rail__summary {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
 }
 
-.friends-rail__summary span {
+.friends-rail__summary span,
+.friends-rail__summary a {
     min-width: 0;
+    min-height: 54px;
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: 10px;
+    justify-content: center;
+    padding: 8px 7px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     color: var(--text-muted);
-    font-size: 10px;
+    font-size: 9px;
+    text-decoration: none;
     text-transform: uppercase;
     background: rgba(0, 0, 0, 0.18);
 }
 
+.friends-rail__summary a {
+    border-color: var(--turquoise-border-soft);
+}
+
 .friends-rail__summary strong {
+    overflow: hidden;
     color: var(--text-color-1);
-    font-size: 18px;
+    font-size: 17px;
+    line-height: 1;
+    text-overflow: ellipsis;
+}
+
+.friends-rail__scroll {
+    min-height: 0;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 12px;
+    padding-right: 2px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--turquoise-border-soft) transparent;
+}
+
+.friends-rail__section {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.friends-rail__section h3,
+.friends-rail__section-empty {
+    margin: 0;
 }
 
 .friends-rail__list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
     min-height: 0;
-    overflow: hidden;
 }
 
 .friends-rail__item {
-    flex: 0 0 58px;
     min-width: 0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.friends-rail__item-main {
+    position: relative;
+    width: 100%;
+    min-height: 56px;
     display: grid;
     grid-template-columns: 34px 1fr;
     align-items: center;
     gap: 10px;
-    padding: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.2);
+    padding: 9px;
+    border: 0;
+    color: inherit;
+    text-align: left;
+    background: transparent;
+}
+
+button.friends-rail__item-main {
+    cursor: pointer;
+}
+
+button.friends-rail__item-main:hover,
+button.friends-rail__item-main:focus-visible {
+    background: var(--turquoise-tint-soft);
+    outline: none;
 }
 
 .friends-rail__avatar,
@@ -194,19 +254,34 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
     border-radius: 50%;
     color: var(--turquoise-bright);
     background: var(--turquoise-tint-soft);
 }
 
-.friends-rail__item--pink .friends-rail__avatar {
-    color: var(--pink);
-    background: color-mix(in srgb, var(--pink) 12%, transparent);
+.friends-rail__avatar img,
+.friends-rail__avatar video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.friends-rail__item--violet .friends-rail__avatar {
-    color: var(--blue);
-    background: color-mix(in srgb, var(--blue) 12%, transparent);
+.friends-rail__status {
+    position: absolute;
+    left: 34px;
+    bottom: 10px;
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--surface-panel-bg);
+    border-radius: 50%;
+    background: #ff5577;
+    box-shadow: 0 0 10px rgba(255, 85, 119, 0.5);
+}
+
+.friends-rail__status.is-online {
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
 }
 
 .friends-rail__item-body {
@@ -224,6 +299,35 @@
     line-height: 1.2;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.friends-rail__invite,
+.friends-rail__find,
+.friends-rail__register {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 8px;
+    color: #f7fbff;
+    font-size: 11px;
+    font-weight: 900;
+    text-decoration: none;
+    text-transform: uppercase;
+    background: var(--cta-gradient);
+    box-shadow: var(--cta-shadow);
+}
+
+.friends-rail__invite {
+    width: calc(100% - 18px);
+    margin: 0 9px 9px;
+    border: 0;
+    cursor: pointer;
+}
+
+.friends-rail__find {
+    flex: 0 0 auto;
 }
 
 .friends-rail__guest,
@@ -245,38 +349,20 @@
     line-height: 1.2;
 }
 
-.friends-rail__guest p {
+.friends-rail__guest p,
+.friends-rail__empty p {
     margin: 0;
     max-width: 220px;
 }
 
-.friends-rail__register {
-    min-height: 38px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 2px;
-    padding: 0 14px;
-    border-radius: 8px;
-    color: #f7fbff;
+.friends-rail__empty p {
+    color: var(--text-muted);
     font-size: 11px;
-    font-weight: 900;
-    text-decoration: none;
-    text-transform: uppercase;
-    background: var(--cta-gradient);
-    box-shadow: var(--cta-shadow);
 }
 
 .friends-rail__loader {
     border: 1px solid var(--turquoise-border);
     animation: friendsRailPulse 1.4s ease infinite;
-}
-
-.friends-rail__empty p {
-    margin: 0;
-    color: var(--text-muted);
-    font-size: 11px;
 }
 
 @keyframes friendsRailPulse {
