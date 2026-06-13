@@ -1,0 +1,62 @@
+{
+  "friends": {
+    "hero": {
+      "eyebrow": "Account",
+      "title": "Friends",
+      "description": "Build your player list, review requests and find teammates by ID for future match invites."
+    },
+    "tabs": {
+      "aria": "Friends sections",
+      "friends": "Friends",
+      "requests": "Requests",
+      "search": "Find friend"
+    },
+    "common": {
+      "loading": "Loading data..."
+    },
+    "friends": {
+      "title": "My friends",
+      "empty": "Your friends list is empty. Find a player by ID and send the first request.",
+      "onlineCount": "Online: {{count}}"
+    },
+    "requests": {
+      "title": "Incoming requests",
+      "empty": "No new requests yet.",
+      "count": "Requests: {{count}}",
+      "sentAt": "Sent",
+      "accept": "Accept",
+      "decline": "Decline"
+    },
+    "search": {
+      "title": "Player search",
+      "inputLabel": "Player ID",
+      "placeholder": "Example: 42",
+      "submit": "Search",
+      "searching": "Searching...",
+      "empty": "Enter a player ID to find a profile.",
+      "sendRequest": "Add friend",
+      "sending": "Sending...",
+      "requestSent": "Request sent",
+      "alreadyFriend": "Already friends",
+      "incomingRequest": "Incoming request exists",
+      "self": "This is you",
+      "blocked": "Unavailable"
+    },
+    "status": {
+      "online": "Online",
+      "offline": "Offline"
+    },
+    "rankFallback": "Unranked",
+    "rankPoints": "{{count}} points",
+    "notifications": {
+      "friendsLoadError": "Could not load friends",
+      "requestsLoadError": "Could not load requests",
+      "searchError": "Could not find player",
+      "requestSent": "Request sent",
+      "requestSendError": "Could not send request",
+      "requestAccepted": "Request accepted",
+      "requestDeclined": "Request declined",
+      "requestUpdateError": "Could not update request"
+    }
+  }
+}

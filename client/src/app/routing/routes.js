@@ -3,6 +3,7 @@ import LoginPage from '@/pages/Login/LoginPage.jsx'
 import RegisterPage from '@/pages/Register/RegisterPage.jsx'
 import ProfilePage from '@/pages/Profile/ProfilePage.jsx'
 import AccountSettingsPage from '@/pages/AccountSettings/AccountSettingsPage.jsx'
+import FriendsPage from '@/pages/Friends/FriendsPage.jsx'
 import MatchesPage from '@/pages/Matches/MatchesPage.jsx'
 import MatchDetailsPage from '@/pages/MatchDetails/MatchDetailsPage.jsx'
 import ModeSelectPage from '@/pages/ModeSelect/ModeSelectPage.jsx'
@@ -79,6 +80,22 @@ export const routes = [
         path: '/account-settings/:section',
         title: 'Настройки аккаунта',
         component: AccountSettingsPage,
+        layout: MainLayout,
+        guard: ProtectedRoute,
+    },
+    {
+        key: 'friends',
+        path: '/friends',
+        title: 'Друзья',
+        component: FriendsPage,
+        layout: MainLayout,
+        guard: ProtectedRoute,
+    },
+    {
+        key: 'friends-section',
+        path: '/friends/:section',
+        title: 'Друзья',
+        component: FriendsPage,
         layout: MainLayout,
         guard: ProtectedRoute,
     },
