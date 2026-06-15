@@ -28,6 +28,8 @@
     grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
     gap: 1.5rem;
     padding: 1.6rem;
+    overflow: visible;
+    z-index: 100;
 }
 
 .lobby-hero::before,

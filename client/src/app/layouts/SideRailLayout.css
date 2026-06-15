@@ -18,11 +18,11 @@
 }
 
 .side-rail-layout__rail--left {
-    z-index: 25;
+    z-index: 200;
 }
 
 .side-rail-layout__rail--right {
-    z-index: 24;
+    z-index: 200;
     justify-self: end;
 }
 
@@ -51,6 +51,16 @@
         color-mix(in srgb, var(--surface-panel-bg) 86%, transparent);
     box-shadow: 0 14px 30px rgba(0, 0, 0, 0.38), 0 0 18px var(--turquoise-glow);
     backdrop-filter: var(--medium-blur);
+}
+
+body:has(.simple-header-content) .side-rail-layout__friends-button {
+    top: auto;
+    bottom: max(10px, calc(env(safe-area-inset-top) + 2px));
+}
+
+body:has(.profile-sidebar) .side-rail-layout__friends-button {
+    top: 75px;
+    right: 16px;
 }
 
 .side-rail-layout__friends-modal {
@@ -134,7 +144,7 @@
 .side-rail-layout__friends-sheet .friends-rail__header {
     grid-template-columns: 28px 1fr auto;
     justify-items: stretch;
-    padding-right: 42px;
+    /* padding-right: 42px; */
 }
 
 .side-rail-layout__friends-sheet .friends-rail:hover .friends-rail__header,

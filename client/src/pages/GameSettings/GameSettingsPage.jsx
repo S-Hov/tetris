@@ -140,7 +140,7 @@ const GameSettingsSideNav = ({ t }) => (
             <i className="fas fa-gear"></i>
             <span>{t('gameControls.settings.title')}</span>
             <small>{t('gameControls.settings.controlsTitle')}</small>
-            <div class="border-glow"></div>
+            <div className="border-glow"></div>
         </Link>
     </aside>
 )
