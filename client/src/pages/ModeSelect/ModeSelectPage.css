@@ -564,9 +564,9 @@
 }
 
 @media (max-width: 1060px) {
-    .mobile-controls-link {
+    /* .mobile-controls-link {
         display: none;
-    }
+    } */
 
     .mode-select-page {
         padding-top: 0;

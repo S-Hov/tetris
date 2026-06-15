@@ -33,6 +33,137 @@
     min-height: 100%;
 }
 
+.side-rail-layout__friends-button {
+    position: fixed;
+    top: max(10px, calc(env(safe-area-inset-top) + 2px));
+    right: max(10px, calc(env(safe-area-inset-right) + 2px));
+    z-index: 480;
+    width: 48px;
+    aspect-ratio: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--turquoise-border);
+    border-radius: 50%;
+    color: var(--turquoise-bright);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.18)),
+        color-mix(in srgb, var(--surface-panel-bg) 86%, transparent);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.38), 0 0 18px var(--turquoise-glow);
+    backdrop-filter: var(--medium-blur);
+}
+
+.side-rail-layout__friends-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 700;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 12px max(12px, env(safe-area-inset-bottom));
+}
+
+.side-rail-layout__friends-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(2, 6, 18, 0.68);
+    backdrop-filter: blur(6px);
+    cursor: default;
+}
+
+.side-rail-layout__friends-sheet {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 420px);
+    max-height: min(78dvh, 620px);
+}
+
+.side-rail-layout__friends-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    width: 38px;
+    aspect-ratio: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: 50%;
+    color: var(--text-color-1);
+    background: rgba(0, 0, 0, 0.34);
+    cursor: pointer;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.side-rail-layout__friends-close:hover,
+.side-rail-layout__friends-close:focus-visible {
+    border-color: var(--turquoise-border);
+    box-shadow: 0 0 16px var(--turquoise-glow);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.side-rail-layout__friends-loading {
+    min-height: 280px;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--surface-panel-bg) 82%, transparent);
+}
+
+.side-rail-layout__friends-sheet .friends-rail {
+    position: relative;
+    top: auto;
+    width: 100%;
+    height: auto;
+    max-height: min(78dvh, 620px);
+    padding: 16px;
+    border-color: var(--turquoise-border);
+    box-shadow: var(--hover-shadow);
+}
+
+.side-rail-layout__friends-sheet .friends-rail:hover,
+.side-rail-layout__friends-sheet .friends-rail:focus,
+.side-rail-layout__friends-sheet .friends-rail:focus-within {
+    width: 100%;
+    border-color: var(--turquoise-border);
+    box-shadow: var(--hover-shadow);
+}
+
+.side-rail-layout__friends-sheet .friends-rail__header {
+    grid-template-columns: 28px 1fr auto;
+    justify-items: stretch;
+    padding-right: 42px;
+}
+
+.side-rail-layout__friends-sheet .friends-rail:hover .friends-rail__header,
+.side-rail-layout__friends-sheet .friends-rail:focus .friends-rail__header,
+.side-rail-layout__friends-sheet .friends-rail:focus-within .friends-rail__header {
+    grid-template-columns: 28px 1fr auto;
+    justify-items: stretch;
+}
+
+.side-rail-layout__friends-sheet .friends-rail__title,
+.side-rail-layout__friends-sheet .friends-rail__badge,
+.side-rail-layout__friends-sheet .friends-rail__content {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.side-rail-layout__friends-sheet .friends-rail:hover .friends-rail__title,
+.side-rail-layout__friends-sheet .friends-rail:hover .friends-rail__badge,
+.side-rail-layout__friends-sheet .friends-rail:hover .friends-rail__content,
+.side-rail-layout__friends-sheet .friends-rail:focus .friends-rail__title,
+.side-rail-layout__friends-sheet .friends-rail:focus .friends-rail__badge,
+.side-rail-layout__friends-sheet .friends-rail:focus .friends-rail__content,
+.side-rail-layout__friends-sheet .friends-rail:focus-within .friends-rail__title,
+.side-rail-layout__friends-sheet .friends-rail:focus-within .friends-rail__badge,
+.side-rail-layout__friends-sheet .friends-rail:focus-within .friends-rail__content {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 .side-rail-layout__rail--left .activity-feed:hover,
 .side-rail-layout__rail--left .activity-feed:focus,
 .side-rail-layout__rail--left .activity-feed:focus-within {
@@ -53,9 +184,8 @@
 
 }
 
-@media (max-width: 620px) {
+@media (max-width: 599px) {
     .side-rail-layout {
-        --side-rail-width: 42px;
-        --side-rail-gap: 6px;
+        display: block;
     }
 }

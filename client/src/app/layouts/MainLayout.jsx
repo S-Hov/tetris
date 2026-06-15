@@ -32,9 +32,11 @@ const MainLayout = ({ children, hideFooter = false }) => {
             <HeroHeader />
             <main className={`main-layout__main ${isGamePlayPage ? 'main-layout__main--game' : ''}`}>
                 {showControlsLink ? (
-                    <Link className="mobile-controls-link" to={getLocalizedGamePath('/game/controls')} aria-label={t('gameControls.settings.mobileTitle')}>
-                        <i className="fas fa-gear"></i>
-                    </Link>
+                    <>
+                        {/* <Link className="mobile-controls-link" to={getLocalizedGamePath('/game/controls')} aria-label={t('gameControls.settings.mobileTitle')}>
+                            <i className="fas fa-gear"></i>
+                        </Link> */}
+                    </>
                 ) : null}
                 {isGamePlayPage ? content : (
                     <SideRailLayout>

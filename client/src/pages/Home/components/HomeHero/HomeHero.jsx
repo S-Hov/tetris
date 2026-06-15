@@ -1,16 +1,20 @@
+import { lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { getLocalizedGamePath } from '@/i18n'
+import useMediaQuery from '@/shared/hooks/useMediaQuery'
 import { arenaStatsMeta } from './homeHero.data.js'
-import SandHeroAnimation from './SandHeroAnimation.jsx'
 
 import bannerBackground from './assets/bunner_bg.png'
 
 import './HomeHero.css'
 
+const SandHeroAnimation = lazy(() => import('./SandHeroAnimation.jsx'))
+
 const HomeHero = () => {
     const { t } = useTranslation()
+    const shouldRenderSandHero = useMediaQuery('(min-width: 1281px)')
     const arenaStats = arenaStatsMeta.map((stat) => ({
         ...stat,
         value: stat.valueKey ? t(`home.arena.stats.${stat.valueKey}`) : stat.value,
@@ -54,9 +58,13 @@ const HomeHero = () => {
                 </div>
             </div>
 
-            <div className="home-hero__preview" aria-label={t('home.hero.previewAriaLabel')}>
-                <SandHeroAnimation />
-            </div>
+            {shouldRenderSandHero ? (
+                <div className="home-hero__preview" aria-label={t('home.hero.previewAriaLabel')}>
+                    <Suspense fallback={null}>
+                        <SandHeroAnimation />
+                    </Suspense>
+                </div>
+            ) : null}
         </section>
     )
 }

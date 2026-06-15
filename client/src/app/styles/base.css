@@ -31,7 +31,7 @@ main {
 .main-layout__main--game {
     overflow: hidden;
 }
-
+/* 
 .mobile-controls-link {
     position: absolute;
     top: max(14px, calc(env(safe-area-inset-top) + 6px));
@@ -61,7 +61,7 @@ main {
 
 .mobile-controls-link--match {
     position: fixed;
-}
+} */
 
 .section {
     padding: 50px 0;
