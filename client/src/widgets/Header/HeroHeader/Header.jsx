@@ -7,6 +7,7 @@ import HeaderBrand from '@/shared/ui/Header/HeaderBrand'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
 import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
+import ServerPingIndicator from '@/shared/ui/ServerPingIndicator'
 import { getLanguageFromPathname } from '@/i18n'
 import mobileLogo from '@/widgets/Header/assets/logo.png'
 import { useTranslation } from 'react-i18next'
@@ -17,6 +18,7 @@ export default function Header() {
     const { t } = useTranslation()
     const currentLanguage = getLanguageFromPathname(pathname)
     const homePath = `/${currentLanguage}`
+    const showSocketPing = isGameSocketPingPath(pathname)
     const localizedNavItems = navItems.map((item) => ({
         ...item,
         label: t(item.labelKey),
@@ -51,6 +53,7 @@ export default function Header() {
                         <HeaderNav type="nav" />
                         <HeaderNav type="mode" />
                     </HeaderNavContext.Provider>
+                    {showSocketPing ? <ServerPingIndicator /> : null}
                     <InterfaceLanguageSelect className="header-language-select" />
 
                     {/* {stats && (
@@ -102,6 +105,7 @@ export default function Header() {
                     menuPlacement="top"
                     onChange={(nextPath) => navigate(nextPath)}
                 />
+                {showSocketPing ? <ServerPingIndicator className="mobile-bottom-nav__ping" /> : null}
             </nav>
         </GlowEffect>
     )
@@ -149,4 +153,10 @@ const normalizePath = (path) => {
     }
 
     return path.replace(/\/+$/, '')
+}
+
+const isGameSocketPingPath = (pathname = '') => {
+    const normalizedPathname = pathname.replace(/^\/(ru|en)(?=\/game(?:\/|$))/, '')
+
+    return normalizedPathname.startsWith('/game/') || pathname.startsWith('/match/')
 }

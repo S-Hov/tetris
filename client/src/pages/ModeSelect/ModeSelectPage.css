@@ -543,6 +543,12 @@
     }
 }
 
+@media (max-width: 1895px) {
+    .header .brand .logo-text{
+        display: none;
+    }
+}
+
 @media (max-width: 1180px) {
     .mode-select-workspace {
         grid-template-columns: 1fr;
@@ -576,6 +582,12 @@
                 display: none;
             }
         }
+    }
+}
+
+@media (max-width: 860px) {
+    .header .interface-language-select.header-language-select{
+        display: none;
     }
 }
 
@@ -621,12 +633,12 @@
 }
 
 @media (max-width: 560px) {
-    .profile-sidebar{
+    .profile-sidebar {
         top: 3px;
     }
 
     .mode-playtype-nav {
-        & .profile-sidebar__item {            
+        & .profile-sidebar__item {
             & span {
                 display: none;
             }

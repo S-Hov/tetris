@@ -1,0 +1,62 @@
+{
+  "friends": {
+    "hero": {
+      "eyebrow": "Личный кабинет",
+      "title": "Друзья",
+      "description": "Собирайте игроков, принимайте заявки и находите товарищей по ID для будущих приглашений в матчи."
+    },
+    "tabs": {
+      "aria": "Разделы друзей",
+      "friends": "Друзья",
+      "requests": "Заявки",
+      "search": "Найти друга"
+    },
+    "common": {
+      "loading": "Загружаем данные..."
+    },
+    "friends": {
+      "title": "Мои друзья",
+      "empty": "Список друзей пока пуст. Найдите игрока по ID и отправьте первую заявку.",
+      "onlineCount": "Онлайн: {{count}}"
+    },
+    "requests": {
+      "title": "Входящие заявки",
+      "empty": "Новых заявок пока нет.",
+      "count": "Заявок: {{count}}",
+      "sentAt": "Отправлена",
+      "accept": "Принять",
+      "decline": "Отклонить"
+    },
+    "search": {
+      "title": "Поиск игрока",
+      "inputLabel": "ID игрока",
+      "placeholder": "Например: 42",
+      "submit": "Поиск",
+      "searching": "Ищем...",
+      "empty": "Введите ID игрока, чтобы найти профиль.",
+      "sendRequest": "Добавить",
+      "sending": "Отправляем...",
+      "requestSent": "Заявка отправлена",
+      "alreadyFriend": "Уже в друзьях",
+      "incomingRequest": "Есть входящая заявка",
+      "self": "Это вы",
+      "blocked": "Недоступно"
+    },
+    "status": {
+      "online": "Онлайн",
+      "offline": "Оффлайн"
+    },
+    "rankFallback": "Без ранга",
+    "rankPoints": "{{count}} очков",
+    "notifications": {
+      "friendsLoadError": "Не удалось загрузить друзей",
+      "requestsLoadError": "Не удалось загрузить заявки",
+      "searchError": "Не удалось найти игрока",
+      "requestSent": "Заявка отправлена",
+      "requestSendError": "Не удалось отправить заявку",
+      "requestAccepted": "Заявка принята",
+      "requestDeclined": "Заявка отклонена",
+      "requestUpdateError": "Не удалось обновить заявку"
+    }
+  }
+}

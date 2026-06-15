@@ -19,6 +19,7 @@ import {
     startRoomMatchService,
 } from '../services/matchService.js'
 import { recordGameActivityEventRepo } from '../repositories/analyticsRepository.js'
+import { publishPlayerActivityEvent } from '../services/activityFeedService.js'
 
 const createRoomPlayer = (socket) => {
     const user = socket.data.user
@@ -294,6 +295,12 @@ export const registerLobbyHandlers = (io, socket) => {
                 socket,
                 player,
             })
+            publishPlayerActivityEvent('room_created', {
+                socket,
+                player,
+                room: normalizedRoom,
+                detail: `${normalizedRoom.modeKey} ${normalizedRoom.settings?.matchType || 'private'}`,
+            })
 
             callback?.({
                 success: true,
@@ -334,6 +341,14 @@ export const registerLobbyHandlers = (io, socket) => {
                 return
             }
 
+            if (room.status === 'closed') {
+                callback?.({
+                    success: false,
+                    message: 'Room is closed',
+                })
+                return
+            }
+
             if (isSocketRoomParticipant(room, socket)) {
                 callback?.({
                     success: true,
@@ -365,6 +380,13 @@ export const registerLobbyHandlers = (io, socket) => {
                     room: normalizedRoom,
                     socket,
                     player: existingPlayer,
+                    metadata: { rejoined: true },
+                })
+                publishPlayerActivityEvent('room_joined', {
+                    socket,
+                    player: existingPlayer,
+                    room: normalizedRoom,
+                    detail: 'вернулся в комнату',
                     metadata: { rejoined: true },
                 })
 
@@ -433,6 +455,11 @@ export const registerLobbyHandlers = (io, socket) => {
                 socket,
                 player: boundPlayer,
             })
+            publishPlayerActivityEvent('room_joined', {
+                socket,
+                player: boundPlayer,
+                room: normalizedRoom,
+            })
 
             callback?.({
                 success: true,
@@ -483,6 +510,11 @@ export const registerLobbyHandlers = (io, socket) => {
                 socket,
                 player: result.removedPlayer,
             })
+            publishPlayerActivityEvent('room_left', {
+                socket,
+                player: result.removedPlayer,
+                room: result.previousRoom,
+            })
 
             callback?.({
                 success: true,
@@ -516,6 +548,11 @@ export const registerLobbyHandlers = (io, socket) => {
 
             if (!room) {
                 callback?.({ success: false, message: 'Room not found' })
+                return
+            }
+
+            if (room.status === 'closed') {
+                callback?.({ success: false, message: 'Room is closed' })
                 return
             }
 
@@ -556,6 +593,12 @@ export const registerLobbyHandlers = (io, socket) => {
                     socket,
                     metadata: { source: 'ready' },
                 })
+                publishPlayerActivityEvent('match_started', {
+                    socket,
+                    room: playingRoom,
+                    detail: 'все готовы',
+                    metadata: { source: 'ready' },
+                })
 
                 io.to(roomId).emit('room:state', playingRoom)
                 io.to(roomId).emit('match:start', {
@@ -587,6 +630,11 @@ export const registerLobbyHandlers = (io, socket) => {
 
             if (!room) {
                 callback?.({ success: false, message: 'Room not found' })
+                return
+            }
+
+            if (room.status === 'closed') {
+                callback?.({ success: false, message: 'Room is closed' })
                 return
             }
 

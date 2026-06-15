@@ -1,0 +1,381 @@
+.friends-container {
+    background: transparent;
+}
+
+.friends-content {
+    min-width: 0;
+    display: grid;
+    gap: 1.2rem;
+}
+
+.friends-hero {
+    padding: 1.35rem;
+}
+
+.friends-hero span {
+    color: var(--turquoise);
+    font-size: 0.78rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.friends-hero h1 {
+    margin: 0.25rem 0 0.55rem;
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: clamp(1.9rem, 3vw, 3rem);
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.friends-hero p {
+    max-width: 720px;
+    margin: 0;
+    color: var(--text-color);
+    font-weight: 700;
+    line-height: 1.65;
+}
+
+.friends-tabs {
+    width: fit-content;
+    display: inline-grid;
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+    gap: 0.4rem;
+    padding: 0.35rem;
+    border: var(--border);
+    border-radius: var(--radius-card-1);
+    background: var(--elem-bg);
+}
+
+.friends-tabs a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    border: 0;
+    border-radius: var(--radius-card-1);
+    color: var(--text-color);
+    font-weight: 800;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.friends-tabs a:hover,
+.friends-tabs a.is-active {
+    color: var(--text-active-color);
+    background: var(--account-settings-tab-bg, var(--turquoise-tint-muted));
+    box-shadow: var(--revers-shadow);
+}
+
+.friends-panel {
+    padding: 1rem;
+}
+
+.friends-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.friends-panel__header > span {
+    flex: 0 0 auto;
+    padding: 0.35rem 0.65rem;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: var(--radius-card-1);
+    color: var(--turquoise-lite);
+    font-size: 0.78rem;
+    font-weight: 900;
+    background: var(--turquoise-tint-soft);
+}
+
+.friends-grid,
+.friends-request-list {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.friends-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.friends-player-card {
+    position: relative;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: var(--radius-card-1);
+    background: var(--input-bg);
+    box-shadow: inset 0 0 18px var(--turquoise-tint-soft);
+}
+
+.friends-player-card--compact {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+}
+
+.friends-player-card__avatar {
+    width: 54px;
+    aspect-ratio: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid var(--turquoise-border);
+    border-radius: 50%;
+    color: var(--turquoise-bright);
+    font-family: var(--font-1);
+    font-size: 1.2rem;
+    font-weight: 900;
+    background: var(--turquoise-tint-soft);
+}
+
+.friends-player-card__avatar img,
+.friends-player-card__avatar video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.friends-player-card__status {
+    position: absolute;
+    left: 50px;
+    top: 50px;
+    width: 13px;
+    height: 13px;
+    border: 2px solid var(--box-bg);
+    border-radius: 50%;
+    background: var(--pink);
+    box-shadow: 0 0 10px var(--pink);
+}
+
+.friends-player-card__status.is-online {
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+}
+
+.friends-player-card__status.is-offline {
+    background: #ff5577;
+    box-shadow: 0 0 10px rgba(255, 85, 119, 0.5);
+}
+
+.friends-player-card__body,
+.friends-player-card__rank {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.friends-player-card__body strong,
+.friends-player-card__rank strong {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--text-color-1);
+    font-size: 0.95rem;
+    line-height: 1.15;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.friends-player-card__body small,
+.friends-player-card__rank small,
+.friends-request-card__meta span,
+.friends-request-card__meta time,
+.friends-search-form label span {
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.friends-player-card__rank {
+    align-items: flex-end;
+    text-align: right;
+}
+
+.friends-player-card__rank strong {
+    color: var(--turquoise-lite);
+}
+
+.friends-request-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: var(--radius-card-1);
+    background: var(--input-bg);
+}
+
+.friends-request-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 145px;
+}
+
+.friends-request-card__meta time {
+    color: var(--text-color);
+}
+
+.friends-request-card__actions,
+.friends-search-result {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.friends-action {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0 0.9rem;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: var(--radius-card-1);
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: 0.76rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    background: var(--turquoise-tint-soft);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.friends-action:hover:not(:disabled),
+.friends-action:focus-visible:not(:disabled) {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.friends-action:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+}
+
+.friends-action--primary,
+.friends-action--accept {
+    border: 0;
+    color: #f7fbff;
+    background: var(--cta-gradient);
+    box-shadow: var(--cta-shadow);
+}
+
+.friends-action--decline {
+    color: var(--pink);
+    border-color: color-mix(in srgb, var(--pink) 30%, transparent);
+    background: color-mix(in srgb, var(--pink) 10%, transparent);
+}
+
+.friends-search-form {
+    display: grid;
+    grid-template-columns: minmax(220px, 360px) auto;
+    align-items: end;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.friends-search-form label {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.friends-search-form input {
+    min-height: 44px;
+    width: 100%;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: var(--radius-card-1);
+    color: var(--text-color-1);
+    background: var(--input-bg);
+    padding: 0 0.85rem;
+    outline: none;
+}
+
+.friends-search-form input:focus {
+    border-color: var(--turquoise-border-strong);
+    box-shadow: 0 0 0 3px var(--turquoise-tint-muted);
+}
+
+.friends-search-result {
+    justify-content: space-between;
+    align-items: stretch;
+    padding-top: 0.2rem;
+}
+
+.friends-search-result .friends-player-card {
+    flex: 1 1 auto;
+}
+
+.friends-empty {
+    min-height: 180px;
+    display: grid;
+    place-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border: 1px dashed var(--turquoise-border-soft);
+    border-radius: var(--radius-card-1);
+    color: var(--text-muted);
+    text-align: center;
+    background: var(--turquoise-tint-faint);
+}
+
+.friends-empty i {
+    color: var(--turquoise);
+    font-size: 1.4rem;
+}
+
+.friends-empty p {
+    max-width: 360px;
+    margin: 0;
+    line-height: 1.55;
+}
+
+@media (max-width: 900px) {
+    .friends-request-card,
+    .friends-search-result {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+
+    .friends-search-result {
+        display: grid;
+    }
+}
+
+@media (max-width: 640px) {
+    .friends-tabs,
+    .friends-search-form {
+        width: 100%;
+        grid-template-columns: 1fr;
+    }
+
+    .friends-panel__header,
+    .friends-request-card__actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .friends-player-card {
+        grid-template-columns: 48px minmax(0, 1fr);
+    }
+
+    .friends-player-card__rank {
+        grid-column: 2;
+        align-items: flex-start;
+        text-align: left;
+    }
+}

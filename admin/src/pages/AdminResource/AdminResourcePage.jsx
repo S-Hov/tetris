@@ -247,6 +247,9 @@ export function AdminResourcePage({ route }) {
   }
 
   const isMigrationsResource = config.key === 'migrations'
+  const canEditResourceItems = Boolean(config.editable && config.editorFields?.length)
+  const canDeleteResourceItems = Boolean(config.editable && config.deletable !== false)
+  const canRenderResourceActions = canEditResourceItems || canDeleteResourceItems
 
   return (
     <section className="admin-page admin-resource-page">
@@ -315,7 +318,7 @@ export function AdminResourcePage({ route }) {
       </div>
       )}
 
-      {config.editable ? (
+      {canEditResourceItems ? (
         <EditableResourcePanel
           config={config}
           isSaving={isSaving}
@@ -346,12 +349,16 @@ export function AdminResourcePage({ route }) {
           isLoading={isLoading}
           pagination={data.pagination}
           rows={data.items || []}
-          onStatusChange={config.editable ? handleStatusChange : undefined}
+          onStatusChange={config.editable && config.statusField ? handleStatusChange : undefined}
           onPageChange={handlePageChange}
-          renderActions={config.editable ? (row) => (
+          renderActions={canRenderResourceActions ? (row) => (
             <div className="admin-resource-actions">
-              <button type="button" onClick={() => handleEditClick(row)}>Изм.</button>
-              <button className="admin-resource-actions__danger" type="button" onClick={() => handleDelete(row)}>Удалить</button>
+              {canEditResourceItems ? (
+                <button type="button" onClick={() => handleEditClick(row)}>Изм.</button>
+              ) : null}
+              {canDeleteResourceItems ? (
+                <button className="admin-resource-actions__danger" type="button" onClick={() => handleDelete(row)}>Удалить</button>
+              ) : null}
             </div>
           ) : undefined}
         />

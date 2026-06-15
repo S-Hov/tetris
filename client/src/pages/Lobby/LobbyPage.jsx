@@ -101,6 +101,8 @@ const LobbyPage = () => {
     const [connectionState, setConnectionState] = useState(() => (socket.connected ? 'connected' : 'disconnected'))
     const notifiedRoomRef = useRef('')
     const restoredRoomRef = useRef('')
+    const activeRoomIdRef = useRef('')
+    const shouldLeaveRoomOnUnmountRef = useRef(true)
     const clientUserId = getClientUserId(user)
     const matchResult = location.state?.matchResult || null
     const roomIdFromMatch = location.state?.roomId || ''
@@ -129,6 +131,22 @@ const LobbyPage = () => {
             setRoomSettings(normalizeMatchSettings(location.state.roomSettings))
         }
     }, [location.state])
+
+    useEffect(() => {
+        activeRoomIdRef.current = roomId
+    }, [roomId])
+
+    useEffect(() => {
+        shouldLeaveRoomOnUnmountRef.current = true
+
+        return () => {
+            const activeRoomId = activeRoomIdRef.current
+
+            if (activeRoomId && shouldLeaveRoomOnUnmountRef.current && socket.connected) {
+                socket.emit('room:leave', { roomId: activeRoomId })
+            }
+        }
+    }, [])
 
     useEffect(() => {
         if (!user) {
@@ -224,6 +242,7 @@ const LobbyPage = () => {
                 )
             }
 
+            shouldLeaveRoomOnUnmountRef.current = false
             navigate(`/match/${startedRoomId}`, {
                 state: {
                     roomSettings: normalizeMatchSettings(currentRoom?.settings || roomSettings),

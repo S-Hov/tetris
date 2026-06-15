@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import './SimpleHeader.css'
 import HeaderBrand from '@/shared/ui/Header/HeaderBrand'
 import GlowEffect from '@/shared/ui/GlowEffect'
+import ServerPingIndicator from '@/shared/ui/ServerPingIndicator'
 // import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '@/i18n'
 
@@ -14,6 +15,7 @@ export default function SimpleHeader() {
     const { t, i18n } = useTranslation()
     const currentLanguage = getPathLanguage(location.pathname) || normalizeLanguage(i18n.language)
     const activeConfig = simpleHeaderConfig.find((config) => config.match(location.pathname))
+    const showSocketPing = isGameSocketPingPath(location.pathname)
 
     const currentConfig = activeConfig || {
         backTo: '/',
@@ -36,6 +38,7 @@ export default function SimpleHeader() {
                 <div className="header-content simple-header-content">
                     <HeaderBrand description={false} title={false} />
                     <nav className="simple-header-nav">
+                        {showSocketPing ? <ServerPingIndicator /> : null}
                         <Link to={primaryTo} className="back-link button">
                             <i className="fas fa-arrow-left"></i> {t(currentConfig.backLabelKey)}
                         </Link>
@@ -80,4 +83,10 @@ const getPathLanguage = (pathname = '') => {
     const [, maybeLanguage] = pathname.split('/')
 
     return SUPPORTED_LANGUAGES.includes(maybeLanguage) ? maybeLanguage : ''
+}
+
+const isGameSocketPingPath = (pathname = '') => {
+    const normalizedPathname = pathname.replace(/^\/(ru|en)(?=\/game(?:\/|$))/, '')
+
+    return normalizedPathname.startsWith('/game/') || pathname.startsWith('/match/')
 }

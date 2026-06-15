@@ -99,5 +99,32 @@
         }
       }
     }
+  },
+  "friendsRail": {
+    "ariaLabel": "Friends panel",
+    "eyebrow": "Social",
+    "title": "Friends",
+    "loading": "Loading friends...",
+    "total": "total",
+    "online": "online",
+    "requests": "requests",
+    "listLabel": "Friends list",
+    "loadError": "Could not load friends",
+    "empty": "Your friends list is empty.",
+    "findFriend": "Find friend",
+    "invite": "Invite to lobby",
+    "noOnline": "Nobody is online right now.",
+    "noOffline": "All friends are online.",
+    "guestTitle": "Friends need an account",
+    "guestText": "Create an account to add friends, receive requests and later invite players into matches.",
+    "register": "Create account",
+    "sections": {
+      "online": "Online",
+      "offline": "Offline friends"
+    },
+    "status": {
+      "online": "online",
+      "offline": "offline"
+    }
   }
 }

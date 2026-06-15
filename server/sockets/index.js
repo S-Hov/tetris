@@ -13,8 +13,16 @@ import {
     cancelRoomMatchService,
     markRoomPlayerLeftService,
 } from '../services/matchService.js'
-import { upsertUserSessionRepo } from '../repositories/analyticsRepository.js'
+import {
+    isAnalyticsTransientDbError,
+    upsertUserSessionRepo,
+} from '../repositories/analyticsRepository.js'
 import { setSupportRealtimeIo } from '../services/supportRealtimeService.js'
+import {
+    getRecentActivityEvents,
+    publishPlayerActivityEvent,
+    setActivityFeedIo,
+} from '../services/activityFeedService.js'
 
 const getWinnerAfterPlayerLeft = (room, removedPlayer) => {
     const players = getRoomPlayers(room)
@@ -39,6 +47,7 @@ const getTeamOutcomeAfterPlayerLeft = (previousRoom, updatedRoom, removedPlayer)
 
 export const registerSocketHandlers = (io) => {
     setSupportRealtimeIo(io)
+    setActivityFeedIo(io)
     io.use(socketAuthMiddleware)
 
     io.on('connection', (socket) => {
@@ -56,8 +65,22 @@ export const registerSocketHandlers = (io) => {
                 role: socket.data.user?.role || null,
             },
         }).catch((error) => {
+            if (isAnalyticsTransientDbError(error)) {
+                console.warn('socket session tracking skipped:', error.message)
+                return
+            }
+
             console.error('socket session tracking error', error)
         })
+
+        socket.on('ping:measure', (_payload = {}, callback) => {
+            callback?.({
+                serverTime: Date.now(),
+            })
+        })
+
+        socket.emit('activity:feed:init', getRecentActivityEvents())
+        publishPlayerActivityEvent('connected', { socket })
 
         registerLobbyHandlers(io, socket)
         registerGameHandlers(io, socket)
@@ -66,6 +89,7 @@ export const registerSocketHandlers = (io) => {
 
         socket.on('disconnect', async () => {
             console.log('Socket disconnected:', socket.id)
+            publishPlayerActivityEvent('disconnected', { socket })
             removeSocketFromMatchmakingQueue(socket.id)
             removeSocketFromParties(io, socket.id)
 

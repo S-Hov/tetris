@@ -35,6 +35,7 @@ import {
 } from "../utils/loginTurnstile.js"
 import { ok, fail } from "../src/shared/responses/send.js"
 import { forbidden } from "../helpers/error.helper.js"
+import { publishActivityEvent } from "../services/activityFeedService.js"
 
 const getRequestMeta = (req) => ({
     ipAddress: req.ip || req.socket?.remoteAddress || null,
@@ -52,6 +53,14 @@ export const register = asyncHandler(async (req, res) => {
         userId: user.id,
         eventType: 'register_success',
         ...requestMeta,
+    })
+    publishActivityEvent({
+        type: 'registered',
+        actor: user.username || 'Новый игрок',
+        detail: 'присоединился к PVP Tetris',
+        metadata: {
+            userId: user.id,
+        },
     })
 
     try {

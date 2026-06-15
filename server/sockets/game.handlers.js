@@ -9,6 +9,68 @@ import {
     recordMatchEventService,
 } from '../services/matchService.js'
 import { getActiveGameEffectByKeyRepo } from '../repositories/gameEffectsRepository.js'
+import { publishActivityEvent, publishPlayerActivityEvent } from '../services/activityFeedService.js'
+
+const PLAYER_SNAPSHOT_PERSIST_DELAY_MS = 1500
+const pendingPlayerSnapshotPersists = new Map()
+
+const notifyPersistenceError = (io, roomId, message = 'Не удалось сохранить данные матча') => {
+    io.to(roomId).emit('persistence:error', {
+        roomId,
+        message,
+    })
+}
+
+const runPersistenceTask = (io, roomId, task, message) => {
+    void task().catch((error) => {
+        console.error(message, error)
+        notifyPersistenceError(io, roomId)
+    })
+}
+
+const schedulePlayerSnapshotPersist = (io, roomId, socketId, payload) => {
+    const key = `${roomId}:${socketId}`
+    const existingTask = pendingPlayerSnapshotPersists.get(key)
+
+    if (existingTask) {
+        existingTask.payload = payload
+        return
+    }
+
+    const task = {
+        payload,
+        timer: null,
+    }
+
+    task.timer = setTimeout(() => {
+        pendingPlayerSnapshotPersists.delete(key)
+
+        runPersistenceTask(
+            io,
+            roomId,
+            () => roomStore.updatePlayer(roomId, socketId, (player) => ({
+                ...player,
+                gameState: task.payload,
+            })),
+            'game:update persistence error'
+        )
+    }, PLAYER_SNAPSHOT_PERSIST_DELAY_MS)
+
+    pendingPlayerSnapshotPersists.set(key, task)
+}
+
+const clearRoomSnapshotPersists = (roomId) => {
+    const prefix = `${roomId}:`
+
+    for (const [key, task] of pendingPlayerSnapshotPersists.entries()) {
+        if (!key.startsWith(prefix)) {
+            continue
+        }
+
+        clearTimeout(task.timer)
+        pendingPlayerSnapshotPersists.delete(key)
+    }
+}
 
 export const registerGameHandlers = (io, socket) => {
     socket.on('game:update', async ({ roomId, payload }) => {
@@ -18,7 +80,7 @@ export const registerGameHandlers = (io, socket) => {
             return
         }
 
-        await roomStore.updatePlayer(roomId, socket.id, (player) => ({
+        roomStore.updateCachedPlayer(roomId, socket.id, (player) => ({
             ...player,
             gameState: payload,
         }))
@@ -27,6 +89,8 @@ export const registerGameHandlers = (io, socket) => {
             socketId: socket.id,
             payload,
         })
+
+        schedulePlayerSnapshotPersist(io, roomId, socket.id, payload)
     })
 
     socket.on('game:over', async ({ roomId, payload }) => {
@@ -40,7 +104,7 @@ export const registerGameHandlers = (io, socket) => {
             return
         }
 
-        const updatedRoom = await roomStore.updateRoom(roomId, (currentRoom) => {
+        const updatedRoom = roomStore.updateCachedRoom(roomId, (currentRoom) => {
             if (!currentRoom) {
                 return currentRoom
             }
@@ -97,21 +161,6 @@ export const registerGameHandlers = (io, socket) => {
             loserTeam.players.every((player) => player.gameState?.isGameOver)
         const winner = winnerTeam?.players?.[0] || players.find((player) => player.socketId !== socket.id) || null
 
-        if (isTeamDefeated && winner && loser) {
-            try {
-                await finishRoomMatchService({
-                    roomId,
-                    winnerPlayer: winner,
-                    loserPlayer: loser,
-                    loserPayload: payload,
-                    winnerTeamPlayers: winnerTeam?.players || null,
-                    loserTeamPlayers: loserTeam?.players || null,
-                })
-            } catch (error) {
-                console.error('game:over persistence error', error)
-            }
-        }
-
         socket.to(roomId).emit('opponent:update', {
             socketId: socket.id,
             payload: {
@@ -125,8 +174,16 @@ export const registerGameHandlers = (io, socket) => {
         }
 
         if (!isTeamDefeated) {
+            runPersistenceTask(
+                io,
+                roomId,
+                () => updatedRoom ? roomStore.createRoom(updatedRoom) : Promise.resolve(null),
+                'game:over room persistence error'
+            )
             return
         }
+
+        clearRoomSnapshotPersists(roomId)
 
         io.to(roomId).emit('match:end', {
             roomId,
@@ -138,10 +195,41 @@ export const registerGameHandlers = (io, socket) => {
             winnerTeamId: winnerTeam?.id || null,
             matchType: room.settings?.matchType || 'private',
         })
+        publishActivityEvent({
+            type: 'match_finished',
+            actor: winner?.username || 'Игрок',
+            target: loser?.username || null,
+            mode: room.modeKey,
+            matchType: room.settings?.matchType || 'private',
+            roomId,
+            detail: winner ? 'победа' : 'матч завершен',
+        })
 
-        if (room.settings?.matchType && room.settings.matchType !== 'private') {
-            await roomStore.deleteRoom(roomId)
-        }
+        runPersistenceTask(
+            io,
+            roomId,
+            async () => {
+                if (updatedRoom) {
+                    await roomStore.createRoom(updatedRoom)
+                }
+
+                if (isTeamDefeated && winner && loser) {
+                    await finishRoomMatchService({
+                        roomId,
+                        winnerPlayer: winner,
+                        loserPlayer: loser,
+                        loserPayload: payload,
+                        winnerTeamPlayers: winnerTeam?.players || null,
+                        loserTeamPlayers: loserTeam?.players || null,
+                    })
+                }
+
+                if (room.settings?.matchType && room.settings.matchType !== 'private') {
+                    await roomStore.deleteRoom(roomId)
+                }
+            },
+            'game:over persistence error'
+        )
     })
 
     socket.on('ability:use', async ({ roomId, abilityId, targetSocketId }, callback) => {
@@ -199,9 +287,24 @@ export const registerGameHandlers = (io, socket) => {
                 sourceSocketId: socket.id,
             },
         })
+        publishPlayerActivityEvent('ability_used', {
+            socket,
+            player: sourcePlayer,
+            room,
+            detail: `${ability.name || abilityId} -> ${targetPlayer.username}`,
+            metadata: {
+                abilityId,
+                effectType: effect.type,
+                targetSocketId: targetPlayer.socketId,
+            },
+        })
 
-        try {
-            await recordMatchEventService({
+        callback?.({ success: true, effectType: effect.type })
+
+        runPersistenceTask(
+            io,
+            roomId,
+            () => recordMatchEventService({
                 roomId,
                 eventType: 'ability_used',
                 sourcePlayer,
@@ -211,11 +314,8 @@ export const registerGameHandlers = (io, socket) => {
                     effectType: effect.type,
                     durationMs: effect.durationMs,
                 },
-            })
-        } catch (error) {
-            console.error('ability:use persistence error', error)
-        }
-
-        callback?.({ success: true, effectType: effect.type })
+            }),
+            'ability:use persistence error'
+        )
     })
 }

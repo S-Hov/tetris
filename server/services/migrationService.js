@@ -11,6 +11,19 @@ const migrationsDir = path.join(serverRoot, 'migrations')
 const MIGRATIONS_TABLE = 'schema_migrations'
 const MIGRATION_LOCK_KEY = 'pvp_tetris_schema_migrations'
 
+const shouldUseAdvisoryLock = () => {
+    const databaseUrl = process.env.DATABASE_URL || ''
+    const host = (() => {
+        try {
+            return new URL(databaseUrl).host
+        } catch {
+            return process.env.DB_HOST || ''
+        }
+    })()
+
+    return !host.includes('pooler.supabase.')
+}
+
 const ensureMigrationsTable = async (client) => {
     await client.query(`
         CREATE TABLE IF NOT EXISTS ${MIGRATIONS_TABLE} (
@@ -229,6 +242,7 @@ const runMigration = async (client, name) => {
 
 export const runPendingMigrations = async ({ closePool = false, logger = console } = {}) => {
     const client = await pool.connect()
+    const useAdvisoryLock = shouldUseAdvisoryLock()
     let hasMigrationLock = false
     const result = {
         applied: [],
@@ -239,11 +253,19 @@ export const runPendingMigrations = async ({ closePool = false, logger = console
 
     try {
         await ensureMigrationsTable(client)
-        await client.query(
-            'SELECT pg_advisory_lock(hashtext($1)::bigint)',
-            [MIGRATION_LOCK_KEY]
-        )
-        hasMigrationLock = true
+        if (useAdvisoryLock) {
+            const lockResult = await client.query(
+                'SELECT pg_try_advisory_lock(hashtext($1)::bigint) AS locked',
+                [MIGRATION_LOCK_KEY]
+            )
+            hasMigrationLock = Boolean(lockResult.rows[0]?.locked)
+
+            if (!hasMigrationLock) {
+                throw new Error('Another migration process is already running.')
+            }
+        } else {
+            logger.warn('Skipping session advisory migration lock for Supabase pooler connection.')
+        }
 
         const files = await getMigrationFiles()
         let appliedMigrationNames = await getAppliedMigrationNames(client)
@@ -279,7 +301,7 @@ export const runPendingMigrations = async ({ closePool = false, logger = console
         return result
     } finally {
         try {
-            if (hasMigrationLock) {
+            if (useAdvisoryLock && hasMigrationLock) {
                 await client.query(
                     'SELECT pg_advisory_unlock(hashtext($1)::bigint)',
                     [MIGRATION_LOCK_KEY]

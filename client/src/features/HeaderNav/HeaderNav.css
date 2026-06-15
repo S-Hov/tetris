@@ -65,7 +65,7 @@
     }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 770px) {
     .nav-menu,
     .modes-nav {
         display: none;
