@@ -624,6 +624,74 @@ export const registerLobbyHandlers = (io, socket) => {
         }
     })
 
+    socket.on('room:update-mode', async ({ roomId, modeKey, settings } = {}, callback) => {
+        try {
+            const room = await roomStore.getRoom(roomId)
+
+            if (!room) {
+                callback?.({ success: false, message: 'Room not found' })
+                return
+            }
+
+            if (room.status === 'closed') {
+                callback?.({ success: false, message: 'Room is closed' })
+                return
+            }
+
+            if (room.status === 'playing') {
+                callback?.({ success: false, message: 'Match has already started' })
+                return
+            }
+
+            if (room.ownerSocketId !== socket.id && String(room.ownerUserId) !== String(socket.data.user?.id)) {
+                callback?.({ success: false, message: 'Only room owner can change room mode' })
+                return
+            }
+
+            if (!isSocketRoomParticipant(room, socket)) {
+                callback?.({ success: false, message: 'Player is not in this room' })
+                return
+            }
+
+            const nextModeKey = modeKey || room.modeKey || '1v1'
+            const players = getRoomPlayers(room)
+
+            if (players.length > getMaxPlayersForMode(nextModeKey)) {
+                callback?.({
+                    success: false,
+                    message: 'Too many players for this mode',
+                })
+                return
+            }
+
+            const nextSettings = settings ? normalizeRoomSettings(settings) : (room.settings || {})
+            const updatedPlayers = players.map((player) => ({
+                ...player,
+                isReady: false,
+            }))
+            const updatedRoom = await roomStore.createRoom({
+                ...room,
+                status: 'waiting',
+                modeKey: nextModeKey,
+                settings: nextSettings,
+                players: updatedPlayers,
+                teams: buildRoomTeams(updatedPlayers, room.teams),
+            })
+
+            trackRoomEvent('room_mode_updated', {
+                room: updatedRoom,
+                socket,
+                metadata: { modeKey: nextModeKey },
+            })
+
+            io.to(roomId).emit('room:state', updatedRoom)
+            callback?.({ success: true, message: 'Room mode updated', room: updatedRoom })
+        } catch (error) {
+            console.error('room:update-mode error', error)
+            callback?.({ success: false, message: 'Could not update room mode' })
+        }
+    })
+
     socket.on('room:set-team', async ({ roomId, userId, teamId }, callback) => {
         try {
             const room = await roomStore.getRoom(roomId)

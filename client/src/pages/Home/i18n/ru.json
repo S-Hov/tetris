@@ -113,6 +113,11 @@
     "empty": "Список друзей пока пуст.",
     "findFriend": "Найти друга",
     "invite": "Пригласить в лобби",
+    "inviting": "Отправляем...",
+    "inviteSent": "Приглашение отправлено",
+    "inviteError": "Не удалось отправить приглашение",
+    "inviteInGame": "Этот друг уже в игре",
+    "inviteInGameShort": "В игре",
     "noOnline": "Сейчас никого в сети.",
     "noOffline": "Все друзья сейчас онлайн.",
     "guestTitle": "Для друзей нужен аккаунт",
@@ -124,7 +129,20 @@
     },
     "status": {
       "online": "онлайн",
+      "inGame": "в игре",
       "offline": "офлайн"
     }
+  },
+  "roomInvite": {
+    "eyebrow": "Приглашение в лобби",
+    "title": "Зайти в комнату?",
+    "description": "{{username}} приглашает вас в комнату {{mode}}.",
+    "accept": "Принять",
+    "decline": "Отклонить",
+    "close": "Закрыть приглашение",
+    "friend": "Друг",
+    "toast": "{{username}} приглашает вас в лобби",
+    "responseAccepted": "{{username}} принял приглашение",
+    "responseDeclined": "{{username}} отклонил приглашение"
   }
 }

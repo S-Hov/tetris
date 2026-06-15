@@ -113,6 +113,11 @@
     "empty": "Your friends list is empty.",
     "findFriend": "Find friend",
     "invite": "Invite to lobby",
+    "inviting": "Sending...",
+    "inviteSent": "Invite sent",
+    "inviteError": "Could not send invite",
+    "inviteInGame": "This friend is already in game",
+    "inviteInGameShort": "In game",
     "noOnline": "Nobody is online right now.",
     "noOffline": "All friends are online.",
     "guestTitle": "Friends need an account",
@@ -124,7 +129,20 @@
     },
     "status": {
       "online": "online",
+      "inGame": "in game",
       "offline": "offline"
     }
+  },
+  "roomInvite": {
+    "eyebrow": "Lobby invite",
+    "title": "Join room?",
+    "description": "{{username}} invites you to a {{mode}} room.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "close": "Close invite",
+    "friend": "Friend",
+    "toast": "{{username}} invited you to a lobby",
+    "responseAccepted": "{{username}} accepted the invite",
+    "responseDeclined": "{{username}} declined the invite"
   }
 }

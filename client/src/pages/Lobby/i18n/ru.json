@@ -43,9 +43,21 @@
       "emptyTitle": "Комната пока не выбрана",
       "leave": "Выйти из лобби",
       "copyId": "Скопировать ID",
+      "copyLink": "Скопировать ссылку",
       "ready": "Я готов",
       "unready": "Снять готовность",
       "emptyRoster": "Создайте комнату или подключитесь к существующей, чтобы увидеть состав игроков."
+    },
+    "share": {
+      "label": "Поделиться комнатой",
+      "title": "Комната PvP Tetris",
+      "messageTitle": "Залетай в мою комнату PvP Tetris",
+      "messageMode": "Режим: {{mode}}",
+      "emailSubject": "Приглашение в комнату PvP Tetris",
+      "native": "Поделиться",
+      "telegram": "Telegram",
+      "whatsapp": "WhatsApp",
+      "email": "Почта"
     },
     "settings": {
       "effectsOn": "Эффекты: ON",
@@ -94,7 +106,14 @@
       "setTeamFailed": "Не удалось поменять команду",
       "teamUpdated": "Команда обновлена",
       "copyRoomFailed": "Скопировать ID комнаты не удалось",
-      "roomCopied": "ID комнаты скопирован"
+      "roomCopied": "ID комнаты скопирован",
+      "copyRoomLinkFailed": "Скопировать ссылку комнаты не удалось",
+      "roomLinkCopied": "Ссылка комнаты скопирована",
+      "shareRoomFailed": "Не удалось поделиться комнатой",
+      "modeUpdateFailed": "Не удалось поменять режим комнаты",
+      "modeUpdated": "Режим комнаты обновлен",
+      "inviteFailed": "Не удалось отправить приглашение",
+      "inviteSent": "Приглашение отправлено"
     }
   }
 }

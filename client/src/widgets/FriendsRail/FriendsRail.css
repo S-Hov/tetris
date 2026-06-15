@@ -326,6 +326,13 @@ button.friends-rail__item-main:focus-visible {
     cursor: pointer;
 }
 
+.friends-rail__invite:disabled {
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
 .friends-rail__find {
     flex: 0 0 auto;
 }

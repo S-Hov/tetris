@@ -17,7 +17,15 @@ const userSelect = `
         WHERE user_sessions.user_id = users.id
             AND user_sessions.status = 'active'
             AND user_sessions.last_seen_at >= NOW() - ($2::int * INTERVAL '1 minute')
-    ) AS is_online
+    ) AS is_online,
+    EXISTS (
+        SELECT 1
+        FROM game_room_players
+        JOIN game_rooms
+            ON game_rooms.id = game_room_players.room_id
+        WHERE game_room_players.user_id = users.id
+            AND game_rooms.status = 'playing'
+    ) AS is_in_game
 `
 
 export const getFriendsRepo = async (userId) => {

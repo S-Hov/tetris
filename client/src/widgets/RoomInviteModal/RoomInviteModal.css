@@ -1,0 +1,107 @@
+.room-invite-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2200;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.48);
+    backdrop-filter: var(--medium-blur);
+}
+
+.room-invite-modal__dialog {
+    position: relative;
+    width: min(420px, 100%);
+    display: grid;
+    gap: 0.8rem;
+    padding: 1.45rem;
+    border: var(--border);
+    border-radius: var(--radius-panel);
+    color: var(--text-color);
+    background: var(--box-bg);
+    box-shadow: var(--hover-shadow);
+}
+
+.room-invite-modal__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    display: inline-grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    color: var(--text-color);
+    background: rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+}
+
+.room-invite-modal__icon {
+    width: 46px;
+    height: 46px;
+    display: inline-grid;
+    place-items: center;
+    border: 1px solid var(--turquoise-border);
+    border-radius: 50%;
+    color: var(--turquoise-bright);
+    background: var(--turquoise-tint-soft);
+    box-shadow: 0 0 18px var(--turquoise-glow);
+}
+
+.room-invite-modal__eyebrow {
+    margin: 0;
+    color: var(--turquoise-lite);
+    font-family: var(--font-1);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+}
+
+.room-invite-modal__dialog h2 {
+    margin: 0;
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+}
+
+.room-invite-modal__dialog p {
+    margin: 0;
+    line-height: 1.55;
+}
+
+.room-invite-modal__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+    margin-top: 0.3rem;
+}
+
+.room-invite-modal__accept,
+.room-invite-modal__decline {
+    min-height: 44px;
+    border-radius: var(--radius-card-1);
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.room-invite-modal__accept {
+    border: 0;
+    color: var(--text-active-color);
+    background: var(--btn-gradient-1);
+}
+
+.room-invite-modal__decline {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+@media (max-width: 480px) {
+    .room-invite-modal {
+        align-items: end;
+        padding: 12px;
+    }
+
+    .room-invite-modal__dialog {
+        border-radius: var(--radius-panel) var(--radius-panel) 0 0;
+    }
+}

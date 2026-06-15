@@ -374,6 +374,57 @@
     justify-content: flex-end;
 }
 
+.lobby-share-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    border: var(--border);
+    border-radius: var(--radius-card-1);
+    background: var(--input-bg);
+}
+
+.lobby-share-panel p {
+    max-width: 560px;
+    margin: 0.35rem 0 0;
+    overflow: hidden;
+    color: var(--text-color);
+    font-size: 0.86rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lobby-share-panel__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    justify-content: flex-end;
+}
+
+.lobby-share-panel__actions button {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--turquoise-tint-medium);
+    border-radius: var(--radius-card-1);
+    color: var(--text-color-1);
+    font-weight: 800;
+    background: rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.lobby-share-panel__actions button:hover,
+.lobby-share-panel__actions button:focus-visible {
+    border-color: var(--turquoise-border);
+    background: var(--turquoise-tint-soft);
+    outline: none;
+}
+
 .lobby-roster {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -527,6 +578,19 @@
 
     .lobby-room-actions {
         justify-content: stretch;
+    }
+
+    .lobby-share-panel {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .lobby-share-panel__actions {
+        justify-content: stretch;
+    }
+
+    .lobby-share-panel__actions button {
+        flex: 1 1 120px;
     }
 }
 

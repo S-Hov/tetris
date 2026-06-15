@@ -1,18 +1,41 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { getBaseUrl } from '@/shared/api/apiClient.js'
+import { socket } from '@/shared/api/socket'
 import { useAuth } from '@/shared/hooks/useAuth.js'
 import useFriendsRealtime from '@/shared/hooks/useFriendsRealtime.js'
+import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedGamePath } from '@/i18n'
+import notify from '@/utils/Notifications'
 
 import './FriendsRail.css'
 
+const getLobbyRoomFromPathname = (pathname = '') => {
+    const match = pathname.match(/\/game\/([^/]+)\/lobby\/([^/?#]+)/)
+
+    if (!match) {
+        return null
+    }
+
+    return {
+        modeKey: match[1],
+        roomId: decodeURIComponent(match[2]),
+    }
+}
+
+const emitWithAck = (eventName, payload) => new Promise((resolve) => {
+    socket.emit(eventName, payload, (response) => resolve(response || { success: false }))
+})
+
 const FriendsRail = () => {
     const { t } = useTranslation()
+    const navigate = useNavigate()
+    const location = useLocation()
     const { isAuth, isLoading: isAuthLoading, user } = useAuth()
     const friendsState = useFriendsRealtime({ enabled: isAuth && !isAuthLoading })
     const [selectedFriendId, setSelectedFriendId] = useState(null)
+    const [invitingFriendId, setInvitingFriendId] = useState(null)
 
     const currentUserKey = user?.id || 'authorized'
     const friends = useMemo(
@@ -26,6 +49,50 @@ const FriendsRail = () => {
     const offlineFriends = useMemo(() => friends.filter((friend) => !friend.isOnline), [friends])
     const totalFriends = friends.length
     const badgeValue = isAuth ? onlineFriends.length : '!'
+
+    const handleInviteFriend = async (friend) => {
+        if (!friend?.id || invitingFriendId) {
+            return
+        }
+
+        if (friend.isInGame) {
+            notify(t('friendsRail.inviteInGame'), 'warning')
+            return
+        }
+
+        const currentRoom = getLobbyRoomFromPathname(location.pathname)
+
+        if (!currentRoom?.roomId) {
+            const language = getLanguageFromPathname(location.pathname) || DEFAULT_LANGUAGE
+            navigate(getLocalizedGamePath('/game/1v1/lobby', language), {
+                state: {
+                    autoCreateRoom: true,
+                    inviteFriendId: friend.id,
+                    modeKey: '1v1',
+                },
+            })
+            return
+        }
+
+        setInvitingFriendId(friend.id)
+
+        try {
+            const response = await emitWithAck('friends:room-invite:send', {
+                friendId: friend.id,
+                roomId: currentRoom.roomId,
+            })
+
+            if (!response.success) {
+                notify(response.message || t('friendsRail.inviteError'), 'error')
+                return
+            }
+
+            notify(t('friendsRail.inviteSent'), 'success')
+            setSelectedFriendId(null)
+        } finally {
+            setInvitingFriendId(null)
+        }
+    }
 
     return (
         <aside className="friends-rail" aria-label={t('friendsRail.ariaLabel')} tabIndex={0}>
@@ -70,6 +137,8 @@ const FriendsRail = () => {
                                     selectedFriendId={selectedFriendId}
                                     title={t('friendsRail.sections.online')}
                                     onSelect={setSelectedFriendId}
+                                    onInvite={handleInviteFriend}
+                                    invitingFriendId={invitingFriendId}
                                     t={t}
                                 />
                                 <FriendSection
@@ -107,7 +176,16 @@ const FriendsRail = () => {
     )
 }
 
-const FriendSection = ({ friends, isOnlineSection = false, onSelect, selectedFriendId, t, title }) => (
+const FriendSection = ({
+    friends,
+    invitingFriendId = null,
+    isOnlineSection = false,
+    onInvite = () => {},
+    onSelect,
+    selectedFriendId,
+    t,
+    title,
+}) => (
     <section className="friends-rail__section">
         <h3>{title}</h3>
         {friends.length > 0 ? (
@@ -118,7 +196,9 @@ const FriendSection = ({ friends, isOnlineSection = false, onSelect, selectedFri
                         isExpanded={selectedFriendId === friend.id}
                         isOnlineSection={isOnlineSection}
                         key={friend.id}
+                        onInvite={onInvite}
                         onSelect={onSelect}
+                        isInviting={invitingFriendId === friend.id}
                         t={t}
                     />
                 ))}
@@ -131,7 +211,7 @@ const FriendSection = ({ friends, isOnlineSection = false, onSelect, selectedFri
     </section>
 )
 
-const FriendItem = ({ friend, isExpanded, isOnlineSection, onSelect, t }) => {
+const FriendItem = ({ friend, isExpanded, isInviting, isOnlineSection, onInvite, onSelect, t }) => {
     const content = (
         <>
             <span className="friends-rail__avatar">
@@ -140,7 +220,7 @@ const FriendItem = ({ friend, isExpanded, isOnlineSection, onSelect, t }) => {
             <span className={`friends-rail__status ${friend.isOnline ? 'is-online' : 'is-offline'}`} aria-hidden="true"></span>
             <span className="friends-rail__item-body">
                 <strong>{friend.username}</strong>
-                <small>{friend.isOnline ? t('friendsRail.status.online') : t('friendsRail.status.offline')}</small>
+                <small>{friend.isInGame ? t('friendsRail.status.inGame') : friend.isOnline ? t('friendsRail.status.online') : t('friendsRail.status.offline')}</small>
             </span>
         </>
     )
@@ -163,9 +243,14 @@ const FriendItem = ({ friend, isExpanded, isOnlineSection, onSelect, t }) => {
             )}
 
             {isOnlineSection && isExpanded ? (
-                <button className="friends-rail__invite" type="button">
+                <button
+                    className="friends-rail__invite"
+                    type="button"
+                    disabled={friend.isInGame || isInviting}
+                    onClick={() => onInvite(friend)}
+                >
                     <i className="fas fa-paper-plane"></i>
-                    {t('friendsRail.invite')}
+                    {friend.isInGame ? t('friendsRail.inviteInGameShort') : isInviting ? t('friendsRail.inviting') : t('friendsRail.invite')}
                 </button>
             ) : null}
         </article>

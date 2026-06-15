@@ -56,6 +56,16 @@ const getModeRosterSize = (modeKey) => (modeKey === '2v2' ? 4 : 2)
 
 const getTeamLabel = (teamId, t) => (teamId === 'team_2' ? t('lobby.teams.team2') : t('lobby.teams.team1'))
 
+const getLobbyRoomPath = (language, modeKey, roomId = '') => {
+    const roomSegment = roomId ? `/${roomId}` : ''
+
+    return getLocalizedGamePath(`/game/${modeKey || '1v1'}/lobby${roomSegment}`, language)
+}
+
+const getRoomInviteMessage = ({ modeKey, roomUrl, t }) => (
+    `${t('lobby.share.messageTitle')}\n${t('lobby.share.messageMode', { mode: modeKey })}\n${roomUrl}`
+)
+
 const getAssetUrl = (value) => {
     if (!value) return ''
     if (/^https?:\/\//i.test(value)) return value
@@ -90,7 +100,7 @@ const PlayerAvatar = ({ player }) => (
 const LobbyPage = () => {
     const navigate = useNavigate()
     const location = useLocation()
-    const { mode } = useParams()
+    const { mode, roomId: routeRoomId } = useParams()
     const { t, i18n } = useTranslation()
     const { user } = useAuth()
     const currentLanguage = getLanguageFromPathname(location.pathname) || DEFAULT_LANGUAGE
@@ -102,11 +112,13 @@ const LobbyPage = () => {
     const [connectionState, setConnectionState] = useState(() => (socket.connected ? 'connected' : 'disconnected'))
     const notifiedRoomRef = useRef('')
     const restoredRoomRef = useRef('')
+    const consumedAutoInviteRef = useRef('')
     const activeRoomIdRef = useRef('')
     const shouldLeaveRoomOnUnmountRef = useRef(true)
     const clientUserId = getClientUserId(user)
     const matchResult = location.state?.matchResult || null
     const roomIdFromMatch = location.state?.roomId || ''
+    const requestedRoomId = routeRoomId || roomIdFromMatch
     const modeKey = location.state?.modeKey || currentRoom?.modeKey || mode || '1v1'
     const modeConfig = getModeSelectionConfig(modeKey)
     const modeTitle = t(`modeSelect.modes.${modeConfig.key}.title`, { defaultValue: modeConfig.title })
@@ -124,6 +136,34 @@ const LobbyPage = () => {
     const emit = useCallback((eventName, payload) => (
         emitWithAck(eventName, payload, t('lobby.notifications.noResponse'))
     ), [t])
+    const navigateToRoom = useCallback((room, { replace = true } = {}) => {
+        if (!room?.id) {
+            return
+        }
+
+        const nextPath = getLobbyRoomPath(currentLanguage, room.modeKey || modeKey, room.id)
+
+        if (location.pathname !== nextPath) {
+            shouldLeaveRoomOnUnmountRef.current = false
+            navigate(nextPath, {
+                replace,
+                state: {
+                    modeKey: room.modeKey || modeKey,
+                    roomSettings: normalizeMatchSettings(room.settings || roomSettings),
+                },
+            })
+            window.setTimeout(() => {
+                shouldLeaveRoomOnUnmountRef.current = true
+            }, 0)
+        }
+    }, [currentLanguage, location.pathname, modeKey, navigate, roomSettings])
+    const roomShareUrl = useMemo(() => {
+        if (!roomId || typeof window === 'undefined') {
+            return ''
+        }
+
+        return `${window.location.origin}${getLobbyRoomPath(currentLanguage, modeKey, roomId)}`
+    }, [currentLanguage, modeKey, roomId])
 
     useEffect(() => {
         if (i18n.language !== currentLanguage) {
@@ -212,6 +252,7 @@ const LobbyPage = () => {
             if (room?.settings) {
                 setRoomSettings(normalizeMatchSettings(room.settings))
             }
+            navigateToRoom(room)
         }
 
         const handlePlayerJoined = ({ username, userId }) => {
@@ -231,6 +272,13 @@ const LobbyPage = () => {
                 setCurrentRoom(null)
                 setRoomId('')
                 setJoinRoomId('')
+                navigate(getLobbyRoomPath(currentLanguage, modeKey), {
+                    replace: true,
+                    state: {
+                        modeKey,
+                        roomSettings,
+                    },
+                })
             }
         }
 
@@ -265,7 +313,7 @@ const LobbyPage = () => {
             socket.off('room:left', handleRoomLeft)
             socket.off('match:start', handleMatchStart)
         }
-    }, [clientUserId, currentRoom?.id, currentRoom?.modeKey, currentRoom?.settings, modeKey, navigate, roomId, roomSettings, t])
+    }, [clientUserId, currentLanguage, currentRoom?.id, currentRoom?.modeKey, currentRoom?.settings, modeKey, navigate, navigateToRoom, roomId, roomSettings, t])
 
     const ensurePlayableIdentity = useCallback(async () => {
         if (user) {
@@ -280,17 +328,17 @@ const LobbyPage = () => {
     }, [nickname, t, user])
 
     useEffect(() => {
-        if (!roomIdFromMatch || restoredRoomRef.current === roomIdFromMatch) {
+        if (!requestedRoomId || restoredRoomRef.current === requestedRoomId || roomId === requestedRoomId) {
             return
         }
 
-        restoredRoomRef.current = roomIdFromMatch
+        restoredRoomRef.current = requestedRoomId
 
         const restoreRoom = async () => {
             try {
                 await ensurePlayableIdentity()
 
-                const response = await emit('room:join', { roomId: roomIdFromMatch })
+                const response = await emit('room:join', { roomId: requestedRoomId })
 
                 if (!response.success) {
                     notify(response.message || t('lobby.notifications.restoreRoomFailed'), 'error')
@@ -303,13 +351,14 @@ const LobbyPage = () => {
                 if (response.room?.settings) {
                     setRoomSettings(normalizeMatchSettings(response.room.settings))
                 }
+                navigateToRoom(response.room)
             } catch (error) {
                 notify(error.message || t('lobby.notifications.restoreRoomFailed'), 'error')
             }
         }
 
         restoreRoom()
-    }, [emit, ensurePlayableIdentity, roomIdFromMatch, t])
+    }, [emit, ensurePlayableIdentity, navigateToRoom, requestedRoomId, roomId, t])
 
     const handleCreateRoom = async () => {
         setIsBusy(true)
@@ -328,9 +377,11 @@ const LobbyPage = () => {
 
             setCurrentRoom(response.room)
             setRoomId(response.room.id)
+            setJoinRoomId(response.room.id)
             if (response.room?.settings) {
                 setRoomSettings(normalizeMatchSettings(response.room.settings))
             }
+            navigateToRoom(response.room)
             notify(response.message || t('lobby.notifications.roomCreated'), 'success')
         } catch (error) {
             notify(error.message || t('lobby.notifications.createRoomFailed'), 'error')
@@ -356,6 +407,7 @@ const LobbyPage = () => {
             if (response.room?.settings) {
                 setRoomSettings(normalizeMatchSettings(response.room.settings))
             }
+            navigateToRoom(response.room)
             notify(response.message || t('lobby.notifications.roomJoined'), 'success')
         } catch (error) {
             notify(error.message || t('lobby.notifications.joinRoomFailed'), 'error')
@@ -394,6 +446,14 @@ const LobbyPage = () => {
         setCurrentRoom(null)
         setRoomId('')
         setJoinRoomId('')
+        activeRoomIdRef.current = ''
+        navigate(getLobbyRoomPath(currentLanguage, modeKey), {
+            replace: true,
+            state: {
+                modeKey,
+                roomSettings,
+            },
+        })
         notify(response.message || t('lobby.notifications.left'), 'info')
     }
 
@@ -419,19 +479,77 @@ const LobbyPage = () => {
         notify(response.message || t('lobby.notifications.teamUpdated'), 'success')
     }
 
-    const handleCopyRoomId = async () => {
-        if (!roomId || !navigator?.clipboard) {
-            notify(t('lobby.notifications.copyRoomFailed'), 'error')
+    const handleCopyRoomLink = async () => {
+        if (!roomShareUrl || !navigator?.clipboard) {
+            notify(t('lobby.notifications.copyRoomLinkFailed'), 'error')
             return
         }
 
         try {
-            await navigator.clipboard.writeText(roomId)
-            notify(t('lobby.notifications.roomCopied'), 'info')
+            await navigator.clipboard.writeText(roomShareUrl)
+            notify(t('lobby.notifications.roomLinkCopied'), 'info')
         } catch {
-            notify(t('lobby.notifications.copyRoomFailed'), 'error')
+            notify(t('lobby.notifications.copyRoomLinkFailed'), 'error')
         }
     }
+
+    const handleNativeShareRoom = async () => {
+        if (!roomShareUrl || !navigator?.share) {
+            await handleCopyRoomLink()
+            return
+        }
+
+        try {
+            await navigator.share({
+                title: t('lobby.share.title'),
+                text: getRoomInviteMessage({ modeKey, roomUrl: roomShareUrl, t }),
+                url: roomShareUrl,
+            })
+        } catch (error) {
+            if (error?.name !== 'AbortError') {
+                notify(t('lobby.notifications.shareRoomFailed'), 'error')
+            }
+        }
+    }
+
+    const handleShareChannel = (channel) => {
+        if (!roomShareUrl) {
+            return
+        }
+
+        const text = getRoomInviteMessage({ modeKey, roomUrl: roomShareUrl, t })
+        const encodedUrl = encodeURIComponent(roomShareUrl)
+        const encodedText = encodeURIComponent(text)
+        const subject = encodeURIComponent(t('lobby.share.emailSubject'))
+        const links = {
+            telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`,
+            whatsapp: `https://wa.me/?text=${encodedText}`,
+            email: `mailto:?subject=${subject}&body=${encodedText}`,
+        }
+
+        if (links[channel]) {
+            window.open(links[channel], '_blank', 'noopener,noreferrer')
+        }
+    }
+
+    const sendRoomInvite = useCallback(async (friendId, targetRoom) => {
+        if (!friendId || !targetRoom?.id) {
+            return false
+        }
+
+        const response = await emit('friends:room-invite:send', {
+            friendId,
+            roomId: targetRoom.id,
+        })
+
+        if (!response.success) {
+            notify(response.message || t('lobby.notifications.inviteFailed'), 'error')
+            return false
+        }
+
+        notify(t('lobby.notifications.inviteSent'), 'success')
+        return true
+    }, [emit, t])
 
     const handleModeChange = async (nextModeKey) => {
         if (!nextModeKey || nextModeKey === modeKey) {
@@ -439,26 +557,93 @@ const LobbyPage = () => {
         }
 
         if (roomId) {
-            const response = await emit('room:leave', { roomId })
+            const response = await emit('room:update-mode', {
+                roomId,
+                modeKey: nextModeKey,
+                settings: roomSettings,
+            })
 
             if (!response.success) {
-                notify(response.message || t('lobby.notifications.leaveFailed'), 'error')
+                notify(response.message || t('lobby.notifications.modeUpdateFailed'), 'error')
                 return
             }
 
-            activeRoomIdRef.current = ''
-            setCurrentRoom(null)
-            setRoomId('')
-            setJoinRoomId('')
+            setCurrentRoom(response.room)
+            setRoomId(response.room.id)
+            setJoinRoomId(response.room.id)
+            if (response.room?.settings) {
+                setRoomSettings(normalizeMatchSettings(response.room.settings))
+            }
+            shouldLeaveRoomOnUnmountRef.current = false
+            navigate(getLobbyRoomPath(currentLanguage, nextModeKey, response.room.id), {
+                replace: true,
+                state: {
+                    modeKey: nextModeKey,
+                    roomSettings: normalizeMatchSettings(response.room?.settings || roomSettings),
+                },
+            })
+            window.setTimeout(() => {
+                shouldLeaveRoomOnUnmountRef.current = true
+            }, 0)
+            notify(response.message || t('lobby.notifications.modeUpdated'), 'success')
+            return
         }
 
-        navigate(getLocalizedGamePath(`/game/${nextModeKey}/lobby`, currentLanguage), {
+        navigate(getLobbyRoomPath(currentLanguage, nextModeKey), {
             state: {
                 modeKey: nextModeKey,
                 roomSettings,
             },
         })
     }
+
+    useEffect(() => {
+        const inviteFriendId = location.state?.inviteFriendId
+
+        if (!location.state?.autoCreateRoom || !inviteFriendId) {
+            return
+        }
+
+        const autoInviteKey = `${inviteFriendId}:${location.key || location.pathname}`
+
+        if (consumedAutoInviteRef.current === autoInviteKey) {
+            return
+        }
+
+        consumedAutoInviteRef.current = autoInviteKey
+
+        const createRoomAndInvite = async () => {
+            setIsBusy(true)
+
+            try {
+                await ensurePlayableIdentity()
+                const response = await emit('room:create', {
+                    modeKey: modeKey || '1v1',
+                    settings: roomSettings,
+                })
+
+                if (!response.success) {
+                    notify(response.message || t('lobby.notifications.createRoomFailed'), 'error')
+                    return
+                }
+
+                setCurrentRoom(response.room)
+                setRoomId(response.room.id)
+                setJoinRoomId(response.room.id)
+                if (response.room?.settings) {
+                    setRoomSettings(normalizeMatchSettings(response.room.settings))
+                }
+                navigateToRoom(response.room)
+                await sendRoomInvite(inviteFriendId, response.room)
+            } catch (error) {
+                notify(error.message || t('lobby.notifications.inviteFailed'), 'error')
+            } finally {
+                setIsBusy(false)
+            }
+        }
+
+        createRoomAndInvite()
+    }, [emit, ensurePlayableIdentity, location.key, location.pathname, location.state, modeKey, navigateToRoom, roomSettings, sendRoomInvite, t])
 
     const activePlayerName = getPlayerDisplayName(user, nickname, t)
     const roomPlayers = getRoomPlayers(currentRoom)
@@ -599,10 +784,18 @@ const LobbyPage = () => {
                             <button
                                 type="button"
                                 className="button lobby-ghost-button"
-                                onClick={handleCopyRoomId}
+                                onClick={handleCopyRoomLink}
                                 disabled={!roomId}
                             >
-                                {t('lobby.room.copyId')}
+                                {t('lobby.room.copyLink')}
+                            </button>
+                            <button
+                                type="button"
+                                className="button lobby-ghost-button"
+                                onClick={handleNativeShareRoom}
+                                disabled={!roomId}
+                            >
+                                {t('lobby.share.native')}
                             </button>
                             <button
                                 type="button"
@@ -614,6 +807,29 @@ const LobbyPage = () => {
                             </button>
                         </div>
                     </div>
+
+                    {roomId ? (
+                        <div className="lobby-share-panel">
+                            <div>
+                                <span className="lobby-panel-label">{t('lobby.share.label')}</span>
+                                <p>{roomShareUrl}</p>
+                            </div>
+                            <div className="lobby-share-panel__actions" aria-label={t('lobby.share.label')}>
+                                <button type="button" onClick={() => handleShareChannel('telegram')}>
+                                    <i className="fab fa-telegram-plane"></i>
+                                    {t('lobby.share.telegram')}
+                                </button>
+                                <button type="button" onClick={() => handleShareChannel('whatsapp')}>
+                                    <i className="fab fa-whatsapp"></i>
+                                    {t('lobby.share.whatsapp')}
+                                </button>
+                                <button type="button" onClick={() => handleShareChannel('email')}>
+                                    <i className="fas fa-envelope"></i>
+                                    {t('lobby.share.email')}
+                                </button>
+                            </div>
+                        </div>
+                    ) : null}
 
                     <div className="lobby-settings-panel">
                         <div className="lobby-settings-panel__header">

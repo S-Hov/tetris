@@ -43,9 +43,21 @@
       "emptyTitle": "No room selected yet",
       "leave": "Leave lobby",
       "copyId": "Copy ID",
+      "copyLink": "Copy link",
       "ready": "Ready",
       "unready": "Cancel ready",
       "emptyRoster": "Create a room or join an existing one to see the player roster."
+    },
+    "share": {
+      "label": "Share room",
+      "title": "PvP Tetris room",
+      "messageTitle": "Join my PvP Tetris room",
+      "messageMode": "Mode: {{mode}}",
+      "emailSubject": "PvP Tetris room invite",
+      "native": "Share",
+      "telegram": "Telegram",
+      "whatsapp": "WhatsApp",
+      "email": "Email"
     },
     "settings": {
       "effectsOn": "Effects: ON",
@@ -94,7 +106,14 @@
       "setTeamFailed": "Could not change team",
       "teamUpdated": "Team updated",
       "copyRoomFailed": "Could not copy room ID",
-      "roomCopied": "Room ID copied"
+      "roomCopied": "Room ID copied",
+      "copyRoomLinkFailed": "Could not copy room link",
+      "roomLinkCopied": "Room link copied",
+      "shareRoomFailed": "Could not share the room",
+      "modeUpdateFailed": "Could not update room mode",
+      "modeUpdated": "Room mode updated",
+      "inviteFailed": "Could not send invite",
+      "inviteSent": "Invite sent"
     }
   }
 }

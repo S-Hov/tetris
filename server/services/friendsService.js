@@ -141,6 +141,7 @@ const mapFriendRow = async (row) => {
         username: row.username,
         avatarUrl: row.avatar_url,
         isOnline: Boolean(row.is_online),
+        isInGame: Boolean(row.is_in_game),
         friendsSince: row.friends_since,
         rank,
         rankStats: {

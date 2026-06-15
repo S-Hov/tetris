@@ -213,6 +213,13 @@ export const routes = [
         layout: InnerPageLayout,
     },
     {
+        key: 'LobbyRoom',
+        path: '/:lang/game/:mode/lobby/:roomId',
+        title: ({ mode }) => `Лобби: ${getModeTitle(mode)}`,
+        component: LobbyPage,
+        layout: InnerPageLayout,
+    },
+    {
         key: 'TeamQueue',
         path: '/:lang/game/:mode/party',
         title: ({ mode }) => `Команда: ${getModeTitle(mode)}`,
