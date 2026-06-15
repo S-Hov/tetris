@@ -160,16 +160,6 @@ const LobbyPage = () => {
     }, [])
 
     useEffect(() => {
-        if (!user) {
-            return
-        }
-
-        ensureSocketSession({ user }).catch((error) => {
-            notify(error.message || t('lobby.notifications.connectArenaFailed'), 'error')
-        })
-    }, [t, user])
-
-    useEffect(() => {
         if (!matchResult) {
             return
         }

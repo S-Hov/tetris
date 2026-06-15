@@ -2,6 +2,11 @@ import { registerLobbyHandlers } from './lobby.socket.js'
 import { registerGameHandlers } from './game.handlers.js'
 import { registerSupportHandlers } from './support.socket.js'
 import {
+    emitPresenceAfterDisconnect,
+    emitPresenceToFriends,
+    registerFriendsHandlers,
+} from './friends.socket.js'
+import {
     registerMatchmakingHandlers,
     removeSocketFromParties,
     removeSocketFromMatchmakingQueue,
@@ -14,6 +19,7 @@ import {
     markRoomPlayerLeftService,
 } from '../services/matchService.js'
 import {
+    endUserSessionRepo,
     isAnalyticsTransientDbError,
     upsertUserSessionRepo,
 } from '../repositories/analyticsRepository.js'
@@ -23,6 +29,7 @@ import {
     publishPlayerActivityEvent,
     setActivityFeedIo,
 } from '../services/activityFeedService.js'
+import { setFriendsRealtimeIo } from '../services/friendsRealtimeService.js'
 
 const getWinnerAfterPlayerLeft = (room, removedPlayer) => {
     const players = getRoomPlayers(room)
@@ -48,6 +55,7 @@ const getTeamOutcomeAfterPlayerLeft = (previousRoom, updatedRoom, removedPlayer)
 export const registerSocketHandlers = (io) => {
     setSupportRealtimeIo(io)
     setActivityFeedIo(io)
+    setFriendsRealtimeIo(io)
     io.use(socketAuthMiddleware)
 
     io.on('connection', (socket) => {
@@ -86,12 +94,27 @@ export const registerSocketHandlers = (io) => {
         registerGameHandlers(io, socket)
         registerMatchmakingHandlers(io, socket)
         registerSupportHandlers(io, socket)
+        registerFriendsHandlers(io, socket)
+        void emitPresenceToFriends(socket.data.user?.id, true).catch((error) => {
+            console.error('presence connect emit error', error)
+        })
 
         socket.on('disconnect', async () => {
             console.log('Socket disconnected:', socket.id)
             publishPlayerActivityEvent('disconnected', { socket })
             removeSocketFromMatchmakingQueue(socket.id)
             removeSocketFromParties(io, socket.id)
+            await endUserSessionRepo(socket.data.analyticsSessionKey).catch((error) => {
+                if (isAnalyticsTransientDbError(error)) {
+                    console.warn('socket session end skipped:', error.message)
+                    return
+                }
+
+                console.error('socket session end error', error)
+            })
+            void emitPresenceAfterDisconnect(socket.data.user?.id, socket.id).catch((error) => {
+                console.error('presence disconnect emit error', error)
+            })
 
             let result = null
 

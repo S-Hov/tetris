@@ -2,6 +2,7 @@ import { badRequest, notFound } from '../helpers/error.helper.js'
 import {
     createFriendRequestRepo,
     findFriendCandidateByIdRepo,
+    getAcceptedFriendIdsRepo,
     getFriendsRepo,
     getIncomingFriendRequestsRepo,
     respondFriendRequestRepo,
@@ -23,6 +24,24 @@ export const getIncomingFriendRequestsService = async (userId) => {
         requestId: rows[index].request_id,
         requestedAt: rows[index].requested_at,
     }))
+}
+
+export const getFriendsStateService = async (userId) => {
+    const [friends, requests] = await Promise.all([
+        getFriendsService(userId),
+        getIncomingFriendRequestsService(userId),
+    ])
+
+    return {
+        friends,
+        requests,
+        requestsCount: requests.length,
+        userId,
+    }
+}
+
+export const getAcceptedFriendIdsService = async (userId) => {
+    return await getAcceptedFriendIdsRepo(userId)
 }
 
 export const findFriendCandidateService = async ({ currentUserId, targetUserId }) => {

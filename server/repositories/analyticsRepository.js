@@ -148,6 +148,29 @@ export const endUserSessionRepo = async (sessionKey) => {
     return rows[0] || null
 }
 
+export const hasActiveUserSessionRepo = async (userId) => {
+    const normalizedUserId = getIntegerUserId(userId)
+
+    if (!normalizedUserId || !(await tableExists('user_sessions'))) {
+        return false
+    }
+
+    const { rows } = await pool.query(
+        `
+        SELECT EXISTS (
+            SELECT 1
+            FROM user_sessions
+            WHERE user_id = $1
+                AND status = 'active'
+                AND last_seen_at >= NOW() - ($2::int * INTERVAL '1 minute')
+        ) AS has_active_session
+        `,
+        [normalizedUserId, ACTIVE_SESSION_WINDOW_MINUTES]
+    )
+
+    return Boolean(rows[0]?.has_active_session)
+}
+
 export const recordGameActivityEventRepo = async ({
     matchId = null,
     roomId = null,

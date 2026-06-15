@@ -1,72 +1,18 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { getBaseUrl } from '@/shared/api/apiClient.js'
-import { friendsAPI } from '@/shared/api/friends'
 import { useAuth } from '@/shared/hooks/useAuth.js'
+import useFriendsRealtime from '@/shared/hooks/useFriendsRealtime.js'
 
 import './FriendsRail.css'
 
 const FriendsRail = () => {
     const { t } = useTranslation()
     const { isAuth, isLoading: isAuthLoading, user } = useAuth()
-    const [friendsState, setFriendsState] = useState({
-        friends: [],
-        requestsCount: 0,
-        status: 'idle',
-        userId: null,
-    })
+    const friendsState = useFriendsRealtime({ enabled: isAuth && !isAuthLoading })
     const [selectedFriendId, setSelectedFriendId] = useState(null)
-
-    useEffect(() => {
-        if (isAuthLoading) return undefined
-
-        if (!isAuth) {
-            return undefined
-        }
-
-        let ignore = false
-        const currentUserId = user?.id || 'authorized'
-
-        const loadFriendsState = () => {
-            Promise.all([
-                friendsAPI.getFriends(),
-                friendsAPI.getIncomingRequests(),
-            ])
-                .then(([friendsResponse, requestsResponse]) => {
-                    if (ignore) return
-
-                    const nextFriends = Array.isArray(friendsResponse.friends) ? friendsResponse.friends : []
-                    const nextRequests = Array.isArray(requestsResponse.requests) ? requestsResponse.requests : []
-
-                    setFriendsState({
-                        friends: nextFriends,
-                        requestsCount: nextRequests.length,
-                        status: 'success',
-                        userId: currentUserId,
-                    })
-                })
-                .catch(() => {
-                    if (!ignore) {
-                        setFriendsState({
-                            friends: [],
-                            requestsCount: 0,
-                            status: 'error',
-                            userId: currentUserId,
-                        })
-                    }
-                })
-        }
-
-        loadFriendsState()
-        const refreshIntervalId = window.setInterval(loadFriendsState, 30000)
-
-        return () => {
-            ignore = true
-            window.clearInterval(refreshIntervalId)
-        }
-    }, [isAuth, isAuthLoading, user?.id])
 
     const currentUserKey = user?.id || 'authorized'
     const friends = useMemo(

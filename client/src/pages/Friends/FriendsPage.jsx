@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Navigate, NavLink, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import ProfileSideNav from '@/widgets/ProfileSideNav'
 import { getBaseUrl } from '@/shared/api/apiClient.js'
 import { friendsAPI } from '@/shared/api/friends'
+import useFriendsRealtime from '@/shared/hooks/useFriendsRealtime.js'
 import notify from '@/utils/Notifications'
 
 import {
@@ -20,60 +21,17 @@ const FriendsPage = () => {
     const { t } = useTranslation()
     const activeSection = section || DEFAULT_FRIENDS_SECTION
     const isKnownSection = FRIENDS_SECTION_KEYS.includes(activeSection)
-    const [friends, setFriends] = useState([])
-    const [requests, setRequests] = useState([])
-    const [isFriendsLoading, setIsFriendsLoading] = useState(false)
-    const [isRequestsLoading, setIsRequestsLoading] = useState(false)
+    const friendsState = useFriendsRealtime({ enabled: activeSection === 'friends' || activeSection === 'requests' })
     const [searchId, setSearchId] = useState('')
     const [searchResult, setSearchResult] = useState(null)
     const [isSearching, setIsSearching] = useState(false)
     const [isSendingRequest, setIsSendingRequest] = useState(false)
     const [updatingRequestId, setUpdatingRequestId] = useState(null)
 
-    useEffect(() => {
-        if (activeSection !== 'friends') return undefined
-
-        let ignore = false
-        setIsFriendsLoading(true)
-
-        friendsAPI.getFriends()
-            .then((response) => {
-                if (!ignore) setFriends(Array.isArray(response.friends) ? response.friends : [])
-            })
-            .catch((error) => {
-                if (!ignore) notify(error.message || t('friends.notifications.friendsLoadError'), 'error')
-            })
-            .finally(() => {
-                if (!ignore) setIsFriendsLoading(false)
-            })
-
-        return () => {
-            ignore = true
-        }
-    }, [activeSection, t])
-
-    useEffect(() => {
-        if (activeSection !== 'requests') return undefined
-
-        let ignore = false
-        setIsRequestsLoading(true)
-
-        friendsAPI.getIncomingRequests()
-            .then((response) => {
-                if (!ignore) setRequests(Array.isArray(response.requests) ? response.requests : [])
-            })
-            .catch((error) => {
-                if (!ignore) notify(error.message || t('friends.notifications.requestsLoadError'), 'error')
-            })
-            .finally(() => {
-                if (!ignore) setIsRequestsLoading(false)
-            })
-
-        return () => {
-            ignore = true
-        }
-    }, [activeSection, t])
-
+    const friends = friendsState.friends
+    const requests = friendsState.requests
+    const isFriendsLoading = activeSection === 'friends' && ['idle', 'loading'].includes(friendsState.status)
+    const isRequestsLoading = activeSection === 'requests' && ['idle', 'loading'].includes(friendsState.status)
     const onlineCount = useMemo(() => friends.filter((friend) => friend.isOnline).length, [friends])
 
     const handleSearchSubmit = async (event) => {
@@ -105,6 +63,7 @@ const FriendsPage = () => {
             setSearchResult((currentValue) => currentValue
                 ? { ...currentValue, friendshipStatus: 'pending', isOutgoingRequest: true }
                 : currentValue)
+            friendsState.refresh()
             notify(t('friends.notifications.requestSent'), 'success')
         } catch (error) {
             notify(error.message || t('friends.notifications.requestSendError'), 'error')
@@ -118,7 +77,7 @@ const FriendsPage = () => {
 
         try {
             await friendsAPI.respondRequest(requestId, action)
-            setRequests((currentValue) => currentValue.filter((request) => request.requestId !== requestId))
+            friendsState.refresh()
             notify(t(action === 'accept'
                 ? 'friends.notifications.requestAccepted'
                 : 'friends.notifications.requestDeclined'), 'success')

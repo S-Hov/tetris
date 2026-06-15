@@ -105,16 +105,6 @@ const TeamQueuePage = () => {
     }, [t, user])
 
     useEffect(() => {
-        if (!user) {
-            return
-        }
-
-        ensureSocketSession({ user }).catch((error) => {
-            notify(error.message || t('teamQueue.notifications.connectArenaFailed'), 'error')
-        })
-    }, [t, user])
-
-    useEffect(() => {
         searchingRef.current = searchState.isSearching
     }, [searchState.isSearching])
 

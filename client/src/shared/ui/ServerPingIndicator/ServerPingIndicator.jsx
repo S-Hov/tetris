@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { ensureSocketSession, socket } from '@/shared/api/socket'
-import { useAuth } from '@/shared/hooks/useAuth'
+import { socket } from '@/shared/api/socket'
 
 import './ServerPingIndicator.css'
 
@@ -40,32 +39,11 @@ const emitPing = () => {
 }
 
 const ServerPingIndicator = ({ className = '' }) => {
-    const { user, isLoading } = useAuth()
     const [latency, setLatency] = useState(null)
     const [isConnected, setIsConnected] = useState(socket.connected)
     const [isChecking, setIsChecking] = useState(false)
     const tone = getLatencyTone(latency, isConnected)
     const label = isConnected && Number.isFinite(latency) ? `${latency} ms` : '-- ms'
-
-    useEffect(() => {
-        if (isLoading || socket.connected || !user) {
-            return undefined
-        }
-
-        let isActive = true
-
-        ensureSocketSession({ user })
-            .catch(() => {
-                if (isActive) {
-                    setIsConnected(false)
-                    setLatency(null)
-                }
-            })
-
-        return () => {
-            isActive = false
-        }
-    }, [isLoading, user])
 
     useEffect(() => {
         const handleConnect = () => setIsConnected(true)

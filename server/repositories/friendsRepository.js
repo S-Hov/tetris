@@ -67,6 +67,24 @@ export const getIncomingFriendRequestsRepo = async (userId) => {
     return result.rows
 }
 
+export const getAcceptedFriendIdsRepo = async (userId) => {
+    const result = await pool.query(
+        `
+        SELECT
+            CASE
+                WHEN requester_id = $1 THEN addressee_id
+                ELSE requester_id
+            END AS friend_id
+        FROM friendships
+        WHERE status = 'accepted'
+            AND (requester_id = $1 OR addressee_id = $1)
+        `,
+        [userId]
+    )
+
+    return result.rows.map((row) => row.friend_id).filter(Boolean)
+}
+
 export const findFriendCandidateByIdRepo = async ({ currentUserId, targetUserId }) => {
     const result = await pool.query(
         `

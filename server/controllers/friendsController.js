@@ -5,6 +5,7 @@ import {
     getIncomingFriendRequestsService,
     respondFriendRequestService,
 } from '../services/friendsService.js'
+import { emitFriendsStateToUsers } from '../services/friendsRealtimeService.js'
 import { ok } from '../src/shared/responses/send.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 
@@ -41,6 +42,10 @@ export const createFriendRequest = asyncHandler(async (req, res) => {
         addresseeId: req.body?.addresseeId,
     })
 
+    void emitFriendsStateToUsers([request.requester_id, request.addressee_id]).catch((error) => {
+        console.error('friends realtime request update error', error)
+    })
+
     return ok(res, req, 'FRIENDS.REQUEST_SENT', {
         status: 201,
         data: { request },
@@ -52,6 +57,10 @@ export const respondFriendRequest = asyncHandler(async (req, res) => {
         userId: req.user.id,
         requestId: req.params.requestId,
         action: req.body?.action,
+    })
+
+    void emitFriendsStateToUsers([request.requester_id, request.addressee_id]).catch((error) => {
+        console.error('friends realtime response update error', error)
     })
 
     return ok(res, req, 'FRIENDS.REQUEST_UPDATED', {
