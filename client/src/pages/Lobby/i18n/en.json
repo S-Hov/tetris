@@ -8,6 +8,9 @@
     "hero": {
       "lead": "Signed-in players enter through their account, guests play by nickname. Permissions cannot be faked. The lobby is universal, and mode settings are stored inside the room."
     },
+    "modeSwitcher": {
+      "label": "Room mode"
+    },
     "profile": {
       "label": "Your profile",
       "guest": "Guest",

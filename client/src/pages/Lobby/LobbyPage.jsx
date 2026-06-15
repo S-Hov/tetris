@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { DEFAULT_LANGUAGE, getLanguageFromPathname } from '@/i18n'
+import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedGamePath } from '@/i18n'
 import { useAuth } from '@/shared/hooks/useAuth'
+import CustomSelect from '@/shared/ui/CustomSelect'
 import {
     ensureSocketSession,
     getStoredGuestSession,
@@ -13,7 +14,7 @@ import {
 } from '@/shared/api/socket'
 import notify from '@/utils/Notifications'
 import { defaultMatchSettings, normalizeMatchSettings } from '@/features/tetris/model/matchSettings.js'
-import { getModeSelectionConfig } from '@/shared/config/gameModes.js'
+import { getModeSelectionConfig, modeSelectionCatalog } from '@/shared/config/gameModes.js'
 
 import './LobbyPage.css'
 
@@ -109,6 +110,16 @@ const LobbyPage = () => {
     const modeKey = location.state?.modeKey || currentRoom?.modeKey || mode || '1v1'
     const modeConfig = getModeSelectionConfig(modeKey)
     const modeTitle = t(`modeSelect.modes.${modeConfig.key}.title`, { defaultValue: modeConfig.title })
+    const lobbyModeOptions = useMemo(() => (
+        Object.values(modeSelectionCatalog)
+            .filter((config) => config.roomSupported)
+            .map((config) => ({
+                value: config.key,
+                label: t(`modeSelect.modes.${config.key}.title`, { defaultValue: config.title }),
+                description: t(`modeSelect.modes.${config.key}.heroLabel`, { defaultValue: config.heroLabel }),
+                icon: config.icon,
+            }))
+    ), [t])
     const [roomSettings, setRoomSettings] = useState(() => normalizeMatchSettings(location.state?.roomSettings || defaultMatchSettings))
     const emit = useCallback((eventName, payload) => (
         emitWithAck(eventName, payload, t('lobby.notifications.noResponse'))
@@ -432,6 +443,33 @@ const LobbyPage = () => {
         }
     }
 
+    const handleModeChange = async (nextModeKey) => {
+        if (!nextModeKey || nextModeKey === modeKey) {
+            return
+        }
+
+        if (roomId) {
+            const response = await emit('room:leave', { roomId })
+
+            if (!response.success) {
+                notify(response.message || t('lobby.notifications.leaveFailed'), 'error')
+                return
+            }
+
+            activeRoomIdRef.current = ''
+            setCurrentRoom(null)
+            setRoomId('')
+            setJoinRoomId('')
+        }
+
+        navigate(getLocalizedGamePath(`/game/${nextModeKey}/lobby`, currentLanguage), {
+            state: {
+                modeKey: nextModeKey,
+                roomSettings,
+            },
+        })
+    }
+
     const activePlayerName = getPlayerDisplayName(user, nickname, t)
     const roomPlayers = getRoomPlayers(currentRoom)
     const activePlayer = roomPlayers.find((player) => player.socketId === socket.id)
@@ -464,6 +502,16 @@ const LobbyPage = () => {
                     <div className="lobby-hero-panel">
                         <div className="lobby-panel-label">{t('lobby.profile.label')}</div>
                         <div className="lobby-player-name">{activePlayerName}</div>
+                        <label className="lobby-mode-switcher">
+                            <span>{t('lobby.modeSwitcher.label')}</span>
+                            <CustomSelect
+                                className="lobby-mode-select"
+                                value={modeConfig.key}
+                                options={lobbyModeOptions}
+                                onChange={handleModeChange}
+                                menuPlacement="bottom"
+                            />
+                        </label>
                         <div className="lobby-player-meta">
                             <span>{isGuest ? t('lobby.profile.guestSession') : t('lobby.profile.authSession')}</span>
                             <span>{t('lobby.profile.role', { role: user?.role || 'guest' })}</span>

@@ -120,6 +120,29 @@
     font-size: 0.92rem;
 }
 
+.lobby-mode-switcher {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.lobby-mode-switcher > span {
+    color: var(--turquoise-lite);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.lobby-mode-select .custom-select__trigger {
+    min-height: 46px;
+    border-color: var(--turquoise-tint-medium);
+    background: var(--box-bg);
+}
+
+.lobby-mode-select .custom-select__menu {
+    z-index: 10;
+}
+
 .lobby-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
