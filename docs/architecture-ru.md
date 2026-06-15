@@ -301,6 +301,10 @@ handshake.
 | Game | `game.handlers.js` | Состояние игры, game over, способности |
 | Matchmaking | `matchmaking.socket.js` | Очередь, party, подбор |
 | Support | `support.socket.js` | Realtime для обращений поддержки |
+| Friends | `friends.socket.js` | Friends state, requests и presence realtime |
+
+Подробный контракт событий и правила REST/socket описаны в
+[`websocket-realtime.md`](websocket-realtime.md).
 
 ### Lobby events
 

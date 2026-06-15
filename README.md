@@ -78,6 +78,7 @@ npm run dev
 | `client/src/pages/Match/MatchPage.jsx` | Главный экран игры, склеивает движок, UI и сокеты |
 | `client/src/features/tetris/model/tetrisEngine.js` | Основная игровая логика Tetris |
 | `client/src/shared/api/socket/index.js` | Socket.IO client, guest/auth session |
+| `client/src/shared/realtime/friendsRealtime.js` | Realtime store друзей, заявок и presence |
 | `admin/src/main.jsx` | Монтирует админское React-приложение |
 | `admin/src/app/routing/routes.js` | Карта страниц админки |
 | `admin/src/shared/config/adminResources.js` | Конфигурация таблиц и редакторов админ-ресурсов |
@@ -87,12 +88,14 @@ npm run dev
 | `server/sockets/lobby.socket.js` | Приватные комнаты и ready-flow |
 | `server/sockets/matchmaking.socket.js` | Очередь поиска, party и создание матчей |
 | `server/sockets/game.handlers.js` | `game:update`, `game:over`, `ability:use` |
+| `server/sockets/friends.socket.js` | Friends state, requests и presence realtime |
 
 ## Документация
 
 | Документ | Описание |
 | --- | --- |
 | [`docs/architecture-ru.md`](docs/architecture-ru.md) | Архитектура проекта по слоям |
+| [`docs/websocket-realtime.md`](docs/websocket-realtime.md) | Socket.IO/realtime contract, event domains и правила REST vs socket |
 | [`docs/frontend-workflow-ru.md`](docs/frontend-workflow-ru.md) | Практические правила работы с public frontend |
 | [`docs/db-migrations.md`](docs/db-migrations.md) | Как устроены SQL-миграции |
 | [`docs/db-structure.md`](docs/db-structure.md) | Справка по структуре БД |
