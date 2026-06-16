@@ -5,7 +5,7 @@ export const simpleHeaderConfig = [
         backLabelKey: 'simpleHeader.back.login',
     },
     {
-        match: (pathname) => pathname === '/profile' || /^\/(ru|en)\/profile\/?$/.test(pathname),
+        match: (pathname) => pathname === '/profile',
         backTo: '/',
         backLabelKey: 'simpleHeader.back.home',
     },
@@ -22,12 +22,12 @@ export const simpleHeaderConfig = [
         secondaryLabelKey: 'simpleHeader.back.home',
     },
     {
-        match: (pathname) => /^\/(ru|en)\/game\/[^/]+$/.test(pathname) && !/^\/(ru|en)\/game\/solo\/?$/.test(pathname),
+        match: (pathname) => /^\/game\/[^/]+$/.test(pathname) && !/^\/game\/solo\/?$/.test(pathname),
         backTo: '/',
         backLabelKey: 'simpleHeader.back.home',
     },
     {
-        match: (pathname) => /^\/(ru|en)\/game\/[^/]+\/(lobby|party)$/.test(pathname),
+        match: (pathname) => /^\/game\/[^/]+\/(lobby|party)$/.test(pathname),
         backTo: (pathname) => pathname.replace(/\/(lobby|party)$/, ''),
         backLabelKey: 'simpleHeader.back.mode',
         secondaryTo: '/',

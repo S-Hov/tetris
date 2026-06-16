@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { getLocalizedPath } from '@/i18n'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { authenticationAPI } from '@/shared/api/auth'
 import notify from '@/utils/Notifications'
@@ -69,7 +70,7 @@ const EmailVerification = () => {
                         text: t('emailVerification.alreadyVerified'),
                     })
                     notify(t('emailVerification.alreadyVerified'))
-                    window.setTimeout(() => navigate('/login', { replace: true }), 1200)
+                    window.setTimeout(() => navigate(getLocalizedPath('/login'), { replace: true }), 1200)
                 }
             } catch (error) {
                 if (ignore) return
@@ -205,7 +206,7 @@ const EmailVerification = () => {
                 : t('emailVerification.emailVerified'))
 
             window.setTimeout(() => {
-                navigate(response.redirectTo || '/login', { replace: true })
+                navigate(getLocalizedPath(response.redirectTo || '/login'), { replace: true })
             }, 1200)
         } catch (error) {
             setMessage({
@@ -264,7 +265,7 @@ const EmailVerification = () => {
 
             setIsEmailModalOpen(false)
             notify(t('emailVerification.emailUpdated'), 'success')
-            navigate(meta.redirectTo || `/verify-email/${encodeURIComponent(meta.email)}`, { replace: true })
+            navigate(getLocalizedPath(meta.redirectTo || `/verify-email/${encodeURIComponent(meta.email)}`), { replace: true })
         } catch (error) {
             setMessage({
                 type: 'error',
@@ -354,7 +355,7 @@ const EmailVerification = () => {
                         </div>
 
                         {isPasswordResetMode ? (
-                            <Link to="/login" className="verify-email-back-link link">
+                            <Link to={getLocalizedPath('/login')} className="verify-email-back-link link">
                                 {t('emailVerification.backToLogin')}
                             </Link>
                         ) : (

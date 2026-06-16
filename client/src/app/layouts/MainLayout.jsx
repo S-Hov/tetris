@@ -7,10 +7,10 @@ import SideRailLayout from './SideRailLayout.jsx'
 
 const MainLayout = ({ children, hideFooter = false }) => {
     const location = useLocation()
-    const normalizedPathname = location.pathname.replace(/^\/(ru|en)(?=\/game(?:\/|$))/, '')
+    const normalizedPathname = location.pathname.replace(/^\/(ru|en)(?=\/(?:game|match)(?:\/|$))/, '')
     const isGamePlayPage = (
         normalizedPathname === '/game/solo/play' ||
-        location.pathname.startsWith('/match/')
+        normalizedPathname.startsWith('/match/')
     )
     const content = (
         <>

@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { useTranslation } from 'react-i18next'
 
-import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '@/i18n'
+import { DEFAULT_LANGUAGE, getLocalizedPath, SUPPORTED_LANGUAGES } from '@/i18n'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
@@ -52,7 +52,7 @@ const ProfilePage = () => {
 
     const handleLogout = async () => {
         await logout()
-        navigate('/login', { replace: true })
+        navigate(getLocalizedPath('/login', currentLanguage), { replace: true })
     }
 
     if (!isSupportedLanguage) {

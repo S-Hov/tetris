@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { DEFAULT_LANGUAGE, getLanguageFromPathname } from '@/i18n'
+import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedPath } from '@/i18n'
 import { useAuth } from '@/shared/hooks/useAuth.js'
 import {
     ensureSocketSession,
@@ -158,7 +158,7 @@ const TeamQueuePage = () => {
             setWaitSeconds(0)
             notify(t('teamQueue.notifications.matchFound'), 'success')
 
-            navigate(`/match/${payload.roomId}`, {
+            navigate(getLocalizedPath(`/match/${payload.roomId}`, currentLanguage), {
                 state: {
                     roomSettings: payload.settings || settings,
                     modeKey: payload.modeKey || modeKey,
@@ -179,7 +179,7 @@ const TeamQueuePage = () => {
             socket.off('matchmaking:cancelled', handleCancelled)
             socket.off('matchmaking:found', handleFound)
         }
-    }, [modeKey, navigate, party?.players?.length, settings, t])
+    }, [currentLanguage, modeKey, navigate, party?.players?.length, settings, t])
 
     useEffect(() => {
         return () => {

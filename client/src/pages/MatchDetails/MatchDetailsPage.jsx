@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { getLocalizedPath } from '@/i18n'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { matchesAPI } from '@/shared/api/matches'
 import {
@@ -69,7 +70,7 @@ const MatchDetailsPage = () => {
                             <i className="fas fa-triangle-exclamation"></i>
                             <h1>{t('matches.details.openErrorTitle')}</h1>
                             <p>{error}</p>
-                            <Link to="/matches" className="button">{t('matches.details.backToMatches')}</Link>
+                            <Link to={getLocalizedPath('/matches', currentLanguage)} className="button">{t('matches.details.backToMatches')}</Link>
                         </div>
                     </GlowEffect>
                 ) : null}

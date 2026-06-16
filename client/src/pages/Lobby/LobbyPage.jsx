@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedGamePath } from '@/i18n'
+import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedGamePath, getLocalizedPath } from '@/i18n'
 import { useAuth } from '@/shared/hooks/useAuth'
 import CustomSelect from '@/shared/ui/CustomSelect'
 import {
@@ -292,7 +292,7 @@ const LobbyPage = () => {
             }
 
             shouldLeaveRoomOnUnmountRef.current = false
-            navigate(`/match/${startedRoomId}`, {
+            navigate(getLocalizedPath(`/match/${startedRoomId}`, currentLanguage), {
                 state: {
                     roomSettings: normalizeMatchSettings(currentRoom?.settings || roomSettings),
                     modeKey: currentRoom?.modeKey || modeKey,

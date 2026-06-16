@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { DEFAULT_LANGUAGE, getLanguageFromPathname } from '@/i18n'
+import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedPath } from '@/i18n'
 import {
     ensureSocketSession,
     getStoredGuestSession,
@@ -173,7 +173,7 @@ const ModeSelectPage = () => {
             })
             notify(t('modeSelect.notifications.opponentFound'), 'success')
 
-            navigate(`/match/${payload.roomId}`, {
+            navigate(getLocalizedPath(`/match/${payload.roomId}`, currentLanguage), {
                 state: {
                     roomSettings: payload.settings || settings,
                     modeKey: payload.modeKey || modeConfig.key,
@@ -192,7 +192,7 @@ const ModeSelectPage = () => {
             socket.off('matchmaking:cancelled', handleCancelled)
             socket.off('matchmaking:found', handleFound)
         }
-    }, [modeConfig.key, navigate, selectedPlayType, settings, t])
+    }, [currentLanguage, modeConfig.key, navigate, selectedPlayType, settings, t])
 
     useEffect(() => {
         return () => {

@@ -55,13 +55,43 @@ export const getLanguageFromPathname = (pathname = '') => {
     return DEFAULT_LANGUAGE
 }
 
-export const getLocalizedGamePath = (path, language = getLanguageFromPathname(typeof window !== 'undefined' ? window.location.pathname : '')) => {
-    if (!path.startsWith('/game')) {
+export const stripLanguageFromPathname = (pathname = '') => {
+    const [pathPart = '', suffix = ''] = pathname.split(/([?#].*)/, 2)
+    const parts = pathPart.split('/')
+    const maybeLanguage = parts[1]
+
+    if (!SUPPORTED_LANGUAGES.includes(maybeLanguage)) {
+        return pathname || '/'
+    }
+
+    const pathWithoutLanguage = `/${parts.slice(2).join('/')}`.replace(/\/+$/, '') || '/'
+    return `${pathWithoutLanguage}${suffix}`
+}
+
+export const getLocalizedPath = (
+    path,
+    language = getLanguageFromPathname(typeof window !== 'undefined' ? window.location.pathname : '')
+) => {
+    if (!path || path === '/') {
+        return `/${language}`
+    }
+
+    if (/^(https?:)?\/\//.test(path) || path.startsWith('#')) {
         return path
     }
 
-    return `/${language}${path}`
+    const [pathPart = '/', suffix = ''] = path.split(/([?#].*)/, 2)
+    const normalizedPath = pathPart.startsWith('/') ? pathPart : `/${pathPart}`
+    const pathWithoutLanguage = stripLanguageFromPathname(normalizedPath)
+
+    if (pathWithoutLanguage === '/') {
+        return `/${language}${suffix}`
+    }
+
+    return `/${language}${pathWithoutLanguage}${suffix}`
 }
+
+export const getLocalizedGamePath = getLocalizedPath
 
 i18n
     .use(initReactI18next)

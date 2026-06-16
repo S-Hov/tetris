@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import { getLocalizedPath } from '@/i18n'
 import AppSwitch from '@/shared/ui/AppSwitch'
 import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
 
@@ -16,7 +17,7 @@ const ProfileQuickSettingsPanel = ({
     <ProfilePanel
         className="profile-quick-settings-panel"
         title={t('profile.settings.title')}
-        action={<Link to="/account-settings/general">{t('profile.settings.all')}</Link>}
+        action={<Link to={getLocalizedPath('/account-settings/general')}>{t('profile.settings.all')}</Link>}
     >
         <div className="profile-quick-settings-grid">
             <div className="profile-settings-toggle profile-language-setting">

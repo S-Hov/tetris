@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { getLanguageFromPathname } from '@/i18n'
+import { getLanguageFromPathname, getLocalizedPath, stripLanguageFromPathname } from '@/i18n'
 import activeMenuBorder from '@/pages/Profile/assets/menu/active_border.png'
 import './ProfileSideNav.css'
 
@@ -39,33 +39,35 @@ const getItemPath = (item, profilePath) => {
     if (item.key === 'profile') return profilePath
     if (item.key === 'stats') return `${profilePath}#profile-stats`
 
-    return item.to
+    return getLocalizedPath(item.to)
 }
 
 const isItemActive = (key, location) => {
+    const pathname = stripLanguageFromPathname(location.pathname)
+
     if (key === 'stats') {
-        return isProfilePath(location.pathname) && location.hash === '#profile-stats'
+        return isProfilePath(pathname) && location.hash === '#profile-stats'
     }
 
     if (key === 'profile') {
-        return isProfilePath(location.pathname) && location.hash !== '#profile-stats'
+        return isProfilePath(pathname) && location.hash !== '#profile-stats'
     }
 
     if (key === 'matches') {
-        return location.pathname.startsWith('/matches')
+        return pathname.startsWith('/matches')
     }
 
     if (key === 'settings') {
-        return location.pathname.startsWith('/account-settings')
+        return pathname.startsWith('/account-settings')
     }
 
     if (key === 'friends') {
-        return location.pathname.startsWith('/friends')
+        return pathname.startsWith('/friends')
     }
 
     return false
 }
 
-const isProfilePath = (pathname) => pathname === '/profile' || /^\/(ru|en)\/profile\/?$/.test(pathname)
+const isProfilePath = (pathname) => pathname === '/profile'
 
 export default ProfileSideNav

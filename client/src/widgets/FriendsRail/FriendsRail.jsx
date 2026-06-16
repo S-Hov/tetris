@@ -6,7 +6,7 @@ import { getBaseUrl } from '@/shared/api/apiClient.js'
 import { socket } from '@/shared/api/socket'
 import { useAuth } from '@/shared/hooks/useAuth.js'
 import useFriendsRealtime from '@/shared/hooks/useFriendsRealtime.js'
-import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedGamePath } from '@/i18n'
+import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedGamePath, getLocalizedPath } from '@/i18n'
 import notify from '@/utils/Notifications'
 
 import './FriendsRail.css'
@@ -121,7 +121,7 @@ const FriendsRail = () => {
                                 <strong>{onlineFriends.length}</strong>
                                 {t('friendsRail.online')}
                             </span>
-                            <Link to="/friends/requests">
+                            <Link to={getLocalizedPath('/friends/requests')}>
                                 <strong>{requestsCount}</strong>
                                 {t('friendsRail.requests')}
                             </Link>
@@ -153,7 +153,7 @@ const FriendsRail = () => {
                             <RailEmpty icon="fas fa-user-plus" text={t('friendsRail.empty')} />
                         )}
 
-                        <Link className="friends-rail__find" to="/friends/search">
+                        <Link className="friends-rail__find" to={getLocalizedPath('/friends/search')}>
                             <i className="fas fa-magnifying-glass"></i>
                             {t('friendsRail.findFriend')}
                         </Link>
@@ -165,7 +165,7 @@ const FriendsRail = () => {
                         </span>
                         <strong>{t('friendsRail.guestTitle')}</strong>
                         <p>{t('friendsRail.guestText')}</p>
-                        <Link className="friends-rail__register" to="/register">
+                        <Link className="friends-rail__register" to={getLocalizedPath('/register')}>
                             <i className="fas fa-user-plus"></i>
                             {t('friendsRail.register')}
                         </Link>

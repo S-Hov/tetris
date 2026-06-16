@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"
 import notify from "@/utils/Notifications"
 import TurnstileWidget from "@/shared/ui/TurnstileWidget"
 import { useTranslation } from "react-i18next"
+import { getLocalizedPath } from "@/i18n"
 
 const RegisterForm = () => {
     const { t } = useTranslation()
@@ -52,7 +53,7 @@ const RegisterForm = () => {
 
             notify(response.message)
 
-            navigate(redirectTo)
+            navigate(getLocalizedPath(redirectTo))
         } catch (error) {
             resetTurnstile()
             notify(error.message || t('auth.security.turnstile'), 'error')

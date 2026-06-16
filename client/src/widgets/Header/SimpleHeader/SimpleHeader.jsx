@@ -7,14 +7,15 @@ import HeaderBrand from '@/shared/ui/Header/HeaderBrand'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import ServerPingIndicator from '@/shared/ui/ServerPingIndicator'
 // import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
-import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '@/i18n'
+import { DEFAULT_LANGUAGE, getLocalizedPath, stripLanguageFromPathname, SUPPORTED_LANGUAGES } from '@/i18n'
 
 
 export default function SimpleHeader() {
     const location = useLocation()
     const { t, i18n } = useTranslation()
     const currentLanguage = getPathLanguage(location.pathname) || normalizeLanguage(i18n.language)
-    const activeConfig = simpleHeaderConfig.find((config) => config.match(location.pathname))
+    const normalizedPathname = stripLanguageFromPathname(location.pathname)
+    const activeConfig = simpleHeaderConfig.find((config) => config.match(normalizedPathname))
     const showSocketPing = isGameSocketPingPath(location.pathname)
 
     const currentConfig = activeConfig || {
@@ -22,10 +23,10 @@ export default function SimpleHeader() {
         backLabelKey: 'simpleHeader.back.home',
     }
     const rawPrimaryTo = typeof currentConfig.backTo === 'function'
-        ? currentConfig.backTo(location.pathname)
+        ? currentConfig.backTo(normalizedPathname)
         : currentConfig.backTo
     const rawSecondaryTo = typeof currentConfig.secondaryTo === 'function'
-        ? currentConfig.secondaryTo(location.pathname)
+        ? currentConfig.secondaryTo(normalizedPathname)
         : currentConfig.secondaryTo
     const primaryTo = getLocalizedHeaderPath(rawPrimaryTo, currentLanguage)
     const secondaryTo = rawSecondaryTo ? getLocalizedHeaderPath(rawSecondaryTo, currentLanguage) : ''
@@ -59,18 +60,12 @@ export default function SimpleHeader() {
     )
 }
 
-const LOCALIZED_HEADER_PATHS = ['/about', '/profile', '/rating', '/support']
-
 const getLocalizedHeaderPath = (path, language = DEFAULT_LANGUAGE) => {
     if (!path || path === '/') {
         return `/${language}`
     }
 
-    if (LOCALIZED_HEADER_PATHS.includes(path)) {
-        return `/${language}${path}`
-    }
-
-    return path
+    return getLocalizedPath(path, language)
 }
 
 const normalizeLanguage = (language = '') => {
@@ -86,7 +81,7 @@ const getPathLanguage = (pathname = '') => {
 }
 
 const isGameSocketPingPath = (pathname = '') => {
-    const normalizedPathname = pathname.replace(/^\/(ru|en)(?=\/game(?:\/|$))/, '')
+    const normalizedPathname = stripLanguageFromPathname(pathname)
 
-    return normalizedPathname.startsWith('/game/') || pathname.startsWith('/match/')
+    return normalizedPathname.startsWith('/game/') || normalizedPathname.startsWith('/match/')
 }

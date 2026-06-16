@@ -8,7 +8,7 @@ import GlowEffect from '@/shared/ui/GlowEffect'
 import CustomSelect from '@/shared/ui/CustomSelect'
 import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
 import ServerPingIndicator from '@/shared/ui/ServerPingIndicator'
-import { getLanguageFromPathname } from '@/i18n'
+import { getLanguageFromPathname, getLocalizedPath, stripLanguageFromPathname } from '@/i18n'
 import mobileLogo from '@/widgets/Header/assets/logo.png'
 import { useTranslation } from 'react-i18next'
 
@@ -26,7 +26,7 @@ export default function Header() {
     }))
     const localizedModeItems = modeItems.map((item) => ({
         ...item,
-        to: getGamePath(item.to, currentLanguage),
+        to: getLocalizedPath(item.to, currentLanguage),
     }))
     const activeMode = getActiveItemKey(localizedModeItems, pathname)
     const activePage = activeMode ? null : getActiveItemKey(localizedNavItems, pathname)
@@ -123,14 +123,6 @@ const getNavItemPath = (item, homePath) => {
     return item.to
 }
 
-const getGamePath = (path, language) => {
-    if (!path.startsWith('/game')) {
-        return path
-    }
-
-    return `/${language}${path}`
-}
-
 const getActiveItemKey = (items, pathname) => {
     const normalizedPathname = normalizePath(pathname)
     const sortedItems = [...items].sort((firstItem, secondItem) => secondItem.to.length - firstItem.to.length)
@@ -152,11 +144,11 @@ const normalizePath = (path) => {
         return '/'
     }
 
-    return path.replace(/\/+$/, '')
+    return stripLanguageFromPathname(path).replace(/\/+$/, '') || '/'
 }
 
 const isGameSocketPingPath = (pathname = '') => {
-    const normalizedPathname = pathname.replace(/^\/(ru|en)(?=\/game(?:\/|$))/, '')
+    const normalizedPathname = stripLanguageFromPathname(pathname)
 
-    return normalizedPathname.startsWith('/game/') || pathname.startsWith('/match/')
+    return normalizedPathname.startsWith('/game/') || normalizedPathname.startsWith('/match/')
 }

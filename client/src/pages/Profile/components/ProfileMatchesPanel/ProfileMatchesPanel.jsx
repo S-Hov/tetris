@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import { getLocalizedPath } from '@/i18n'
 import { formatDateTime, getProfileMatchData } from '../../profile.utils.js'
 import ProfilePanel from '../ProfilePanel/ProfilePanel.jsx'
 import './ProfileMatchesPanel.css'
@@ -8,7 +9,7 @@ const ProfileMatchesPanel = ({ currentLanguage, matchHistory, t }) => (
     <ProfilePanel
         className="profile-panel--matches"
         title={t('profile.matches.title')}
-        action={<Link to="/matches">{t('profile.matches.viewAll')}</Link>}
+        action={<Link to={getLocalizedPath('/matches', currentLanguage)}>{t('profile.matches.viewAll')}</Link>}
     >
         <div className="profile-match-list">
             {matchHistory.length > 0 ? (
@@ -30,7 +31,7 @@ const MatchRow = ({ match, lang, t }) => {
     const matchData = getProfileMatchData(match, t)
 
     return (
-        <Link to={`/matches/${match.id}`} className={`profile-match-row profile-match-row--${matchData.resultClass}`}>
+        <Link to={getLocalizedPath(`/matches/${match.id}`, lang)} className={`profile-match-row profile-match-row--${matchData.resultClass}`}>
             <div>
                 <strong>{matchData.resultLabel}</strong>
                 <span>vs {matchData.opponent}</span>

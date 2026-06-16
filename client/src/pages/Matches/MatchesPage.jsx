@@ -1,6 +1,7 @@
 import { startTransition, useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { getLocalizedPath } from '@/i18n'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import ProfileSideNav from '@/widgets/ProfileSideNav'
 import { matchesAPI } from '@/shared/api/matches'
@@ -275,7 +276,7 @@ const MatchesPage = () => {
                             {!error && !isLoading && matchesData.matches.length > 0 ? (
                                 <div className="matches-list">
                                     {matchesData.matches.map((match) => (
-                                        <Link key={match.id} to={`/matches/${match.id}`} className={`matches-item matches-item--${getMatchResultClass(match.result)}`}>
+                                        <Link key={match.id} to={getLocalizedPath(`/matches/${match.id}`, currentLanguage)} className={`matches-item matches-item--${getMatchResultClass(match.result)}`}>
                                             <div className="matches-item-primary">
                                                 <span className="matches-mode">
                                                     <i className={getMatchModeIcon(match.mode)}></i>

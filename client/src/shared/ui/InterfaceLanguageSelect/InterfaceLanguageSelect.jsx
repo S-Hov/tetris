@@ -1,11 +1,9 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import CustomSelect from '@/shared/ui/CustomSelect'
-import { DEFAULT_LANGUAGE, LANGUAGES, SUPPORTED_LANGUAGES } from '@/i18n'
+import { DEFAULT_LANGUAGE, getLocalizedPath, LANGUAGES, SUPPORTED_LANGUAGES } from '@/i18n'
 import './InterfaceLanguageSelect.css'
 
-const LOCALIZED_PATHS = ['/about', '/profile', '/rating', '/support']
-const LOCALIZED_PATH_PREFIXES = ['/game']
 const LANGUAGE_STORAGE_KEY = 'interfaceLanguage'
 
 const InterfaceLanguageSelect = ({ className = '', menuPlacement = 'bottom' }) => {
@@ -65,30 +63,5 @@ const getI18nLanguage = (language = '') => {
 
     return SUPPORTED_LANGUAGES.includes(normalizedLanguage) ? normalizedLanguage : DEFAULT_LANGUAGE
 }
-
-const getLocalizedPath = (pathname, language) => {
-    if (!pathname || pathname === '/') {
-        return `/${language}`
-    }
-
-    const pathLanguage = getPathLanguage(pathname)
-    const pathWithoutLanguage = pathLanguage
-        ? `/${pathname.split('/').slice(2).join('/')}`.replace(/\/+$/, '') || '/'
-        : pathname
-
-    if (LOCALIZED_PATHS.includes(pathWithoutLanguage) || isLocalizedPathPrefix(pathWithoutLanguage)) {
-        return `/${language}${pathWithoutLanguage}`
-    }
-
-    if (pathWithoutLanguage === '/' && pathLanguage) {
-        return `/${language}`
-    }
-
-    return pathname
-}
-
-const isLocalizedPathPrefix = (pathname = '') => (
-    LOCALIZED_PATH_PREFIXES.some((pathPrefix) => pathname === pathPrefix || pathname.startsWith(`${pathPrefix}/`))
-)
 
 export default InterfaceLanguageSelect

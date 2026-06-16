@@ -8,6 +8,7 @@ import { useCallback, useState } from "react"
 import notify from "@/utils/Notifications"
 import TurnstileWidget from "@/shared/ui/TurnstileWidget"
 import { useTranslation } from "react-i18next"
+import { getLocalizedPath } from "@/i18n"
 
 const LoginForm = () => {
     const { t } = useTranslation()
@@ -56,7 +57,7 @@ const LoginForm = () => {
             })
             if (result.success) {
                 notify(result.message || t('auth.login.success'))
-                navigate('/profile', { replace: true })
+                navigate(getLocalizedPath('/profile'), { replace: true })
                 return
             }
             throw new Error(result.message || t('auth.login.error'))
@@ -64,7 +65,7 @@ const LoginForm = () => {
             const responseData = error.data?.data
 
             if (responseData?.code === 'EMAIL_NOT_VERIFIED' && responseData.redirectTo) {
-                navigate(responseData.redirectTo, { replace: true })
+                navigate(getLocalizedPath(responseData.redirectTo), { replace: true })
                 return
             }
 
@@ -86,7 +87,7 @@ const LoginForm = () => {
             const response = await authenticationAPI.requestPasswordReset({ email: resetEmail })
 
             notify(t('auth.login.resetSuccess'), 'success')
-            navigate(response.redirectTo || `/verify-email/${encodeURIComponent(response.email)}?mode=password-reset`, {
+            navigate(getLocalizedPath(response.redirectTo || `/verify-email/${encodeURIComponent(response.email)}?mode=password-reset`), {
                 replace: true,
             })
         } catch (error) {

@@ -1,7 +1,9 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/shared/hooks/useAuth.js'
+import { getLocalizedPath } from '@/i18n'
 
 const ProtectedRoute = ({ children }) => {
+    const location = useLocation()
     const { isAuth, isLoading } = useAuth()
 
     if (isLoading) {
@@ -9,7 +11,7 @@ const ProtectedRoute = ({ children }) => {
     }
 
     if (!isAuth) {
-        return <Navigate to="/login" replace />
+        return <Navigate to={getLocalizedPath('/login')} replace state={{ from: location }} />
     }
 
     return children

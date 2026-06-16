@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import { getLocalizedPath } from '@/i18n'
 import GlowEffect from '@/shared/ui/GlowEffect'
 
 import { formatNumber } from '../../profile.utils.js'
@@ -19,7 +20,7 @@ const ProfileHero = ({ currentLanguage, profile, t }) => (
                 <span className="profile-rank-pill">{profile.rankName}</span>
                 <div className="profile-hero__name-row">
                     <h1>{profile.name}</h1>
-                    <Link className="profile-edit-link" to="/account-settings/account" aria-label={t('profile.hero.editAria')}>
+                    <Link className="profile-edit-link" to={getLocalizedPath('/account-settings/account', currentLanguage)} aria-label={t('profile.hero.editAria')}>
                         <i className="fas fa-pen"></i>
                     </Link>
                 </div>
