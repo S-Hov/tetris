@@ -6,7 +6,8 @@
     --cell-gost-border: 1px dashed var(--turquoise-border-intense);
 }
 
-:root[data-theme="light"] {
+:root[data-theme="light"],
+:root[data-theme$="-light"] {
     --board-bg: rgb(209 209 209 / 40%);
     --cell-bg: rgb(239 238 239 / 65%);
     --cell-gost-bg: rgb(189 255 254 / 27%);

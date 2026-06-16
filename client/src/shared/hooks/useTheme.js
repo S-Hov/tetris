@@ -1,5 +1,15 @@
 import { useEffect, useState } from 'react'
-import { getStoredTheme, initTheme, saveTheme, THEMES, THEME_STORAGE_KEY } from '@/shared/lib/theme/theme.js'
+import {
+    getStoredTheme,
+    getThemeByPaletteAndMode,
+    getThemeColorMode,
+    getThemePalette,
+    initTheme,
+    saveTheme,
+    THEME_COLOR_MODES,
+    THEME_STORAGE_KEY,
+    THEMES,
+} from '@/shared/lib/theme/theme.js'
 
 const getCurrentTheme = () => getStoredTheme() || THEMES.DARK
 
@@ -30,12 +40,32 @@ export const useTheme = () => {
         setThemeState(saveTheme(nextTheme))
     }
 
-    const isDarkTheme = theme === THEMES.DARK
+    const colorMode = getThemeColorMode(theme)
+    const themePalette = getThemePalette(theme)
+    const isDarkTheme = colorMode === THEME_COLOR_MODES.DARK
+
+    const setColorMode = (nextColorMode) => {
+        setTheme(getThemeByPaletteAndMode({
+            colorMode: nextColorMode,
+            palette: themePalette,
+        }))
+    }
+
+    const setThemePalette = (nextThemePalette) => {
+        setTheme(getThemeByPaletteAndMode({
+            colorMode,
+            palette: nextThemePalette,
+        }))
+    }
 
     return {
+        colorMode,
         isDarkTheme,
+        setColorMode,
         setTheme,
+        setThemePalette,
         theme,
-        toggleTheme: () => setTheme(isDarkTheme ? THEMES.LIGHT : THEMES.DARK),
+        themePalette,
+        toggleTheme: () => setColorMode(isDarkTheme ? THEME_COLOR_MODES.LIGHT : THEME_COLOR_MODES.DARK),
     }
 }

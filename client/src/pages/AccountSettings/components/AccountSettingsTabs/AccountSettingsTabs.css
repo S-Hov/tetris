@@ -3,7 +3,8 @@
     --account-settings-tab-bg: var(--turquoise-tint-muted);
 }
 
-:root[data-theme="light"] {
+:root[data-theme="light"],
+:root[data-theme$="-light"] {
     --account-settings-tab-bg: var(--turquoise);
 }
 
