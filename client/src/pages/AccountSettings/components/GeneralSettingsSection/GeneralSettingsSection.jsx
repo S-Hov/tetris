@@ -4,6 +4,7 @@ import GlowEffect from '@/shared/ui/GlowEffect'
 import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
 import { BLUR_VARIABLES } from '@/shared/lib/interface-blur/blur.js'
 import { RADIUS_UNITS, RADIUS_VARIABLES } from '@/shared/lib/interface-radius/radius.js'
+import { THEME_PALETTE_OPTIONS } from '@/shared/lib/theme/theme.js'
 
 import './GeneralSettingsSection.css'
 
@@ -20,10 +21,12 @@ const GeneralSettingsSection = ({
     onAccentColorChange,
     onBlurSettingChange,
     onGlowEffectToggle,
+    onThemePaletteChange,
     onRadiusSettingChange,
     onThemeToggle,
     radiusSettings,
     t,
+    themePalette,
 }) => (
     <section className="account-settings-panel">
         <GlowEffect>
@@ -51,6 +54,64 @@ const GeneralSettingsSection = ({
                     </span>
                     <AppSwitch checked={isDarkTheme} />
                 </button>
+                <div className="account-theme-toggle account-theme-palette-setting">
+                    <span>
+                        <strong>{t('accountSettings.general.themePaletteTitle')}</strong>
+                        <small>{t('accountSettings.general.themePaletteDescription')}</small>
+                    </span>
+                    <div className="account-theme-palette-options" role="listbox" aria-label={t('accountSettings.general.themePaletteTitle')}>
+                        {THEME_PALETTE_OPTIONS.map((option) => {
+                            const isSelected = option.value === themePalette
+
+                            return (
+                                <button
+                                    key={option.value}
+                                    type="button"
+                                    className={`account-theme-palette-option ${isSelected ? 'is-active' : ''}`}
+                                    aria-selected={isSelected}
+                                    role="option"
+                                    onClick={() => onThemePaletteChange(option.value)}
+                                >
+                                    <span className="account-theme-palette-option__swatches" aria-hidden="true">
+                                        {option.colors.map((color) => (
+                                            <span
+                                                key={color}
+                                                className="account-theme-palette-option__swatch"
+                                                style={{ '--theme-swatch-color': color }}
+                                            />
+                                        ))}
+                                    </span>
+                                    <strong>{t(option.labelKey)}</strong>
+                                </button>
+                            )
+                        })}
+                    </div>
+                </div>
+                <div className="account-radius-settings account-accent-settings">
+                    <div className="account-radius-settings__head">
+                        <strong>{t('accountSettings.general.accentTitle')}</strong>
+                        <small>{t('accountSettings.general.accentDescription')}</small>
+                    </div>
+                    <label className="account-accent-control">
+                        <span>{t('accountSettings.general.accentTurquoise')}</span>
+                        <div className="account-accent-control__inputs">
+                            <input
+                                aria-label={t('accountSettings.general.accentColorAria')}
+                                className="account-accent-control__picker"
+                                onChange={(event) => onAccentColorChange(event.target.value)}
+                                type="color"
+                                value={accentColor}
+                            />
+                            <input
+                                aria-label={t('accountSettings.general.accentHexAria')}
+                                maxLength="7"
+                                readOnly
+                                type="text"
+                                value={accentColor}
+                            />
+                        </div>
+                    </label>
+                </div>
                 <button
                     type="button"
                     className="account-theme-toggle"
@@ -127,31 +188,6 @@ const GeneralSettingsSection = ({
                             </label>
                         ))}
                     </div>
-                </div>
-                <div className="account-radius-settings account-accent-settings">
-                    <div className="account-radius-settings__head">
-                        <strong>{t('accountSettings.general.accentTitle')}</strong>
-                        <small>{t('accountSettings.general.accentDescription')}</small>
-                    </div>
-                    <label className="account-accent-control">
-                        <span>{t('accountSettings.general.accentTurquoise')}</span>
-                        <div className="account-accent-control__inputs">
-                            <input
-                                aria-label={t('accountSettings.general.accentColorAria')}
-                                className="account-accent-control__picker"
-                                onChange={(event) => onAccentColorChange(event.target.value)}
-                                type="color"
-                                value={accentColor}
-                            />
-                            <input
-                                aria-label={t('accountSettings.general.accentHexAria')}
-                                maxLength="7"
-                                readOnly
-                                type="text"
-                                value={accentColor}
-                            />
-                        </div>
-                    </label>
                 </div>
             </div>
         </GlowEffect>

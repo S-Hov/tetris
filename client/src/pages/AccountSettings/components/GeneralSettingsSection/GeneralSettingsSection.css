@@ -43,7 +43,15 @@
     cursor: default;
 }
 
+.account-theme-palette-setting {
+    cursor: default;
+}
+
 .account-language-setting:hover {
+    transform: none;
+}
+
+.account-theme-palette-setting:hover {
     transform: none;
 }
 
@@ -148,6 +156,69 @@
     box-shadow: var(--lite-shadow);
 }
 
+.account-theme-palette-options {
+    flex: 0 1 520px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.55rem;
+}
+
+.account-theme-palette-option {
+    min-width: 0;
+    min-height: 74px;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 0.45rem;
+    padding: 0.7rem 0.55rem;
+    border: var(--border);
+    border-radius: var(--radius-card-2);
+    background: var(--input-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.account-theme-palette-option:hover,
+.account-theme-palette-option:focus-visible {
+    border-color: var(--turquoise-border-strong);
+    box-shadow: 0 0 0 3px var(--turquoise-tint-muted);
+    color: var(--text-color-1);
+    outline: none;
+}
+
+.account-theme-palette-option.is-active {
+    border-color: var(--turquoise-glow-strong);
+    background: linear-gradient(135deg, var(--turquoise-tint-medium), rgba(255, 0, 255, 0.1));
+    box-shadow: var(--lite-shadow);
+    color: var(--text-color-1);
+}
+
+.account-theme-palette-option__swatches {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.22rem;
+}
+
+.account-theme-palette-option__swatch {
+    width: 18px;
+    aspect-ratio: 1;
+    border: 1px solid rgba(255, 255, 255, 0.54);
+    border-radius: 50%;
+    background: var(--theme-swatch-color);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-swatch-color) 55%, transparent);
+}
+
+.account-theme-palette-option strong {
+    max-width: 100%;
+    overflow: hidden;
+    font-family: var(--font-1);
+    font-size: 0.78rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .account-blur-settings__grid {
     display: grid;
     gap: 0.85rem;
@@ -233,9 +304,20 @@
         flex-direction: column;
     }
 
+    .account-theme-palette-setting {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
     .account-language-select {
         width: 100%;
         flex-basis: auto;
+    }
+
+    .account-theme-palette-options {
+        width: 100%;
+        flex-basis: auto;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .account-radius-settings__grid {

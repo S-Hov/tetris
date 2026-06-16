@@ -9,6 +9,7 @@ import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 import { useInterfaceBlur } from '@/shared/hooks/useInterfaceBlur.js'
 import { useInterfaceRadius } from '@/shared/hooks/useInterfaceRadius.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
+import { getLocalizedPath } from '@/i18n'
 import { authenticationAPI } from '@/shared/api/auth'
 import { settingsAPI } from '@/shared/api/settings'
 import notify from '@/utils/Notifications'
@@ -39,7 +40,7 @@ const AccountSettingsPage = () => {
     const { blurSettings, setBlurSetting } = useInterfaceBlur()
     const { isGlowEffectEnabled, toggleGlowEffect } = useGlowEffect()
     const { radiusSettings, setRadiusSetting } = useInterfaceRadius()
-    const { isDarkTheme, toggleTheme } = useTheme()
+    const { isDarkTheme, setThemePalette, themePalette, toggleTheme } = useTheme()
     const [profileForm, setProfileForm] = useState({ username: '' })
     const [avatarFile, setAvatarFile] = useState(null)
     const [avatarPreview, setAvatarPreview] = useState('')
@@ -222,7 +223,7 @@ const AccountSettingsPage = () => {
 
             setUser(null)
             notify(t('accountSettings.notifications.emailUpdated'), 'success')
-            navigate(response.redirectTo || `/verify-email/${encodeURIComponent(response.email)}`, { replace: true })
+            navigate(getLocalizedPath(response.redirectTo || `/verify-email/${encodeURIComponent(response.email)}`), { replace: true })
         } catch (error) {
             notify(error.message || t('accountSettings.notifications.emailChangeError'), 'error')
         } finally {
@@ -263,7 +264,7 @@ const AccountSettingsPage = () => {
 
     const handleLogout = async () => {
         await logout()
-        navigate('/login', { replace: true })
+        navigate(getLocalizedPath('/login'), { replace: true })
     }
 
     const handleUnlinkConnection = async (provider) => {
@@ -281,11 +282,11 @@ const AccountSettingsPage = () => {
     }
 
     if (!section) {
-        return <Navigate to={`/account-settings/${DEFAULT_ACCOUNT_SETTINGS_SECTION}`} replace />
+        return <Navigate to={getLocalizedPath(`/account-settings/${DEFAULT_ACCOUNT_SETTINGS_SECTION}`, currentLanguage)} replace />
     }
 
     if (!isKnownSection) {
-        return <Navigate to={`/account-settings/${DEFAULT_ACCOUNT_SETTINGS_SECTION}`} replace />
+        return <Navigate to={getLocalizedPath(`/account-settings/${DEFAULT_ACCOUNT_SETTINGS_SECTION}`, currentLanguage)} replace />
     }
 
     return (
@@ -306,10 +307,12 @@ const AccountSettingsPage = () => {
                             onAccentColorChange={setAccentColor}
                             onBlurSettingChange={setBlurSetting}
                             onGlowEffectToggle={toggleGlowEffect}
+                            onThemePaletteChange={setThemePalette}
                             onRadiusSettingChange={setRadiusSetting}
                             onThemeToggle={toggleTheme}
                             radiusSettings={radiusSettings}
                             t={t}
+                            themePalette={themePalette}
                         />
                     )}
 

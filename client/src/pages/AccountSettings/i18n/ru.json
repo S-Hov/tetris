@@ -29,6 +29,14 @@
       "languageDescription": "Переключает язык текста в интерфейсе",
       "darkThemeTitle": "Тёмная тема",
       "darkThemeDescription": "Переключает цветовую схему интерфейса",
+      "themePaletteTitle": "Цветовая палитра",
+      "themePaletteDescription": "Меняет цветовое семейство интерфейса, сохраняя светлый и тёмный режимы",
+      "themePalettes": {
+        "cyber": "Кибер",
+        "aurora": "Аврора",
+        "ember": "Эмбер",
+        "matrix": "Матрица"
+      },
       "glowTitle": "Glow Effect",
       "glowDescription": "Включает и выключает свечение карточек при движении курсора",
       "radiusTitle": "Управление закруглением",

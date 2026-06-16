@@ -29,6 +29,14 @@
       "languageDescription": "Changes the text language in the interface",
       "darkThemeTitle": "Dark theme",
       "darkThemeDescription": "Switches the interface color scheme",
+      "themePaletteTitle": "Color palette",
+      "themePaletteDescription": "Changes the visual color family while keeping light and dark modes",
+      "themePalettes": {
+        "cyber": "Cyber",
+        "aurora": "Aurora",
+        "ember": "Ember",
+        "matrix": "Matrix"
+      },
       "glowTitle": "Glow Effect",
       "glowDescription": "Turns card glow on and off while the cursor moves",
       "radiusTitle": "Rounding control",
