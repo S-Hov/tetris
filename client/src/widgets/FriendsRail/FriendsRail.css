@@ -10,7 +10,7 @@
     gap: 12px;
     padding: 10px 8px;
     border: 1px solid color-mix(in srgb, var(--turquoise) 18%, transparent);
-    border-radius: 8px;
+    border-radius: var(--radius-card-1);
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.14)),
         color-mix(in srgb, var(--surface-panel-bg) 78%, transparent);
@@ -27,15 +27,6 @@
     border-color: var(--turquoise-border);
     box-shadow: var(--hover-shadow);
     outline: none;
-}
-
-.friends-rail::before {
-    content: '';
-    position: absolute;
-    inset: 0 0 0 auto;
-    width: 2px;
-    background: linear-gradient(180deg, var(--turquoise), var(--blue), var(--pink));
-    opacity: 0.72;
 }
 
 .friends-rail__header {

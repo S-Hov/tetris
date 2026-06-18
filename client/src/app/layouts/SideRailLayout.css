@@ -19,11 +19,13 @@
 
 .side-rail-layout__rail--left {
     z-index: 200;
+    padding-left: 3px;
 }
 
 .side-rail-layout__rail--right {
     z-index: 200;
     justify-self: end;
+    padding-right: 3px;
 }
 
 .side-rail-layout__content {

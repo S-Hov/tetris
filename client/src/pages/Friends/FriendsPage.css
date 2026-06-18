@@ -1,3 +1,7 @@
+.friends-page{
+    flex: 1;
+}
+
 .friends-container {
     background: transparent;
 }
