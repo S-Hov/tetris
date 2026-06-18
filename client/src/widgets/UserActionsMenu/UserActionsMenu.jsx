@@ -7,6 +7,7 @@ import { getBaseUrl } from '@/shared/api/apiClient.js'
 import './UserActionsMenu.css'
 
 const ACTIONS = [
+    { key: 'friendRequest', icon: 'fas fa-user-plus' },
     { key: 'roomInvite', icon: 'fas fa-door-open' },
     { key: 'matchInvite', icon: 'fas fa-gamepad' },
     { key: 'message', icon: 'fas fa-message' },
@@ -19,7 +20,9 @@ const UserActionsMenu = ({
     anchorElement,
     anchorRect,
     isInviting,
+    isSendingFriendRequest,
     onClose,
+    onFriendRequest,
     onRetry,
     onRoomInvite,
     result,
@@ -93,6 +96,14 @@ const UserActionsMenu = ({
         await onRoomInvite(result?.user || targetUser)
     }
 
+    const handleFriendRequest = async () => {
+        if (isSendingFriendRequest) {
+            return
+        }
+
+        await onFriendRequest(result?.user || targetUser)
+    }
+
     const visibleActions = ACTIONS.filter(({ key }) => result?.actions?.[key]?.visible)
     const user = result?.user || targetUser
 
@@ -139,22 +150,31 @@ const UserActionsMenu = ({
                 <div className="user-actions-menu__actions">
                     {visibleActions.map(({ key, icon }) => {
                         const action = result.actions[key]
+                        const isFriendRequest = key === 'friendRequest'
                         const isRoomInvite = key === 'roomInvite'
-                        const isDisabled = !action.enabled || (isRoomInvite && isInviting)
+                        const isPending =
+                            (isFriendRequest && isSendingFriendRequest) ||
+                            (isRoomInvite && isInviting)
+                        const handleClick = isFriendRequest
+                            ? handleFriendRequest
+                            : isRoomInvite
+                                ? handleRoomInvite
+                                : undefined
+                        const isDisabled = !action.enabled || isPending
 
                         return (
                             <button
                                 key={key}
                                 type="button"
                                 disabled={isDisabled}
-                                onClick={isRoomInvite ? handleRoomInvite : undefined}
+                                onClick={handleClick}
                             >
                                 <i className={icon}></i>
                                 <span>
                                     <strong>{t(`userActions.actions.${key}`)}</strong>
                                     {!action.enabled ? <small>{t(`userActions.reasons.${action.reason}`)}</small> : null}
                                 </span>
-                                {isRoomInvite && isInviting ? (
+                                {isPending ? (
                                     <i className="fas fa-circle-notch fa-spin"></i>
                                 ) : (
                                     <i className="fas fa-chevron-right"></i>

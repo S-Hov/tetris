@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedGamePath } from '@/i18n'
+import { friendsAPI } from '@/shared/api/friends'
 import { socket } from '@/shared/api/socket'
 import { usersAPI } from '@/shared/api/users'
 import notify from '@/utils/Notifications'
@@ -35,6 +36,7 @@ export const UserActionsProvider = ({ children }) => {
     const [result, setResult] = useState(null)
     const [status, setStatus] = useState('idle')
     const [isInviting, setIsInviting] = useState(false)
+    const [isSendingFriendRequest, setIsSendingFriendRequest] = useState(false)
 
     const closeUserActions = useCallback(() => {
         requestControllerRef.current?.abort()
@@ -43,6 +45,7 @@ export const UserActionsProvider = ({ children }) => {
         setResult(null)
         setStatus('idle')
         setIsInviting(false)
+        setIsSendingFriendRequest(false)
     }, [])
 
     const loadActions = useCallback(async (player) => {
@@ -142,6 +145,29 @@ export const UserActionsProvider = ({ children }) => {
         }
     }, [closeUserActions, isInviting, location.pathname, navigate, t])
 
+    const sendFriendRequest = useCallback(async (player) => {
+        if (!player?.id || isSendingFriendRequest) {
+            return false
+        }
+
+        setIsSendingFriendRequest(true)
+
+        try {
+            await friendsAPI.sendRequest(player.id)
+            notify(t('userActions.notifications.friendRequestSent'), 'success')
+            closeUserActions()
+            return true
+        } catch (error) {
+            notify(
+                error.message || t('userActions.notifications.friendRequestError'),
+                'error'
+            )
+            return false
+        } finally {
+            setIsSendingFriendRequest(false)
+        }
+    }, [closeUserActions, isSendingFriendRequest, t])
+
     useEffect(() => () => {
         requestControllerRef.current?.abort()
     }, [])
@@ -163,10 +189,12 @@ export const UserActionsProvider = ({ children }) => {
                     anchorElement={menu.anchorElement}
                     anchorRect={menu.anchorRect}
                     isInviting={isInviting}
+                    isSendingFriendRequest={isSendingFriendRequest}
                     result={result}
                     status={status}
                     targetUser={menu.player}
                     onClose={closeUserActions}
+                    onFriendRequest={sendFriendRequest}
                     onRetry={retryUserActions}
                     onRoomInvite={inviteToRoom}
                 />
