@@ -8,6 +8,7 @@ import {
     respondFriendRequestRepo,
 } from '../repositories/friendsRepository.js'
 import { getRankTier } from './rankRules.js'
+import { canSendFriendRequestService } from './privacyService.js'
 
 export const getFriendsService = async (userId) => {
     const rows = await getFriendsRepo(userId)
@@ -83,15 +84,24 @@ export const createFriendRequestService = async ({ requesterId, addresseeId }) =
         throw badRequest('FRIENDS.CANNOT_ADD_SELF')
     }
 
+    const permission = await canSendFriendRequestService({
+        requesterId,
+        addresseeId: normalizedAddresseeId,
+    })
+
+    if (['pending', 'accepted'].includes(permission.relationshipStatus)) {
+        throw badRequest('FRIENDS.REQUEST_ALREADY_EXISTS')
+    }
+
+    if (!permission.allowed) {
+        throw badRequest('FRIENDS.REQUESTS_DISABLED')
+    }
+
     try {
         const request = await createFriendRequestRepo({
             requesterId,
             addresseeId: normalizedAddresseeId,
         })
-
-        if (!request) {
-            throw badRequest('FRIENDS.REQUESTS_DISABLED')
-        }
 
         return request
     } catch (error) {

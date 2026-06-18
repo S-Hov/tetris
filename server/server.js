@@ -15,6 +15,7 @@ import supportRouter from './routes/support.js'
 import feedbackRouter from './routes/feedback.js'
 import effectsRouter from './routes/effects.js'
 import friendsRouter from './routes/friends.js'
+import usersRouter from './routes/users.js'
 import passport, { configurePassport } from './config/passport.js'
 
 import { logger } from './middleware/logger.js'
@@ -93,6 +94,7 @@ app.use("/api/feedback", feedbackRouter)
 app.use("/api/support", supportRouter)
 app.use("/api/effects", effectsRouter)
 app.use("/api/friends", friendsRouter)
+app.use("/api/users", usersRouter)
 app.use("/api/admin", adminRouter)
 app.use('/api/telegram', telegramRouter)
 

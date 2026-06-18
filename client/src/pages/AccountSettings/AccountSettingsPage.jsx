@@ -20,6 +20,7 @@ import AccountSettingsHeader from './components/AccountSettingsHeader/AccountSet
 import AccountSettingsTabs from './components/AccountSettingsTabs/AccountSettingsTabs.jsx'
 import EmailChangeModal from './components/EmailChangeModal/EmailChangeModal.jsx'
 import GeneralSettingsSection from './components/GeneralSettingsSection/GeneralSettingsSection.jsx'
+import PrivacySettingsSection from './components/PrivacySettingsSection'
 import {
     ACCOUNT_SETTINGS_SECTION_KEYS,
     AVATAR_MAX_SIZE,
@@ -347,6 +348,10 @@ const AccountSettingsPage = () => {
                             t={t}
                             unlinkingProvider={unlinkingProvider}
                         />
+                    )}
+
+                    {activeSection === 'privacy' && (
+                        <PrivacySettingsSection t={t} />
                     )}
                 </div>
             </div>

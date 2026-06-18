@@ -3,6 +3,7 @@ export const DEFAULT_ACCOUNT_SETTINGS_SECTION = 'general'
 export const ACCOUNT_SETTINGS_SECTIONS = [
     { key: 'general', icon: 'fas fa-sliders', labelKey: 'accountSettings.tabs.general' },
     { key: 'account', icon: 'fas fa-user', labelKey: 'accountSettings.tabs.account' },
+    { key: 'privacy', icon: 'fas fa-user-shield', labelKey: 'accountSettings.tabs.privacy' },
     { key: 'security', icon: 'fas fa-shield-alt', labelKey: 'accountSettings.tabs.security' },
 ]
 

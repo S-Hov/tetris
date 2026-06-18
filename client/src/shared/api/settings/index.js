@@ -25,4 +25,18 @@ export const settingsAPI = {
             method: 'GET',
         })
     },
+
+    getPrivacySettings(options = {}) {
+        return apiClient('/api/settings/privacy', {
+            method: 'GET',
+            ...options,
+        })
+    },
+
+    updatePrivacySettings(data) {
+        return apiClient('/api/settings/privacy', {
+            method: 'PATCH',
+            body: JSON.stringify(data),
+        })
+    },
 }

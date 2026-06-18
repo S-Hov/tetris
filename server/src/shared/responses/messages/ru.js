@@ -94,6 +94,11 @@ export default {
     'FRIENDS.INVALID_REQUEST_ACTION': 'Неподдерживаемое действие с заявкой',
     'FRIENDS.REQUEST_NOT_FOUND': 'Заявка в друзья не найдена',
 
+    'PRIVACY.LOADED': 'Настройки приватности загружены',
+    'PRIVACY.UPDATED': 'Настройки приватности обновлены',
+    'PRIVACY.INVALID_VISIBILITY': 'Неподдерживаемый режим приватности',
+    'USERS.ACTIONS_LOADED': 'Действия с пользователем загружены',
+
     'COMMON.OK': 'Готово',
     'COMMON.BAD_REQUEST': 'Некорректный запрос',
     'COMMON.UNAUTHORIZED': 'Необходима авторизация',

@@ -7,6 +7,7 @@ import {
     emitPresenceToUsers,
 } from '../services/friendsRealtimeService.js'
 import { getRoomPlayers, roomStore } from './roomStore.js'
+import { canInviteUserToRoomService } from '../services/privacyService.js'
 
 const getUserRoom = (userId) => `user:${userId}`
 const activeUserSockets = new Map()
@@ -19,12 +20,6 @@ const getAuthenticatedUserId = (socket) => {
 }
 
 const getUserDisplayName = (user = {}) => user.username || user.email || 'Player'
-
-const isAcceptedFriend = async (userId, friendId) => {
-    const friendIds = await getAcceptedFriendIdsService(userId)
-
-    return friendIds.some((id) => Number(id) === Number(friendId))
-}
 
 const findActivePlayingRoomByUserId = async (userId) => {
     const rooms = await roomStore.getAllRooms()
@@ -119,8 +114,11 @@ export const registerFriendsHandlers = (io, socket) => {
                 return
             }
 
-            if (!(await isAcceptedFriend(userId, normalizedFriendId))) {
-                callback?.({ success: false, message: 'Only accepted friends can be invited' })
+            if (!(await canInviteUserToRoomService({
+                inviterId: userId,
+                inviteeId: normalizedFriendId,
+            }))) {
+                callback?.({ success: false, message: 'This user does not accept room invites' })
                 return
             }
 

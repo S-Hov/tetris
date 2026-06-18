@@ -21,7 +21,50 @@
       "aria": "Settings sections",
       "general": "General",
       "account": "Account",
+      "privacy": "Privacy",
       "security": "Security"
+    },
+    "privacy": {
+      "title": "Privacy and interactions",
+      "description": "Choose who can find and interact with you. Changes are saved automatically.",
+      "loading": "Loading privacy settings...",
+      "loadError": "Could not load privacy settings",
+      "saving": "Saving...",
+      "saved": "Saved automatically",
+      "options": {
+        "public": "Everyone",
+        "publicDescription": "Available to every eligible user",
+        "friends": "Friends only",
+        "friendsDescription": "Available to friends; friend requests require a mutual friend",
+        "private": "Nobody",
+        "privateDescription": "The action is unavailable"
+      },
+      "fields": {
+        "profile": {
+          "title": "Profile visibility",
+          "description": "Who will be able to open your public player profile in the future."
+        },
+        "friendRequests": {
+          "title": "Friend requests",
+          "description": "Who can send you a friend request."
+        },
+        "roomInvites": {
+          "title": "Room invitations",
+          "description": "Who can invite you to a private game room."
+        },
+        "matchInvites": {
+          "title": "Matchmaking invitations",
+          "description": "Who will be able to invite you to search for a match."
+        },
+        "messages": {
+          "title": "Private messages",
+          "description": "Who will be able to send you private messages."
+        },
+        "clubInvites": {
+          "title": "Club invitations",
+          "description": "Who will be able to invite you to a club."
+        }
+      }
     },
     "general": {
       "title": "Appearance",
@@ -110,7 +153,10 @@
       "passwordUpdated": "Password updated",
       "passwordUpdateError": "Could not update password",
       "connectionRemoved": "Login method removed",
-      "connectionRemoveError": "Could not remove login method"
+      "connectionRemoveError": "Could not remove login method",
+      "privacyLoadError": "Could not load privacy settings",
+      "privacyUpdated": "Privacy setting updated",
+      "privacyUpdateError": "Could not update privacy setting"
     }
   }
 }

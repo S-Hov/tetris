@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -8,6 +8,7 @@ import { useAuth } from '@/shared/hooks/useAuth.js'
 import useFriendsRealtime from '@/shared/hooks/useFriendsRealtime.js'
 import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedGamePath, getLocalizedPath } from '@/i18n'
 import notify from '@/utils/Notifications'
+import UserActionsMenu from '@/widgets/UserActionsMenu'
 
 import './FriendsRail.css'
 
@@ -34,7 +35,7 @@ const FriendsRail = () => {
     const location = useLocation()
     const { isAuth, isLoading: isAuthLoading, user } = useAuth()
     const friendsState = useFriendsRealtime({ enabled: isAuth && !isAuthLoading })
-    const [selectedFriendId, setSelectedFriendId] = useState(null)
+    const [actionMenu, setActionMenu] = useState(null)
     const [invitingFriendId, setInvitingFriendId] = useState(null)
 
     const currentUserKey = user?.id || 'authorized'
@@ -52,12 +53,12 @@ const FriendsRail = () => {
 
     const handleInviteFriend = async (friend) => {
         if (!friend?.id || invitingFriendId) {
-            return
+            return false
         }
 
         if (friend.isInGame) {
             notify(t('friendsRail.inviteInGame'), 'warning')
-            return
+            return false
         }
 
         const currentRoom = getLobbyRoomFromPathname(location.pathname)
@@ -71,7 +72,7 @@ const FriendsRail = () => {
                     modeKey: '1v1',
                 },
             })
-            return
+            return true
         }
 
         setInvitingFriendId(friend.id)
@@ -84,14 +85,31 @@ const FriendsRail = () => {
 
             if (!response.success) {
                 notify(response.message || t('friendsRail.inviteError'), 'error')
-                return
+                return false
             }
 
             notify(t('friendsRail.inviteSent'), 'success')
-            setSelectedFriendId(null)
+            return true
         } finally {
             setInvitingFriendId(null)
         }
+    }
+
+    const closeActionMenu = useCallback(() => {
+        setActionMenu(null)
+    }, [])
+
+    const handleFriendClick = (friend, element) => {
+        if (actionMenu?.friend.id === friend.id) {
+            closeActionMenu()
+            return
+        }
+
+        setActionMenu({
+            friend,
+            element,
+            rect: element.getBoundingClientRect(),
+        })
     }
 
     return (
@@ -134,18 +152,14 @@ const FriendsRail = () => {
                                 <FriendSection
                                     friends={onlineFriends}
                                     isOnlineSection
-                                    selectedFriendId={selectedFriendId}
                                     title={t('friendsRail.sections.online')}
-                                    onSelect={setSelectedFriendId}
-                                    onInvite={handleInviteFriend}
-                                    invitingFriendId={invitingFriendId}
+                                    onSelect={handleFriendClick}
                                     t={t}
                                 />
                                 <FriendSection
                                     friends={offlineFriends}
-                                    selectedFriendId={selectedFriendId}
                                     title={t('friendsRail.sections.offline')}
-                                    onSelect={setSelectedFriendId}
+                                    onSelect={handleFriendClick}
                                     t={t}
                                 />
                             </div>
@@ -172,17 +186,24 @@ const FriendsRail = () => {
                     </div>
                 )}
             </div>
+
+            {actionMenu ? (
+                <UserActionsMenu
+                    anchorElement={actionMenu.element}
+                    anchorRect={actionMenu.rect}
+                    targetUser={actionMenu.friend}
+                    onClose={closeActionMenu}
+                    onRoomInvite={handleInviteFriend}
+                />
+            ) : null}
         </aside>
     )
 }
 
 const FriendSection = ({
     friends,
-    invitingFriendId = null,
     isOnlineSection = false,
-    onInvite = () => {},
     onSelect,
-    selectedFriendId,
     t,
     title,
 }) => (
@@ -193,12 +214,8 @@ const FriendSection = ({
                 {friends.map((friend) => (
                     <FriendItem
                         friend={friend}
-                        isExpanded={selectedFriendId === friend.id}
-                        isOnlineSection={isOnlineSection}
                         key={friend.id}
-                        onInvite={onInvite}
                         onSelect={onSelect}
-                        isInviting={invitingFriendId === friend.id}
                         t={t}
                     />
                 ))}
@@ -211,7 +228,7 @@ const FriendSection = ({
     </section>
 )
 
-const FriendItem = ({ friend, isExpanded, isInviting, isOnlineSection, onInvite, onSelect, t }) => {
+const FriendItem = ({ friend, onSelect, t }) => {
     const content = (
         <>
             <span className="friends-rail__avatar">
@@ -226,33 +243,15 @@ const FriendItem = ({ friend, isExpanded, isInviting, isOnlineSection, onInvite,
     )
 
     return (
-        <article className={`friends-rail__item ${isExpanded ? 'is-expanded' : ''}`}>
-            {isOnlineSection ? (
-                <button
-                    className="friends-rail__item-main"
-                    type="button"
-                    aria-expanded={isExpanded}
-                    onClick={() => onSelect(isExpanded ? null : friend.id)}
-                >
-                    {content}
-                </button>
-            ) : (
-                <div className="friends-rail__item-main">
-                    {content}
-                </div>
-            )}
-
-            {isOnlineSection && isExpanded ? (
-                <button
-                    className="friends-rail__invite"
-                    type="button"
-                    disabled={friend.isInGame || isInviting}
-                    onClick={() => onInvite(friend)}
-                >
-                    <i className="fas fa-paper-plane"></i>
-                    {friend.isInGame ? t('friendsRail.inviteInGameShort') : isInviting ? t('friendsRail.inviting') : t('friendsRail.invite')}
-                </button>
-            ) : null}
+        <article className="friends-rail__item">
+            <button
+                className="friends-rail__item-main"
+                type="button"
+                aria-haspopup="dialog"
+                onClick={(event) => onSelect(friend, event.currentTarget)}
+            >
+                {content}
+            </button>
         </article>
     )
 }

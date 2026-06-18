@@ -48,6 +48,8 @@ npm run db:migrate
 | `016_rank_tiers_catalog.sql` | Rank tiers catalog with point ranges, localized labels, images and status |
 | `017_uploaded_assets_storage.sql` | Uploaded asset metadata storage for files served from `/uploads` |
 | `018_enable_public_table_rls.sql` | Enables public-table RLS policies where the schema expects public read access |
+| `019_friends_schema.sql` | Friendships and the legacy friend-request permission |
+| `020_user_privacy_settings.sql` | Per-user privacy modes, legacy permission migration and automatic defaults |
 
 Миграции используют `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`
 и `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, поэтому baseline можно применить

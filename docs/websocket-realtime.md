@@ -79,6 +79,10 @@ accept/decline/cancel/remove. После мутации backend вызывает
 новый `friends:state` заинтересованным пользователям. Клиентские виджеты не должны возвращать
 polling через `setInterval`.
 
+Privacy settings и capabilities действий не передаются через websocket. Клиент получает их через
+`GET /api/settings/privacy` и `GET /api/users/:userId/actions`, а socket-handler повторно проверяет
+разрешение непосредственно перед отправкой приглашения.
+
 Presence сейчас считается в памяти процесса по активным socket-подключениям пользователя.
 Если один пользователь открыл несколько вкладок, offline отправляется только после закрытия
 последнего socket.

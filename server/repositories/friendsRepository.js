@@ -123,14 +123,7 @@ export const createFriendRequestRepo = async ({ requesterId, addresseeId }) => {
     const result = await pool.query(
         `
         INSERT INTO friendships (requester_id, addressee_id, status)
-        SELECT $1, $2, 'pending'
-        WHERE EXISTS (
-            SELECT 1
-            FROM users
-            WHERE id = $2
-                AND status = 'active'
-                AND allow_friend_requests = TRUE
-        )
+        VALUES ($1, $2, 'pending')
         RETURNING id, requester_id, addressee_id, status, requested_at
         `,
         [requesterId, addresseeId]

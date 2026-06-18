@@ -43,7 +43,6 @@ export const getUserRepo = async (id) => {
             users.email,
             users.avatar_url,
             users.status,
-            users.allow_friend_requests,
             users.role_id,
             roles.key AS role,
             roles.name AS role_name,

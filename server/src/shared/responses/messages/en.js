@@ -94,6 +94,11 @@ export default {
     'FRIENDS.INVALID_REQUEST_ACTION': 'Unsupported friend request action',
     'FRIENDS.REQUEST_NOT_FOUND': 'Friend request not found',
 
+    'PRIVACY.LOADED': 'Privacy settings loaded',
+    'PRIVACY.UPDATED': 'Privacy settings updated',
+    'PRIVACY.INVALID_VISIBILITY': 'Unsupported privacy visibility',
+    'USERS.ACTIONS_LOADED': 'User actions loaded',
+
     'COMMON.OK': 'Done',
     'COMMON.BAD_REQUEST': 'Bad request',
     'COMMON.UNAUTHORIZED': 'Authorization required',

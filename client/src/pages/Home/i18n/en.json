@@ -144,5 +144,26 @@
     "toast": "{{username}} invited you to a lobby",
     "responseAccepted": "{{username}} accepted the invite",
     "responseDeclined": "{{username}} declined the invite"
+  },
+  "userActions": {
+    "ariaLabel": "Actions with {{username}}",
+    "eyebrow": "User actions",
+    "close": "Close actions",
+    "loading": "Checking available actions...",
+    "loadError": "Could not load available actions",
+    "retry": "Try again",
+    "empty": "No actions are available for this user",
+    "actions": {
+      "roomInvite": "Invite to room",
+      "matchInvite": "Invite to matchmaking",
+      "message": "Send message",
+      "profile": "View profile"
+    },
+    "reasons": {
+      "FEATURE_NOT_AVAILABLE": "Coming soon",
+      "USER_OFFLINE": "User is offline",
+      "USER_IN_GAME": "User is already in game",
+      "PRIVACY_RESTRICTED": "Restricted by privacy settings"
+    }
   }
 }

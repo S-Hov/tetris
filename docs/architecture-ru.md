@@ -211,6 +211,7 @@ donations, audit и migrations.
 | `/uploads` | Статика и fallback для загруженных ассетов |
 | `/api/authentication` | Auth/password/OAuth routes |
 | `/api/settings` | Настройки аккаунта и OAuth connections |
+| `/api/users` | HTTP capabilities для действий с пользователями |
 | `/api/matches` | Match routes |
 | `/api/leaderboard` | Leaderboard routes |
 | `/api/analytics` | Page/game analytics |
@@ -264,6 +265,9 @@ OAuth подробно описан в [`oauth-auth.md`](oauth-auth.md).
 | `DELETE` | `/api/settings/connections/:provider/unlink` | Required | Отвязка provider, если остаётся другой способ входа |
 | `PATCH` | `/api/settings/account/email` | Required | Запрос смены email |
 | `GET` | `/api/settings/account/login-history` | Required | История входов аккаунта |
+| `GET` | `/api/settings/privacy` | Required | Настройки приватности пользователя |
+| `PATCH` | `/api/settings/privacy` | Required | Частичное обновление настроек приватности |
+| `GET` | `/api/users/:userId/actions` | Optional | Доступные действия без раскрытия настроек другого пользователя |
 
 ### Leaderboard And Effects API
 

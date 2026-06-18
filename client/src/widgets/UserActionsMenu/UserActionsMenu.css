@@ -1,0 +1,169 @@
+.user-actions-menu {
+    position: fixed;
+    z-index: 2000;
+    width: min(292px, calc(100vw - 20px));
+    overflow: hidden;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: var(--radius-card-1);
+    color: var(--text-color);
+    background: color-mix(in srgb, var(--surface-panel-bg) 94%, transparent);
+    box-shadow: var(--hover-shadow);
+    backdrop-filter: var(--medium-blur);
+}
+
+.user-actions-menu__header {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) 32px;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 64px;
+    padding: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--turquoise-tint-soft);
+}
+
+.user-actions-menu__avatar {
+    width: 38px;
+    height: 38px;
+    display: inline-grid;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: 50%;
+    color: var(--turquoise-lite);
+    background: var(--turquoise-tint-muted);
+}
+
+.user-actions-menu__avatar img,
+.user-actions-menu__avatar video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-actions-menu__header > span:nth-child(2) {
+    min-width: 0;
+    display: grid;
+    gap: 0.15rem;
+}
+
+.user-actions-menu__header small {
+    color: var(--text-muted);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+}
+
+.user-actions-menu__header strong {
+    overflow: hidden;
+    color: var(--text-color-1);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-actions-menu__header > button {
+    width: 32px;
+    height: 32px;
+    display: inline-grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    color: var(--text-color);
+    background: transparent;
+    cursor: pointer;
+}
+
+.user-actions-menu__actions {
+    display: grid;
+    padding: 0.4rem;
+}
+
+.user-actions-menu__actions > button {
+    width: 100%;
+    min-height: 52px;
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) 18px;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem;
+    border: 0;
+    border-radius: var(--radius-card-1);
+    color: var(--text-color);
+    text-align: left;
+    background: transparent;
+    cursor: pointer;
+}
+
+.user-actions-menu__actions > button:hover,
+.user-actions-menu__actions > button:focus-visible {
+    color: var(--text-color-1);
+    background: var(--turquoise-tint-soft);
+    outline: none;
+}
+
+.user-actions-menu__actions > button:disabled {
+    opacity: 0.58;
+    cursor: not-allowed;
+}
+
+.user-actions-menu__actions > button > i:first-child {
+    color: var(--turquoise-lite);
+    text-align: center;
+}
+
+.user-actions-menu__actions > button > span {
+    min-width: 0;
+    display: grid;
+    gap: 0.15rem;
+}
+
+.user-actions-menu__actions strong {
+    color: inherit;
+    font-size: 0.82rem;
+}
+
+.user-actions-menu__actions small {
+    color: var(--text-muted);
+    font-size: 0.68rem;
+}
+
+.user-actions-menu__actions > button > i:last-child {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+}
+
+.user-actions-menu__state {
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    padding: 1rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.user-actions-menu__state > i {
+    color: var(--turquoise-lite);
+    font-size: 1.2rem;
+}
+
+.user-actions-menu__state button {
+    min-height: 34px;
+    padding: 0 0.8rem;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: var(--radius-card-1);
+    color: var(--text-color-1);
+    background: var(--turquoise-tint-soft);
+    cursor: pointer;
+}
+
+@media (max-width: 599px) {
+    .user-actions-menu {
+        top: auto !important;
+        right: 10px;
+        bottom: max(10px, env(safe-area-inset-bottom));
+        left: 10px !important;
+        width: auto;
+    }
+}
