@@ -1,17 +1,17 @@
 :root,
 :root[data-theme="dark"] {
-    --account-settings-tab-bg: var(--turquoise-tint-muted);
+    --navigation-tab-bg: var(--turquoise-tint-muted);
 }
 
 :root[data-theme="light"],
 :root[data-theme$="-light"] {
-    --account-settings-tab-bg: var(--turquoise);
+    --navigation-tab-bg: var(--turquoise);
 }
 
-.account-settings-tabs {
+.navigation-tabs {
     width: fit-content;
     display: inline-grid;
-    grid-template-columns: repeat(3, minmax(150px, 1fr));
+    grid-template-columns: repeat(var(--navigation-tabs-columns), minmax(150px, 1fr));
     gap: 0.4rem;
     padding: 0.35rem;
     border: var(--border);
@@ -19,7 +19,7 @@
     background: var(--elem-bg);
 }
 
-.account-settings-tabs a {
+.navigation-tabs a {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
@@ -32,15 +32,15 @@
     transition: var(--transition);
 }
 
-.account-settings-tabs a:hover,
-.account-settings-tabs a.is-active {
-    background: var(--account-settings-tab-bg);
+.navigation-tabs a:hover,
+.navigation-tabs a.is-active {
+    background: var(--navigation-tab-bg);
     color: var(--text-active-color);
     box-shadow: var(--revers-shadow);
 }
 
 @media (max-width: 640px) {
-    .account-settings-tabs {
+    .navigation-tabs {
         width: 100%;
         grid-template-columns: 1fr;
     }

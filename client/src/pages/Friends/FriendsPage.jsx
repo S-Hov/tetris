@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react'
-import { Navigate, NavLink, useParams } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import ProfileSideNav from '@/widgets/ProfileSideNav'
+import { getLocalizedPath } from '@/i18n'
 import { getBaseUrl } from '@/shared/api/apiClient.js'
 import { friendsAPI } from '@/shared/api/friends'
 import useFriendsRealtime from '@/shared/hooks/useFriendsRealtime.js'
+import NavigationTabs from '@/shared/ui/NavigationTabs'
 import notify from '@/utils/Notifications'
 import PlayerActionTrigger from '@/shared/ui/PlayerActionTrigger'
 
@@ -109,18 +111,12 @@ const FriendsPage = () => {
                         <p>{t('friends.hero.description')}</p>
                     </header>
 
-                    <nav className="friends-tabs" aria-label={t('friends.tabs.aria')}>
-                        {FRIENDS_SECTIONS.map((item) => (
-                            <NavLink
-                                key={item.key}
-                                to={`/friends/${item.key}`}
-                                className={({ isActive }) => isActive ? 'is-active' : undefined}
-                            >
-                                <i className={item.icon}></i>
-                                {t(item.labelKey)}
-                            </NavLink>
-                        ))}
-                    </nav>
+                    <NavigationTabs
+                        ariaLabel={t('friends.tabs.aria')}
+                        getItemPath={(item) => getLocalizedPath(`/friends/${item.key}`)}
+                        items={FRIENDS_SECTIONS}
+                        t={t}
+                    />
 
                     {activeSection === 'friends' && (
                         <FriendsList

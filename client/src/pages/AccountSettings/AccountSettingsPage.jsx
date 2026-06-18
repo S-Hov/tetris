@@ -9,6 +9,7 @@ import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 import { useInterfaceBlur } from '@/shared/hooks/useInterfaceBlur.js'
 import { useInterfaceRadius } from '@/shared/hooks/useInterfaceRadius.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
+import NavigationTabs from '@/shared/ui/NavigationTabs'
 import { getLocalizedPath } from '@/i18n'
 import { authenticationAPI } from '@/shared/api/auth'
 import { settingsAPI } from '@/shared/api/settings'
@@ -17,12 +18,12 @@ import notify from '@/utils/Notifications'
 import AccountProfileSection from './components/AccountProfileSection/AccountProfileSection.jsx'
 import AccountSecuritySection from './components/AccountSecuritySection/AccountSecuritySection.jsx'
 import AccountSettingsHeader from './components/AccountSettingsHeader/AccountSettingsHeader.jsx'
-import AccountSettingsTabs from './components/AccountSettingsTabs/AccountSettingsTabs.jsx'
 import EmailChangeModal from './components/EmailChangeModal/EmailChangeModal.jsx'
 import GeneralSettingsSection from './components/GeneralSettingsSection/GeneralSettingsSection.jsx'
 import PrivacySettingsSection from './components/PrivacySettingsSection'
 import {
     ACCOUNT_SETTINGS_SECTION_KEYS,
+    ACCOUNT_SETTINGS_SECTIONS,
     AVATAR_MAX_SIZE,
     AVATAR_TYPES,
     DEFAULT_ACCOUNT_SETTINGS_SECTION,
@@ -297,7 +298,12 @@ const AccountSettingsPage = () => {
 
                 <div className="account-settings-content profile-layout-content">
                     <AccountSettingsHeader t={t} />
-                    <AccountSettingsTabs t={t} />
+                    <NavigationTabs
+                        ariaLabel={t('accountSettings.tabs.aria')}
+                        getItemPath={(item) => getLocalizedPath(`/account-settings/${item.key}`)}
+                        items={ACCOUNT_SETTINGS_SECTIONS}
+                        t={t}
+                    />
 
                     {activeSection === 'general' && (
                         <GeneralSettingsSection

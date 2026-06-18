@@ -36,38 +36,6 @@
     line-height: 1.65;
 }
 
-.friends-tabs {
-    width: fit-content;
-    display: inline-grid;
-    grid-template-columns: repeat(3, minmax(150px, 1fr));
-    gap: 0.4rem;
-    padding: 0.35rem;
-    border: var(--border);
-    border-radius: var(--radius-card-1);
-    background: var(--elem-bg);
-}
-
-.friends-tabs a {
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.45rem;
-    border: 0;
-    border-radius: var(--radius-card-1);
-    color: var(--text-color);
-    font-weight: 800;
-    text-decoration: none;
-    transition: var(--transition);
-}
-
-.friends-tabs a:hover,
-.friends-tabs a.is-active {
-    color: var(--text-active-color);
-    background: var(--account-settings-tab-bg, var(--turquoise-tint-muted));
-    box-shadow: var(--revers-shadow);
-}
-
 .friends-panel {
     padding: 1rem;
 }
@@ -357,7 +325,6 @@
 }
 
 @media (max-width: 640px) {
-    .friends-tabs,
     .friends-search-form {
         width: 100%;
         grid-template-columns: 1fr;
