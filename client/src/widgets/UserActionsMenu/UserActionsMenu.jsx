@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 
 import { getBaseUrl } from '@/shared/api/apiClient.js'
-import { usersAPI } from '@/shared/api/users'
 
 import './UserActionsMenu.css'
 
@@ -19,41 +18,20 @@ const MENU_MARGIN = 10
 const UserActionsMenu = ({
     anchorElement,
     anchorRect,
+    isInviting,
     onClose,
+    onRetry,
     onRoomInvite,
+    result,
+    status,
     targetUser,
 }) => {
     const { t } = useTranslation()
     const menuRef = useRef(null)
-    const [result, setResult] = useState(null)
-    const [status, setStatus] = useState('loading')
-    const [isInviting, setIsInviting] = useState(false)
-    const [requestVersion, setRequestVersion] = useState(0)
     const [position, setPosition] = useState({
         left: Math.max(MENU_MARGIN, anchorRect.left - 292 - MENU_MARGIN),
         top: Math.max(MENU_MARGIN, anchorRect.top),
     })
-
-    useEffect(() => {
-        const controller = new AbortController()
-        setStatus('loading')
-        setResult(null)
-
-        usersAPI.getActions(targetUser.id, {
-            signal: controller.signal,
-        })
-            .then((response) => {
-                setResult(response)
-                setStatus('ready')
-            })
-            .catch((error) => {
-                if (error?.name !== 'AbortError') {
-                    setStatus('error')
-                }
-            })
-
-        return () => controller.abort()
-    }, [requestVersion, targetUser.id])
 
     useEffect(() => {
         const handlePointerDown = (event) => {
@@ -112,17 +90,7 @@ const UserActionsMenu = ({
             return
         }
 
-        setIsInviting(true)
-
-        try {
-            const didFinish = await onRoomInvite(result?.user || targetUser)
-
-            if (didFinish) {
-                onClose()
-            }
-        } finally {
-            setIsInviting(false)
-        }
+        await onRoomInvite(result?.user || targetUser)
     }
 
     const visibleActions = ACTIONS.filter(({ key }) => result?.actions?.[key]?.visible)
@@ -163,7 +131,7 @@ const UserActionsMenu = ({
                 <div className="user-actions-menu__state">
                     <i className="fas fa-triangle-exclamation"></i>
                     <span>{t('userActions.loadError')}</span>
-                    <button type="button" onClick={() => setRequestVersion((value) => value + 1)}>
+                    <button type="button" onClick={onRetry}>
                         {t('userActions.retry')}
                     </button>
                 </div>

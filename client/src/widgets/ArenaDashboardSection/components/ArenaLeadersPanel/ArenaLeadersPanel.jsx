@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import GlowEffect from '@/shared/ui/GlowEffect'
+import PlayerActionTrigger from '@/shared/ui/PlayerActionTrigger'
 
 import { formatNumber, getAssetUrl } from '../../arenaDashboard.utils.js'
 
@@ -31,17 +32,19 @@ const ArenaLeadersPanel = ({ currentLanguage, isLoading, players }) => {
                 ) : (
                     <div className="arena-leaders-list">
                         {players.map((player) => (
-                            <Link to="/rating" className="arena-leader-row" key={player.id}>
-                                <span className="arena-leader-row__place">{player.rank}</span>
-                                <span className="arena-leader-row__avatar">
-                                    <PlayerAvatar player={player} />
-                                </span>
-                                <span className="arena-leader-row__name">
-                                    {player.username}
-                                    {player.rank === 1 ? <i className="fas fa-crown"></i> : null}
-                                </span>
-                                <strong>{formatNumber(player.rating, currentLanguage)}</strong>
-                            </Link>
+                            <PlayerActionTrigger asChild key={player.id} player={player}>
+                                <Link to="/rating" className="arena-leader-row">
+                                    <span className="arena-leader-row__place">{player.rank}</span>
+                                    <span className="arena-leader-row__avatar">
+                                        <PlayerAvatar player={player} />
+                                    </span>
+                                    <span className="arena-leader-row__name">
+                                        {player.username}
+                                        {player.rank === 1 ? <i className="fas fa-crown"></i> : null}
+                                    </span>
+                                    <strong>{formatNumber(player.rating, currentLanguage)}</strong>
+                                </Link>
+                            </PlayerActionTrigger>
                         ))}
                     </div>
                 )}

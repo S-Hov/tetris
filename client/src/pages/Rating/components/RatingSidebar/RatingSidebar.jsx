@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { RatingAvatar, RankTierImage } from '../RatingPlayerMedia/RatingPlayerMedia.jsx'
 import { formatNumber } from '../../rating.utils.js'
 import { DEFAULT_COUNTRY_LABEL } from '../../ratingPage.config.js'
+import PlayerActionTrigger from '@/shared/ui/PlayerActionTrigger'
 
 import './RatingSidebar.css'
 
@@ -30,16 +31,18 @@ const LeaderPanel = ({ player, currentLanguage }) => {
 
     return (
         <>
-            <div className="rating-leader-card">
-                <h2>{t('rating.sidebar.leaderTitle')}</h2>
-                <RatingAvatar player={player} />
-                <strong>{player.username} <span>{player.country || DEFAULT_COUNTRY_LABEL}</span></strong>
-                <span className="rating-tier-pill">
-                    <RankTierImage tier={player.rankTier} className="rating-rank-tier-image rating-rank-tier-image--pill" />
-                    {player.rankTier?.label || t('rating.rankFallback')}
-                </span>
-                <b>{formatNumber(player.rating, currentLanguage)} <small>MMR</small></b>
-            </div>
+            <PlayerActionTrigger asChild player={player}>
+                <div className="rating-leader-card">
+                    <h2>{t('rating.sidebar.leaderTitle')}</h2>
+                    <RatingAvatar player={player} />
+                    <strong>{player.username} <span>{player.country || DEFAULT_COUNTRY_LABEL}</span></strong>
+                    <span className="rating-tier-pill">
+                        <RankTierImage tier={player.rankTier} className="rating-rank-tier-image rating-rank-tier-image--pill" />
+                        {player.rankTier?.label || t('rating.rankFallback')}
+                    </span>
+                    <b>{formatNumber(player.rating, currentLanguage)} <small>MMR</small></b>
+                </div>
+            </PlayerActionTrigger>
 
             <div className="rating-leader-stats">
                 <h2>{t('rating.sidebar.recordsTitle')}</h2>

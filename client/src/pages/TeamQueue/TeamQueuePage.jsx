@@ -10,6 +10,7 @@ import {
 } from '@/shared/api/socket'
 import notify from '@/utils/Notifications'
 import { defaultMatchSettings, normalizeMatchSettings } from '@/features/tetris/model/matchSettings.js'
+import PlayerActionTrigger from '@/shared/ui/PlayerActionTrigger'
 import { getModeSelectionConfig } from '@/shared/config/gameModes.js'
 
 import '@/pages/Lobby/LobbyPage.css'
@@ -498,18 +499,20 @@ const TeamQueuePage = () => {
                                 const player = partyPlayers[slotIndex]
 
                             return (
-                                <article key={slotIndex} className="lobby-player-card team-queue-slot">
-                                    <div className="lobby-player-card__identity">
-                                        <PlayerAvatar player={player} />
-                                        <div>
-                                            <h3>{player?.username || t('teamQueue.slots.waitingPlayer')}</h3>
-                                            <p>{player?.isOwner ? t('teamQueue.slots.leader') : player ? t('teamQueue.slots.ally') : t('teamQueue.slots.free')}</p>
+                                <PlayerActionTrigger asChild disabled={!player} key={slotIndex} player={player}>
+                                    <article className="lobby-player-card team-queue-slot">
+                                        <div className="lobby-player-card__identity">
+                                            <PlayerAvatar player={player} />
+                                            <div>
+                                                <h3>{player?.username || t('teamQueue.slots.waitingPlayer')}</h3>
+                                                <p>{player?.isOwner ? t('teamQueue.slots.leader') : player ? t('teamQueue.slots.ally') : t('teamQueue.slots.free')}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <span className={`lobby-ready-badge ${player ? 'is-ready' : ''}`}>
-                                        {t('teamQueue.slots.slot', { number: slotIndex + 1 })}
+                                        <span className={`lobby-ready-badge ${player ? 'is-ready' : ''}`}>
+                                            {t('teamQueue.slots.slot', { number: slotIndex + 1 })}
                                         </span>
                                     </article>
+                                </PlayerActionTrigger>
                                 )
                             })}
                         </div>

@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import GlowEffect from '@/shared/ui/GlowEffect'
+import PlayerActionTrigger from '@/shared/ui/PlayerActionTrigger'
 
 import { RatingAvatar, RankTierImage } from '../RatingPlayerMedia/RatingPlayerMedia.jsx'
 import { sortOptionsMeta } from '../RatingControls/ratingControls.data.js'
@@ -61,13 +62,15 @@ const RatingBoard = ({ currentLanguage, error, isLoading, players, sort }) => {
                                                 </span>
                                             </td>
                                             <td>
-                                                <div className="rating-player">
-                                                    <RatingAvatar player={player} small />
-                                                    <span>
-                                                        <strong>{player.username}</strong>
-                                                        <small>MMR {formatNumber(player.mmr, currentLanguage)}</small>
-                                                    </span>
-                                                </div>
+                                                <PlayerActionTrigger asChild player={player}>
+                                                    <div className="rating-player">
+                                                        <RatingAvatar player={player} small />
+                                                        <span>
+                                                            <strong>{player.username}</strong>
+                                                            <small>MMR {formatNumber(player.mmr, currentLanguage)}</small>
+                                                        </span>
+                                                    </div>
+                                                </PlayerActionTrigger>
                                             </td>
                                             <td className="rating-value">{formatNumber(player.rating, currentLanguage)}</td>
                                             <td>{formatNumber(player.wins, currentLanguage)}</td>

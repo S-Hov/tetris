@@ -148,6 +148,7 @@
   "userActions": {
     "ariaLabel": "Actions with {{username}}",
     "eyebrow": "User actions",
+    "playerFallback": "Player",
     "close": "Close actions",
     "loading": "Checking available actions...",
     "loadError": "Could not load available actions",
@@ -164,6 +165,10 @@
       "USER_OFFLINE": "User is offline",
       "USER_IN_GAME": "User is already in game",
       "PRIVACY_RESTRICTED": "Restricted by privacy settings"
+    },
+    "notifications": {
+      "inviteSent": "Invite sent",
+      "inviteError": "Could not send invite"
     }
   }
 }

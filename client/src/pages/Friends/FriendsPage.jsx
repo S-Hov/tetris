@@ -7,6 +7,7 @@ import { getBaseUrl } from '@/shared/api/apiClient.js'
 import { friendsAPI } from '@/shared/api/friends'
 import useFriendsRealtime from '@/shared/hooks/useFriendsRealtime.js'
 import notify from '@/utils/Notifications'
+import PlayerActionTrigger from '@/shared/ui/PlayerActionTrigger'
 
 import {
     DEFAULT_FRIENDS_SECTION,
@@ -288,22 +289,24 @@ const FriendSearch = ({
 )
 
 const PlayerCard = ({ compact = false, player, t }) => (
-    <article className={`friends-player-card ${compact ? 'friends-player-card--compact' : ''}`}>
-        <span className="friends-player-card__avatar">
-            {player.avatarUrl
-                ? renderAvatarMedia(getAssetUrl(player.avatarUrl), player.username)
-                : getAvatarFallback(player.username)}
-        </span>
-        <span className={`friends-player-card__status ${player.isOnline ? 'is-online' : 'is-offline'}`} title={player.isOnline ? t('friends.status.online') : t('friends.status.offline')}></span>
-        <span className="friends-player-card__body">
-            <strong>{player.username}</strong>
-            <small>ID {player.id}</small>
-        </span>
-        <span className="friends-player-card__rank">
-            <strong>{player.rank?.label || t('friends.rankFallback')}</strong>
-            <small>{t('friends.rankPoints', { count: player.rankStats?.rankPoints || 0 })}</small>
-        </span>
-    </article>
+    <PlayerActionTrigger asChild player={player}>
+        <article className={`friends-player-card ${compact ? 'friends-player-card--compact' : ''}`}>
+            <span className="friends-player-card__avatar">
+                {player.avatarUrl
+                    ? renderAvatarMedia(getAssetUrl(player.avatarUrl), player.username)
+                    : getAvatarFallback(player.username)}
+            </span>
+            <span className={`friends-player-card__status ${player.isOnline ? 'is-online' : 'is-offline'}`} title={player.isOnline ? t('friends.status.online') : t('friends.status.offline')}></span>
+            <span className="friends-player-card__body">
+                <strong>{player.username}</strong>
+                <small>ID {player.id}</small>
+            </span>
+            <span className="friends-player-card__rank">
+                <strong>{player.rank?.label || t('friends.rankFallback')}</strong>
+                <small>{t('friends.rankPoints', { count: player.rankStats?.rankPoints || 0 })}</small>
+            </span>
+        </article>
+    </PlayerActionTrigger>
 )
 
 const EmptyState = ({ text }) => (

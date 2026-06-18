@@ -15,6 +15,7 @@ import {
 import notify from '@/utils/Notifications'
 import { defaultMatchSettings, normalizeMatchSettings } from '@/features/tetris/model/matchSettings.js'
 import { getModeSelectionConfig, modeSelectionCatalog } from '@/shared/config/gameModes.js'
+import PlayerActionTrigger from '@/shared/ui/PlayerActionTrigger'
 
 import './LobbyPage.css'
 
@@ -859,36 +860,38 @@ const LobbyPage = () => {
                                 </div>
 
                                 {(team.players || []).map((player) => (
-                                    <article key={`${team.id}-${player.userId}`} className="lobby-player-card">
-                                        <div className="lobby-player-card__identity">
-                                            <PlayerAvatar player={player} />
-                                            <div>
-                                                <h3>{player.username}</h3>
-                                                <p>{player.userId === clientUserId ? t('lobby.teams.you') : getTeamLabel(team.id, t)}</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="lobby-player-card__actions">
-                                            {isRoomOwner && modeKey === '2v2' ? (
-                                                <div className="lobby-team-switcher" aria-label={t('lobby.teams.teamSelectAria')}>
-                                                    {['team_1', 'team_2'].map((nextTeamId) => (
-                                                        <button
-                                                            key={nextTeamId}
-                                                            type="button"
-                                                            className={nextTeamId === team.id ? 'is-active' : ''}
-                                                            onClick={() => handleSetTeam(player, nextTeamId)}
-                                                            disabled={nextTeamId === team.id}
-                                                        >
-                                                            {nextTeamId === 'team_1' ? 'T1' : 'T2'}
-                                                        </button>
-                                                    ))}
+                                    <PlayerActionTrigger asChild key={`${team.id}-${player.userId}`} player={player}>
+                                        <article className="lobby-player-card">
+                                            <div className="lobby-player-card__identity">
+                                                <PlayerAvatar player={player} />
+                                                <div>
+                                                    <h3>{player.username}</h3>
+                                                    <p>{player.userId === clientUserId ? t('lobby.teams.you') : getTeamLabel(team.id, t)}</p>
                                                 </div>
-                                            ) : null}
-                                            <span className={`lobby-ready-badge ${player.isReady ? 'is-ready' : ''}`}>
-                                                {player.isReady ? t('lobby.teams.ready') : t('lobby.teams.waiting')}
-                                            </span>
-                                        </div>
-                                    </article>
+                                            </div>
+
+                                            <div className="lobby-player-card__actions">
+                                                {isRoomOwner && modeKey === '2v2' ? (
+                                                    <div className="lobby-team-switcher" aria-label={t('lobby.teams.teamSelectAria')}>
+                                                        {['team_1', 'team_2'].map((nextTeamId) => (
+                                                            <button
+                                                                key={nextTeamId}
+                                                                type="button"
+                                                                className={nextTeamId === team.id ? 'is-active' : ''}
+                                                                onClick={() => handleSetTeam(player, nextTeamId)}
+                                                                disabled={nextTeamId === team.id}
+                                                            >
+                                                                {nextTeamId === 'team_1' ? 'T1' : 'T2'}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                ) : null}
+                                                <span className={`lobby-ready-badge ${player.isReady ? 'is-ready' : ''}`}>
+                                                    {player.isReady ? t('lobby.teams.ready') : t('lobby.teams.waiting')}
+                                                </span>
+                                            </div>
+                                        </article>
+                                    </PlayerActionTrigger>
                                 ))}
 
                                 {(team.players || []).length === 0 && currentRoom ? (
