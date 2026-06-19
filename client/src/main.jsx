@@ -10,6 +10,7 @@ import './app/styles/animations.css'
 import './i18n'
 
 import App from './app/App.jsx'
+import { AudioProvider } from './shared/context/AudioProvider.jsx'
 import { AuthProvider } from './shared/context/AuthContext.jsx'
 import { initAccentColor } from './shared/lib/accent-color/accentColor.js'
 import { initGlowEffect } from './shared/lib/glow-effect/glowEffect.js'
@@ -26,11 +27,13 @@ initAccentColor()
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <HelmetProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </AuthProvider>
+      <AudioProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </AuthProvider>
+      </AudioProvider>
     </HelmetProvider>
   </React.StrictMode>
 )

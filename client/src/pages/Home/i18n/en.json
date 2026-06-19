@@ -173,5 +173,21 @@
       "inviteSent": "Invite sent",
       "inviteError": "Could not send invite"
     }
+  },
+  "audioControl": {
+    "ariaLabel": "Audio controls",
+    "open": "Open audio controls",
+    "close": "Close audio controls",
+    "nowPlaying": "Now playing",
+    "noTrack": "Choose a track",
+    "play": "Play music",
+    "pause": "Pause music",
+    "previous": "Previous track",
+    "next": "Next track",
+    "playTrack": "Play {{track}}",
+    "volume": "Master volume",
+    "toggleMusic": "Mute or unmute music",
+    "toggleEffects": "Mute or unmute sound effects",
+    "toggleAll": "Mute or unmute all audio"
   }
 }

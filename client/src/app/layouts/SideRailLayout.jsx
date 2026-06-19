@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import useMediaQuery from '@/shared/hooks/useMediaQuery'
+import AudioControl from '@/widgets/AudioControl'
 import './SideRailLayout.css'
 
 const ActivityFeed = lazy(() => import('@/widgets/ActivityFeed'))
@@ -92,6 +93,8 @@ const SideRailLayout = ({ children }) => {
                     </Suspense>
                 </div>
             )}
+
+            <AudioControl />
         </div>
     )
 }

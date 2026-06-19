@@ -1,0 +1,348 @@
+.audio-control {
+    --audio-control-size: 64px;
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1400;
+    width: var(--audio-control-size);
+    height: var(--audio-control-size);
+}
+
+.audio-control button {
+    border: 0;
+    color: var(--text-color-1);
+    cursor: pointer;
+}
+
+.audio-control__trigger {
+    position: relative;
+    z-index: 5;
+    width: var(--audio-control-size);
+    height: var(--audio-control-size);
+    display: grid;
+    place-items: center;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.15rem;
+    background: var(--box-bg);
+    backdrop-filter: var(--easy-blur);
+    box-shadow: var(--lite-shadow);
+    transition: transform 220ms ease, filter 220ms ease;
+}
+
+.audio-control__trigger:hover,
+.audio-control__trigger:focus-visible {
+    filter: brightness(1.12);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.audio-control--open .audio-control__trigger {
+    transform: rotate(12deg);
+}
+
+.audio-control__pulse {
+    position: absolute;
+    inset: -7px;
+    z-index: -1;
+    border: 1px solid var(--turquoise-border);
+    border-radius: 50%;
+    opacity: 0;
+}
+
+.audio-control--open .audio-control__pulse {
+    animation: audio-control-pulse 1.8s ease-out infinite;
+}
+
+.audio-control__tracks,
+.audio-control__channel-actions {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.audio-control__track,
+.audio-control__transport button,
+.audio-control__channel-actions button,
+.audio-control__now-playing button {
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--turquoise-border-soft) !important;
+    border-radius: 50%;
+    background: var(--elem-bg);
+    box-shadow: var(--shadow), inset 0 0 16px var(--turquoise-tint-soft);
+    backdrop-filter: var(--medium-blur);
+    transition:
+        opacity 220ms ease,
+        transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 180ms ease,
+        color 180ms ease,
+        background 180ms ease;
+}
+
+.audio-control__track {
+    position: absolute;
+    left: 7px;
+    top: 7px;
+    width: 50px;
+    height: 50px;
+    opacity: 0;
+    transform: translate(0, 0) scale(0.45);
+}
+
+.audio-control__track span {
+    position: absolute;
+    right: -3px;
+    top: -5px;
+    min-width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+    padding: 0 4px;
+    border-radius: 999px;
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: 0.62rem;
+    background: var(--turquoise);
+    box-shadow: 0 0 12px var(--turquoise-glow-strong);
+}
+
+.audio-control--open .audio-control__track {
+    pointer-events: auto;
+    opacity: 1;
+    transform: translate(var(--track-x), var(--track-y)) scale(1);
+}
+
+.audio-control__track:hover,
+.audio-control__track:focus-visible,
+.audio-control__track.is-active {
+    color: var(--text-active-color);
+    border-color: var(--turquoise-border-intense) !important;
+    background: var(--turquoise-tint-medium);
+    outline: none;
+}
+
+.audio-control__transport {
+    position: absolute;
+    right: calc(100% + 14px);
+    bottom: calc(100% + 30px);
+    width: 278px;
+    display: grid;
+    grid-template-columns: repeat(3, 40px);
+    justify-content: center;
+    gap: 6px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px) scale(0.9);
+    transition: opacity 180ms ease, transform 260ms ease;
+}
+
+.audio-control--open .audio-control__transport {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+.audio-control__transport button {
+    width: 40px;
+    height: 40px;
+}
+
+.audio-control__transport button:hover,
+.audio-control__transport button:focus-visible {
+    color: var(--turquoise-bright);
+    border-color: var(--turquoise-border-intense) !important;
+    background: var(--turquoise-tint-medium);
+    outline: none;
+}
+
+.audio-control__track.is-active {
+    box-shadow:
+        0 0 24px var(--turquoise-glow-strong),
+        inset 0 0 18px var(--turquoise-tint-medium);
+}
+
+.audio-control__panel {
+    position: absolute;
+    right: calc(100% + 14px);
+    bottom: 0;
+    width: 278px;
+    padding: 12px;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: var(--radius-card-2);
+    background: var(--elem-bg);
+    box-shadow: var(--shadow), inset 0 0 24px var(--turquoise-tint-soft);
+    backdrop-filter: var(--hard-blur);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(16px) scale(0.9);
+    transform-origin: bottom right;
+    transition: opacity 180ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.audio-control--open .audio-control__panel {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0) scale(1);
+}
+
+.audio-control__now-playing {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.audio-control__now-playing > span {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.audio-control__now-playing small {
+    color: var(--text-muted);
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.audio-control__now-playing strong {
+    overflow: hidden;
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: 0.8rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.audio-control__now-playing button {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+}
+
+.audio-control__volume {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr) 38px;
+    align-items: center;
+    gap: 8px;
+    color: var(--turquoise-lite);
+}
+
+.audio-control__volume input {
+    width: 100%;
+    accent-color: var(--turquoise);
+    cursor: pointer;
+}
+
+.audio-control__volume strong {
+    color: var(--text-color);
+    font-size: 0.7rem;
+    text-align: right;
+}
+
+.audio-control__channel-actions {
+    left: auto;
+    right: 10px;
+    bottom: calc(100% + 14px);
+    inset-block-start: auto;
+    width: 42px;
+    display: grid;
+    align-content: start;
+    gap: 8px;
+    padding-bottom: 0;
+    opacity: 0;
+    transform: translateX(12px);
+    transition: opacity 180ms ease, transform 260ms ease;
+}
+
+.audio-control--open .audio-control__channel-actions {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+}
+
+.audio-control__channel-actions button {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    font-size: 0.82rem;
+}
+
+.audio-control__music-mute.is-active::after {
+    content: '';
+    position: absolute;
+    width: 23px;
+    height: 2px;
+    border-radius: 999px;
+    background: currentColor;
+    box-shadow: 0 0 6px currentColor;
+    transform: rotate(-45deg);
+}
+
+.audio-control__channel-actions button:hover,
+.audio-control__channel-actions button:focus-visible,
+.audio-control__channel-actions button.is-active {
+    color: var(--pink);
+    border-color: color-mix(in srgb, var(--pink) 42%, transparent) !important;
+    background: color-mix(in srgb, var(--pink) 12%, var(--elem-bg));
+    outline: none;
+}
+
+@keyframes audio-control-pulse {
+    0% {
+        opacity: 0.72;
+        transform: scale(0.86);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.42);
+    }
+}
+
+@media (max-width: 770px) {
+    .audio-control {
+        --audio-control-size: 58px;
+        right: 14px;
+        bottom: calc(84px + env(safe-area-inset-bottom));
+    }
+
+    .audio-control__panel {
+        width: min(268px, calc(100vw - 92px));
+        right: calc(100% + 12px);
+    }
+
+    .audio-control__track {
+        left: 6px;
+        top: 6px;
+        width: 46px;
+        height: 46px;
+    }
+
+    .audio-control--open .audio-control__track {
+        transform: translate(var(--track-mobile-x), var(--track-mobile-y)) scale(1);
+    }
+
+    .audio-control__channel-actions {
+        right: 8px;
+        bottom: calc(100% + 12px);
+    }
+
+    .audio-control__transport {
+        right: 72px;
+        bottom: calc(100% + 38px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .audio-control *,
+    .audio-control *::before,
+    .audio-control *::after {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+    }
+}

@@ -12,6 +12,7 @@ import { useTetrisGameLoop } from '@/features/tetris/hooks/useTetrisGameLoop.js'
 import { createBoard } from '@/features/tetris/model/createBoard.js'
 import { GAME_MODE_REGISTRY, GAME_MODE_TYPES } from '@/features/tetris/model/gameModes.js'
 import { MATCH_PLAY_MODES } from '@/features/tetris/model/matchPlayModes.js'
+import { PC_CONTROL_ACTIONS } from '@/features/tetris/model/pcControls.js'
 import {
     defaultMatchSettings,
     getRandomPieceGeneratorForSettings,
@@ -33,13 +34,21 @@ import PlayerSummaryPanel from '@/features/tetris/ui/PlayerSummaryPanel.jsx'
 import SoloDebuffTimerPanel from '@/features/tetris/ui/SoloDebuffTimerPanel.jsx'
 import StatsPanel from '@/features/tetris/ui/StatsPanel.jsx'
 import TetrisBoard from '@/features/tetris/ui/TetrisBoard.jsx'
+import gameStartSound from '@/features/tetris/assets/audio/game-start.mp3'
+import hardDropSound from '@/features/tetris/assets/audio/hard_drop.mp3'
+import moveSound from '@/features/tetris/assets/audio/vjuh-1.wav'
+import rotateSound from '@/features/tetris/assets/audio/vjuh-2.wav'
 import { getLocalizedGamePath } from '@/i18n'
 import { useAuth } from '@/shared/hooks/useAuth.js'
+import useAudio from '@/shared/hooks/useAudio.js'
 import { socket } from '@/shared/api/socket'
 import { matchesAPI } from '@/shared/api/matches'
 import { effectsAPI } from '@/shared/api/effects'
 import notify from '@/utils/Notifications'
 
+import gameFoundSound from './assets/audio/game_found.wav'
+import loseSound from './assets/audio/lose.wav'
+import winSound from './assets/audio/win.wav'
 import './MatchPage.css'
 
 const DANGER_ZONE_ROWS = 7
@@ -110,6 +119,7 @@ const MatchPage = ({
     const navigate = useNavigate()
     const params = useParams()
     const { user } = useAuth()
+    const { playEffect, stopMusic } = useAudio()
     const isOnline = playMode === MATCH_PLAY_MODES.ONLINE
     const roomId = roomIdProp ?? params.roomId
     const modeKey = modeKeyProp ?? location.state?.modeKey ?? DEFAULT_ONLINE_MODE_KEY
@@ -154,6 +164,8 @@ const MatchPage = ({
             roomSettings={roomSettings}
             setRoomSettings={setRoomSettings}
             user={user}
+            playEffect={playEffect}
+            stopMusic={stopMusic}
         />
     )
 }
@@ -168,6 +180,8 @@ const MatchPageGame = ({
     roomSettings,
     setRoomSettings,
     user,
+    playEffect,
+    stopMusic,
 }) => {
     const randomPieceGenerator = useMemo(
         () => getRandomPieceGeneratorForSettings(roomSettings),
@@ -180,12 +194,15 @@ const MatchPageGame = ({
     const [targetSecondsLeft, setTargetSecondsLeft] = useState(0)
     const [soloRecord, setSoloRecord] = useState(() => Number(user?.rankStats?.bestSoloScore) || 0)
     const boardShellRef = useRef(null)
+    const didPlayMatchFoundRef = useRef(false)
+    const playedResultRef = useRef(null)
     const soloResultSubmittedRef = useRef(false)
     const { countdownValue, isCountingDown } = useGameCountdown({
         enabled: !isIntroVisible,
         startedAt: countdownStartedAt,
     })
     const shouldShowCountdown = !isIntroVisible && isCountingDown
+    const wasCountingDownRef = useRef(false)
     const { isMatchFinished, matchResult } = useMatchResult({
         enabled: isOnline,
         modeKey,
@@ -238,13 +255,32 @@ const MatchPageGame = ({
         setGameState,
     })
 
+    const handleTetrisActionSound = useCallback((action) => {
+        switch (action) {
+            case PC_CONTROL_ACTIONS.MOVE_LEFT:
+            case PC_CONTROL_ACTIONS.MOVE_RIGHT:
+                playEffect(moveSound, { volume: 0.42 })
+                break
+            case PC_CONTROL_ACTIONS.ROTATE:
+                playEffect(rotateSound, { volume: 0.5 })
+                break
+            case PC_CONTROL_ACTIONS.HARD_DROP:
+                playEffect(hardDropSound, { volume: 0.72 })
+                break
+            default:
+                break
+        }
+    }, [playEffect])
+
     useTetrisControls({
         disabled: isIntroVisible || isMatchFinished || isCountingDown || Boolean(targetChoice),
+        onAction: handleTetrisActionSound,
         randomPiece: randomPieceGenerator,
         setGameState,
     })
     const mobileControls = useMobileTetrisControls({
         disabled: isIntroVisible || isMatchFinished || isCountingDown || Boolean(targetChoice),
+        onAction: handleTetrisActionSound,
         randomPiece: randomPieceGenerator,
         setGameState,
         targetRef: boardShellRef,
@@ -284,6 +320,7 @@ const MatchPageGame = ({
     const hasScreenShake = hasEffect(derivedState, EFFECT_TYPES.SCREEN_SHAKE)
     const hasInvisibleCells = hasEffect(derivedState, EFFECT_TYPES.INVISIBLE_CELLS)
     const isSoloGameOver = !isOnline && derivedState.isGameOver
+    const audibleResult = matchResult || (isSoloGameOver ? 'lose' : null)
     const currentRoomPlayers = roomPlayers.length > 0 ? roomPlayers : getRoomPlayers(matchRoom)
     const selfPlayer = currentRoomPlayers.find((player) => player.socketId === socket.id) || null
     const selfTeamNumber = selfPlayer?.teamNumber || null
@@ -308,6 +345,41 @@ const MatchPageGame = ({
         '--danger-level': dangerLevel.toFixed(3),
         '--danger-shake-duration': `${Math.max(700 - dangerLevel * 420, 220)}ms`,
     }
+
+    useEffect(() => {
+        if (!isIntroVisible || didPlayMatchFoundRef.current) {
+            return
+        }
+
+        didPlayMatchFoundRef.current = true
+        playEffect(gameFoundSound, { volume: 0.82 })
+    }, [isIntroVisible, playEffect])
+
+    useEffect(() => {
+        if (!wasCountingDownRef.current && isCountingDown) {
+            playEffect(gameStartSound, { volume: 0.76 })
+        }
+
+        if (wasCountingDownRef.current && !isCountingDown) {
+            stopMusic()
+        }
+
+        wasCountingDownRef.current = isCountingDown
+    }, [isCountingDown, playEffect, stopMusic])
+
+    useEffect(() => {
+        if (!audibleResult) {
+            playedResultRef.current = null
+            return
+        }
+
+        if (playedResultRef.current === audibleResult) {
+            return
+        }
+
+        playedResultRef.current = audibleResult
+        playEffect(audibleResult === 'win' ? winSound : loseSound, { volume: 0.9 })
+    }, [audibleResult, playEffect])
 
     const handlePauseToggle = () => {
         if (isIntroVisible || isCountingDown) {

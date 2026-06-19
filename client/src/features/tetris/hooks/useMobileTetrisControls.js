@@ -38,6 +38,7 @@ const getActionCode = (action) => {
 
 export const useMobileTetrisControls = ({
     disabled = false,
+    onAction,
     randomPiece,
     setGameState,
     targetRef,
@@ -56,6 +57,10 @@ export const useMobileTetrisControls = ({
 
         if (!tetrisAction) {
             return
+        }
+
+        if (!disabledRef.current) {
+            onAction?.(tetrisAction)
         }
 
         setGameState((prevState) => {
@@ -81,7 +86,7 @@ export const useMobileTetrisControls = ({
 
             return applyTetrisAction(prevState, tetrisAction, { randomPiece })
         })
-    }, [randomPiece, setGameState])
+    }, [onAction, randomPiece, setGameState])
 
     useEffect(() => {
         const target = targetRef?.current

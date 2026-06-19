@@ -38,6 +38,7 @@ export const applyTetrisControl = (state, code, { randomPiece } = {}) => (
 
 export const useTetrisControls = ({
     disabled = false,
+    onAction,
     randomPiece,
     setGameState,
 } = {}) => {
@@ -50,6 +51,10 @@ export const useTetrisControls = ({
 
             if (controlKeys.includes(event.code)) {
                 event.preventDefault()
+            }
+
+            if (action !== PC_CONTROL_ACTIONS.PAUSE && !disabled) {
+                onAction?.(action)
             }
 
             setGameState((prevState) => {
@@ -86,5 +91,5 @@ export const useTetrisControls = ({
         window.addEventListener('keydown', handleKeyDown)
 
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [disabled, randomPiece, setGameState])
+    }, [disabled, onAction, randomPiece, setGameState])
 }
