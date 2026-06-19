@@ -19,15 +19,6 @@ const createMosaicTiles = (columns) => (
 
 const leftTiles = createMosaicTiles([3, 4, 5, 4, 3, 5, 7, 4, 6, 7, 6, 4, 3, 4, 3, 2, 2, 1, 1])
 const rightTiles = createMosaicTiles([1, 2, 3, 5, 6, 5, 7, 4, 6, 5, 7, 6, 4, 5, 3, 4, 2, 3, 1, 1])
-const emberParticles = Array.from({ length: 34 }, (_, index) => ({
-    id: index,
-    left: `${3 + ((index * 23) % 94)}%`,
-    delay: `${-((index * 0.37) % 8).toFixed(2)}s`,
-    duration: `${5.2 + ((index * 0.43) % 5.4).toFixed(2)}s`,
-    drift: `${((index % 9) - 4) * 12}px`,
-    size: `${2 + (index % 4)}px`,
-    opacity: 0.35 + (index % 5) * 0.1,
-}))
 
 const renderMosaicTiles = (tiles) => (
     tiles.map((tile) => (
@@ -60,22 +51,6 @@ const cyberBg = () => {
                     <div className="tetris-mosaic__tiles">
                         {renderMosaicTiles(rightTiles)}
                     </div>
-                </div>
-                <div className="cyber-embers" aria-hidden="true">
-                    {emberParticles.map((particle) => (
-                        <span
-                            className="cyber-ember"
-                            key={particle.id}
-                            style={{
-                                '--ember-left': particle.left,
-                                '--ember-delay': particle.delay,
-                                '--ember-duration': particle.duration,
-                                '--ember-drift': particle.drift,
-                                '--ember-size': particle.size,
-                                '--ember-opacity': particle.opacity,
-                            }}
-                        />
-                    ))}
                 </div>
                 <div className="glow-orb orb1"></div>
                 <div className="glow-orb orb2"></div>

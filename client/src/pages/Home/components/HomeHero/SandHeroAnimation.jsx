@@ -1,14 +1,15 @@
 import { useEffect, useRef } from 'react'
 
 const settings = {
-    cellSize: 3,
+    cellSize: 5,
     startText: 'PVP-TETRIS',
     hiddenText: 'matchmaking online',
-    releaseTestsPerFrame: 1200,
-    releaseChance: 0.018,
+    releaseTestsPerFrame: 320,
+    releaseChance: 0.035,
     gravity: 820,
     airDrag: 0.992,
-    settleStepsPerFrame: 5,
+    settleStepsPerFrame: 1,
+    targetFrameMs: 1000 / 30,
     pileHoldSeconds: 0.65,
     hiddenFadeInSeconds: 0.4,
     reformDurationSeconds: 1.75,
@@ -28,7 +29,7 @@ const SandHeroAnimation = () => {
 
         let width = 0
         let height = 0
-        let dpr = Math.min(window.devicePixelRatio || 1, 2)
+        let dpr = Math.min(window.devicePixelRatio || 1, 1.5)
         let cols = 0
         let rows = 0
         let fixedText = new Uint8Array()
@@ -41,7 +42,10 @@ const SandHeroAnimation = () => {
         let phase = 'text'
         let phaseTime = 0
         let lastTime = performance.now()
+        let lastDrawTime = lastTime
         let animationFrame = 0
+        let isCanvasVisible = true
+        let isDocumentVisible = !document.hidden
         const styles = window.getComputedStyle(document.documentElement)
         const readColor = (name, fallback) => styles.getPropertyValue(name).trim() || fallback
         const colors = {
@@ -129,7 +133,7 @@ const SandHeroAnimation = () => {
             const rect = canvas.getBoundingClientRect()
             width = Math.max(1, Math.floor(rect.width))
             height = Math.max(1, Math.floor(rect.height))
-            dpr = Math.min(window.devicePixelRatio || 1, 2)
+            dpr = Math.min(window.devicePixelRatio || 1, 1.5)
 
             canvas.width = width * dpr
             canvas.height = height * dpr
@@ -454,14 +458,10 @@ const SandHeroAnimation = () => {
         const drawCells = (cells, color) => {
             const size = settings.cellSize
             ctx.fillStyle = color
-            ctx.shadowColor = color
-            ctx.shadowBlur = 5
 
             for (const cell of cells) {
                 ctx.fillRect(colFromIndex(cell) * size, rowFromIndex(cell) * size, size, size)
             }
-
-            ctx.shadowBlur = 0
         }
 
         const drawFixedText = () => {
@@ -498,16 +498,12 @@ const SandHeroAnimation = () => {
 
         const drawMovingParticles = (particles) => {
             const size = settings.cellSize
-            ctx.shadowBlur = 5
 
             for (const particle of particles) {
                 const color = colorValue(particle.colorId)
                 ctx.fillStyle = color
-                ctx.shadowColor = color
                 ctx.fillRect(particle.x, particle.y, size, size)
             }
-
-            ctx.shadowBlur = 0
         }
 
         const draw = () => {
@@ -520,8 +516,21 @@ const SandHeroAnimation = () => {
         }
 
         const tick = (now) => {
+            animationFrame = requestAnimationFrame(tick)
+
+            if (!isCanvasVisible || !isDocumentVisible) {
+                lastTime = now
+                lastDrawTime = now
+                return
+            }
+
+            if (now - lastDrawTime < settings.targetFrameMs) {
+                return
+            }
+
             const dt = Math.min((now - lastTime) / 1000, 0.033)
             lastTime = now
+            lastDrawTime = now
 
             updatePhase(dt)
             updateFalling(dt)
@@ -531,16 +540,26 @@ const SandHeroAnimation = () => {
             }
 
             draw()
-            animationFrame = requestAnimationFrame(tick)
         }
 
         const observer = new ResizeObserver(resize)
+        const visibilityObserver = new IntersectionObserver(([entry]) => {
+            isCanvasVisible = entry.isIntersecting
+        })
+        const handleVisibilityChange = () => {
+            isDocumentVisible = !document.hidden
+        }
+
         observer.observe(canvas)
+        visibilityObserver.observe(canvas)
+        document.addEventListener('visibilitychange', handleVisibilityChange)
         resize()
         animationFrame = requestAnimationFrame(tick)
 
         return () => {
             observer.disconnect()
+            visibilityObserver.disconnect()
+            document.removeEventListener('visibilitychange', handleVisibilityChange)
             cancelAnimationFrame(animationFrame)
         }
     }, [])
