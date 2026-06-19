@@ -81,6 +81,12 @@
     }
 }
 
+@media (max-width: 770px) {
+    .site-footer{
+        margin-bottom: 60px;
+    }
+}
+
 @media (max-width: 520px) {
     .site-footer{
 

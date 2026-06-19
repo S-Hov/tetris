@@ -68,7 +68,7 @@ body:has(.profile-sidebar) .side-rail-layout__friends-button {
 .side-rail-layout__friends-modal {
     position: fixed;
     inset: 0;
-    z-index: 700;
+    z-index: 1500;
     display: flex;
     align-items: flex-end;
     justify-content: center;

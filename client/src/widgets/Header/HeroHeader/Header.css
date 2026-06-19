@@ -107,7 +107,7 @@
         left: max(10px, env(safe-area-inset-left));
         right: max(10px, env(safe-area-inset-right));
         bottom: max(10px, env(safe-area-inset-bottom));
-        z-index: 500;
+        z-index: 1000;
         display: grid;
         grid-template-columns: 48px minmax(0, 1fr) minmax(112px, 132px);
         align-items: center;

@@ -122,7 +122,8 @@ main {
     }
 
     main {
-        padding-bottom: 88px;
+        height: calc(100svh - 60px);
+        padding: 10px 0;
     }
 
     body:has(.main-layout__main--game) .mobile-bottom-nav {
