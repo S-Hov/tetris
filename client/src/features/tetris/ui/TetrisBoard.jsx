@@ -2,8 +2,8 @@ import { createBoard } from '../model/createBoard.js'
 
 import './TetrisBoard.css'
 
-const shouldHideCell = (rowIndex, cellIndex) => (
-    ((rowIndex * 17 + cellIndex * 31) % 11) < 3
+const shouldHideCell = (rowIndex, cellIndex, settings) => (
+    ((rowIndex * 17 + cellIndex * 31) % settings.hiddenModulo) < settings.hiddenThreshold
 )
 
 const TetrisBoard = ({
@@ -15,6 +15,12 @@ const TetrisBoard = ({
     style,
 }) => {
     const safeBoard = Array.isArray(board) ? board : createBoard()
+    const invisibleCellSettings = typeof invisibleCells === 'object'
+        ? invisibleCells
+        : {
+            hiddenModulo: 11,
+            hiddenThreshold: 3,
+        }
 
     return (
         <div
@@ -30,7 +36,12 @@ const TetrisBoard = ({
                             cell ? `cell--${cell.type}` : '',
                             cell?.variant === 'ghost' ? 'ghost' : '',
                             cell?.variant === 'filled' ? 'filled' : '',
-                            invisibleCells && cell && cell?.variant !== 'ghost' && shouldHideCell(rowIndex, cellIndex) ? 'invisible' : '',
+                            invisibleCells &&
+                                cell &&
+                                cell?.variant !== 'ghost' &&
+                                shouldHideCell(rowIndex, cellIndex, invisibleCellSettings)
+                                ? 'invisible'
+                                : '',
                             clearingRows.includes(rowIndex) ? 'clearing' : '',
                         ].filter(Boolean).join(' ')}
                     />

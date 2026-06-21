@@ -1,43 +1,11 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { getLocalizedGamePath } from '@/i18n'
-import { effectsAPI } from '@/shared/api/effects'
-import { getBaseUrl } from '@/shared/api/apiClient.js'
+import { useEffectCatalog } from '@/features/tetris/effects/useEffectCatalog.js'
 import './EffectsPage.css'
 
-const fallbackEffects = [
-    { id: 'speed_x2_for_4s', label: 'Overclock', labelRu: 'Перегрузка', title: 'Speed Surge', titleRu: 'Ускорение', description: 'Opponent pieces fall much faster for a short time.', descriptionRu: 'Фигуры соперника на короткое время начинают падать заметно быстрее.', icon: 'fa-gauge-high', visual: 'speed', durationMs: 4000 },
-    { id: 'darkness', label: 'Blackout', labelRu: 'Затемнение', title: 'Darkness', titleRu: 'Тьма', description: 'Covers most of the opponent board with a dark veil.', descriptionRu: 'Почти всё поле соперника накрывает тёмная пелена.', icon: 'fa-moon', visual: 'darkness', durationMs: 10000 },
-    { id: 'garbage_rain', label: 'Garbage Rain', labelRu: 'Мусорный дождь', title: 'Random Blocks', titleRu: 'Случайные блоки', description: 'Drops a few messy blocks into the opponent board.', descriptionRu: 'На поле соперника падают лишние случайные блоки.', icon: 'fa-cubes', visual: 'garbage', durationMs: 1 },
-]
-
 const EffectsPage = () => {
-    const [effects, setEffects] = useState(fallbackEffects)
-
-    useEffect(() => {
-        let isCancelled = false
-
-        const loadEffects = async () => {
-            try {
-                const response = await effectsAPI.getEffects()
-
-                if (!isCancelled && response.effects?.length) {
-                    setEffects(response.effects)
-                }
-            } catch {
-                if (!isCancelled) {
-                    setEffects(fallbackEffects)
-                }
-            }
-        }
-
-        loadEffects()
-
-        return () => {
-            isCancelled = true
-        }
-    }, [])
+    const { effects, error, isLoading } = useEffectCatalog()
 
     return (
         <section className="section effects-page">
@@ -60,6 +28,8 @@ const EffectsPage = () => {
                 </section>
 
                 <section className="effects-grid" aria-label="Список игровых эффектов">
+                    {isLoading ? <p>Загрузка эффектов...</p> : null}
+                    {error ? <p>Каталог эффектов временно недоступен.</p> : null}
                     {effects.map((effect) => (
                         <EffectCard effect={effect} key={effect.id || effect.key} />
                     ))}
@@ -70,7 +40,7 @@ const EffectsPage = () => {
 }
 
 export function EffectCard({ effect, compact = false }) {
-    const imageUrl = resolveEffectImage(effect.imageUrl)
+    const imageUrl = effect.imageUrl || ''
     const label = effect.labelRu || effect.label || ''
     const title = effect.titleRu || effect.title || ''
     const description = effect.descriptionRu || effect.description || ''
@@ -102,13 +72,6 @@ export function EffectCard({ effect, compact = false }) {
             </GlowEffect>
         </article>
     )
-}
-
-function resolveEffectImage(value) {
-    if (!value) return ''
-    if (/^(https?:)?\/\//i.test(value) || value.startsWith('data:')) return value
-
-    return `${getBaseUrl()}${value.startsWith('/') ? value : `/${value}`}`
 }
 
 export default EffectsPage

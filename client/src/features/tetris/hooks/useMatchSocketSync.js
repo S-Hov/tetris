@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 
 import { createBoard } from '@/features/tetris/model/createBoard.js'
-import { applyIncomingEffect, resolveAbilityChoice } from '@/features/tetris/model/tetrisEngine.js'
+import { applyIncomingEffect } from '@/features/tetris/effects/runtime.js'
+import { resolveAbilityChoice } from '@/features/tetris/model/tetrisEngine.js'
+import { getEffectImplementation } from '@/features/tetris/effects/registry.js'
 import { ensureSocketSession, socket } from '@/shared/api/socket/index.js'
 import notify from '@/utils/Notifications'
 
@@ -205,26 +207,29 @@ export const useMatchSocketSync = ({
         }
 
         const handleEffectApply = ({ effect }) => {
-            if (!effect?.type) return
+            const effectKey = effect?.effectKey || effect?.type
 
-            const expiresAt = Date.now() + (effect.durationMs || 4000)
+            if (!effectKey) return
+            if (!getEffectImplementation(effectKey)) {
+                console.warn(`Effect implementation is unavailable: ${effectKey}`)
+                return
+            }
 
             setGameState((prevState) => applyIncomingEffect(prevState, {
                 ...effect,
-                durationMs: effect.durationMs || 4000,
-                expiresAt,
+                effectKey,
             }))
 
-            if (effect.type === 'speed_x2_for_4s') {
+            if (effectKey === 'speed_x2_for_4s') {
                 notify('На вас применили ускорение x2 на 4 секунды', 'warning')
             }
 
-            if (effect.type === 'darkness') {
-                notify(`Поле затемнено на ${(effect.durationMs || 4000) / 1000} секунды`, 'warning')
+            if (effectKey === 'darkness') {
+                notify(`Поле затемнено на ${effect.durationMs / 1000} секунды`, 'warning')
             }
 
-            if (!['speed_x2_for_4s', 'darkness'].includes(effect.type)) {
-                notify(`На вас применили эффект: ${String(effect.type).replaceAll('_', ' ')}`, 'warning')
+            if (!['speed_x2_for_4s', 'darkness'].includes(effectKey)) {
+                notify(`На вас применили эффект: ${String(effectKey).replaceAll('_', ' ')}`, 'warning')
             }
         }
 

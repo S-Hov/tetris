@@ -2,10 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import {
     SOLO_DEBUFF_INTERVAL_SECONDS,
-    getAbilityEffect,
-    getRandomDebuffs,
 } from '@/features/tetris/model/abilities.data.js'
-import { applyIncomingEffect, withDerivedState } from '@/features/tetris/model/tetrisEngine.js'
+import {
+    getRandomEffects,
+    toEffectPayload,
+} from '@/features/tetris/effects/catalog.js'
+import { applyIncomingEffect } from '@/features/tetris/effects/runtime.js'
+import { withDerivedState } from '@/features/tetris/model/tetrisEngine.js'
 import notify from '@/utils/Notifications'
 
 const toMs = (seconds) => seconds * 1000
@@ -19,6 +22,7 @@ const getDebuffMessage = (ability) => {
 }
 
 export const useSoloDebuffTimer = ({
+    effects = [],
     enabled,
     paused,
     setGameState,
@@ -45,8 +49,8 @@ export const useSoloDebuffTimer = ({
                 return
             }
 
-            const [ability] = getRandomDebuffs(1)
-            const effect = getAbilityEffect(ability?.id)
+            const [ability] = getRandomEffects(effects, 1)
+            const effect = toEffectPayload(ability)
 
             if (effect) {
                 setGameState((prevState) => {
@@ -71,7 +75,7 @@ export const useSoloDebuffTimer = ({
         }, 250)
 
         return () => window.clearInterval(intervalId)
-    }, [enabled, paused, setGameState])
+    }, [effects, enabled, paused, setGameState])
 
     return useMemo(() => ({
         intervalSeconds: SOLO_DEBUFF_INTERVAL_SECONDS,

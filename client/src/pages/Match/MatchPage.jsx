@@ -9,6 +9,17 @@ import { useMobileTetrisControls } from '@/features/tetris/hooks/useMobileTetris
 import { useSoloDebuffTimer } from '@/features/tetris/hooks/useSoloDebuffTimer.js'
 import { useTetrisControls } from '@/features/tetris/hooks/useTetrisControls.js'
 import { useTetrisGameLoop } from '@/features/tetris/hooks/useTetrisGameLoop.js'
+import {
+    getRandomEffects,
+} from '@/features/tetris/effects/catalog.js'
+import {
+    getEffectPresentationState,
+} from '@/features/tetris/effects/runtime.js'
+import { useEffectCatalog } from '@/features/tetris/effects/useEffectCatalog.js'
+import {
+    GAME_AUDIO_CONFIG,
+    getGameAudioEffect,
+} from '@/features/tetris/config/gameAudio.config.js'
 import { createBoard } from '@/features/tetris/model/createBoard.js'
 import { GAME_MODE_REGISTRY, GAME_MODE_TYPES } from '@/features/tetris/model/gameModes.js'
 import { MATCH_PLAY_MODES } from '@/features/tetris/model/matchPlayModes.js'
@@ -18,9 +29,10 @@ import {
     getRandomPieceGeneratorForSettings,
     normalizeMatchSettings,
 } from '@/features/tetris/model/matchSettings.js'
-import { ABILITY_CHOICE_DURATION_MS } from '@/features/tetris/model/abilities.data.js'
-import { setRuntimeAbilities } from '@/features/tetris/model/abilities.data.js'
-import { EFFECT_TYPES, hasEffect } from '@/features/tetris/model/effects.js'
+import {
+    ABILITY_CHOICE_COUNT,
+    ABILITY_CHOICE_DURATION_MS,
+} from '@/features/tetris/model/abilities.data.js'
 import { resolveAbilityChoice, togglePause } from '@/features/tetris/model/tetrisEngine.js'
 import AbilityOverlay from '@/features/tetris/ui/AbilityOverlay.jsx'
 import ActionsPanel from '@/features/tetris/ui/ActionsPanel.jsx'
@@ -43,7 +55,6 @@ import { useAuth } from '@/shared/hooks/useAuth.js'
 import useAudio from '@/shared/hooks/useAudio.js'
 import { socket } from '@/shared/api/socket'
 import { matchesAPI } from '@/shared/api/matches'
-import { effectsAPI } from '@/shared/api/effects'
 import notify from '@/utils/Notifications'
 
 import gameFoundSound from './assets/audio/game_found.wav'
@@ -120,6 +131,7 @@ const MatchPage = ({
     const params = useParams()
     const { user } = useAuth()
     const { playEffect, stopMusic } = useAudio()
+    const effectCatalog = useEffectCatalog()
     const isOnline = playMode === MATCH_PLAY_MODES.ONLINE
     const roomId = roomIdProp ?? params.roomId
     const modeKey = modeKeyProp ?? location.state?.modeKey ?? DEFAULT_ONLINE_MODE_KEY
@@ -150,7 +162,13 @@ const MatchPage = ({
         roomSettings.abilitiesEnabled,
         roomSettings.specialBlocksEnabled,
         roomSettings.soloGameDebuffsMockEnabled,
+        effectCatalog.status,
     ].join(':')
+    const needsEffectCatalog = roomSettings.abilitiesEnabled || roomSettings.soloGameDebuffsMockEnabled
+
+    if (needsEffectCatalog && effectCatalog.isLoading) {
+        return <div>Loading effects...</div>
+    }
 
     return (
         <MatchPageGame
@@ -163,6 +181,8 @@ const MatchPage = ({
             matchRoom={matchRoom}
             roomSettings={roomSettings}
             setRoomSettings={setRoomSettings}
+            effectCatalog={effectCatalog.effects}
+            effectCatalogError={effectCatalog.error}
             user={user}
             playEffect={playEffect}
             stopMusic={stopMusic}
@@ -179,6 +199,8 @@ const MatchPageGame = ({
     matchRoom,
     roomSettings,
     setRoomSettings,
+    effectCatalog,
+    effectCatalogError,
     user,
     playEffect,
     stopMusic,
@@ -186,6 +208,11 @@ const MatchPageGame = ({
     const randomPieceGenerator = useMemo(
         () => getRandomPieceGeneratorForSettings(roomSettings),
         [roomSettings]
+    )
+    const effectiveAbilitiesEnabled = roomSettings.abilitiesEnabled && effectCatalog.length > 0
+    const getAbilityOptions = useCallback(
+        () => getRandomEffects(effectCatalog, ABILITY_CHOICE_COUNT),
+        [effectCatalog]
     )
     const [isIntroVisible, setIsIntroVisible] = useState(() => Boolean(isOnline && matchRoom?.players?.length))
     const [introSecondsLeft, setIntroSecondsLeft] = useState(() => Math.ceil(MATCH_INTRO_DURATION_MS / 1000))
@@ -216,7 +243,8 @@ const MatchPageGame = ({
         resetGame,
         setGameState,
     } = useTetrisGameLoop({
-        abilitiesEnabled: roomSettings.abilitiesEnabled,
+        abilitiesEnabled: effectiveAbilitiesEnabled,
+        getAbilityOptions,
         paused: isIntroVisible || isCountingDown || isMatchFinished,
         randomPiece: randomPieceGenerator,
     })
@@ -241,8 +269,11 @@ const MatchPageGame = ({
         randomPiece: randomPieceGenerator,
         setGameState,
     })
-    const isSoloDebuffsEnabled = !isOnline && roomSettings.soloGameDebuffsMockEnabled
+    const isSoloDebuffsEnabled = !isOnline &&
+        roomSettings.soloGameDebuffsMockEnabled &&
+        effectCatalog.length > 0
     const soloDebuffTimer = useSoloDebuffTimer({
+        effects: effectCatalog,
         enabled: isSoloDebuffsEnabled,
         paused: isIntroVisible ||
             isCountingDown ||
@@ -256,19 +287,35 @@ const MatchPageGame = ({
     })
 
     const handleTetrisActionSound = useCallback((action) => {
+        let effectName = null
+        let sound = null
+
         switch (action) {
             case PC_CONTROL_ACTIONS.MOVE_LEFT:
             case PC_CONTROL_ACTIONS.MOVE_RIGHT:
-                playEffect(moveSound, { volume: 0.42 })
+                effectName = 'move'
+                sound = moveSound
+                break
+            case PC_CONTROL_ACTIONS.SOFT_DROP:
+                effectName = 'softDrop'
+                sound = moveSound
                 break
             case PC_CONTROL_ACTIONS.ROTATE:
-                playEffect(rotateSound, { volume: 0.5 })
+                effectName = 'rotate'
+                sound = rotateSound
                 break
             case PC_CONTROL_ACTIONS.HARD_DROP:
-                playEffect(hardDropSound, { volume: 0.72 })
+                effectName = 'hardDrop'
+                sound = hardDropSound
                 break
             default:
-                break
+                return
+        }
+
+        const effect = getGameAudioEffect(effectName)
+
+        if (effect) {
+            playEffect(sound, { volume: effect.volume })
         }
     }, [playEffect])
 
@@ -287,38 +334,20 @@ const MatchPageGame = ({
     })
 
     useEffect(() => {
-        if (!roomSettings.abilitiesEnabled && !roomSettings.soloGameDebuffsMockEnabled) {
-            return undefined
+        if (effectCatalogError) {
+            notify('Каталог эффектов недоступен. Способности временно отключены.', 'error')
         }
-
-        let isCancelled = false
-
-        const loadEffects = async () => {
-            try {
-                const response = await effectsAPI.getEffects()
-
-                if (!isCancelled) {
-                    setRuntimeAbilities(response.effects || [])
-                }
-            } catch {
-                if (!isCancelled) {
-                    setRuntimeAbilities()
-                }
-            }
-        }
-
-        loadEffects()
-
-        return () => {
-            isCancelled = true
-        }
-    }, [roomSettings.abilitiesEnabled, roomSettings.soloGameDebuffsMockEnabled])
+    }, [effectCatalogError])
 
     const dangerLevel = useMemo(() => getBoardDangerLevel(derivedState.board), [derivedState.board])
-    const hasDarkness = hasEffect(derivedState, EFFECT_TYPES.DARKNESS)
-    const hasFogPiece = hasEffect(derivedState, EFFECT_TYPES.FOG_PIECE)
-    const hasScreenShake = hasEffect(derivedState, EFFECT_TYPES.SCREEN_SHAKE)
-    const hasInvisibleCells = hasEffect(derivedState, EFFECT_TYPES.INVISIBLE_CELLS)
+    const effectPresentation = useMemo(
+        () => getEffectPresentationState(derivedState),
+        [derivedState]
+    )
+    const hasDarkness = Boolean(effectPresentation.darkness)
+    const hasFogPiece = Boolean(effectPresentation.fogPiece)
+    const hasScreenShake = Boolean(effectPresentation.screenShake)
+    const hasInvisibleCells = effectPresentation.invisibleCells || false
     const isSoloGameOver = !isOnline && derivedState.isGameOver
     const audibleResult = matchResult || (isSoloGameOver ? 'lose' : null)
     const currentRoomPlayers = roomPlayers.length > 0 ? roomPlayers : getRoomPlayers(matchRoom)
@@ -352,16 +381,24 @@ const MatchPageGame = ({
         }
 
         didPlayMatchFoundRef.current = true
-        playEffect(gameFoundSound, { volume: 0.82 })
+        const effect = getGameAudioEffect('gameFound')
+
+        if (effect) {
+            playEffect(gameFoundSound, { volume: effect.volume })
+        }
     }, [isIntroVisible, playEffect])
 
     useEffect(() => {
         if (!wasCountingDownRef.current && isCountingDown) {
-            playEffect(gameStartSound, { volume: 0.76 })
-        }
+            if (GAME_AUDIO_CONFIG.stopMusicOnCountdownStart) {
+                stopMusic()
+            }
 
-        if (wasCountingDownRef.current && !isCountingDown) {
-            stopMusic()
+            const effect = getGameAudioEffect('countdown')
+
+            if (effect) {
+                playEffect(gameStartSound, { volume: effect.volume })
+            }
         }
 
         wasCountingDownRef.current = isCountingDown
@@ -378,7 +415,13 @@ const MatchPageGame = ({
         }
 
         playedResultRef.current = audibleResult
-        playEffect(audibleResult === 'win' ? winSound : loseSound, { volume: 0.9 })
+        const effect = getGameAudioEffect(audibleResult)
+
+        if (effect) {
+            playEffect(audibleResult === 'win' ? winSound : loseSound, {
+                volume: effect.volume,
+            })
+        }
     }, [audibleResult, playEffect])
 
     const handlePauseToggle = () => {
@@ -718,7 +761,7 @@ const MatchPageGame = ({
 
     const overlay = (
         <>
-            {roomSettings.abilitiesEnabled && derivedState.isChoosingAbility && !targetChoice ? (
+            {effectiveAbilitiesEnabled && derivedState.isChoosingAbility && !targetChoice ? (
                 <AbilityOverlay
                     eyebrow="Time stopped"
                     title="Choose a debuff"
@@ -766,7 +809,7 @@ const MatchPageGame = ({
             boardShellStyle={dangerStyle}
             boardDecor={boardDecor}
             boardInvisibleCells={hasInvisibleCells}
-            leftRail={roomSettings.abilitiesEnabled ? <EnergyPanel energy={derivedState.energy} /> : null}
+            leftRail={effectiveAbilitiesEnabled ? <EnergyPanel energy={derivedState.energy} /> : null}
             headerStats={headerStats}
             sidebar={sidebar}
             overlay={overlay}
