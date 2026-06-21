@@ -97,7 +97,7 @@ const RESOURCE_CONFIGS = {
     },
     gameEffects: {
         table: 'game_effects',
-        columns: ['id', 'effect_key', 'label', 'label_ru', 'title', 'title_ru', 'description', 'description_ru', 'icon', 'image_url', 'visual', 'duration_ms', 'status', 'sort_order', 'created_at', 'updated_at'],
+        columns: ['id', 'effect_key', 'label', 'label_ru', 'title', 'title_ru', 'description', 'description_ru', 'icon', 'image_url', 'visual', 'duration_ms', 'status', 'sort_order', 'metadata', 'created_at', 'updated_at'],
         searchable: ['effect_key', 'label', 'label_ru', 'title', 'title_ru', 'description', 'description_ru', 'icon', 'visual'],
         filters: ['status', 'effect_key', 'visual'],
         editable: true,
@@ -2033,6 +2033,10 @@ async function normalizeMutablePayload(config, payload = {}, { id = null, isCrea
     }
 
     if (config.table === 'game_effects') {
+        if (!isCreate && Object.prototype.hasOwnProperty.call(payload, 'effect_key')) {
+            throw new Error('effect_key cannot be changed after creation')
+        }
+
         hydrateGameEffectPayload(normalized)
     }
 

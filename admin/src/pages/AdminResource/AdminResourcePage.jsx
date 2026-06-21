@@ -180,7 +180,11 @@ export function AdminResourcePage({ route }) {
       const rowWithUploads = await uploadEditorFiles(config, editorRow)
 
       if (editorMode === 'edit') {
-        await resourcesAPI.updateItem(config.key, rowWithUploads[resourceIdKey], buildEditorPayload(config, rowWithUploads))
+        await resourcesAPI.updateItem(
+          config.key,
+          rowWithUploads[resourceIdKey],
+          buildEditorPayload(config, rowWithUploads, editorMode)
+        )
         notify.success('Запись обновлена')
       } else {
         await resourcesAPI.createItem(config.key, buildEditorPayload(config, rowWithUploads))
@@ -409,7 +413,10 @@ function EditableResourcePanel({ config, row, mode, isSaving, suggestions, onCan
             <label className="admin-resource-editor__field" key={field.key}>
               <span>{field.label}</span>
               <EditorInput
-                field={field}
+                field={{
+                  ...field,
+                  disabled: field.disabled || (mode === 'edit' && field.immutableOnEdit),
+                }}
                 file={row[`${EDITOR_FILE_PREFIX}${field.key}`]}
                 suggestions={suggestions[field.suggestionSource] || []}
                 value={row[field.key]}
@@ -505,12 +512,17 @@ function EditorInput({ field, file, suggestions, value, onChange, onFileChange }
   }
 
   if (field.type === 'textarea') {
+    const textareaValue = value && typeof value === 'object'
+      ? JSON.stringify(value, null, 2)
+      : value ?? ''
+
     return (
       <textarea
+        disabled={field.disabled}
         placeholder={field.placeholder || ''}
         required={field.required}
         rows={3}
-        value={value ?? ''}
+        value={textareaValue}
         onChange={(event) => onChange(event.target.value)}
       />
     )
@@ -545,6 +557,7 @@ function EditorInput({ field, file, suggestions, value, onChange, onFileChange }
 
   return (
     <input
+      disabled={field.disabled}
       placeholder={field.placeholder || ''}
       required={field.required}
       type={field.type || 'text'}
@@ -607,8 +620,10 @@ function createEditorRow(config, row) {
   return editorRow
 }
 
-function buildEditorPayload(config, row) {
-  return Object.fromEntries((config.editorFields || []).map((field) => [field.key, row[field.key]]))
+function buildEditorPayload(config, row, mode = 'create') {
+  return Object.fromEntries((config.editorFields || [])
+    .filter((field) => mode !== 'edit' || !field.immutableOnEdit)
+    .map((field) => [field.key, row[field.key]]))
 }
 
 async function uploadEditorFiles(config, row) {

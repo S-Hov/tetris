@@ -268,7 +268,7 @@ export const adminResourceConfigs = {
       { key: 'visual', label: 'Визуал', type: 'text', placeholder: 'speed' },
     ],
     editorFields: [
-      { key: 'effect_key', label: 'Ключ эффекта', type: 'text', required: true, placeholder: 'new_effect' },
+      { key: 'effect_key', label: 'Ключ эффекта (неизменяемый)', type: 'text', required: true, immutableOnEdit: true, placeholder: 'new_effect' },
       { key: 'label', label: 'Короткое имя EN', type: 'text', required: true, placeholder: 'Blackout' },
       { key: 'label_ru', label: 'Короткое имя RU', type: 'text', required: true, placeholder: 'Затемнение' },
       { key: 'title', label: 'Название EN', type: 'text', required: true, placeholder: 'Darkness' },
@@ -281,6 +281,7 @@ export const adminResourceConfigs = {
       { key: 'duration_ms', label: 'Длительность, мс', type: 'number', defaultValue: 4000 },
       { key: 'status', label: 'Статус', type: 'select', options: ['active', 'inactive'], defaultValue: 'active', required: true },
       { key: 'sort_order', label: 'Порядок', type: 'number', defaultValue: 0 },
+      { key: 'metadata', label: 'Параметры механики (JSON)', type: 'textarea', placeholder: '{"speedMultiplier": 2}' },
     ],
     columns: [
       { key: 'image_url', label: 'Картинка', type: 'avatar', width: '86px' },
