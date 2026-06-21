@@ -269,7 +269,18 @@ export const registerGameHandlers = (io, socket) => {
             return
         }
 
-        const ability = await getActiveGameEffectByKeyRepo(abilityId)
+        let ability
+
+        try {
+            ability = await getActiveGameEffectByKeyRepo(abilityId)
+        } catch (error) {
+            console.error('ability catalog lookup error', error)
+            callback?.({
+                success: false,
+                message: 'Effect catalog is temporarily unavailable',
+            })
+            return
+        }
 
         if (!ability) {
             callback?.({ success: false, message: 'Unknown ability' })
@@ -277,8 +288,12 @@ export const registerGameHandlers = (io, socket) => {
         }
 
         const effect = {
+            effectKey: ability.effect_key,
             type: ability.effect_key,
             durationMs: Number(ability.duration_ms) || 0,
+            parameters: ability.metadata && typeof ability.metadata === 'object'
+                ? ability.metadata
+                : {},
         }
 
         io.to(targetPlayer.socketId).emit('effect:apply', {
