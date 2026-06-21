@@ -8,14 +8,10 @@ import { lockPiece } from './lockPiece.js'
 import { getStartPosition } from './getStartPosition.js'
 import { getScoreForLines } from './getScoreForLines.js'
 import { getEnergyForLines } from './getEnergyForLines.js'
-import { ABILITY_CHOICE_DURATION_MS, getRandomDebuffs } from './abilities.data.js'
-import { hasEffect, EFFECT_TYPES } from './effects.js'
+import { ABILITY_CHOICE_DURATION_MS } from './abilities.data.js'
 
 export const LINE_CLEAR_ANIMATION_MS = 250
 export const ROTATION_KICK_OFFSETS = [0, -1, 1, -2, 2]
-const GARBAGE_RAIN_MIN_BLOCKS = 6
-const GARBAGE_RAIN_MAX_BLOCKS = 10
-const GARBAGE_RAIN_TOP_SAFE_ROWS = 8
 
 function createPieceGenerator(randomPiece) {
     return randomPiece ?? getRandomPiece
@@ -34,37 +30,6 @@ function withLevel(state) {
 
 function canRunGameTick(state) {
     return !state.isGameOver && !state.isPaused && !state.isClearing
-}
-
-function getPieceCells(piece, position) {
-    const cells = []
-
-    piece.shape.forEach((row, y) => {
-        row.forEach((cell, x) => {
-            if (!cell) return
-
-            cells.push({
-                x: position.x + x,
-                y: position.y + y,
-            })
-        })
-    })
-
-    return cells
-}
-
-function isCurrentPieceCell(state, x, y) {
-    return getPieceCells(state.currentPiece, state.currentPosition).some(
-        (cell) => cell.x === x && cell.y === y
-    )
-}
-
-function touchesHorizontalWall(state) {
-    const boardWidth = state.board[0]?.length ?? 0
-
-    return getPieceCells(state.currentPiece, state.currentPosition).some(
-        (cell) => cell.x <= 0 || cell.x >= boardWidth - 1
-    )
 }
 
 function spawnPreparedPiece(state, board, currentPiece, nextPiece, currentPosition) {
@@ -173,11 +138,15 @@ export function resolveLineClear(state, options = {}) {
         linesCleared: state.linesCleared + state.pendingClear.clearedLinesCount,
     })
 
-    if (nextState.abilitiesEnabled && nextState.energy >= 100) {
+    const abilityOptions = nextState.abilitiesEnabled && nextState.energy >= 100
+        ? options.getAbilityOptions?.() || []
+        : []
+
+    if (abilityOptions.length > 0) {
         return {
             ...nextState,
             isChoosingAbility: true,
-            abilityOptions: getRandomDebuffs(),
+            abilityOptions,
             abilityChoiceEndsAt: Date.now() + ABILITY_CHOICE_DURATION_MS,
         }
     }
@@ -232,26 +201,9 @@ export function movePiece(state, delta) {
         return state
     }
 
-    const isHorizontalMove = delta.x !== 0 && delta.y === 0
-
-    if (
-        isHorizontalMove &&
-        (
-            (hasEffect(state, EFFECT_TYPES.GRAVITY_LOCK) && state.currentPiece.isLockedPhase) ||
-            (hasEffect(state, EFFECT_TYPES.STICKY_WALLS) && touchesHorizontalWall(state))
-        )
-    ) {
-        return state
-    }
-
-    const normalizedDelta = {
-        ...delta,
-        x: hasEffect(state, EFFECT_TYPES.CONTROLS_SWAP) ? -delta.x : delta.x,
-    }
-
     const nextPosition = {
-        x: state.currentPosition.x + normalizedDelta.x,
-        y: state.currentPosition.y + normalizedDelta.y,
+        x: state.currentPosition.x + delta.x,
+        y: state.currentPosition.y + delta.y,
     }
 
     if (checkCollision(state.board, state.currentPiece, nextPosition)) {
@@ -260,12 +212,6 @@ export function movePiece(state, delta) {
 
     return {
         ...state,
-        currentPiece: normalizedDelta.y > 0 && hasEffect(state, EFFECT_TYPES.GRAVITY_LOCK)
-            ? {
-                ...state.currentPiece,
-                isLockedPhase: true,
-            }
-            : state.currentPiece,
         currentPosition: nextPosition,
     }
 }
@@ -309,12 +255,6 @@ export function tickGame(state, options = {}) {
     if (!checkCollision(state.board, state.currentPiece, nextPosition)) {
         return {
             ...state,
-            currentPiece: hasEffect(state, EFFECT_TYPES.GRAVITY_LOCK)
-                ? {
-                    ...state.currentPiece,
-                    isLockedPhase: true,
-                }
-                : state.currentPiece,
             currentPosition: nextPosition,
         }
     }
@@ -362,101 +302,13 @@ export function getRenderedBoard(state) {
     return paintPieceOnBoard(boardWithGhost, state.currentPiece, state.currentPosition)
 }
 
-export function applyGarbageRain(state, random = Math.random) {
-    const board = state.board.map((row) => [...row])
-    const targetBlocks = GARBAGE_RAIN_MIN_BLOCKS + Math.floor(
-        random() * (GARBAGE_RAIN_MAX_BLOCKS - GARBAGE_RAIN_MIN_BLOCKS + 1)
-    )
-    const candidates = []
-
-    board.forEach((row, y) => {
-        if (y < GARBAGE_RAIN_TOP_SAFE_ROWS) return
-
-        const emptyCellsInRow = row.filter((cell) => !cell).length
-
-        if (emptyCellsInRow <= 1) return
-
-        row.forEach((cell, x) => {
-            if (cell || isCurrentPieceCell(state, x, y)) return
-
-            candidates.push({ x, y })
-        })
-    })
-
-    const shuffledCandidates = candidates.sort(() => random() - 0.5)
-    let placedBlocks = 0
-
-    for (const candidate of shuffledCandidates) {
-        if (placedBlocks >= targetBlocks) break
-
-        const row = board[candidate.y]
-        const emptyCellsInRow = row.filter((cell) => !cell).length
-
-        if (emptyCellsInRow <= 1) continue
-
-        row[candidate.x] = {
-            type: 'garbage',
-            variant: 'filled',
-        }
-        placedBlocks += 1
-    }
-
-    return {
-        ...state,
-        board,
-    }
-}
-
-export function applyIncomingEffect(state, effect, options = {}) {
-    if (!effect?.type) {
-        return state
-    }
-
-    const now = Date.now()
-    const durationMs = Number(effect.durationMs) || 4000
-    const expiresAt = now + durationMs
-    const activeEffects = options.replaceActiveEffects
-        ? []
-        : state.activeEffects.filter((item) => item.expiresAt > now && item.type !== effect.type)
-    const withEffect = {
-        ...state,
-        activeEffects: [
-            ...activeEffects,
-            {
-                type: effect.type,
-                expiresAt,
-            },
-        ],
-    }
-
-    if (effect.type === EFFECT_TYPES.GARBAGE_RAIN) {
-        return applyGarbageRain(withEffect)
-    }
-
-    return withEffect
-}
-
 export function withDerivedState(state) {
     const baseSpeed = Math.max(100, 1000 - state.level * 100)
-
-    const speedMultiplier = hasEffect(state, EFFECT_TYPES.GRAVITY_LOCK)
-        ? 3
-        : hasEffect(state, EFFECT_TYPES.SPEED_X2)
-            ? 2
-            : 1
-
-    const speed = speedMultiplier > 1
-        ? Math.max(50, Math.floor(baseSpeed / speedMultiplier))
-        : baseSpeed
-
-    const lockDelay = hasEffect(state, EFFECT_TYPES.GRAVITY_LOCK)
-        ? Math.max(50, Math.floor(baseSpeed / 2))
-        : baseSpeed
     
     return {
         ...state,
         isClearing: state.clearingRows.length > 0,
-        lockDelay,
-        speed,
+        lockDelay: baseSpeed,
+        speed: baseSpeed,
     }
 }

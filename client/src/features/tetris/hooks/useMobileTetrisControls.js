@@ -6,9 +6,12 @@ import {
     TOUCH_GESTURES,
     loadMobileControlSettings,
 } from '@/features/tetris/model/mobileControls.js'
-import { EFFECT_TYPES, hasEffect } from '@/features/tetris/model/effects.js'
 import { PC_CONTROL_ACTIONS } from '@/features/tetris/model/pcControls.js'
 import { applyTetrisAction } from '@/features/tetris/hooks/useTetrisControls.js'
+import {
+    applyActionWithEffects,
+    getEffectActionDelay,
+} from '@/features/tetris/effects/runtime.js'
 import { withDerivedState } from '@/features/tetris/model/tetrisEngine.js'
 
 const DOUBLE_TAP_DELAY = 260
@@ -76,15 +79,33 @@ export const useMobileTetrisControls = ({
                 return prevState
             }
 
-            if (hasEffect(state, EFFECT_TYPES.DELAY_INPUT)) {
+            const delayMs = getEffectActionDelay(state, tetrisAction)
+
+            if (delayMs > 0) {
                 setTimeout(() => {
-                    setGameState((latestState) => applyTetrisAction(latestState, tetrisAction, { randomPiece }))
-                }, 150)
+                    setGameState((latestState) => applyActionWithEffects(
+                        latestState,
+                        tetrisAction,
+                        (preparedState, preparedAction) => applyTetrisAction(
+                            preparedState,
+                            preparedAction,
+                            { randomPiece }
+                        )
+                    ))
+                }, delayMs)
 
                 return prevState
             }
 
-            return applyTetrisAction(prevState, tetrisAction, { randomPiece })
+            return applyActionWithEffects(
+                prevState,
+                tetrisAction,
+                (preparedState, preparedAction) => applyTetrisAction(
+                    preparedState,
+                    preparedAction,
+                    { randomPiece }
+                )
+            )
         })
     }, [onAction, randomPiece, setGameState])
 

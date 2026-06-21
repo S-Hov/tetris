@@ -7,7 +7,10 @@ import {
     togglePause,
     withDerivedState,
 } from '@/features/tetris/model/tetrisEngine.js'
-import { EFFECT_TYPES, hasEffect } from '@/features/tetris/model/effects.js'
+import {
+    applyActionWithEffects,
+    getEffectActionDelay,
+} from '@/features/tetris/effects/runtime.js'
 import {
     PC_CONTROL_ACTIONS,
     getActionForCode,
@@ -76,15 +79,33 @@ export const useTetrisControls = ({
                     return prevState
                 }
 
-                if (hasEffect(state, EFFECT_TYPES.DELAY_INPUT)) {
+                const delayMs = getEffectActionDelay(state, action)
+
+                if (delayMs > 0) {
                     setTimeout(() => {
-                        setGameState((latestState) => applyTetrisAction(latestState, action, { randomPiece }))
-                    }, 150)
+                        setGameState((latestState) => applyActionWithEffects(
+                            latestState,
+                            action,
+                            (preparedState, preparedAction) => applyTetrisAction(
+                                preparedState,
+                                preparedAction,
+                                { randomPiece }
+                            )
+                        ))
+                    }, delayMs)
 
                     return prevState
                 }
 
-                return applyTetrisAction(prevState, action, { randomPiece })
+                return applyActionWithEffects(
+                    prevState,
+                    action,
+                    (preparedState, preparedAction) => applyTetrisAction(
+                        preparedState,
+                        preparedAction,
+                        { randomPiece }
+                    )
+                )
             })
         }
 
