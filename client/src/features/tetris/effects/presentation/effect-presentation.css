@@ -1,0 +1,264 @@
+.effect-board-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.active-effects-bar {
+    position: fixed;
+    top: clamp(84px, 11vh, 118px);
+    right: clamp(18px, 3vw, 44px);
+    z-index: 1180;
+    display: grid;
+    gap: 10px;
+    max-width: min(92vw, 320px);
+    pointer-events: none;
+}
+
+.active-effect-chip {
+    --effect-progress: 1;
+    position: relative;
+    min-width: 168px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px 8px 9px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--effect-accent) 55%, transparent);
+    border-radius: 999px;
+    background:
+        linear-gradient(90deg, color-mix(in srgb, var(--effect-accent) 14%, transparent), transparent 76%),
+        rgb(4 10 18 / 88%);
+    box-shadow:
+        0 0 24px color-mix(in srgb, var(--effect-accent) 20%, transparent),
+        inset 0 0 18px rgb(255 255 255 / 3%);
+    backdrop-filter: blur(14px);
+    animation: active-effect-enter 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.active-effect-chip::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: var(--effect-accent);
+    box-shadow: 0 0 10px var(--effect-accent);
+    transform: scaleX(var(--effect-progress));
+    transform-origin: left;
+    transition: transform 100ms linear;
+}
+
+.active-effect-chip__icon {
+    width: 34px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border: 1px solid color-mix(in srgb, var(--effect-accent) 64%, white 10%);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--effect-accent) 18%, #07100a);
+    color: var(--effect-accent);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--effect-accent) 32%, transparent);
+}
+
+.active-effect-chip__copy {
+    min-width: 0;
+    display: grid;
+    gap: 1px;
+}
+
+.active-effect-chip__copy strong {
+    overflow: hidden;
+    color: #f3ffe5;
+    font-family: var(--font-1);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.active-effect-chip__copy small {
+    color: color-mix(in srgb, var(--effect-accent) 76%, white 20%);
+    font-size: 0.66rem;
+}
+
+.effect-impact {
+    position: fixed;
+    inset: 0;
+    z-index: 2050;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    pointer-events: none;
+    animation: effect-impact-shell 1.65s ease both;
+}
+
+.effect-impact__backdrop,
+.effect-impact__scanlines,
+.effect-impact__particles {
+    position: absolute;
+    inset: 0;
+}
+
+.effect-impact__backdrop {
+    background:
+        radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--effect-accent) 25%, transparent), transparent 34%),
+        linear-gradient(90deg, transparent, color-mix(in srgb, var(--effect-accent) 10%, transparent), transparent),
+        rgb(2 5 9 / 84%);
+    backdrop-filter: blur(4px) saturate(1.4);
+    animation: effect-impact-backdrop 1.65s ease both;
+}
+
+.effect-impact__scanlines {
+    opacity: 0.22;
+    background: repeating-linear-gradient(
+        180deg,
+        transparent 0 4px,
+        color-mix(in srgb, var(--effect-accent) 24%, transparent) 5px,
+        transparent 6px
+    );
+    mix-blend-mode: screen;
+    animation: effect-impact-scan 240ms linear infinite;
+}
+
+.effect-impact__content {
+    position: relative;
+    width: min(680px, 88vw);
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    text-align: center;
+}
+
+.effect-impact__copy {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    animation: effect-impact-copy 1.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.effect-impact__eyebrow {
+    color: color-mix(in srgb, var(--effect-accent) 76%, white 22%);
+    font-family: var(--font-1);
+    font-size: clamp(0.62rem, 1vw, 0.8rem);
+    font-weight: 900;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+}
+
+.effect-impact__icon {
+    width: clamp(116px, 15vw, 184px);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    color: var(--effect-accent);
+    font-size: clamp(4.4rem, 9vw, 7.8rem);
+    filter: drop-shadow(0 0 12px color-mix(in srgb, var(--effect-accent) 62%, transparent));
+    animation: effect-impact-icon 1.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.effect-impact__copy strong {
+    color: #f7ffe9;
+    font-family: var(--font-1);
+    font-size: clamp(1.45rem, 4vw, 3.45rem);
+    font-weight: 1000;
+    letter-spacing: 0.06em;
+    line-height: 0.96;
+    text-shadow:
+        0 0 8px color-mix(in srgb, var(--effect-accent) 48%, transparent),
+        0 3px 0 rgb(0 0 0 / 32%);
+    text-transform: uppercase;
+}
+
+.effect-impact__copy small {
+    max-width: 560px;
+    color: rgb(232 244 224 / 78%);
+    font-size: clamp(0.78rem, 1.2vw, 1rem);
+}
+
+.effect-impact__particles span {
+    --angle: calc(var(--particle-index) * 20deg);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: clamp(42px, 7vw, 88px);
+    border-radius: 999px;
+    background: linear-gradient(transparent, var(--effect-accent), transparent);
+    box-shadow: 0 0 12px var(--effect-accent);
+    transform: rotate(var(--angle)) translateY(-42px);
+    transform-origin: 50% 0;
+    animation: effect-impact-particle 1.1s calc(var(--particle-index) * -24ms) ease-out both;
+}
+
+@keyframes active-effect-enter {
+    from { opacity: 0; transform: translateY(-18px) scale(0.82); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes effect-impact-shell {
+    0%, 100% { visibility: hidden; }
+    1%, 92% { visibility: visible; }
+}
+
+@keyframes effect-impact-backdrop {
+    0% { opacity: 0; }
+    12% { opacity: 1; }
+    70% { opacity: 0.82; }
+    100% { opacity: 0; }
+}
+
+@keyframes effect-impact-copy {
+    0% { opacity: 0; transform: scale(1.7) rotate(-4deg); filter: blur(18px); }
+    18% { opacity: 1; transform: scale(0.92) rotate(1deg); filter: blur(0); }
+    32% { transform: scale(1); }
+    76% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.72) translateY(-90px); filter: blur(8px); }
+}
+
+@keyframes effect-impact-icon {
+    0% { opacity: 0; transform: rotate(-28deg) scale(0.18); }
+    24% { transform: rotate(8deg) scale(1.12); }
+    42%, 72% { opacity: 1; transform: rotate(0) scale(1); }
+    100% { opacity: 0; transform: rotate(18deg) scale(0.48) translateY(-150px); }
+}
+
+@keyframes effect-impact-particle {
+    0% { opacity: 0; scale: 0.2; }
+    16% { opacity: 0.92; }
+    100% { opacity: 0; scale: 1 2.8; translate: 0 -38vh; }
+}
+
+@keyframes effect-impact-scan {
+    to { transform: translateY(6px); }
+}
+
+@media (max-width: 700px) {
+    .active-effects-bar {
+        top: 66px;
+        right: auto;
+        left: 12px;
+        width: calc(100vw - 24px);
+        display: flex;
+        overflow-x: auto;
+        justify-content: flex-start;
+    }
+
+    .active-effect-chip {
+        min-width: 148px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .effect-impact,
+    .effect-impact *,
+    .active-effect-chip {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

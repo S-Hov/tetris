@@ -16,6 +16,7 @@ import {
     getEffectPresentationState,
 } from '@/features/tetris/effects/runtime.js'
 import { useEffectCatalog } from '@/features/tetris/effects/useEffectCatalog.js'
+import EffectPresentationLayer from '@/features/tetris/effects/presentation/EffectPresentationLayer.jsx'
 import {
     GAME_AUDIO_CONFIG,
     getGameAudioEffect,
@@ -130,7 +131,7 @@ const MatchPage = ({
     const navigate = useNavigate()
     const params = useParams()
     const { user } = useAuth()
-    const { playEffect, stopMusic } = useAudio()
+    const { playEffect, playSynthEffect, stopMusic } = useAudio()
     const effectCatalog = useEffectCatalog()
     const isOnline = playMode === MATCH_PLAY_MODES.ONLINE
     const roomId = roomIdProp ?? params.roomId
@@ -185,6 +186,7 @@ const MatchPage = ({
             effectCatalogError={effectCatalog.error}
             user={user}
             playEffect={playEffect}
+            playSynthEffect={playSynthEffect}
             stopMusic={stopMusic}
         />
     )
@@ -203,6 +205,7 @@ const MatchPageGame = ({
     effectCatalogError,
     user,
     playEffect,
+    playSynthEffect,
     stopMusic,
 }) => {
     const randomPieceGenerator = useMemo(
@@ -614,6 +617,7 @@ const MatchPageGame = ({
             {hasDarkness && !isMatchFinished && (
                 <div className="board-darkness-layer" aria-hidden="true" />
             )}
+
         </>
     )
 
@@ -786,6 +790,14 @@ const MatchPageGame = ({
                 />
             ) : null}
             {shouldShowCountdown ? <GameCountdownOverlay value={countdownValue} /> : null}
+            {!isMatchFinished ? (
+                <EffectPresentationLayer
+                    activeEffects={derivedState.activeEffects}
+                    catalog={effectCatalog}
+                    feedback={derivedState.effectFeedback}
+                    playSynthEffect={playSynthEffect}
+                />
+            ) : null}
             {onlineResultOverlay}
             {soloResultOverlay}
             <MobileButtonsOverlay

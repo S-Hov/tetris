@@ -71,6 +71,8 @@ export const applyActionWithEffects = (state, action, executeAction, options = {
     let preparedState = cleanedState
     let preparedAction = action
     let blocked = false
+    let feedback = null
+    let feedbackEffectKey = null
 
     for (const effect of cleanedState.activeEffects || []) {
         const implementation = getEffectImplementation(getEffectKey(effect))
@@ -89,10 +91,22 @@ export const applyActionWithEffects = (state, action, executeAction, options = {
         }
 
         blocked ||= Boolean(result?.blocked)
+
+        if (result?.feedback) {
+            feedback = result.feedback
+            feedbackEffectKey = getEffectKey(effect)
+        }
     }
 
     if (blocked) {
-        return preparedState
+        return {
+            ...preparedState,
+            effectFeedback: {
+                effectKey: feedbackEffectKey,
+                sequence: (preparedState.effectFeedback?.sequence || 0) + 1,
+                type: feedback || 'blocked',
+            },
+        }
     }
 
     const previousState = preparedState
@@ -180,3 +194,11 @@ export const getEffectPresentationState = (state) => (
         }
     }, {})
 )
+
+export const getEffectPresentation = (effect) => {
+    const implementation = getEffectImplementation(getEffectKey(effect))
+
+    return typeof implementation?.presentation === 'function'
+        ? implementation.presentation(effect)
+        : implementation?.presentation || null
+}

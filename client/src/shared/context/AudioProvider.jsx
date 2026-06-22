@@ -155,6 +155,17 @@ export const AudioProvider = ({ children }) => {
         )
     }, [audioManager, settings.effectsMuted, settings.masterMuted, settings.volume])
 
+    const playSynthEffect = useCallback((config, options = {}) => {
+        if (!config || settings.masterMuted || settings.effectsMuted) {
+            return false
+        }
+
+        return audioManager.playSynthEffect(
+            config,
+            settings.volume * (options.volume ?? 1)
+        )
+    }, [audioManager, settings.effectsMuted, settings.masterMuted, settings.volume])
+
     const setVolume = useCallback((volume) => {
         setSettings((currentSettings) => ({
             ...currentSettings,
@@ -190,6 +201,7 @@ export const AudioProvider = ({ children }) => {
         masterMuted: settings.masterMuted,
         musicMuted: settings.musicMuted,
         playEffect,
+        playSynthEffect,
         playNextTrack,
         playPreviousTrack,
         playTrack,
@@ -205,6 +217,7 @@ export const AudioProvider = ({ children }) => {
         currentTrack,
         isMusicPlaying,
         playEffect,
+        playSynthEffect,
         playNextTrack,
         playPreviousTrack,
         playTrack,
