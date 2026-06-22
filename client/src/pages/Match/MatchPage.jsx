@@ -17,6 +17,8 @@ import {
 } from '@/features/tetris/effects/runtime.js'
 import { useEffectCatalog } from '@/features/tetris/effects/useEffectCatalog.js'
 import EffectPresentationLayer from '@/features/tetris/effects/presentation/EffectPresentationLayer.jsx'
+import EffectPreviewPanel from '@/features/tetris/effects/presentation/EffectPreviewPanel.jsx'
+import { useEffectPreview } from '@/features/tetris/effects/presentation/useEffectPreview.js'
 import {
     GAME_AUDIO_CONFIG,
     getGameAudioEffect,
@@ -250,6 +252,14 @@ const MatchPageGame = ({
         getAbilityOptions,
         paused: isIntroVisible || isCountingDown || isMatchFinished,
         randomPiece: randomPieceGenerator,
+    })
+    const {
+        clearPreviewEffects,
+        isPreviewMode,
+        previewEffect,
+    } = useEffectPreview({
+        enabled: !isIntroVisible && !isCountingDown && !isMatchFinished,
+        setGameState,
     })
     const {
         handleAbilityChoose: submitAbilityChoice,
@@ -790,6 +800,16 @@ const MatchPageGame = ({
                 />
             ) : null}
             {shouldShowCountdown ? <GameCountdownOverlay value={countdownValue} /> : null}
+            {isPreviewMode && !isIntroVisible && !isCountingDown ? (
+                <EffectPreviewPanel
+                    activeEffectKey={derivedState.activeEffects.at(-1)?.effectKey}
+                    effects={effectCatalog}
+                    onClear={clearPreviewEffects}
+                    onPreview={(effect) => previewEffect(effect, {
+                        durationMs: Math.max(15000, effect.durationMs),
+                    })}
+                />
+            ) : null}
             {!isMatchFinished ? (
                 <EffectPresentationLayer
                     activeEffects={derivedState.activeEffects}
