@@ -141,6 +141,11 @@ test('gravity lock and sticky walls block movement through their own handlers', 
     )
 
     assert.equal(blockedStickyState.moved, undefined)
+    assert.deepEqual(blockedStickyState.effectFeedback, {
+        effectKey: 'sticky_walls',
+        sequence: 1,
+        type: 'wallImpact',
+    })
 })
 
 test('speed modifiers preserve gravity priority instead of multiplying effects', () => {

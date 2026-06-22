@@ -16,6 +16,7 @@ import {
     getEffectPresentationState,
 } from '@/features/tetris/effects/runtime.js'
 import { useEffectCatalog } from '@/features/tetris/effects/useEffectCatalog.js'
+import EffectBoardLayer from '@/features/tetris/effects/presentation/EffectBoardLayer.jsx'
 import EffectPresentationLayer from '@/features/tetris/effects/presentation/EffectPresentationLayer.jsx'
 import EffectPreviewPanel from '@/features/tetris/effects/presentation/EffectPreviewPanel.jsx'
 import { useEffectPreview } from '@/features/tetris/effects/presentation/useEffectPreview.js'
@@ -628,6 +629,12 @@ const MatchPageGame = ({
                 <div className="board-darkness-layer" aria-hidden="true" />
             )}
 
+            {!isMatchFinished ? (
+                <EffectBoardLayer
+                    activeEffects={derivedState.activeEffects}
+                    feedback={derivedState.effectFeedback}
+                />
+            ) : null}
         </>
     )
 
