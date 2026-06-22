@@ -31,23 +31,26 @@ PVP Tetris - full-stack проект с публичным клиентом, а�
 
 В репозитории нет корневого `package.json` со скриптами для всех частей.
 Устанавливать зависимости и запускать приложения нужно отдельно.
+Для воспроизводимой установки после клонирования используйте `npm ci`.
+Перед переустановкой на Windows остановите запущенные `npm run dev`: Node может
+удерживать нативные файлы `bcrypt` и `rolldown`, из-за чего npm вернёт `EPERM`.
 
 ```bash
 cd server
-npm install
+npm ci
 npm run db:migrate
 npm run dev
 ```
 
 ```bash
 cd client
-npm install
+npm ci
 npm run dev
 ```
 
 ```bash
 cd admin
-npm install
+npm ci
 npm run dev
 ```
 
