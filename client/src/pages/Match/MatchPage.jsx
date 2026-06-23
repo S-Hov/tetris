@@ -52,8 +52,6 @@ import StatsPanel from '@/features/tetris/ui/StatsPanel.jsx'
 import TetrisBoard from '@/features/tetris/ui/TetrisBoard.jsx'
 import gameStartSound from '@/features/tetris/assets/audio/game-start.mp3'
 import hardDropSound from '@/features/tetris/assets/audio/hard_drop.mp3'
-import moveSound from '@/features/tetris/assets/audio/vjuh-1.wav'
-import rotateSound from '@/features/tetris/assets/audio/vjuh-2.wav'
 import { getLocalizedGamePath } from '@/i18n'
 import { useAuth } from '@/shared/hooks/useAuth.js'
 import useAudio from '@/shared/hooks/useAudio.js'
@@ -308,15 +306,12 @@ const MatchPageGame = ({
             case PC_CONTROL_ACTIONS.MOVE_LEFT:
             case PC_CONTROL_ACTIONS.MOVE_RIGHT:
                 effectName = 'move'
-                sound = moveSound
                 break
             case PC_CONTROL_ACTIONS.SOFT_DROP:
                 effectName = 'softDrop'
-                sound = moveSound
                 break
             case PC_CONTROL_ACTIONS.ROTATE:
                 effectName = 'rotate'
-                sound = rotateSound
                 break
             case PC_CONTROL_ACTIONS.HARD_DROP:
                 effectName = 'hardDrop'
@@ -328,10 +323,16 @@ const MatchPageGame = ({
 
         const effect = getGameAudioEffect(effectName)
 
-        if (effect) {
+        if (!effect) {
+            return
+        }
+
+        if (effect.synth) {
+            playSynthEffect(effect.synth, { volume: effect.volume })
+        } else {
             playEffect(sound, { volume: effect.volume })
         }
-    }, [playEffect])
+    }, [playEffect, playSynthEffect])
 
     useTetrisControls({
         disabled: isIntroVisible || isMatchFinished || isCountingDown || Boolean(targetChoice),
