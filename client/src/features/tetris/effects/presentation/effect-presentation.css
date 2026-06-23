@@ -6,6 +6,14 @@
     pointer-events: none;
 }
 
+.effect-screen-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 1120;
+    overflow: hidden;
+    pointer-events: none;
+}
+
 .active-effects-bar {
     position: fixed;
     top: clamp(84px, 11vh, 118px);

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { getEffectPresentation } from '../runtime.js'
+import EffectScreenLayer from './EffectScreenLayer.jsx'
 
 import './effect-presentation.css'
 
@@ -87,6 +88,7 @@ const EffectPresentationLayer = ({
 
     return (
         <>
+            <EffectScreenLayer activeEffects={activeEffects} />
             <ActiveEffectsBar
                 activeEffects={activeEffects}
                 catalogByKey={catalogByKey}

@@ -249,23 +249,6 @@
     color: #fff1f1;
 }
 
-.board-darkness-layer {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    border-radius: clamp(10px, 1.4vmin, 15px);
-    background:
-        radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.06), transparent 22%),
-        linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0.12) 0%,
-            rgba(0, 0, 0, 0.78) 18%,
-            rgba(0, 0, 0, 0.941) 100%
-        );
-    backdrop-filter: var(--easy-blur);
-}
-
 @keyframes board-danger-shake {
     0%, 100% {
         transform: translate3d(0, 0, 0);

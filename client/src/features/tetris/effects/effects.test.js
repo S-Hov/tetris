@@ -204,6 +204,10 @@ test('timed and presentation effects are driven by implementations', () => {
             hiddenThreshold: 2,
         },
     }, { now: 100 })
+    state = applyIncomingEffect(state, {
+        effectKey: 'darkness',
+        durationMs: 5000,
+    }, { now: 100 })
 
     const rotated = runTimedEffects(state, {
         now: 600,
@@ -220,5 +224,6 @@ test('timed and presentation effects are driven by implementations', () => {
         hiddenModulo: 9,
         hiddenThreshold: 2,
     })
+    assert.equal(presentation.screenEffect, 'darkness-clouds')
     assert.equal(getEffectImplementation('random_rotation').effectKey, 'random_rotation')
 })

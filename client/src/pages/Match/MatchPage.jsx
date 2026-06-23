@@ -359,7 +359,6 @@ const MatchPageGame = ({
         () => getEffectPresentationState(derivedState),
         [derivedState]
     )
-    const hasDarkness = Boolean(effectPresentation.darkness)
     const hasFogPiece = Boolean(effectPresentation.fogPiece)
     const hasScreenShake = Boolean(effectPresentation.screenShake)
     const hasInvisibleCells = effectPresentation.invisibleCells || false
@@ -626,16 +625,13 @@ const MatchPageGame = ({
                 </div>
             )}
 
-            {hasDarkness && !isMatchFinished && (
-                <div className="board-darkness-layer" aria-hidden="true" />
-            )}
-
             {!isMatchFinished ? (
                 <EffectBoardLayer
                     activeEffects={derivedState.activeEffects}
                     feedback={derivedState.effectFeedback}
                 />
             ) : null}
+
         </>
     )
 
