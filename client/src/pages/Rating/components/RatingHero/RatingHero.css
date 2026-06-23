@@ -15,6 +15,7 @@
     padding: 1.5rem;
     border-radius: var(--radius-panel);
     backdrop-filter: var(--medium-blur);
+    background: var(--box-bg);
 }
 
 .rating-hero-main h1 {
@@ -38,9 +39,9 @@
     align-items: center;
     padding: 0.42rem 0.72rem;
     margin-bottom: 0.8rem;
-    border: 1px solid var(--turquoise-border);
+    border: var(--border);
     border-radius: 999px;
-    background: rgba(8, 19, 45, 0.78);
+    background: var(--elem-bg);
     color: var(--turquoise-lite);
     font-family: var(--font-1);
     font-size: 0.72rem;
