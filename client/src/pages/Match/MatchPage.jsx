@@ -228,6 +228,7 @@ const MatchPageGame = ({
     const didPlayMatchFoundRef = useRef(false)
     const playedResultRef = useRef(null)
     const soloResultSubmittedRef = useRef(false)
+    const previousClearingRowsCountRef = useRef(0)
     const { countdownValue, isCountingDown } = useGameCountdown({
         enabled: !isIntroVisible,
         startedAt: countdownStartedAt,
@@ -333,6 +334,22 @@ const MatchPageGame = ({
             playEffect(sound, { volume: effect.volume })
         }
     }, [playEffect, playSynthEffect])
+
+    useEffect(() => {
+        const clearingRowsCount = derivedState.clearingRows?.length || 0
+
+        if (clearingRowsCount > 0 && previousClearingRowsCountRef.current === 0) {
+            const effect = getGameAudioEffect('lineClear')
+
+            if (effect?.synth) {
+                playSynthEffect(effect.synth, {
+                    volume: effect.volume * Math.min(1.35, 0.9 + clearingRowsCount * 0.12),
+                })
+            }
+        }
+
+        previousClearingRowsCountRef.current = clearingRowsCount
+    }, [derivedState.clearingRows, playSynthEffect])
 
     useTetrisControls({
         disabled: isIntroVisible || isMatchFinished || isCountingDown || Boolean(targetChoice),

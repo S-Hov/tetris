@@ -14,6 +14,18 @@ export const GAME_AUDIO_CONFIG = {
             enabled: true,
             volume: 0.72,
         },
+        lineClear: {
+            enabled: true,
+            volume: 0.48,
+            synth: {
+                voices: [
+                    { type: 'triangle', frequency: 420, endFrequency: 980, duration: 0.12, gain: 0.18 },
+                    { type: 'square', frequency: 220, endFrequency: 130, duration: 0.09, gain: 0.11, delay: 0.015 },
+                    { type: 'sine', frequency: 1480, endFrequency: 2180, duration: 0.16, gain: 0.055, delay: 0.045 },
+                    { type: 'triangle', frequency: 760, endFrequency: 540, duration: 0.08, gain: 0.075, delay: 0.11 },
+                ],
+            },
+        },
         lose: {
             enabled: true,
             volume: 0.9,
