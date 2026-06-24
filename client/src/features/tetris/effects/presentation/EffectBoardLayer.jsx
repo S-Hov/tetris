@@ -1,27 +1,48 @@
 import { getEffectPresentation } from '../runtime.js'
 import { getBoardEffectComponent } from './boardEffectRegistry.js'
 
-const EffectBoardLayer = ({ activeEffects = [], feedback = null }) => (
-    <div className="effect-board-layer" aria-hidden="true">
-        {activeEffects.map((effect) => {
-            const presentation = getEffectPresentation(effect)
-            const BoardEffect = getBoardEffectComponent(presentation?.boardEffect)
+const getFeedbackEffect = (activeEffects, feedback) => {
+    if (!feedback?.effectKey || activeEffects.some((effect) => effect.effectKey === feedback.effectKey)) {
+        return null
+    }
 
-            if (!BoardEffect) {
-                return null
-            }
+    const effect = {
+        effectKey: feedback.effectKey,
+        expiresAt: 0,
+        type: feedback.effectKey,
+    }
+    const presentation = getEffectPresentation(effect)
 
-            const isFeedbackActive = feedback?.effectKey === effect.effectKey
+    return getBoardEffectComponent(presentation?.boardEffect) ? effect : null
+}
 
-            return (
-                <BoardEffect
-                    effect={effect}
-                    feedbackActive={isFeedbackActive}
-                    key={`${effect.effectKey}-${isFeedbackActive ? feedback.sequence : 'idle'}`}
-                />
-            )
-        })}
-    </div>
-)
+const EffectBoardLayer = ({ activeEffects = [], feedback = null }) => {
+    const feedbackEffect = getFeedbackEffect(activeEffects, feedback)
+    const effects = feedbackEffect ? [...activeEffects, feedbackEffect] : activeEffects
+
+    return (
+        <div className="effect-board-layer" aria-hidden="true">
+            {effects.map((effect) => {
+                const presentation = getEffectPresentation(effect)
+                const BoardEffect = getBoardEffectComponent(presentation?.boardEffect)
+
+                if (!BoardEffect) {
+                    return null
+                }
+
+                const isFeedbackActive = feedback?.effectKey === effect.effectKey
+
+                return (
+                    <BoardEffect
+                        effect={effect}
+                        feedback={isFeedbackActive ? feedback : null}
+                        feedbackActive={isFeedbackActive}
+                        key={`${effect.effectKey}-${isFeedbackActive ? feedback.sequence : 'idle'}`}
+                    />
+                )
+            })}
+        </div>
+    )
+}
 
 export default EffectBoardLayer

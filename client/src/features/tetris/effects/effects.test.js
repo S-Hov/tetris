@@ -175,6 +175,7 @@ test('garbage rain uses database parameters and applies immediately', () => {
         durationMs: 1,
         parameters: {
             maxBlocks: 2,
+            maxColumnRise: 3,
             minBlocks: 2,
             topSafeRows: 8,
         },
@@ -182,9 +183,22 @@ test('garbage rain uses database parameters and applies immediately', () => {
         now: 100,
         random: () => 0,
     })
-    const garbageCells = state.board.flat().filter((cell) => cell?.type === 'garbage')
+    const garbageCells = state.board.flatMap((row, y) => (
+        row.map((cell, x) => ({ cell, x, y }))
+    )).filter(({ cell }) => cell?.type === 'garbage')
 
     assert.equal(garbageCells.length, 2)
+    assert.ok(garbageCells.every(({ y }) => y >= 17))
+    assert.equal(state.activeEffects.some((effect) => effect.effectKey === 'garbage_rain'), false)
+    assert.deepEqual(state.effectFeedback, {
+        effectKey: 'garbage_rain',
+        placements: [
+            { delayMs: 0, x: 0, y: 19 },
+            { delayMs: 95, x: 0, y: 18 },
+        ],
+        sequence: 1,
+        type: 'garbageDrop',
+    })
 })
 
 test('timed and presentation effects are driven by implementations', () => {

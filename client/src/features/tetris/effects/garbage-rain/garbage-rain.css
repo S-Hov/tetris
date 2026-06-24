@@ -1,0 +1,106 @@
+.garbage-rain-board-effect {
+    --garbage-accent: #ffb13b;
+    position: absolute;
+    inset: -14px;
+    z-index: 7;
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: clamp(18px, 2vmin, 26px);
+}
+
+.garbage-rain-board-effect__drop,
+.garbage-rain-board-effect__impact {
+    position: absolute;
+    pointer-events: none;
+}
+
+.garbage-rain-board-effect__drop {
+    --drop-size: clamp(12px, 3.2vw, 26px);
+    top: -18%;
+    left: var(--drop-start-x);
+    width: var(--drop-size);
+    aspect-ratio: 1;
+    transform: translate3d(0, 0, 0) rotate(-18deg);
+    opacity: 0;
+}
+
+.garbage-rain-board-effect.is-dropping .garbage-rain-board-effect__drop {
+    animation: garbage-rain-drop 780ms var(--drop-delay) cubic-bezier(0.18, 0.74, 0.16, 1) both;
+}
+
+.garbage-rain-board-effect__drop span {
+    position: absolute;
+    inset: 0;
+    border-radius: 22%;
+    background:
+        linear-gradient(135deg, #d2d8df, #5d6874 48%, #252b34);
+    border: 1px solid rgb(255 255 255 / 34%);
+    box-shadow:
+        0 0 12px color-mix(in srgb, var(--garbage-accent) 38%, transparent),
+        0 12px 22px rgb(0 0 0 / 40%);
+}
+
+.garbage-rain-board-effect__drop::after {
+    content: '';
+    position: absolute;
+    top: 45%;
+    right: 50%;
+    width: 180%;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--garbage-accent) 70%, white 12%));
+    opacity: 0.58;
+    transform: rotate(17deg);
+    transform-origin: right;
+}
+
+.garbage-rain-board-effect__impact {
+    top: var(--drop-end-y);
+    left: var(--drop-end-x);
+    width: clamp(22px, 4vw, 42px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1px solid var(--garbage-accent);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+}
+
+.garbage-rain-board-effect.is-dropping .garbage-rain-board-effect__impact {
+    animation: garbage-rain-impact 420ms calc(var(--drop-delay) + 560ms) ease-out both;
+}
+
+@keyframes garbage-rain-drop {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) rotate(-34deg) scale(0.75);
+    }
+
+    12% {
+        opacity: 1;
+    }
+
+    82% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        top: var(--drop-end-y);
+        left: var(--drop-end-x);
+        transform: translate3d(-50%, -50%, 0) rotate(22deg) scale(1.02);
+    }
+}
+
+@keyframes garbage-rain-impact {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.18); }
+    20% { opacity: 0.86; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.7); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .garbage-rain-board-effect,
+    .garbage-rain-board-effect * {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

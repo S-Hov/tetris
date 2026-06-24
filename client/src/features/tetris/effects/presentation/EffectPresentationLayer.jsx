@@ -7,6 +7,34 @@ import './effect-presentation.css'
 
 const IMPACT_DURATION_MS = 1650
 
+const playFeedbackAudio = (presentation, feedback, playSynthEffect) => {
+    const feedbackSequence = presentation.audio?.feedbackSequence
+
+    if (feedbackSequence) {
+        const events = Array.isArray(feedback?.[feedbackSequence.source])
+            ? feedback[feedbackSequence.source]
+            : [{}]
+        const maxEvents = Number(feedbackSequence.maxEvents) || events.length
+        const timeoutIds = events.slice(0, maxEvents).map((event, index) => (
+            window.setTimeout(() => {
+                playSynthEffect(feedbackSequence, {
+                    volume: feedbackSequence.volume,
+                })
+            }, Math.max(0, Number(event.delayMs) || index * 80))
+        ))
+
+        return () => timeoutIds.forEach((timeoutId) => window.clearTimeout(timeoutId))
+    }
+
+    if (presentation.audio?.feedback) {
+        playSynthEffect(presentation.audio.feedback, {
+            volume: presentation.audio.feedback.volume,
+        })
+    }
+
+    return undefined
+}
+
 const EffectPresentationLayer = ({
     activeEffects = [],
     catalog = [],
@@ -16,7 +44,7 @@ const EffectPresentationLayer = ({
     const [impact, setImpact] = useState(null)
     const [now, setNow] = useState(() => Date.now())
     const previousEffectsRef = useRef(new Map())
-    const previousFeedbackSequenceRef = useRef(0)
+    const previousFeedbackSequenceRef = useRef(null)
     const catalogByKey = useMemo(
         () => new Map(catalog.map((effect) => [effect.effectKey, effect])),
         [catalog]
@@ -71,19 +99,24 @@ const EffectPresentationLayer = ({
     }, [impact])
 
     useEffect(() => {
-        if (!feedback?.sequence || feedback.sequence === previousFeedbackSequenceRef.current) {
+        const feedbackSequenceKey = feedback?.sequence
+            ? `${feedback.effectKey || 'unknown'}-${feedback.sequence}`
+            : null
+
+        if (!feedbackSequenceKey || feedbackSequenceKey === previousFeedbackSequenceRef.current) {
             return
         }
 
-        previousFeedbackSequenceRef.current = feedback.sequence
-        const effect = activeEffects.find((item) => item.effectKey === feedback.effectKey)
+        previousFeedbackSequenceRef.current = feedbackSequenceKey
+        const effect = activeEffects.find((item) => item.effectKey === feedback.effectKey) ||
+            { effectKey: feedback.effectKey }
         const presentation = getEffectPresentation(effect)
 
-        if (presentation?.audio?.feedback) {
-            playSynthEffect(presentation.audio.feedback, {
-                volume: presentation.audio.feedback.volume,
-            })
+        if (presentation?.audio) {
+            return playFeedbackAudio(presentation, feedback, playSynthEffect)
         }
+
+        return undefined
     }, [activeEffects, feedback, playSynthEffect])
 
     return (
