@@ -220,6 +220,12 @@ test('timed and presentation effects are driven by implementations', () => {
     const presentation = getEffectPresentationState(rotated)
 
     assert.equal(rotated.rotated, true)
+    assert.deepEqual(rotated.effectFeedback, {
+        effectKey: 'random_rotation',
+        sequence: 1,
+        type: 'rotationPulse',
+    })
+    assert.equal(presentation.boardEffect, 'random-rotation')
     assert.deepEqual(presentation.invisibleCells, {
         hiddenModulo: 9,
         hiddenThreshold: 2,
