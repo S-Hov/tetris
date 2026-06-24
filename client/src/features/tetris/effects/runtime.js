@@ -57,14 +57,63 @@ export const applyIncomingEffect = (state, incomingEffect, options = {}) => {
     return implementation.apply?.(nextState, effect, options) || nextState
 }
 
-export const getEffectActionDelay = (state, action) => (
-    (state.activeEffects || []).reduce((delayMs, effect) => {
+export const getEffectActionDelayState = (state, action) => (
+    (state.activeEffects || []).reduce((delayState, effect) => {
         const implementation = getEffectImplementation(getEffectKey(effect))
         const result = implementation?.beforeAction?.({ action, effect, state })
+        const delayMs = Number(result?.delayMs) || 0
 
-        return Math.max(delayMs, Number(result?.delayMs) || 0)
-    }, 0)
+        return delayMs > delayState.delayMs
+            ? {
+                delayMs,
+                effectKey: getEffectKey(effect),
+                feedback: result?.feedback || null,
+            }
+            : delayState
+    }, {
+        delayMs: 0,
+        effectKey: null,
+        feedback: null,
+    })
 )
+
+export const getEffectActionDelay = (state, action) => (
+    getEffectActionDelayState(state, action).delayMs
+)
+
+export const createDelayedActionFeedbackState = (state, delayState, action, options = {}) => {
+    const queuedAt = getNow(options)
+    const pendingDelayedAction = {
+        action,
+        delayMs: delayState.delayMs,
+        effectKey: delayState.effectKey,
+        executeAt: queuedAt + delayState.delayMs,
+        id: `${delayState.effectKey || 'delay'}-${action}-${queuedAt}`,
+        queuedAt,
+    }
+
+    return {
+        ...state,
+        pendingDelayedAction,
+        effectFeedback: {
+            action,
+            delayMs: pendingDelayedAction.delayMs,
+            effectKey: pendingDelayedAction.effectKey,
+            executeAt: pendingDelayedAction.executeAt,
+            queuedAt: pendingDelayedAction.queuedAt,
+            sequence: (state.effectFeedback?.sequence || 0) + 1,
+            type: delayState.feedback || 'actionDelayed',
+        },
+    }
+}
+
+export const hasPendingDelayedAction = (state, delayState, action, options = {}) => {
+    const pendingAction = state.pendingDelayedAction
+
+    return pendingAction?.effectKey === delayState.effectKey &&
+        pendingAction?.action === action &&
+        Number(pendingAction?.executeAt) > getNow(options)
+}
 
 export const applyActionWithEffects = (state, action, executeAction, options = {}) => {
     const cleanedState = removeExpiredEffects(state, options)

@@ -10,7 +10,9 @@ import { PC_CONTROL_ACTIONS } from '@/features/tetris/model/pcControls.js'
 import { applyTetrisAction } from '@/features/tetris/hooks/useTetrisControls.js'
 import {
     applyActionWithEffects,
-    getEffectActionDelay,
+    createDelayedActionFeedbackState,
+    getEffectActionDelayState,
+    hasPendingDelayedAction,
 } from '@/features/tetris/effects/runtime.js'
 import { withDerivedState } from '@/features/tetris/model/tetrisEngine.js'
 
@@ -79,22 +81,14 @@ export const useMobileTetrisControls = ({
                 return prevState
             }
 
-            const delayMs = getEffectActionDelay(state, tetrisAction)
+            const delayState = getEffectActionDelayState(state, tetrisAction)
 
-            if (delayMs > 0) {
-                setTimeout(() => {
-                    setGameState((latestState) => applyActionWithEffects(
-                        latestState,
-                        tetrisAction,
-                        (preparedState, preparedAction) => applyTetrisAction(
-                            preparedState,
-                            preparedAction,
-                            { randomPiece }
-                        )
-                    ))
-                }, delayMs)
+            if (delayState.delayMs > 0) {
+                if (hasPendingDelayedAction(prevState, delayState, tetrisAction)) {
+                    return prevState
+                }
 
-                return prevState
+                return createDelayedActionFeedbackState(prevState, delayState, tetrisAction)
             }
 
             return applyActionWithEffects(

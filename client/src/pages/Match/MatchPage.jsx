@@ -336,6 +336,7 @@ const MatchPageGame = ({
 
     useTetrisControls({
         disabled: isIntroVisible || isMatchFinished || isCountingDown || Boolean(targetChoice),
+        gameState: derivedState,
         onAction: handleTetrisActionSound,
         randomPiece: randomPieceGenerator,
         setGameState,

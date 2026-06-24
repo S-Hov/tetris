@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import {
     hardDrop,
@@ -9,7 +9,9 @@ import {
 } from '@/features/tetris/model/tetrisEngine.js'
 import {
     applyActionWithEffects,
-    getEffectActionDelay,
+    createDelayedActionFeedbackState,
+    getEffectActionDelayState,
+    hasPendingDelayedAction,
 } from '@/features/tetris/effects/runtime.js'
 import {
     PC_CONTROL_ACTIONS,
@@ -41,10 +43,54 @@ export const applyTetrisControl = (state, code, { randomPiece } = {}) => (
 
 export const useTetrisControls = ({
     disabled = false,
+    gameState,
     onAction,
     randomPiece,
     setGameState,
 } = {}) => {
+    const scheduledDelayedActionRef = useRef(null)
+    const pendingAction = gameState?.pendingDelayedAction
+    const pendingActionId = pendingAction?.id
+    const pendingActionName = pendingAction?.action
+    const pendingActionExecuteAt = pendingAction?.executeAt
+
+    useEffect(() => {
+        if (!pendingActionId || scheduledDelayedActionRef.current === pendingActionId) {
+            return undefined
+        }
+
+        scheduledDelayedActionRef.current = pendingActionId
+        const timeoutId = window.setTimeout(() => {
+            setGameState((latestState) => {
+                if (latestState.pendingDelayedAction?.id !== pendingActionId) {
+                    return latestState
+                }
+
+                const { pendingDelayedAction, ...stateWithoutPendingAction } = latestState
+                void pendingDelayedAction
+
+                return applyActionWithEffects(
+                    stateWithoutPendingAction,
+                    pendingActionName,
+                    (preparedState, preparedAction) => applyTetrisAction(
+                        preparedState,
+                        preparedAction,
+                        { randomPiece }
+                    )
+                )
+            })
+            scheduledDelayedActionRef.current = null
+        }, Math.max(0, pendingActionExecuteAt - Date.now()))
+
+        return () => window.clearTimeout(timeoutId)
+    }, [
+        pendingActionExecuteAt,
+        pendingActionId,
+        pendingActionName,
+        randomPiece,
+        setGameState,
+    ])
+
     useEffect(() => {
         const settings = loadPcControlSettings()
         const controlKeys = getAllControlCodes(settings)
@@ -79,22 +125,14 @@ export const useTetrisControls = ({
                     return prevState
                 }
 
-                const delayMs = getEffectActionDelay(state, action)
+                const delayState = getEffectActionDelayState(state, action)
 
-                if (delayMs > 0) {
-                    setTimeout(() => {
-                        setGameState((latestState) => applyActionWithEffects(
-                            latestState,
-                            action,
-                            (preparedState, preparedAction) => applyTetrisAction(
-                                preparedState,
-                                preparedAction,
-                                { randomPiece }
-                            )
-                        ))
-                    }, delayMs)
+                if (delayState.delayMs > 0) {
+                    if (hasPendingDelayedAction(prevState, delayState, action)) {
+                        return prevState
+                    }
 
-                    return prevState
+                    return createDelayedActionFeedbackState(prevState, delayState, action)
                 }
 
                 return applyActionWithEffects(

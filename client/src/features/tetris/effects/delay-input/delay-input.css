@@ -1,0 +1,29 @@
+.delay-input-board-effect {
+    position: absolute;
+    inset: 0;
+    z-index: 9;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+}
+
+.delay-input-board-effect strong {
+    color: #d8fbff;
+    font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    font-size: clamp(2.25rem, 6vw, 5.5rem);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    letter-spacing: 0.03em;
+    text-shadow:
+        0 0 10px rgba(122, 215, 255, 0.92),
+        0 0 24px rgba(122, 215, 255, 0.58),
+        0 0 42px rgba(64, 120, 255, 0.38);
+    transform: scale(var(--delay-scale));
+    transition: transform 28ms linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .delay-input-board-effect strong {
+        transition: none;
+    }
+}

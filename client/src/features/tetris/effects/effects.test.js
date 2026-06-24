@@ -6,8 +6,11 @@ import {
     applyActionWithEffects,
     applyEffectModifiers,
     applyIncomingEffect,
+    createDelayedActionFeedbackState,
     getEffectActionDelay,
+    getEffectActionDelayState,
     getEffectPresentationState,
+    hasPendingDelayedAction,
     removeExpiredEffects,
     runTimedEffects,
 } from './runtime.js'
@@ -95,6 +98,47 @@ test('action pipeline swaps controls and exposes input delay', () => {
     }, { now: 100 })
 
     assert.equal(getEffectActionDelay(state, 'moveLeft'), 275)
+    assert.deepEqual(getEffectActionDelayState(state, 'moveLeft'), {
+        delayMs: 275,
+        effectKey: 'delay_input',
+        feedback: 'inputDelay',
+    })
+    const queuedState = createDelayedActionFeedbackState(
+        state,
+        getEffectActionDelayState(state, 'moveLeft'),
+        'moveLeft',
+        { now: 1000 }
+    )
+
+    assert.deepEqual(
+        queuedState.effectFeedback,
+        {
+            action: 'moveLeft',
+            delayMs: 275,
+            effectKey: 'delay_input',
+            executeAt: 1275,
+            queuedAt: 1000,
+            sequence: 1,
+            type: 'inputDelay',
+        }
+    )
+    assert.deepEqual(queuedState.pendingDelayedAction, {
+        action: 'moveLeft',
+        delayMs: 275,
+        effectKey: 'delay_input',
+        executeAt: 1275,
+        id: 'delay_input-moveLeft-1000',
+        queuedAt: 1000,
+    })
+    assert.equal(
+        hasPendingDelayedAction(
+            queuedState,
+            getEffectActionDelayState(state, 'moveLeft'),
+            'moveLeft',
+            { now: 1100 }
+        ),
+        true
+    )
 
     const nextState = applyActionWithEffects(
         state,
