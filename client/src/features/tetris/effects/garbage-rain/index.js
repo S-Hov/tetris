@@ -45,7 +45,7 @@ export default {
         maxColumnRise: normalizeNumber(parameters.maxColumnRise, 3, { min: 1 }),
         topSafeRows: normalizeNumber(parameters.topSafeRows, 8, { min: 0 }),
     }),
-    apply: (state, effect, { random = Math.random } = {}) => {
+    apply: (state, effect, { now = Date.now(), random = Math.random } = {}) => {
         const board = state.board.map((row) => [...row])
         const { minBlocks, maxBlocks } = effect.parameters
         const targetBlocks = minBlocks + Math.floor(random() * (maxBlocks - minBlocks + 1))
@@ -89,6 +89,7 @@ export default {
             effectFeedback: placements.length > 0
                 ? {
                     effectKey: effect.effectKey,
+                    occurredAt: now,
                     placements,
                     sequence: (state.effectFeedback?.sequence || 0) + 1,
                     type: 'garbageDrop',

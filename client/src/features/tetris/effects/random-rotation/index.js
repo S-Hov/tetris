@@ -7,7 +7,7 @@ export default {
         intervalMs: normalizeNumber(parameters.intervalMs, 500, { min: 50 }),
     }),
     timedIntervalMs: (effect) => effect.parameters.intervalMs,
-    timedAction: (state, effect, { random = Math.random, rotate }) => {
+    timedAction: (state, effect, { now = Date.now(), random = Math.random, rotate }) => {
         if (random() >= effect.parameters.chance) {
             return state
         }
@@ -22,6 +22,7 @@ export default {
             ...nextState,
             effectFeedback: {
                 effectKey: effect.effectKey,
+                occurredAt: now,
                 sequence: (nextState.effectFeedback?.sequence || 0) + 1,
                 type: 'rotationPulse',
             },

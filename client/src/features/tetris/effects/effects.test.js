@@ -151,6 +151,14 @@ test('action pipeline swaps controls and exposes input delay', () => {
     )
 
     assert.equal(nextState.executedAction, 'moveRight')
+    assert.deepEqual(nextState.effectFeedback, {
+        effectKey: 'controls_swap',
+        occurredAt: 200,
+        requestedAction: 'moveLeft',
+        resolvedAction: 'moveRight',
+        sequence: 1,
+        type: 'controlsSwapped',
+    })
 })
 
 test('gravity lock and sticky walls block movement through their own handlers', () => {
@@ -170,6 +178,7 @@ test('gravity lock and sticky walls block movement through their own handlers', 
     assert.equal(blockedGravityState.moved, undefined)
     assert.deepEqual(blockedGravityState.effectFeedback, {
         effectKey: 'gravity_lock',
+        occurredAt: 200,
         sequence: 1,
         type: 'gravityLockBlocked',
     })
@@ -191,6 +200,7 @@ test('gravity lock and sticky walls block movement through their own handlers', 
     assert.equal(blockedStickyState.moved, undefined)
     assert.deepEqual(blockedStickyState.effectFeedback, {
         effectKey: 'sticky_walls',
+        occurredAt: 200,
         sequence: 1,
         type: 'wallImpact',
     })
@@ -240,6 +250,7 @@ test('garbage rain uses database parameters and applies immediately', () => {
     assert.equal(state.activeEffects.some((effect) => effect.effectKey === 'garbage_rain'), false)
     assert.deepEqual(state.effectFeedback, {
         effectKey: 'garbage_rain',
+        occurredAt: 100,
         placements: [
             { delayMs: 0, x: 0, y: 19 },
             { delayMs: 95, x: 0, y: 18 },
@@ -284,6 +295,7 @@ test('timed and presentation effects are driven by implementations', () => {
     assert.equal(rotated.rotated, true)
     assert.deepEqual(rotated.effectFeedback, {
         effectKey: 'random_rotation',
+        occurredAt: 600,
         sequence: 1,
         type: 'rotationPulse',
     })
@@ -293,6 +305,7 @@ test('timed and presentation effects are driven by implementations', () => {
         hiddenThreshold: 2,
     })
     assert.equal(presentation.screenEffect, 'darkness-clouds')
+    assert.equal(getEffectImplementation('controls_swap').presentation.boardEffect, 'controls-swap')
     assert.equal(getEffectImplementation('fog_piece').presentation.screenEffect, 'fog-piece')
     assert.equal(getEffectImplementation('fog_piece').presentation.fogPiece, true)
     assert.equal(getEffectImplementation('gravity_lock').presentation.boardEffect, 'gravity-lock')
