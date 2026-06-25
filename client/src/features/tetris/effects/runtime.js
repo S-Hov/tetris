@@ -2,6 +2,11 @@ import { getEffectImplementation } from './registry.js'
 
 const getEffectKey = (effect) => effect?.effectKey || effect?.type || effect?.id || null
 const getNow = (options) => Number(options?.now) || Date.now()
+const normalizeFeedback = (feedback) => (
+    typeof feedback === 'string'
+        ? { type: feedback }
+        : feedback || null
+)
 
 export const removeExpiredEffects = (state, options = {}) => {
     const now = getNow(options)
@@ -120,7 +125,7 @@ export const applyActionWithEffects = (state, action, executeAction, options = {
     let preparedState = cleanedState
     let preparedAction = action
     let blocked = false
-    let feedback = null
+    let feedbackPayload = null
     let feedbackEffectKey = null
 
     for (const effect of cleanedState.activeEffects || []) {
@@ -135,25 +140,34 @@ export const applyActionWithEffects = (state, action, executeAction, options = {
             preparedState = result.state
         }
 
+        const actionBeforeEffect = preparedAction
+
         if (result?.action) {
             preparedAction = result.action
         }
 
         blocked ||= Boolean(result?.blocked)
 
-        if (result?.feedback) {
-            feedback = result.feedback
+        if (
+            result?.feedback &&
+            !result?.delayMs &&
+            (result?.blocked || (result?.action && result.action !== actionBeforeEffect))
+        ) {
+            feedbackPayload = normalizeFeedback(result.feedback)
             feedbackEffectKey = getEffectKey(effect)
         }
     }
 
     if (blocked) {
+        const occurredAt = getNow(options)
+
         return {
             ...preparedState,
             effectFeedback: {
                 effectKey: feedbackEffectKey,
+                occurredAt,
                 sequence: (preparedState.effectFeedback?.sequence || 0) + 1,
-                type: feedback || 'blocked',
+                ...(feedbackPayload || { type: 'blocked' }),
             },
         }
     }
@@ -170,6 +184,20 @@ export const applyActionWithEffects = (state, action, executeAction, options = {
             nextState,
             previousState,
         }) || nextState
+    }
+
+    if (feedbackPayload) {
+        const occurredAt = getNow(options)
+
+        return {
+            ...nextState,
+            effectFeedback: {
+                effectKey: feedbackEffectKey,
+                occurredAt,
+                sequence: (nextState.effectFeedback?.sequence || 0) + 1,
+                ...feedbackPayload,
+            },
+        }
     }
 
     return nextState
