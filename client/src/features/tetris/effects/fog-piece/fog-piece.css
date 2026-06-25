@@ -1,0 +1,236 @@
+.fog-piece-effect {
+    --fog-piece-accent: #04f7ff;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    animation: fog-piece-screen-in 520ms ease-out both;
+}
+
+.fog-piece-effect__breath,
+.fog-piece-effect__frost {
+    position: absolute;
+    pointer-events: none;
+}
+
+.fog-piece-effect__breath {
+    top: 8%;
+    bottom: 4%;
+    width: min(32vw, 430px);
+    opacity: 0.16;
+    background:
+        radial-gradient(ellipse at 50% 18%, rgb(4 247 255 / 44%), transparent 52%),
+        radial-gradient(ellipse at 50% 68%, rgb(178 0 255 / 14%), transparent 58%);
+    mix-blend-mode: screen;
+    will-change: transform, opacity;
+}
+
+.fog-piece-effect__breath--left {
+    left: -13vw;
+    animation: fog-piece-breath-left 5.8s ease-in-out infinite alternate;
+}
+
+.fog-piece-effect__breath--right {
+    right: -10vw;
+    animation: fog-piece-breath-right 6.4s ease-in-out infinite alternate;
+}
+
+.fog-piece-effect__frost {
+    inset: 0;
+    opacity: 0.12;
+    background:
+        linear-gradient(115deg, transparent 0 36%, rgb(4 247 255 / 18%) 42%, transparent 48% 100%),
+        linear-gradient(74deg, transparent 0 58%, rgb(157 88 255 / 10%) 63%, transparent 70% 100%);
+    animation: fog-piece-frost-sweep 4.2s ease-in-out infinite;
+    mix-blend-mode: screen;
+}
+
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border-color: color-mix(in srgb, var(--fog-piece-accent) 72%, transparent);
+    box-shadow:
+        0 0 24px rgb(4 247 255 / 18%),
+        inset 0 0 34px rgb(4 247 255 / 10%);
+}
+
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel::before,
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel::before {
+    background:
+        radial-gradient(ellipse at 50% 48%, rgb(210 252 255 / 38%), transparent 36%),
+        linear-gradient(180deg, rgb(4 247 255 / 22%), rgb(5 13 24 / 18%) 42%, rgb(155 65 255 / 13%)),
+        repeating-linear-gradient(
+            118deg,
+            rgb(255 255 255 / 0%) 0 18px,
+            rgb(4 247 255 / 13%) 19px 23px,
+            rgb(255 255 255 / 0%) 24px 46px
+        );
+    opacity: 0.74;
+    animation: fog-piece-panel-mist 4.9s ease-in-out infinite alternate;
+}
+
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel::after {
+    inset: -18% -10%;
+    background:
+        radial-gradient(ellipse at 18% 42%, rgb(4 247 255 / 24%), transparent 28%),
+        radial-gradient(ellipse at 76% 58%, rgb(4 247 255 / 28%), transparent 34%),
+        linear-gradient(90deg, transparent, rgb(155 65 255 / 13%), transparent);
+    opacity: 0.6;
+    transform: translateX(-8%);
+    animation: fog-piece-panel-drift 7.2s ease-in-out infinite;
+}
+
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel .game-panel__title,
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel__preview {
+    position: relative;
+    z-index: 4;
+}
+
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel .game-panel__title {
+    color: rgb(208 252 255 / 92%);
+    text-shadow:
+        0 0 10px rgb(4 247 255 / 46%),
+        0 0 20px rgb(4 247 255 / 22%);
+}
+
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel__preview {
+    min-height: 72px;
+}
+
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel__preview::before,
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel__preview::after {
+    content: '';
+    position: absolute;
+    inset: 10%;
+    pointer-events: none;
+}
+
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel__preview::before {
+    z-index: 3;
+    border: 1px solid rgb(4 247 255 / 28%);
+    border-radius: 18px;
+    background:
+        linear-gradient(90deg, transparent, rgb(4 247 255 / 20%), transparent),
+        radial-gradient(ellipse at 50% 50%, rgb(8 25 38 / 56%), rgb(2 6 14 / 26%) 58%, transparent);
+    box-shadow:
+        inset 0 0 22px rgb(4 247 255 / 11%),
+        0 0 18px rgb(4 247 255 / 10%);
+    opacity: 0.9;
+    animation: fog-piece-glass-pulse 2.8s steps(6, end) infinite;
+}
+
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel__preview::after {
+    z-index: 4;
+    background:
+        linear-gradient(180deg, transparent 0 28%, rgb(157 88 255 / 16%) 30% 34%, transparent 36% 100%),
+        linear-gradient(90deg, transparent, rgb(4 247 255 / 18%), transparent);
+    opacity: 0.52;
+    transform: translateY(-22%);
+    animation: fog-piece-scan 3.4s ease-in-out infinite;
+}
+
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel__preview--hidden .game-next-piece-grid {
+    opacity: 0.08;
+    transform: scale(0.96);
+    filter: saturate(0.4);
+    animation: fog-piece-ghost-piece 3.8s steps(7, end) infinite;
+}
+
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel__fog {
+    z-index: 6;
+    color: transparent;
+    text-shadow: none;
+}
+
+.game-layout:has(.fog-piece-effect) .game-next-piece-panel__fog::before {
+    content: 'NO SIGNAL';
+    padding: 0.28rem 0.62rem;
+    border: 1px solid rgb(4 247 255 / 36%);
+    border-radius: 999px;
+    color: rgb(210 252 255 / 88%);
+    background: rgb(3 12 22 / 42%);
+    font-size: clamp(0.72rem, 1.2vw, 0.95rem);
+    letter-spacing: 0.18em;
+    text-shadow:
+        0 0 8px rgb(4 247 255 / 72%),
+        0 0 18px rgb(4 247 255 / 34%);
+    animation: fog-piece-label-flicker 2.4s steps(6, end) infinite;
+}
+
+@keyframes fog-piece-screen-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fog-piece-breath-left {
+    0% { opacity: 0.09; transform: translate3d(-4%, 2%, 0) scale(0.98); }
+    100% { opacity: 0.18; transform: translate3d(8%, -1%, 0) scale(1.04); }
+}
+
+@keyframes fog-piece-breath-right {
+    0% { opacity: 0.08; transform: translate3d(5%, -1%, 0) scale(0.96); }
+    100% { opacity: 0.17; transform: translate3d(-8%, 2%, 0) scale(1.05); }
+}
+
+@keyframes fog-piece-frost-sweep {
+    0%, 100% { opacity: 0.07; transform: translateX(-2%); }
+    48% { opacity: 0.16; transform: translateX(2%); }
+}
+
+@keyframes fog-piece-panel-mist {
+    0% { opacity: 0.58; transform: translate3d(-2%, -1%, 0); }
+    100% { opacity: 0.82; transform: translate3d(2%, 1%, 0); }
+}
+
+@keyframes fog-piece-panel-drift {
+    0%, 100% { opacity: 0.44; transform: translate3d(-10%, -2%, 0); }
+    50% { opacity: 0.72; transform: translate3d(8%, 2%, 0); }
+}
+
+@keyframes fog-piece-glass-pulse {
+    0%, 100% { opacity: 0.72; }
+    42% { opacity: 0.96; }
+    54% { opacity: 0.62; }
+}
+
+@keyframes fog-piece-scan {
+    0%, 100% { opacity: 0.22; transform: translateY(-28%); }
+    46% { opacity: 0.62; transform: translateY(30%); }
+}
+
+@keyframes fog-piece-ghost-piece {
+    0%, 70%, 100% { opacity: 0; }
+    76% { opacity: 0.1; }
+    80% { opacity: 0.02; }
+    84% { opacity: 0.08; }
+}
+
+@keyframes fog-piece-label-flicker {
+    0%, 100% { opacity: 0.86; }
+    34% { opacity: 0.48; }
+    39% { opacity: 0.94; }
+    72% { opacity: 0.62; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fog-piece-effect,
+    .fog-piece-effect *,
+    .game-layout:has(.fog-piece-effect) .game-next-piece-panel,
+    .game-layout:has(.fog-piece-effect) .game-next-piece-panel *,
+    .game-layout:has(.fog-piece-effect) .game-next-piece-panel::before,
+    .game-layout:has(.fog-piece-effect) .game-next-piece-panel::after,
+    .game-layout:has(.fog-piece-effect) .game-next-piece-panel__preview::before,
+    .game-layout:has(.fog-piece-effect) .game-next-piece-panel__preview::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

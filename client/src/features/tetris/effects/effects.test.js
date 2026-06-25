@@ -289,5 +289,7 @@ test('timed and presentation effects are driven by implementations', () => {
         hiddenThreshold: 2,
     })
     assert.equal(presentation.screenEffect, 'darkness-clouds')
+    assert.equal(getEffectImplementation('fog_piece').presentation.screenEffect, 'fog-piece')
+    assert.equal(getEffectImplementation('fog_piece').presentation.fogPiece, true)
     assert.equal(getEffectImplementation('random_rotation').effectKey, 'random_rotation')
 })
