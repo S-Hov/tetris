@@ -1,5 +1,9 @@
+import { useEffect, useMemo, useState } from 'react'
+
 import { getEffectPresentation } from '../runtime.js'
 import { getBoardEffectComponent } from './boardEffectRegistry.js'
+
+const isEffectVisible = (effect, now) => !effect?.expiresAt || effect.expiresAt > now
 
 const getFeedbackEffect = (activeEffects, feedback) => {
     if (!feedback?.effectKey || activeEffects.some((effect) => effect.effectKey === feedback.effectKey)) {
@@ -17,8 +21,23 @@ const getFeedbackEffect = (activeEffects, feedback) => {
 }
 
 const EffectBoardLayer = ({ activeEffects = [], feedback = null }) => {
-    const feedbackEffect = getFeedbackEffect(activeEffects, feedback)
-    const effects = feedbackEffect ? [...activeEffects, feedbackEffect] : activeEffects
+    const [now, setNow] = useState(() => Date.now())
+    const visibleActiveEffects = useMemo(
+        () => activeEffects.filter((effect) => isEffectVisible(effect, now)),
+        [activeEffects, now]
+    )
+    const feedbackEffect = getFeedbackEffect(visibleActiveEffects, feedback)
+    const effects = feedbackEffect ? [...visibleActiveEffects, feedbackEffect] : visibleActiveEffects
+
+    useEffect(() => {
+        if (activeEffects.length === 0) {
+            return undefined
+        }
+
+        const intervalId = window.setInterval(() => setNow(Date.now()), 100)
+
+        return () => window.clearInterval(intervalId)
+    }, [activeEffects.length])
 
     return (
         <div className="effect-board-layer" aria-hidden="true">

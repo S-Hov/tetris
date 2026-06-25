@@ -155,7 +155,6 @@ test('action pipeline swaps controls and exposes input delay', () => {
 
 test('gravity lock and sticky walls block movement through their own handlers', () => {
     let gravityState = createState()
-    gravityState.currentPiece.isLockedPhase = true
     gravityState = applyIncomingEffect(gravityState, {
         effectKey: 'gravity_lock',
         durationMs: 5000,
@@ -169,6 +168,11 @@ test('gravity lock and sticky walls block movement through their own handlers', 
     )
 
     assert.equal(blockedGravityState.moved, undefined)
+    assert.deepEqual(blockedGravityState.effectFeedback, {
+        effectKey: 'gravity_lock',
+        sequence: 1,
+        type: 'gravityLockBlocked',
+    })
 
     let stickyState = createState()
     stickyState.currentPosition.x = 0
@@ -291,5 +295,6 @@ test('timed and presentation effects are driven by implementations', () => {
     assert.equal(presentation.screenEffect, 'darkness-clouds')
     assert.equal(getEffectImplementation('fog_piece').presentation.screenEffect, 'fog-piece')
     assert.equal(getEffectImplementation('fog_piece').presentation.fogPiece, true)
+    assert.equal(getEffectImplementation('gravity_lock').presentation.boardEffect, 'gravity-lock')
     assert.equal(getEffectImplementation('random_rotation').effectKey, 'random_rotation')
 })
