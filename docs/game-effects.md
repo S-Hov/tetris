@@ -118,7 +118,7 @@ hard drop, очистку линий. Конкретная механика эф
 | `controls_swap` | Меняет left/right actions местами | Board-визуал сбоя управления, apply и feedback-звук |
 | `fog_piece` | Прячет next piece preview | Screen/preview fog layer и скрытие next-панели |
 | `gravity_lock` | Ускоряет падение и блокирует боковое движение после lock phase | Board-визуал давления, вертикальные синие линии падения, LOCKED-feedback, apply и feedback-звук |
-| `screen_shake` | Добавляет shake flag для поля | Shake-класс на board shell |
+| `screen_shake` | Добавляет shake flag для поля | Board-визуал ударных волн, дрожание поля и игровых панелей, apply-звук |
 | `random_rotation` | По таймеру случайно вращает фигуру | Gyro/reticle board-визуал, apply и pulse-звук |
 | `sticky_walls` | Блокирует движение, когда фигура касается стены | Липкие светящиеся края, impact при блокировке, apply и feedback-звук |
 | `delay_input` | Задерживает пользовательские actions | Countdown поверх поля, apply и feedback-звук |

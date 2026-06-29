@@ -1,0 +1,156 @@
+.screen-shake-board-effect {
+    --screen-shake-accent: #ffcf5a;
+    --screen-shake-hot: #ff7048;
+    position: absolute;
+    inset: -14px;
+    z-index: 8;
+    overflow: visible;
+    border-radius: clamp(18px, 2vmin, 26px);
+    pointer-events: none;
+    animation: screen-shake-shell 130ms steps(2, end) infinite;
+}
+
+.screen-shake-board-effect__quake-field,
+.screen-shake-board-effect__shockwave,
+.screen-shake-board-effect__dust,
+.screen-shake-board-effect__fault {
+    position: absolute;
+    pointer-events: none;
+}
+
+.screen-shake-board-effect__quake-field {
+    inset: 8px;
+    border-radius: inherit;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent 0 9px,
+            rgb(255 207 90 / 12%) 10px,
+            transparent 12px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent 0 13px,
+            rgb(255 112 72 / 9%) 14px,
+            transparent 16px
+        );
+    opacity: 0.38;
+    mix-blend-mode: screen;
+    animation: screen-shake-grid 280ms steps(3, end) infinite;
+}
+
+.screen-shake-board-effect__shockwave {
+    inset: 12%;
+    border: 2px solid color-mix(in srgb, var(--screen-shake-accent) 78%, transparent);
+    border-radius: 50%;
+    opacity: 0;
+    box-shadow:
+        0 0 18px color-mix(in srgb, var(--screen-shake-accent) 44%, transparent),
+        inset 0 0 14px rgb(255 255 255 / 10%);
+    animation: screen-shake-wave 760ms ease-out infinite;
+}
+
+.screen-shake-board-effect__shockwave--two {
+    inset: 4%;
+    animation-delay: -380ms;
+}
+
+.screen-shake-board-effect__dust {
+    inset: 0;
+    background:
+        radial-gradient(circle at 22% 76%, rgb(255 207 90 / 28%), transparent 10%),
+        radial-gradient(circle at 76% 22%, rgb(255 112 72 / 22%), transparent 12%),
+        radial-gradient(circle at 52% 52%, rgb(255 255 255 / 12%), transparent 18%);
+    filter: blur(8px);
+    opacity: 0.44;
+    animation: screen-shake-dust 480ms steps(4, end) infinite;
+}
+
+.screen-shake-board-effect__fault {
+    top: var(--shake-fault-y);
+    left: var(--shake-fault-x);
+    width: clamp(54px, 10vw, 124px);
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, var(--screen-shake-accent), var(--screen-shake-hot), transparent);
+    box-shadow:
+        0 0 10px rgb(255 207 90 / 70%),
+        0 0 24px rgb(255 112 72 / 28%);
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--shake-fault-rotate));
+    animation: screen-shake-fault 520ms var(--shake-fault-delay) steps(4, end) infinite;
+}
+
+.game-layout:has(.screen-shake-board-effect) .game-layout__header,
+.game-layout:has(.screen-shake-board-effect) .game-layout__sidebar,
+.game-layout:has(.screen-shake-board-effect) .game-layout__secondary-column {
+    animation: screen-shake-panel 150ms steps(2, end) infinite;
+    transform-origin: center;
+}
+
+.game-layout:has(.screen-shake-board-effect) .game-layout__sidebar > *,
+.game-layout:has(.screen-shake-board-effect) .game-layout__secondary-board,
+.game-layout:has(.screen-shake-board-effect) .game-layout__header-stats {
+    animation: screen-shake-card 180ms steps(2, end) infinite;
+}
+
+.game-layout:has(.screen-shake-board-effect) .game-layout__sidebar > :nth-child(2n),
+.game-layout:has(.screen-shake-board-effect) .game-layout__secondary-board:nth-child(2n) {
+    animation-delay: -90ms;
+}
+
+@keyframes screen-shake-shell {
+    0%, 100% { transform: translate3d(0, 0, 0); filter: brightness(1); }
+    25% { transform: translate3d(-4px, 3px, 0); filter: brightness(1.18); }
+    50% { transform: translate3d(5px, -4px, 0); }
+    75% { transform: translate3d(-2px, -2px, 0); }
+}
+
+@keyframes screen-shake-grid {
+    0%, 100% { opacity: 0.2; transform: translate3d(0, 0, 0); }
+    35% { opacity: 0.48; transform: translate3d(4px, -3px, 0); }
+    70% { opacity: 0.34; transform: translate3d(-3px, 2px, 0); }
+}
+
+@keyframes screen-shake-wave {
+    0% { opacity: 0; transform: scale(0.42); }
+    16% { opacity: 0.78; }
+    100% { opacity: 0; transform: scale(1.65); }
+}
+
+@keyframes screen-shake-dust {
+    0%, 100% { opacity: 0.24; transform: translate3d(0, 0, 0) scale(1); }
+    50% { opacity: 0.54; transform: translate3d(3px, -4px, 0) scale(1.04); }
+}
+
+@keyframes screen-shake-fault {
+    0%, 100% { opacity: 0; scale: 0.6 1; }
+    30% { opacity: 0.95; scale: 1.08 1; }
+    68% { opacity: 0.18; scale: 0.9 1; }
+}
+
+@keyframes screen-shake-panel {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    25% { transform: translate3d(3px, -2px, 0) rotate(0.24deg); }
+    50% { transform: translate3d(-4px, 2px, 0) rotate(-0.28deg); }
+    75% { transform: translate3d(2px, 3px, 0) rotate(0.16deg); }
+}
+
+@keyframes screen-shake-card {
+    0%, 100% { transform: translate3d(0, 0, 0); filter: brightness(1); }
+    50% { transform: translate3d(-2px, 2px, 0); filter: brightness(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .screen-shake-board-effect,
+    .screen-shake-board-effect *,
+    .game-layout:has(.screen-shake-board-effect) .game-layout__header,
+    .game-layout:has(.screen-shake-board-effect) .game-layout__sidebar,
+    .game-layout:has(.screen-shake-board-effect) .game-layout__secondary-column,
+    .game-layout:has(.screen-shake-board-effect) .game-layout__sidebar > *,
+    .game-layout:has(.screen-shake-board-effect) .game-layout__secondary-board,
+    .game-layout:has(.screen-shake-board-effect) .game-layout__header-stats {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
