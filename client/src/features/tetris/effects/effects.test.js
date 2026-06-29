@@ -311,5 +311,7 @@ test('timed and presentation effects are driven by implementations', () => {
     assert.equal(getEffectImplementation('gravity_lock').presentation.boardEffect, 'gravity-lock')
     assert.equal(getEffectImplementation('screen_shake').presentation.boardEffect, 'screen-shake')
     assert.equal(Boolean(getEffectImplementation('screen_shake').presentation.audio.apply), true)
+    assert.equal(getEffectImplementation('speed_x2_for_4s').presentation.boardEffect, 'speed-surge')
+    assert.equal(Boolean(getEffectImplementation('speed_x2_for_4s').presentation.audio.apply), true)
     assert.equal(getEffectImplementation('random_rotation').effectKey, 'random_rotation')
 })

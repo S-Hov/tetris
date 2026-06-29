@@ -1,0 +1,214 @@
+.speed-surge-board-effect {
+    --speed-surge-accent: #32f6ff;
+    --speed-surge-hot: #7dfffb;
+    --speed-surge-deep: #0985a8;
+    position: absolute;
+    inset: -12px;
+    z-index: 8;
+    overflow: hidden;
+    border-radius: clamp(18px, 2vmin, 26px);
+    pointer-events: none;
+    opacity: 0;
+    animation: speed-surge-enter 280ms ease-out forwards;
+}
+
+.speed-surge-board-effect__field,
+.speed-surge-board-effect__tunnel,
+.speed-surge-board-effect__lines,
+.speed-surge-board-effect__marker {
+    position: absolute;
+    pointer-events: none;
+}
+
+.speed-surge-board-effect__field {
+    inset: 8px;
+    border-radius: inherit;
+    background:
+        linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--speed-surge-accent) 16%, transparent),
+            transparent 28%,
+            color-mix(in srgb, var(--speed-surge-deep) 16%, transparent)
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent 0 9.5%,
+            color-mix(in srgb, var(--speed-surge-accent) 12%, transparent) 9.8% 10.1%,
+            transparent 10.4% 20%
+        );
+    mix-blend-mode: screen;
+    opacity: 0.62;
+    animation: speed-surge-field 380ms linear infinite;
+}
+
+.speed-surge-board-effect__tunnel {
+    inset: -8%;
+    border-radius: inherit;
+    background:
+        radial-gradient(
+            ellipse at 50% 50%,
+            transparent 0 34%,
+            color-mix(in srgb, var(--speed-surge-accent) 18%, transparent) 54%,
+            transparent 72%
+        ),
+        linear-gradient(
+            90deg,
+            color-mix(in srgb, var(--speed-surge-deep) 22%, transparent),
+            transparent 24% 76%,
+            color-mix(in srgb, var(--speed-surge-deep) 22%, transparent)
+        );
+    opacity: 0.72;
+    transform: scale(0.94);
+    animation: speed-surge-tunnel 620ms ease-in-out infinite alternate;
+}
+
+.speed-surge-board-effect__lines {
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    mask-image: linear-gradient(180deg, transparent, #000 9%, #000 92%, transparent);
+}
+
+.speed-surge-board-effect__lines span {
+    position: absolute;
+    top: calc(0% - var(--speed-line-height));
+    left: var(--speed-line-x);
+    width: var(--speed-line-width);
+    height: var(--speed-line-height);
+    border-radius: 999px;
+    background:
+        linear-gradient(
+            180deg,
+            transparent,
+            var(--speed-surge-hot) 12%,
+            var(--speed-surge-accent) 50%,
+            transparent
+        );
+    box-shadow:
+        0 0 10px color-mix(in srgb, var(--speed-surge-accent) 82%, transparent),
+        0 0 26px color-mix(in srgb, var(--speed-surge-hot) 36%, transparent);
+    opacity: 0;
+    transform: translateX(-50%);
+    animation: speed-surge-line var(--speed-line-duration) var(--speed-line-delay) linear infinite;
+}
+
+.speed-surge-board-effect__marker {
+    width: clamp(30px, 5vw, 58px);
+    aspect-ratio: 1;
+    border: 2px solid var(--speed-surge-accent);
+    opacity: 0.78;
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--speed-surge-accent) 70%, transparent));
+    animation: speed-surge-marker 520ms steps(4, end) infinite;
+}
+
+.speed-surge-board-effect__marker--top-left {
+    top: -2px;
+    left: -2px;
+    border-right: 0;
+    border-bottom: 0;
+}
+
+.speed-surge-board-effect__marker--top-right {
+    top: -2px;
+    right: -2px;
+    border-bottom: 0;
+    border-left: 0;
+    animation-delay: -130ms;
+}
+
+.speed-surge-board-effect__marker--bottom-right {
+    right: -2px;
+    bottom: -2px;
+    border-top: 0;
+    border-left: 0;
+    animation-delay: -260ms;
+}
+
+.speed-surge-board-effect__marker--bottom-left {
+    bottom: -2px;
+    left: -2px;
+    border-top: 0;
+    border-right: 0;
+    animation-delay: -390ms;
+}
+
+.game-layout:has(.speed-surge-board-effect) .game-layout__stage {
+    transform: scale(0.965);
+    transform-origin: center top;
+    transition: transform 180ms ease;
+}
+
+.game-layout:has(.speed-surge-board-effect) .game-layout__header,
+.game-layout:has(.speed-surge-board-effect) .game-layout__sidebar,
+.game-layout:has(.speed-surge-board-effect) .game-layout__secondary-column {
+    transform: scale(0.94);
+    transform-origin: center top;
+    filter: saturate(1.22) brightness(1.08);
+    transition: transform 180ms ease, filter 180ms ease;
+}
+
+.game-layout:has(.speed-surge-board-effect) .game-layout__sidebar > *,
+.game-layout:has(.speed-surge-board-effect) .game-layout__secondary-board,
+.game-layout:has(.speed-surge-board-effect) .game-layout__header-stats {
+    animation: speed-surge-panel-pulse 580ms ease-in-out infinite alternate;
+}
+
+@keyframes speed-surge-enter {
+    from { opacity: 0; filter: blur(4px); }
+    to { opacity: 1; filter: blur(0); }
+}
+
+@keyframes speed-surge-field {
+    to { transform: translateY(9%); }
+}
+
+@keyframes speed-surge-tunnel {
+    from { opacity: 0.38; transform: scale(0.9); }
+    to { opacity: 0.78; transform: scale(1.04); }
+}
+
+@keyframes speed-surge-line {
+    0% {
+        opacity: 0;
+        transform: translate3d(-50%, 0, 0) scaleY(0.48);
+    }
+
+    8% {
+        opacity: 1;
+    }
+
+    82% {
+        opacity: 0.82;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate3d(
+                -50%,
+                calc(100% + var(--speed-line-height) + var(--speed-line-height)),
+                0
+            )
+            scaleY(1.28);
+    }
+}
+
+@keyframes speed-surge-marker {
+    0%, 100% { opacity: 0.32; transform: scale(0.95); }
+    50% { opacity: 0.96; transform: scale(1.08); }
+}
+
+@keyframes speed-surge-panel-pulse {
+    from { filter: brightness(1) saturate(1); }
+    to { filter: brightness(1.16) saturate(1.25); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .speed-surge-board-effect,
+    .speed-surge-board-effect *,
+    .game-layout:has(.speed-surge-board-effect) .game-layout__sidebar > *,
+    .game-layout:has(.speed-surge-board-effect) .game-layout__secondary-board,
+    .game-layout:has(.speed-surge-board-effect) .game-layout__header-stats {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
