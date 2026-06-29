@@ -86,6 +86,7 @@ npm run dev
 | `/:lang/rating` | `RatingPage` | Leaderboard |
 | `/:lang/about` | `AboutPage` | О проекте |
 | `/effects` | `EffectsPage` | Каталог игровых эффектов |
+| `/effects/preview` | `EffectPreviewPage` | Dev preview визуалов эффектов |
 | `/:lang/support` | `SupportPage` | Поддержка и донаты |
 | `/support/requests` | `SupportRequestsPage` | Мои обращения |
 | `/support/requests/:ticketId` | `SupportRequestDetailsPage` | Детали обращения |

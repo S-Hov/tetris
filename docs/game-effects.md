@@ -135,16 +135,21 @@ hard drop, очистку линий. Конкретная механика эф
 6. Если нужен звук, добавить `presentation.audio.apply` и/или
    `presentation.audio.feedback`.
 7. Добавить или обновить тесты в `effects/effects.test.js`.
-8. Проверить dev preview: `/match/dev?effectPreview=<effect_key>`.
+8. Проверить dev preview: `/ru/effects/preview?effectPreview=<effect_key>`.
 
 ## Dev preview
 
-В dev-режиме страница матча умеет открывать панель тестирования эффектов:
+В dev-режиме отдельная страница preview открывает solo-поле и панель
+тестирования эффектов:
 
 ```text
-/match/dev?effectPreview=gravity_lock
+/ru/effects/preview?effectPreview=gravity_lock
 ```
 
-Параметр `effectPreview` включает preview mode, сразу применяет выбранный эффект
-и показывает панель `DEV LAB`, через которую можно переключать эффекты из
-каталога.
+Если `effectPreview` не указан, страница открывает `gravity_lock`. Страница
+использует `MatchPage` в solo-режиме, поэтому на ней нет online-комнаты и поля
+соперника. Панель `DEV LAB` позволяет переключать эффекты из каталога.
+
+Старые ссылки вида `/ru/game/solo/play?effectPreview=<effect_key>` и
+`/match/dev?effectPreview=<effect_key>` продолжают работать, но для ручной
+проверки новых визуалов предпочтителен отдельный маршрут `/ru/effects/preview`.

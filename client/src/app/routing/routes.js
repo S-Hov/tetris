@@ -13,6 +13,7 @@ import SupportPage from '@/pages/Support/SupportPage.jsx'
 import SupportRequestsPage from '@/pages/SupportRequests/SupportRequestsPage.jsx'
 import SupportRequestDetailsPage from '@/pages/SupportRequestDetails/SupportRequestDetailsPage.jsx'
 import EffectsPage from '@/pages/Effects/EffectsPage.jsx'
+import EffectPreviewPage from '@/pages/EffectPreview/EffectPreviewPage.jsx'
 
 import MainLayout from '../layouts/MainLayout.jsx'
 import InnerPageLayout from '../layouts/InnerPageLayout.jsx'
@@ -128,6 +129,14 @@ export const routes = [
         title: 'Игровые эффекты',
         component: EffectsPage,
         layout: MainLayout,
+    },
+    {
+        key: 'effect-preview',
+        path: '/effects/preview',
+        title: 'Preview эффектов',
+        component: EffectPreviewPage,
+        layout: MainLayout,
+        hideFooter: true,
     },
     {
         key: 'support',

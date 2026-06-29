@@ -14,11 +14,14 @@ const getPreviewEffectKey = () => {
 
 export const useEffectPreview = ({
     enabled = true,
+    forcePreviewMode = false,
+    initialEffectKey: initialEffectKeyOverride = '',
     setGameState,
 }) => {
-    const [initialEffectKey] = useState(getPreviewEffectKey)
-    const didApplyInitialEffectRef = useRef(false)
-    const isPreviewMode = import.meta.env.DEV && Boolean(initialEffectKey)
+    const [searchEffectKey] = useState(getPreviewEffectKey)
+    const initialEffectKey = initialEffectKeyOverride || searchEffectKey
+    const appliedInitialEffectKeyRef = useRef('')
+    const isPreviewMode = import.meta.env.DEV && (forcePreviewMode || Boolean(initialEffectKey))
 
     const previewEffect = useCallback((effect, options = {}) => {
         if (!import.meta.env.DEV || !enabled) {
@@ -75,13 +78,13 @@ export const useEffectPreview = ({
         if (
             !isPreviewMode ||
             !enabled ||
-            didApplyInitialEffectRef.current ||
+            appliedInitialEffectKeyRef.current === initialEffectKey ||
             !initialEffectKey
         ) {
             return
         }
 
-        didApplyInitialEffectRef.current = true
+        appliedInitialEffectKeyRef.current = initialEffectKey
         previewEffect(initialEffectKey, {
             durationMs: 15000,
         })

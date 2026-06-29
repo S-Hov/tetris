@@ -120,7 +120,11 @@ const getInitialSettings = ({ initialSettings, locationState, playMode }) => {
     return normalizeMatchSettings(locationState?.roomSettings || defaultMatchSettings)
 }
 
+const getEffectPreviewSearchKey = (search) => new URLSearchParams(search).get('effectPreview') || ''
+
 const MatchPage = ({
+    effectPreviewKey = '',
+    forceEffectPreview = false,
     initialSettings,
     mode: modeProp,
     modeKey: modeKeyProp,
@@ -166,7 +170,12 @@ const MatchPage = ({
         roomSettings.soloGameDebuffsMockEnabled,
         effectCatalog.status,
     ].join(':')
-    const needsEffectCatalog = roomSettings.abilitiesEnabled || roomSettings.soloGameDebuffsMockEnabled
+    const requestedEffectPreviewKey = effectPreviewKey || getEffectPreviewSearchKey(location.search)
+    const isEffectPreviewRequested = import.meta.env.DEV &&
+        (forceEffectPreview || Boolean(requestedEffectPreviewKey))
+    const needsEffectCatalog = roomSettings.abilitiesEnabled ||
+        roomSettings.soloGameDebuffsMockEnabled ||
+        isEffectPreviewRequested
 
     if (needsEffectCatalog && effectCatalog.isLoading) {
         return <div>Loading effects...</div>
@@ -185,6 +194,8 @@ const MatchPage = ({
             setRoomSettings={setRoomSettings}
             effectCatalog={effectCatalog.effects}
             effectCatalogError={effectCatalog.error}
+            effectPreviewKey={requestedEffectPreviewKey}
+            forceEffectPreview={forceEffectPreview}
             user={user}
             playEffect={playEffect}
             playSynthEffect={playSynthEffect}
@@ -204,6 +215,8 @@ const MatchPageGame = ({
     setRoomSettings,
     effectCatalog,
     effectCatalogError,
+    effectPreviewKey,
+    forceEffectPreview,
     user,
     playEffect,
     playSynthEffect,
@@ -259,6 +272,8 @@ const MatchPageGame = ({
         previewEffect,
     } = useEffectPreview({
         enabled: !isIntroVisible && !isCountingDown && !isMatchFinished,
+        forcePreviewMode: forceEffectPreview,
+        initialEffectKey: effectPreviewKey,
         setGameState,
     })
     const {
