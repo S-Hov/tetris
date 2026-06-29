@@ -78,6 +78,10 @@
     user-select: none;
 }
 
+.player-board-shell--effect-shake {
+    animation: board-effect-shake 120ms steps(2, end) infinite;
+}
+
 .game-layout__sidebar {
     display: flex;
     flex-direction: column;
@@ -116,6 +120,28 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+@keyframes board-effect-shake {
+    0%, 100% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+
+    20% {
+        transform: translate3d(-7px, 4px, 0) rotate(-0.7deg);
+    }
+
+    40% {
+        transform: translate3d(6px, -5px, 0) rotate(0.55deg);
+    }
+
+    60% {
+        transform: translate3d(-4px, -3px, 0) rotate(-0.45deg);
+    }
+
+    80% {
+        transform: translate3d(5px, 3px, 0) rotate(0.35deg);
+    }
 }
 
 .game-panel {

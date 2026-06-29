@@ -18,8 +18,6 @@ import {
 import { useEffectCatalog } from '@/features/tetris/effects/useEffectCatalog.js'
 import EffectBoardLayer from '@/features/tetris/effects/presentation/EffectBoardLayer.jsx'
 import EffectPresentationLayer from '@/features/tetris/effects/presentation/EffectPresentationLayer.jsx'
-import EffectPreviewPanel from '@/features/tetris/effects/presentation/EffectPreviewPanel.jsx'
-import { useEffectPreview } from '@/features/tetris/effects/presentation/useEffectPreview.js'
 import {
     GAME_AUDIO_CONFIG,
     getGameAudioEffect,
@@ -120,11 +118,7 @@ const getInitialSettings = ({ initialSettings, locationState, playMode }) => {
     return normalizeMatchSettings(locationState?.roomSettings || defaultMatchSettings)
 }
 
-const getEffectPreviewSearchKey = (search) => new URLSearchParams(search).get('effectPreview') || ''
-
 const MatchPage = ({
-    effectPreviewKey = '',
-    forceEffectPreview = false,
     initialSettings,
     mode: modeProp,
     modeKey: modeKeyProp,
@@ -170,12 +164,7 @@ const MatchPage = ({
         roomSettings.soloGameDebuffsMockEnabled,
         effectCatalog.status,
     ].join(':')
-    const requestedEffectPreviewKey = effectPreviewKey || getEffectPreviewSearchKey(location.search)
-    const isEffectPreviewRequested = import.meta.env.DEV &&
-        (forceEffectPreview || Boolean(requestedEffectPreviewKey))
-    const needsEffectCatalog = roomSettings.abilitiesEnabled ||
-        roomSettings.soloGameDebuffsMockEnabled ||
-        isEffectPreviewRequested
+    const needsEffectCatalog = roomSettings.abilitiesEnabled || roomSettings.soloGameDebuffsMockEnabled
 
     if (needsEffectCatalog && effectCatalog.isLoading) {
         return <div>Loading effects...</div>
@@ -194,8 +183,6 @@ const MatchPage = ({
             setRoomSettings={setRoomSettings}
             effectCatalog={effectCatalog.effects}
             effectCatalogError={effectCatalog.error}
-            effectPreviewKey={requestedEffectPreviewKey}
-            forceEffectPreview={forceEffectPreview}
             user={user}
             playEffect={playEffect}
             playSynthEffect={playSynthEffect}
@@ -215,8 +202,6 @@ const MatchPageGame = ({
     setRoomSettings,
     effectCatalog,
     effectCatalogError,
-    effectPreviewKey,
-    forceEffectPreview,
     user,
     playEffect,
     playSynthEffect,
@@ -265,16 +250,6 @@ const MatchPageGame = ({
         getAbilityOptions,
         paused: isIntroVisible || isCountingDown || isMatchFinished,
         randomPiece: randomPieceGenerator,
-    })
-    const {
-        clearPreviewEffects,
-        isPreviewMode,
-        previewEffect,
-    } = useEffectPreview({
-        enabled: !isIntroVisible && !isCountingDown && !isMatchFinished,
-        forcePreviewMode: forceEffectPreview,
-        initialEffectKey: effectPreviewKey,
-        setGameState,
     })
     const {
         handleAbilityChoose: submitAbilityChoice,
@@ -837,16 +812,6 @@ const MatchPageGame = ({
                 />
             ) : null}
             {shouldShowCountdown ? <GameCountdownOverlay value={countdownValue} /> : null}
-            {isPreviewMode && !isIntroVisible && !isCountingDown ? (
-                <EffectPreviewPanel
-                    activeEffectKey={derivedState.activeEffects.at(-1)?.effectKey}
-                    effects={effectCatalog}
-                    onClear={clearPreviewEffects}
-                    onPreview={(effect) => previewEffect(effect, {
-                        durationMs: Math.max(15000, effect.durationMs),
-                    })}
-                />
-            ) : null}
             {!isMatchFinished ? (
                 <EffectPresentationLayer
                     activeEffects={derivedState.activeEffects}

@@ -1,25 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { applyIncomingEffect } from '../runtime.js'
 
 export const EFFECT_PREVIEW_EVENT = 'pvp-tetris:preview-effect'
 
-const getPreviewEffectKey = () => {
-    if (typeof window === 'undefined') {
-        return ''
-    }
-
-    return new URLSearchParams(window.location.search).get('effectPreview') || ''
-}
-
 export const useEffectPreview = ({
     enabled = true,
     forcePreviewMode = false,
-    initialEffectKey: initialEffectKeyOverride = '',
+    initialEffectKey = '',
     setGameState,
 }) => {
-    const [searchEffectKey] = useState(getPreviewEffectKey)
-    const initialEffectKey = initialEffectKeyOverride || searchEffectKey
     const appliedInitialEffectKeyRef = useRef('')
     const isPreviewMode = import.meta.env.DEV && (forcePreviewMode || Boolean(initialEffectKey))
 
