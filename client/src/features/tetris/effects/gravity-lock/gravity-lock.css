@@ -1,6 +1,8 @@
 .gravity-lock-board-effect {
     --gravity-lock-red: #ff2e4f;
     --gravity-lock-hot: #ff6a35;
+        --gravity-lock-fall: #4dbdff;
+    --gravity-lock-fall-soft: #8fe7ff;
     --gravity-lock-dark: #2b0610;
     position: absolute;
     inset: -4px;
@@ -11,6 +13,7 @@
 }
 
 .gravity-lock-board-effect__pressure,
+.gravity-lock-board-effect__fall-lines,
 .gravity-lock-board-effect__rails,
 .gravity-lock-board-effect__center-lock {
     position: absolute;
@@ -41,6 +44,59 @@
 .gravity-lock-board-effect__pressure--bottom {
     bottom: -5px;
     animation-delay: -1.05s;
+}
+
+.gravity-lock-board-effect__fall-lines {
+    inset: 2px 4px;
+    z-index: 1;
+    overflow: hidden;
+    border-radius: inherit;
+    opacity: 0.86;
+    mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+.gravity-lock-board-effect__fall-lines::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg, rgb(77 189 255 / 10%), transparent 28%, rgb(77 189 255 / 8%)),
+        repeating-linear-gradient(
+            90deg,
+            transparent 0 9.5%,
+            rgb(143 231 255 / 8%) 9.8% 10%,
+            transparent 10.4% 20%
+        );
+    opacity: 0.42;
+    animation: gravity-lock-field-scan 620ms linear infinite;
+}
+
+.gravity-lock-board-effect__fall-lines span {
+    position: absolute;
+    top: calc(0% - var(--gravity-line-height));
+    left: var(--gravity-line-x);
+    width: clamp(2px, 0.55vw, 5px);
+    height: var(--gravity-line-height);
+    border-radius: 999px;
+    background:
+        linear-gradient(
+            180deg,
+            transparent,
+            var(--gravity-lock-fall-soft) 14%,
+            var(--gravity-lock-fall) 48%,
+            transparent
+        );
+    box-shadow:
+        0 0 10px rgb(77 189 255 / 76%),
+        0 0 22px rgb(77 189 255 / 38%);
+    opacity: 0;
+    transform: translateX(-50%);
+    animation: gravity-lock-fall-line var(--gravity-line-duration) var(--gravity-line-delay) linear infinite;
+}
+
+.gravity-lock-board-effect__fall-lines span:nth-child(2n) {
+    width: clamp(1px, 0.38vw, 3px);
+    opacity: 0.72;
 }
 
 .gravity-lock-board-effect__rails {
@@ -149,7 +205,8 @@
 }
 
 .gravity-lock-board-effect.is-denied .gravity-lock-board-effect__pressure,
-.gravity-lock-board-effect.is-denied .gravity-lock-board-effect__rails {
+.gravity-lock-board-effect.is-denied .gravity-lock-board-effect__rails,
+.gravity-lock-board-effect.is-denied .gravity-lock-board-effect__fall-lines {
     filter: brightness(1.7) saturate(1.35);
 }
 
@@ -165,6 +222,30 @@
 @keyframes gravity-lock-rail-current {
     0% { opacity: 0.35; transform: scaleX(0.86); }
     100% { opacity: 0.88; transform: scaleX(1.04); }
+}
+
+@keyframes gravity-lock-fall-line {
+    0% {
+        opacity: 0;
+        transform: translate3d(-50%, 0, 0) scaleY(0.55);
+    }
+
+    12% {
+        opacity: 0.96;
+    }
+
+    78% {
+        opacity: 0.82;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate3d(-50%, calc(100% + var(--gravity-line-height) + var(--gravity-line-height)), 0) scaleY(1.12);
+    }
+}
+
+@keyframes gravity-lock-field-scan {
+    to { transform: translateY(10%); }
 }
 
 @keyframes gravity-lock-board-denied {

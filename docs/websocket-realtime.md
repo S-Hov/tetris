@@ -121,6 +121,9 @@ Presence сейчас считается в памяти процесса по �
 | `opponent:update` | server -> client | Состояние соперника |
 | `ability:use` | client -> server | Игрок применяет ability |
 | `effect:apply` | server -> client | Эффект прилетает сопернику |
+| `game:over` | client -> server | Игрок завершил игру |
+| `match:end` | server -> client | Итог матча |
+| `persistence:error` | server -> client | Ошибка сохранения результата |
 
 `effect:apply` использует каталог `game_effects` как источник активности,
 длительности и параметров механики:
@@ -139,9 +142,7 @@ Presence сейчас считается в памяти процесса по �
 
 Поле `type` временно дублирует `effectKey` для совместимости со старыми
 клиентами. Исполняемая реализация эффекта находится в клиентском реестре.
-| `game:over` | client -> server | Игрок завершил игру |
-| `match:end` | server -> client | Итог матча |
-| `persistence:error` | server -> client | Ошибка сохранения результата |
+Подробный контракт описан в [`game-effects.md`](game-effects.md).
 
 ### Support
 

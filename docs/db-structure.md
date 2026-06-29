@@ -1,12 +1,14 @@
 # Структура БД `pvp_tetris`
 
-Источник: [`docs/dump-pvp_tetris.sql`](/home/hov/Документы/projects/tetris/docs/dump-pvp_tetris.sql)
+Источник: [`docs/dump-pvp_tetris.sql`](dump-pvp_tetris.sql) и актуальные
+миграции из `server/migrations/`.
 
 Примечание: файл `dump-pvp_tetris.sql` на самом деле является PostgreSQL custom dump, а не plain SQL. Для чтения структуры использовался `pg_restore`.
 
 ## Общая картина
 
-База состоит из 20 основных таблиц:
+База состоит из базовых игровых, пользовательских и справочных таблиц. Важные
+доменные таблицы:
 
 1. `roles`
 2. `users`
@@ -28,6 +30,7 @@
 18. `donation_currencies`
 19. `donation_networks`
 20. `donation_currency_networks`
+21. `game_effects`
 
 По смыслу схема делится на 3 зоны:
 
@@ -36,6 +39,7 @@
 - рейтинг и ранговая статистика: `user_rank_stats`, `rating_history`
 - runtime-состояние комнат: `game_rooms`, `game_room_players`
 - поддержка и пожертвования: `support_requests`, `support_user_blocks`, `donation_currencies`, `donation_networks`, `donation_currency_networks`, `donation_wallets`, `donations`, `donation_verification_events`
+- игровые справочники: `game_effects`
 
 ## Карта связей
 
@@ -547,6 +551,51 @@ donations
 - хранит и состояние до, и состояние после, поэтому пригодна для аудита и восстановления динамики рейтинга
 - `reason` не ограничен `CHECK`-констрейнтом
 
+### `game_effects`
+
+Каталог PvP-эффектов. Это источник правды для ключей, активности,
+длительности, текстов и балансных параметров. Исполняемая реализация находится
+на клиенте в `client/src/features/tetris/effects`.
+
+| Поле | Тип | Null | По умолчанию | Описание |
+|---|---|---|---|---|
+| `id` | `bigint` | нет | `nextval(...)` | PK эффекта |
+| `effect_key` | `text` | нет |  | стабильный машинный ключ эффекта |
+| `label` | `text` | нет |  | короткое название EN |
+| `label_ru` | `text` | нет |  | короткое название RU |
+| `title` | `text` | нет |  | заголовок EN |
+| `title_ru` | `text` | нет |  | заголовок RU |
+| `description` | `text` | нет | `''` | описание EN |
+| `description_ru` | `text` | нет | `''` | описание RU |
+| `icon` | `text` | нет | `''` | CSS-класс иконки |
+| `image_url` | `text` | да |  | изображение эффекта, если есть |
+| `visual` | `text` | нет | `'default'` | визуальная категория для UI |
+| `duration_ms` | `integer` | нет | `4000` | длительность эффекта в миллисекундах |
+| `status` | `text` | нет | `'active'` | `active` или `inactive` |
+| `sort_order` | `integer` | нет | `0` | порядок показа |
+| `metadata` | `jsonb` | нет | `'{}'` | параметры механики и баланса |
+| `created_at` | `timestamptz` | нет | `now()` | дата создания |
+| `updated_at` | `timestamptz` | нет | `now()` | дата обновления |
+
+Ограничения:
+
+- PK: `id`
+- UNIQUE: `effect_key`
+- CHECK `duration_ms >= 0`
+- CHECK `status IN ('active', 'inactive')`
+
+Индексы:
+
+- `idx_game_effects_status_sort` на `(status, sort_order, id)`
+
+Замечания:
+
+- `duration_ms` и `metadata` отправляются клиенту как `durationMs` и
+  `parameters`
+- сервер использует только активные строки при `GET /api/effects` и
+  `ability:use`
+- подробный runtime-контракт описан в [`game-effects.md`](game-effects.md)
+
 ### `support_requests`
 
 Заявки пользователей: баги, идеи, пожелания по режимам и балансу. Таблица рассчитана на будущую админку и модерацию.
@@ -806,6 +855,7 @@ Support-only blocks for registered users. Active rows prevent a user from creati
 - `match_events` это поток игровых событий и телеметрии
 - `user_rank_stats` это текущий снимок рейтинга
 - `rating_history` это журнал изменения рейтинга
+- `game_effects` хранит каталог игровых эффектов, их длительность, активность и параметры баланса
 - `support_requests` хранит заявки игроков по багам, идеям, режимам и балансу
 - `support_user_blocks` хранит блокировки создания обращений для конкретных пользователей
 - `donation_wallets` хранит адреса приема пожертвований по валютам и сетям

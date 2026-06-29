@@ -50,6 +50,8 @@ npm run db:migrate
 | `018_enable_public_table_rls.sql` | Enables public-table RLS policies where the schema expects public read access |
 | `019_friends_schema.sql` | Friendships and the legacy friend-request permission |
 | `020_user_privacy_settings.sql` | Per-user privacy modes, legacy permission migration and automatic defaults |
+| `021_game_effects_runtime_metadata.sql` | Runtime balance metadata for existing `game_effects` rows |
+| `022_garbage_rain_balance_metadata.sql` | Additional `garbage_rain` balance metadata |
 
 Миграции используют `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`
 и `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, поэтому baseline можно применить
