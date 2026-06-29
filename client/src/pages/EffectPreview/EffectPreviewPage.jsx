@@ -1,6 +1,9 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 
+import {
+    getGameAudioEffect,
+} from '@/features/tetris/config/gameAudio.config.js'
 import { getEffectPresentationState } from '@/features/tetris/effects/runtime.js'
 import { useEffectCatalog } from '@/features/tetris/effects/useEffectCatalog.js'
 import EffectBoardLayer from '@/features/tetris/effects/presentation/EffectBoardLayer.jsx'
@@ -14,11 +17,13 @@ import {
     getRandomPieceGeneratorForSettings,
     normalizeMatchSettings,
 } from '@/features/tetris/model/matchSettings.js'
+import { PC_CONTROL_ACTIONS } from '@/features/tetris/model/pcControls.js'
 import { togglePause } from '@/features/tetris/model/tetrisEngine.js'
 import ActionsPanel from '@/features/tetris/ui/ActionsPanel.jsx'
 import GameLayout from '@/features/tetris/ui/GameLayout.jsx'
 import NextPiecePanel from '@/features/tetris/ui/NextPiecePanel.jsx'
 import StatsPanel from '@/features/tetris/ui/StatsPanel.jsx'
+import hardDropSound from '@/features/tetris/assets/audio/hard_drop.mp3'
 import useAudio from '@/shared/hooks/useAudio.js'
 
 const DEFAULT_PREVIEW_EFFECT = 'gravity_lock'
@@ -36,7 +41,7 @@ const previewSettings = normalizeMatchSettings({
 const EffectPreviewPage = () => {
     const location = useLocation()
     const effectPreviewKey = getPreviewEffectKey(location.search)
-    const { playSynthEffect } = useAudio()
+    const { playEffect, playSynthEffect } = useAudio()
     const effectCatalog = useEffectCatalog()
     const randomPieceGenerator = useMemo(
         () => getRandomPieceGeneratorForSettings(previewSettings),
@@ -67,10 +72,46 @@ const EffectPreviewPage = () => {
     const hasFogPiece = Boolean(effectPresentation.fogPiece)
     const hasScreenShake = Boolean(effectPresentation.screenShake)
     const hasInvisibleCells = effectPresentation.invisibleCells || false
+    const handleTetrisActionSound = useCallback((action) => {
+        let effectName = null
+        let sound = null
+
+        switch (action) {
+            case PC_CONTROL_ACTIONS.MOVE_LEFT:
+            case PC_CONTROL_ACTIONS.MOVE_RIGHT:
+                effectName = 'move'
+                break
+            case PC_CONTROL_ACTIONS.SOFT_DROP:
+                effectName = 'softDrop'
+                break
+            case PC_CONTROL_ACTIONS.ROTATE:
+                effectName = 'rotate'
+                break
+            case PC_CONTROL_ACTIONS.HARD_DROP:
+                effectName = 'hardDrop'
+                sound = hardDropSound
+                break
+            default:
+                return
+        }
+
+        const effect = getGameAudioEffect(effectName)
+
+        if (!effect) {
+            return
+        }
+
+        if (effect.synth) {
+            playSynthEffect(effect.synth, { volume: effect.volume })
+        } else {
+            playEffect(sound, { volume: effect.volume })
+        }
+    }, [playEffect, playSynthEffect])
 
     useTetrisControls({
         disabled: derivedState.isGameOver,
         gameState: derivedState,
+        onAction: handleTetrisActionSound,
         randomPiece: randomPieceGenerator,
         setGameState,
     })

@@ -1,6 +1,7 @@
 .screen-shake-board-effect {
-    --screen-shake-accent: #ffcf5a;
-    --screen-shake-hot: #ff7048;
+    --screen-shake-accent: #32f6ff;
+    --screen-shake-hot: #00bfc8;
+    --screen-shake-soft: #a7fbff;
     position: absolute;
     inset: -14px;
     z-index: 8;
@@ -25,13 +26,13 @@
         repeating-linear-gradient(
             0deg,
             transparent 0 9px,
-            rgb(255 207 90 / 12%) 10px,
+            color-mix(in srgb, var(--screen-shake-soft) 14%, transparent) 10px,
             transparent 12px
         ),
         repeating-linear-gradient(
             90deg,
             transparent 0 13px,
-            rgb(255 112 72 / 9%) 14px,
+            color-mix(in srgb, var(--screen-shake-hot) 12%, transparent) 14px,
             transparent 16px
         );
     opacity: 0.38;
@@ -58,8 +59,8 @@
 .screen-shake-board-effect__dust {
     inset: 0;
     background:
-        radial-gradient(circle at 22% 76%, rgb(255 207 90 / 28%), transparent 10%),
-        radial-gradient(circle at 76% 22%, rgb(255 112 72 / 22%), transparent 12%),
+        radial-gradient(circle at 22% 76%, color-mix(in srgb, var(--screen-shake-soft) 30%, transparent), transparent 10%),
+        radial-gradient(circle at 76% 22%, color-mix(in srgb, var(--screen-shake-hot) 24%, transparent), transparent 12%),
         radial-gradient(circle at 52% 52%, rgb(255 255 255 / 12%), transparent 18%);
     filter: blur(8px);
     opacity: 0.44;
@@ -74,8 +75,8 @@
     border-radius: 999px;
     background: linear-gradient(90deg, transparent, var(--screen-shake-accent), var(--screen-shake-hot), transparent);
     box-shadow:
-        0 0 10px rgb(255 207 90 / 70%),
-        0 0 24px rgb(255 112 72 / 28%);
+        0 0 10px color-mix(in srgb, var(--screen-shake-accent) 72%, transparent),
+        0 0 24px color-mix(in srgb, var(--screen-shake-hot) 32%, transparent);
     opacity: 0;
     transform: translate(-50%, -50%) rotate(var(--shake-fault-rotate));
     animation: screen-shake-fault 520ms var(--shake-fault-delay) steps(4, end) infinite;

@@ -2,7 +2,7 @@ export default {
     effectKey: 'screen_shake',
     normalizeParameters: () => ({}),
     presentation: {
-        accent: '#ffcf5a',
+        accent: '#32f6ff',
         boardEffect: 'screen-shake',
         icon: 'fa-wave-square',
         label: 'Тряска',
