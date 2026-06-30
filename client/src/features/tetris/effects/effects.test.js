@@ -291,6 +291,12 @@ test('timed and presentation effects are driven by implementations', () => {
         }),
     })
     const presentation = getEffectPresentationState(rotated)
+    const invisibleCellsPresentation = getEffectImplementation('invisible_cells').presentation({
+        parameters: {
+            hiddenModulo: 11,
+            hiddenThreshold: 3,
+        },
+    })
 
     assert.equal(rotated.rotated, true)
     assert.deepEqual(rotated.effectFeedback, {
@@ -299,7 +305,7 @@ test('timed and presentation effects are driven by implementations', () => {
         sequence: 1,
         type: 'rotationPulse',
     })
-    assert.equal(presentation.boardEffect, 'random-rotation')
+    assert.equal(presentation.boardEffect, 'signal-loss')
     assert.deepEqual(presentation.invisibleCells, {
         hiddenModulo: 9,
         hiddenThreshold: 2,
@@ -309,6 +315,9 @@ test('timed and presentation effects are driven by implementations', () => {
     assert.equal(getEffectImplementation('fog_piece').presentation.screenEffect, 'fog-piece')
     assert.equal(getEffectImplementation('fog_piece').presentation.fogPiece, true)
     assert.equal(getEffectImplementation('gravity_lock').presentation.boardEffect, 'gravity-lock')
+    assert.equal(invisibleCellsPresentation.boardEffect, 'signal-loss')
+    assert.equal(Boolean(invisibleCellsPresentation.audio.apply), true)
+    assert.equal(getEffectImplementation('random_rotation').presentation.boardEffect, 'random-rotation')
     assert.equal(getEffectImplementation('screen_shake').presentation.boardEffect, 'screen-shake')
     assert.equal(Boolean(getEffectImplementation('screen_shake').presentation.audio.apply), true)
     assert.equal(getEffectImplementation('speed_x2_for_4s').presentation.boardEffect, 'speed-surge')

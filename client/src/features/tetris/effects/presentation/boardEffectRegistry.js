@@ -2,6 +2,7 @@ import ControlsSwapBoardEffect from '../controls-swap/ControlsSwapBoardEffect.js
 import DelayInputBoardEffect from '../delay-input/DelayInputBoardEffect.jsx'
 import GarbageRainBoardEffect from '../garbage-rain/GarbageRainBoardEffect.jsx'
 import GravityLockBoardEffect from '../gravity-lock/GravityLockBoardEffect.jsx'
+import SignalLossBoardEffect from '../invisible-cells/SignalLossBoardEffect.jsx'
 import RandomRotationBoardEffect from '../random-rotation/RandomRotationBoardEffect.jsx'
 import ScreenShakeBoardEffect from '../screen-shake/ScreenShakeBoardEffect.jsx'
 import SpeedSurgeBoardEffect from '../speed-x2/SpeedSurgeBoardEffect.jsx'
@@ -12,6 +13,7 @@ const boardEffectRegistry = {
     'delay-input': DelayInputBoardEffect,
     'garbage-rain': GarbageRainBoardEffect,
     'gravity-lock': GravityLockBoardEffect,
+    'signal-loss': SignalLossBoardEffect,
     'random-rotation': RandomRotationBoardEffect,
     'screen-shake': ScreenShakeBoardEffect,
     'speed-surge': SpeedSurgeBoardEffect,
