@@ -1,9 +1,9 @@
 import './signal-loss.css'
 
 const INTERFERENCE_BANDS = [
-    { delay: -0.18, duration: 2.7, drift: 'slow', height: 10, y: 18 },
-    { delay: -1.1, duration: 2.2, drift: 'snap', height: 7, y: 48 },
-    { delay: -0.62, duration: 3.1, drift: 'float', height: 12, y: 76 },
+    { delay: -0.12, duration: 1.55, height: 2.4, y: 22 },
+    { delay: -0.68, duration: 1.85, height: 1.7, y: 53 },
+    { delay: -1.14, duration: 2.2, height: 2.8, y: 78 },
 ]
 
 const SignalLossBoardEffect = () => (
@@ -17,7 +17,6 @@ const SignalLossBoardEffect = () => (
                     key={index}
                     style={{
                         '--signal-band-delay': `${band.delay}s`,
-                        '--signal-band-drift': `signal-loss-band-${band.drift}`,
                         '--signal-band-duration': `${band.duration}s`,
                         '--signal-band-height': `${band.height}%`,
                         '--signal-band-y': `${band.y}%`,
