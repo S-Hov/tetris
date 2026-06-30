@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { getLocalizedEffectText } from '@/features/tetris/effects/catalog.js'
+import { useEffectCatalog } from '@/features/tetris/effects/useEffectCatalog.js'
 import { getLocalizedPath } from '@/i18n'
 import GlowEffect from '@/shared/ui/GlowEffect'
+import { getBaseUrl } from '@/shared/api/apiClient.js'
 import { matchesAPI } from '@/shared/api/matches'
 import {
     describeTimelineEvent,
@@ -16,6 +19,7 @@ import {
     getTimelineIcon,
 } from '@/shared/lib/matches/presentation.js'
 import './MatchDetailsPage.css'
+import './MatchDetailsEnhancements.css'
 
 const MatchDetailsPage = () => {
     const { matchId } = useParams()
@@ -23,7 +27,12 @@ const MatchDetailsPage = () => {
     const [data, setData] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState('')
+    const effectCatalog = useEffectCatalog()
     const currentLanguage = i18n.language === 'en' ? 'en' : 'ru'
+    const effectsByKey = useMemo(
+        () => new Map(effectCatalog.effects.map((effect) => [effect.effectKey || effect.key || effect.id, effect])),
+        [effectCatalog.effects]
+    )
 
     useEffect(() => {
         let cancelled = false
@@ -165,7 +174,9 @@ const MatchDetailsPage = () => {
                                             <tbody>
                                                 {data.players.map((player) => (
                                                     <tr key={player.id}>
-                                                        <td>{player.nickname}</td>
+                                                        <td>
+                                                            <MatchPlayerCell player={player} />
+                                                        </td>
                                                         <td>
                                                             <span className={`match-details-team-pill match-details-team-pill--${getTeamAccentClass(getTeamNumberByTeamId(data.teams, player.teamId))}`}>
                                                                 T{getTeamNumberByTeamId(data.teams, player.teamId)}
@@ -201,9 +212,11 @@ const MatchDetailsPage = () => {
                                         <div className="match-details-timeline">
                                             {data.events.map((event) => (
                                                 <article key={event.id} className="match-details-timeline-item">
-                                                    <div className="match-details-timeline-icon">
-                                                        <i className={getTimelineIcon(event.eventType)}></i>
-                                                    </div>
+                                                    <TimelineEventMedia
+                                                        currentLanguage={currentLanguage}
+                                                        effect={getTimelineEffect(event, effectsByKey)}
+                                                        eventType={event.eventType}
+                                                    />
                                                     <div className="match-details-timeline-body">
                                                         <strong>{describeTimelineEvent(event, t)}</strong>
                                                         <span>{formatFullDate(event.createdAt, currentLanguage, t)}</span>
@@ -239,6 +252,88 @@ const MetaCard = ({ icon, label, value }) => (
         </div>
     </GlowEffect>
 )
+
+const MatchPlayerCell = ({ player }) => (
+    <span className="match-details-player-cell">
+        <PlayerAvatar player={player} />
+        <span>{player.nickname}</span>
+    </span>
+)
+
+const PlayerAvatar = ({ player }) => {
+    const avatarUrl = getMediaUrl(player?.avatarUrl)
+    const label = player?.nickname || 'Player'
+
+    return (
+        <span className="match-details-player-avatar" aria-label={label}>
+            {avatarUrl ? renderAvatarMedia(avatarUrl, label) : getAvatarFallback(label)}
+        </span>
+    )
+}
+
+const renderAvatarMedia = (src, label) => {
+    if (/\.(webm|mp4|mov|ogg|ogv|m4v)(?:[?#]|$)/i.test(src)) {
+        return <video src={src} autoPlay loop muted playsInline aria-label={label} />
+    }
+
+    return <img src={src} alt={label} />
+}
+
+const TimelineEventMedia = ({ currentLanguage, effect, eventType }) => {
+    const localized = getLocalizedEffectText(effect, currentLanguage)
+    const imageUrl = getMediaUrl(effect?.imageUrl)
+    const title = localized.title || effect?.title || eventType
+
+    return (
+        <div className={`match-details-timeline-icon ${effect ? 'match-details-timeline-icon--effect' : ''}`}>
+            {imageUrl ? (
+                <img src={imageUrl} alt={title} />
+            ) : (
+                <i className={getTimelineMediaIcon(effect, eventType)}></i>
+            )}
+        </div>
+    )
+}
+
+const getTimelineMediaIcon = (effect, eventType) => {
+    if (effect?.icon) {
+        return `fa-solid ${effect.icon}`
+    }
+
+    return getTimelineIcon(eventType)
+}
+
+const getTimelineEffect = (event, effectsByKey) => {
+    const key = getTimelineEffectKey(event)
+
+    if (!key) {
+        return null
+    }
+
+    return effectsByKey.get(key) || null
+}
+
+const getTimelineEffectKey = (event) => {
+    const payload = event?.payload && typeof event.payload === 'object' ? event.payload : null
+
+    return payload?.effectType || payload?.effectKey || payload?.effect || payload?.type || ''
+}
+
+const getAvatarFallback = (value = '') => String(value).trim().slice(0, 1).toUpperCase() || '?'
+
+const getMediaUrl = (value = '') => {
+    if (!value) {
+        return ''
+    }
+
+    const normalizedValue = String(value)
+
+    if (/^(https?:)?\/\//i.test(normalizedValue) || normalizedValue.startsWith('data:')) {
+        return normalizedValue
+    }
+
+    return `${getBaseUrl()}${normalizedValue.startsWith('/') ? normalizedValue : `/${normalizedValue}`}`
+}
 
 const getTeamNumberByTeamId = (teams, teamId) => {
     return teams.find((team) => team.id === teamId)?.teamNumber || 1

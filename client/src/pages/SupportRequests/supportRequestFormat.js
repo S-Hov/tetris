@@ -19,21 +19,33 @@ export const formatDateTime = (value, lang = 'ru', t) => {
 }
 
 export const formatCategory = (category, t) => {
-    return t?.(`supportRequests.format.categories.${category}`, { defaultValue: '' })
+    const categoryKey = normalizeFormatKey(category) || 'other'
+
+    return t?.(`supportRequests.format.categories.${categoryKey}`, { defaultValue: '' })
         || t?.('supportRequests.format.categories.other')
         || 'Other'
 }
 
 export const formatChannel = (channel, t) => {
-    if (channel === 'telegram') return 'Telegram'
-    if (channel === 'email') return t?.('supportRequests.format.channels.email') || 'Email'
+    const channelKey = normalizeFormatKey(channel)
+
+    if (channelKey === 'telegram') return t?.('supportRequests.format.channels.telegram') || 'Telegram'
+    if (channelKey === 'email') return t?.('supportRequests.format.channels.email') || 'Email'
 
     return channel || t?.('supportRequests.format.channels.fallback') || 'Channel is not set'
 }
 
 export const formatStatus = (status, t) => {
-    return t?.(`supportRequests.format.statuses.${status}`, { defaultValue: '' })
+    const statusKey = normalizeFormatKey(status) || 'new'
+
+    return t?.(`supportRequests.format.statuses.${statusKey}`, { defaultValue: '' })
         || status
         || t?.('supportRequests.format.statuses.new')
         || 'New'
 }
+
+const normalizeFormatKey = (value = '') => String(value || '')
+    .trim()
+    .toLowerCase()
+    .replaceAll('-', '_')
+    .replace(/\s+/g, '_')

@@ -1,0 +1,14 @@
+{
+  "siteFooter": {
+    "tagline": "Fair esports arena without pay-to-win",
+    "navAriaLabel": "Footer navigation",
+    "donate": "Support the creator",
+    "links": {
+      "home": "Home",
+      "about": "About",
+      "support": "Support",
+      "rating": "Rating",
+      "profile": "Profile"
+    }
+  }
+}

@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { getLocalizedPath } from '@/i18n'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { supportAPI } from '@/shared/api/support'
 import notify from '@/utils/Notifications'
@@ -13,6 +15,8 @@ import './SupportRequestDetailsPage.css'
 
 const SupportRequestDetailsPage = () => {
     const { ticketId } = useParams()
+    const { t, i18n } = useTranslation()
+    const currentLanguage = i18n.language === 'en' ? 'en' : 'ru'
     const [request, setRequest] = useState(null)
     const [messages, setMessages] = useState([])
     const [historySupported, setHistorySupported] = useState(true)
@@ -27,11 +31,11 @@ const SupportRequestDetailsPage = () => {
             setMessages(Array.isArray(response.messages) ? response.messages : [])
             setHistorySupported(response.historySupported !== false)
         } catch (error) {
-            notify(error.message || 'Не удалось обновить сообщения', 'error')
+            notify(error.message || t('supportRequests.details.messagesLoadError'), 'error')
         } finally {
             setIsMessagesLoading(false)
         }
-    }, [ticketId])
+    }, [ticketId, t])
 
     useEffect(() => {
         let ignore = false
@@ -47,7 +51,7 @@ const SupportRequestDetailsPage = () => {
                 }
             } catch (error) {
                 if (!ignore) {
-                    notify(error.message || 'Не удалось загрузить обращение', 'error')
+                    notify(error.message || t('supportRequests.details.loadError'), 'error')
                 }
             } finally {
                 if (!ignore) {
@@ -61,7 +65,7 @@ const SupportRequestDetailsPage = () => {
         return () => {
             ignore = true
         }
-    }, [ticketId])
+    }, [ticketId, t])
 
     useEffect(() => {
         loadMessages()
@@ -77,7 +81,7 @@ const SupportRequestDetailsPage = () => {
         return (
             <section className="section support-request-details-page">
                 <div className="container support-request-details-container">
-                    <div className="support-request-details-empty">Загружаем обращение...</div>
+                    <div className="support-request-details-empty">{t('supportRequests.details.loading')}</div>
                 </div>
             </section>
         )
@@ -87,11 +91,13 @@ const SupportRequestDetailsPage = () => {
         return (
             <section className="section support-request-details-page">
                 <div className="container support-request-details-container">
-                    <div className="support-request-details-empty">Обращение не найдено.</div>
+                    <div className="support-request-details-empty">{t('supportRequests.details.notFound')}</div>
                 </div>
             </section>
         )
     }
+
+    const channelKey = getStatusClassName(request.preferredChannel)
 
     return (
         <section className="section support-request-details-page">
@@ -100,25 +106,25 @@ const SupportRequestDetailsPage = () => {
                     <GlowEffect>
                         <div className="glow-effect support-request-details-head__content">
                             <div>
-                                <Link to="/support/requests" className="support-request-details-back">
+                                <Link to={getLocalizedPath('/support/requests', currentLanguage)} className="support-request-details-back">
                                     <i className="fas fa-arrow-left"></i>
-                                    Все обращения
+                                    {t('supportRequests.details.back')}
                                 </Link>
-                                <p className="support-request-details-eyebrow">Обращение #{request.id}</p>
-                                <h1>{request.title || formatCategory(request.category)}</h1>
+                                <p className="support-request-details-eyebrow">{t('supportRequests.details.eyebrow', { id: request.id })}</p>
+                                <h1>{request.title || formatCategory(request.category, t)}</h1>
                             </div>
-                            <span className={`support-request-details-status support-request-details-status--${request.status}`}>
-                                {formatStatus(request.status)}
+                            <span className={`support-request-details-status support-request-details-status--${getStatusClassName(request.status)}`}>
+                                {formatStatus(request.status, t)}
                             </span>
                         </div>
                     </GlowEffect>
                 </section>
 
                 <section className="support-request-details-meta">
-                    <InfoCard icon="fas fa-tag" label="Категория" value={formatCategory(request.category)} />
-                    <InfoCard icon="fas fa-calendar" label="Дата" value={formatDateTime(request.createdAt)} />
-                    <InfoCard icon="fas fa-comments" label="Канал" value={formatChannel(request.preferredChannel)} />
-                    <InfoCard icon="fas fa-signal" label="Статус" value={formatStatus(request.status)} />
+                    <InfoCard icon="fas fa-tag" label={t('supportRequests.details.category')} value={formatCategory(request.category, t)} />
+                    <InfoCard icon="fas fa-calendar" label={t('supportRequests.details.date')} value={formatDateTime(request.createdAt, currentLanguage, t)} />
+                    <InfoCard icon="fas fa-comments" label={t('supportRequests.details.channel')} value={formatChannel(request.preferredChannel, t)} />
+                    <InfoCard icon="fas fa-signal" label={t('supportRequests.details.status')} value={formatStatus(request.status, t)} />
                 </section>
 
                 <section className="support-request-chat">
@@ -127,11 +133,11 @@ const SupportRequestDetailsPage = () => {
                             <div className="support-request-chat__head">
                                 <div className="support-request-chat__title">
                                     <i className="fas fa-message"></i>
-                                    Сообщения
+                                    {t('supportRequests.details.messages')}
                                 </div>
                                 <button type="button" className="button" onClick={loadMessages} disabled={isMessagesLoading}>
                                     <i className="fas fa-rotate"></i>
-                                    {isMessagesLoading ? 'Обновляем...' : 'Обновить сообщения'}
+                                    {isMessagesLoading ? t('supportRequests.details.refreshing') : t('supportRequests.details.refresh')}
                                 </button>
                             </div>
 
@@ -143,38 +149,36 @@ const SupportRequestDetailsPage = () => {
                                             className={`support-request-message support-request-message--${message.senderType}`}
                                         >
                                             <div className="support-request-message__meta">
-                                                <strong>{formatSender(message.senderType, message.senderLabel)}</strong>
-                                                <time>{formatDateTime(message.createdAt)}</time>
+                                                <strong>{formatSender(message.senderType, message.senderLabel, t)}</strong>
+                                                <time>{formatDateTime(message.createdAt, currentLanguage, t)}</time>
                                             </div>
                                             <p>{message.text}</p>
                                         </article>
                                     ))
                                 ) : (
-                                    <div className="support-request-details-empty">Сообщений пока нет.</div>
+                                    <div className="support-request-details-empty">{t('supportRequests.details.emptyMessages')}</div>
                                 )}
                             </div>
 
-                            {request.preferredChannel === 'telegram' ? (
+                            {channelKey === 'telegram' ? (
                                 <div className="support-request-chat__notice">
-                                    <p>
-                                        Эта страница только для просмотра истории. Чтобы написать новое сообщение, продолжите диалог в Telegram-боте.
-                                    </p>
+                                    <p>{t('supportRequests.details.telegramNotice')}</p>
                                     {request.telegramUrl && (
                                         <button type="button" className="button support-request-telegram" onClick={openTelegram}>
                                             <i className="fab fa-telegram-plane"></i>
-                                            Открыть Telegram-бота
+                                            {t('supportRequests.details.openTelegram')}
                                         </button>
                                     )}
                                 </div>
                             ) : (
                                 <div className="support-request-chat__notice support-request-chat__notice--email">
-                                    История переписки для почтового канала не поддерживается. Здесь показано первое сообщение, ответ придёт на указанную почту.
+                                    {t('supportRequests.details.emailNotice')}
                                 </div>
                             )}
 
-                            {!historySupported && request.preferredChannel !== 'email' && (
+                            {!historySupported && channelKey !== 'email' && (
                                 <div className="support-request-chat__notice">
-                                    История сообщений для этого канала пока недоступна.
+                                    {t('supportRequests.details.historyUnavailable')}
                                 </div>
                             )}
                         </div>
@@ -195,11 +199,17 @@ const InfoCard = ({ icon, label, value }) => (
     </GlowEffect>
 )
 
-const formatSender = (senderType, senderLabel) => {
-    if (senderType === 'admin') return senderLabel || 'Поддержка'
-    if (senderType === 'system') return senderLabel || 'Система'
+const formatSender = (senderType, senderLabel, t) => {
+    if (senderType === 'admin') return senderLabel || t('supportRequests.details.senderSupport')
+    if (senderType === 'system') return senderLabel || t('supportRequests.details.senderSystem')
 
-    return senderLabel || 'Вы'
+    return senderLabel || t('supportRequests.details.senderYou')
 }
+
+const getStatusClassName = (status = '') => String(status || '')
+    .trim()
+    .toLowerCase()
+    .replaceAll('-', '_')
+    .replace(/\s+/g, '_')
 
 export default SupportRequestDetailsPage

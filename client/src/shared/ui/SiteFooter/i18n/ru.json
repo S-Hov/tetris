@@ -1,0 +1,14 @@
+{
+  "siteFooter": {
+    "tagline": "Честная кибер-арена без pay-to-win",
+    "navAriaLabel": "Нижняя навигация",
+    "donate": "Поддержать автора",
+    "links": {
+      "home": "Главная",
+      "about": "О нас",
+      "support": "Поддержка",
+      "rating": "Рейтинг",
+      "profile": "Профиль"
+    }
+  }
+}

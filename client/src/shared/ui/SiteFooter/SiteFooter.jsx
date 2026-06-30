@@ -1,36 +1,43 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { getLocalizedPath } from '@/i18n'
 import './SiteFooter.css'
 
 const footerLinks = [
-    { to: '/', label: 'Главная' },
-    { to: '/about', label: 'О нас' },
-    { to: '/support', label: 'Поддержка' },
-    { to: '/rating', label: 'Рейтинг' },
-    { to: '/profile', label: 'Профиль' },
+    { to: '/', labelKey: 'siteFooter.links.home' },
+    { to: '/about', labelKey: 'siteFooter.links.about' },
+    { to: '/support', labelKey: 'siteFooter.links.support' },
+    { to: '/rating', labelKey: 'siteFooter.links.rating' },
+    { to: '/profile', labelKey: 'siteFooter.links.profile' },
 ]
 
-const SiteFooter = () => (
-    <footer className="site-footer">
-        <div className="container site-footer__container">
-            <div className="site-footer__brand">
-                <strong>PVP Tetris</strong>
-                <span>Честная кибер-арена без pay-to-win</span>
+const SiteFooter = () => {
+    const { t, i18n } = useTranslation()
+    const currentLanguage = i18n.language === 'en' ? 'en' : 'ru'
+
+    return (
+        <footer className="site-footer">
+            <div className="container site-footer__container">
+                <div className="site-footer__brand">
+                    <strong>PVP Tetris</strong>
+                    <span>{t('siteFooter.tagline')}</span>
+                </div>
+
+                <nav className="site-footer__nav" aria-label={t('siteFooter.navAriaLabel')}>
+                    {footerLinks.map((link) => (
+                        <Link key={link.to} to={getLocalizedPath(link.to, currentLanguage)}>
+                            {t(link.labelKey)}
+                        </Link>
+                    ))}
+                </nav>
+
+                <Link to={getLocalizedPath('/about#donate', currentLanguage)} className="site-footer__donate">
+                    <i className="fas fa-wallet"></i>
+                    {t('siteFooter.donate')}
+                </Link>
             </div>
-
-            <nav className="site-footer__nav" aria-label="Нижняя навигация">
-                {footerLinks.map((link) => (
-                    <Link key={link.to} to={link.to}>
-                        {link.label}
-                    </Link>
-                ))}
-            </nav>
-
-            <Link to="/about#donate" className="site-footer__donate">
-                <i className="fas fa-wallet"></i>
-                Поддержать автора
-            </Link>
-        </div>
-    </footer>
-)
+        </footer>
+    )
+}
 
 export default SiteFooter

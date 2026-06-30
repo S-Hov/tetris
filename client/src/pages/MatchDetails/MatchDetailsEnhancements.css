@@ -1,0 +1,56 @@
+.match-details-player-cell {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+    color: var(--text-color-1);
+    font-weight: 800;
+}
+
+.match-details-player-cell > span:last-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.match-details-player-avatar {
+    width: 34px;
+    aspect-ratio: 1;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    overflow: hidden;
+    border: 1px solid var(--turquoise-tint-medium);
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 35% 25%, var(--turquoise-tint-soft), transparent 48%),
+        var(--elem-bg);
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: 0.78rem;
+    box-shadow: 0 0 16px var(--turquoise-tint-muted);
+}
+
+.match-details-player-avatar img,
+.match-details-player-avatar video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.match-details-timeline-icon {
+    overflow: hidden;
+}
+
+.match-details-timeline-icon--effect {
+    border: 1px solid var(--turquoise-tint-medium);
+    background:
+        radial-gradient(circle at 30% 20%, var(--turquoise-tint-soft), transparent 54%),
+        var(--elem-gradient-1);
+    box-shadow: 0 0 18px var(--turquoise-tint-muted);
+}
+
+.match-details-timeline-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

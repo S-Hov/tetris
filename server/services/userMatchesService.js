@@ -84,6 +84,7 @@ export const getUserMatchDetailsService = async ({ userId, matchId }) => {
                 userId: player.user_id,
                 teamId: player.team_id,
                 nickname: player.username || player.nickname || 'Guest',
+                avatarUrl: player.avatar_url || null,
                 isRegistered: Boolean(player.is_registered),
                 score: Number(player.score) || 0,
                 linesCleared: Number(player.lines_cleared) || 0,
@@ -134,12 +135,14 @@ export const getUserMatchDetailsService = async ({ userId, matchId }) => {
                 ? {
                     id: event.source_player_id,
                     nickname: event.source_username || event.source_nickname || 'Игрок',
+                    avatarUrl: event.source_avatar_url || null,
                 }
                 : null,
             targetPlayer: event.target_player_id
                 ? {
                     id: event.target_player_id,
                     nickname: event.target_username || event.target_nickname || 'Игрок',
+                    avatarUrl: event.target_avatar_url || null,
                 }
                 : null,
         })),

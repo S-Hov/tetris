@@ -32,6 +32,8 @@ import supportRequestsEn from '../pages/SupportRequests/i18n/en.json'
 import supportRequestsRu from '../pages/SupportRequests/i18n/ru.json'
 import teamQueueEn from '../pages/TeamQueue/i18n/en.json'
 import teamQueueRu from '../pages/TeamQueue/i18n/ru.json'
+import siteFooterEn from '../shared/ui/SiteFooter/i18n/en.json'
+import siteFooterRu from '../shared/ui/SiteFooter/i18n/ru.json'
 import simpleHeaderEn from '../widgets/Header/SimpleHeader/i18n/en.json'
 import simpleHeaderRu from '../widgets/Header/SimpleHeader/i18n/ru.json'
 
@@ -97,8 +99,8 @@ i18n
     .use(initReactI18next)
     .init({
         resources: {
-            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...friendsRu, ...matchesRu, ...lobbyRu, ...modeSelectRu, ...supportRequestsRu, ...teamQueueRu, ...authRu, ...emailVerificationRu, ...simpleHeaderRu } },
-            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...friendsEn, ...matchesEn, ...lobbyEn, ...modeSelectEn, ...supportRequestsEn, ...teamQueueEn, ...authEn, ...emailVerificationEn, ...simpleHeaderEn } },
+            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...friendsRu, ...matchesRu, ...lobbyRu, ...modeSelectRu, ...supportRequestsRu, ...teamQueueRu, ...authRu, ...emailVerificationRu, ...siteFooterRu, ...simpleHeaderRu } },
+            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...friendsEn, ...matchesEn, ...lobbyEn, ...modeSelectEn, ...supportRequestsEn, ...teamQueueEn, ...authEn, ...emailVerificationEn, ...siteFooterEn, ...simpleHeaderEn } },
         },
         lng: getLanguageFromPathname(typeof window !== 'undefined' ? window.location.pathname : ''),
         fallbackLng: DEFAULT_LANGUAGE,

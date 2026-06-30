@@ -834,7 +834,8 @@ export const getUserMatchDetailsRepo = async ({ userId, matchId }) => {
                 match_players.level_reached,
                 match_players.result,
                 match_players.left_at,
-                users.username
+                users.username,
+                users.avatar_url
             FROM match_players
             LEFT JOIN users ON users.id = match_players.user_id
             WHERE match_players.match_id = $1
@@ -852,9 +853,11 @@ export const getUserMatchDetailsRepo = async ({ userId, matchId }) => {
                 source_player.id AS source_player_id,
                 source_player.nickname AS source_nickname,
                 source_user.username AS source_username,
+                source_user.avatar_url AS source_avatar_url,
                 target_player.id AS target_player_id,
                 target_player.nickname AS target_nickname,
-                target_user.username AS target_username
+                target_user.username AS target_username,
+                target_user.avatar_url AS target_avatar_url
             FROM match_events
             LEFT JOIN match_players AS source_player
                 ON source_player.id = match_events.source_player_id

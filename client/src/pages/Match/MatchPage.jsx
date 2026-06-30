@@ -230,6 +230,30 @@ const MatchPageGame = ({
     const playedResultRef = useRef(null)
     const soloResultSubmittedRef = useRef(false)
     const previousClearingRowsCountRef = useRef(0)
+
+    useEffect(() => {
+        if (!effectiveAbilitiesEnabled) {
+            return undefined
+        }
+
+        const preloadedImages = effectCatalog
+            .map((effect) => effect.imageUrl)
+            .filter(Boolean)
+            .map((imageUrl) => {
+                const image = new Image()
+                image.decoding = 'async'
+                image.src = imageUrl
+                return image
+            })
+
+        return () => {
+            preloadedImages.forEach((image) => {
+                image.onload = null
+                image.onerror = null
+            })
+        }
+    }, [effectiveAbilitiesEnabled, effectCatalog])
+
     const { countdownValue, isCountingDown } = useGameCountdown({
         enabled: !isIntroVisible,
         startedAt: countdownStartedAt,

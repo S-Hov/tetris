@@ -10,6 +10,29 @@
       "loading": "Loading requests...",
       "empty": "No requests yet. If you notice a bug or have an idea, write to us."
     },
+    "details": {
+      "messagesLoadError": "Could not refresh messages",
+      "loadError": "Could not load the request",
+      "loading": "Loading request...",
+      "notFound": "Request was not found.",
+      "back": "All requests",
+      "eyebrow": "Request #{{id}}",
+      "category": "Category",
+      "date": "Date",
+      "channel": "Channel",
+      "status": "Status",
+      "messages": "Messages",
+      "refreshing": "Refreshing...",
+      "refresh": "Refresh messages",
+      "emptyMessages": "No messages yet.",
+      "telegramNotice": "This page is read-only. To send a new message, continue the conversation in the Telegram bot.",
+      "openTelegram": "Open Telegram bot",
+      "emailNotice": "Conversation history is not supported for email requests. The first message is shown here, and the reply will arrive by email.",
+      "historyUnavailable": "Message history is not available for this channel yet.",
+      "senderSupport": "Support",
+      "senderSystem": "System",
+      "senderYou": "You"
+    },
     "format": {
       "dateFallback": "Date is not set",
       "categories": {
@@ -17,6 +40,7 @@
         "idea": "Idea",
         "mode": "New mode",
         "balance": "Balance",
+        "status_quo": "Status quo",
         "other": "Other"
       },
       "channels": {
@@ -28,6 +52,7 @@
         "new": "New",
         "triaged": "Triaged",
         "in_progress": "In progress",
+        "status_quo": "Status quo",
         "closed": "Closed",
         "spam": "Rejected"
       }
