@@ -1,10 +1,12 @@
 .rating-sidebar {
     display: grid;
     gap: 1rem;
+    min-width: 0;
 }
 
 .rating-leader-card,
 .rating-leader-stats {
+    min-width: 0;
     display: grid;
     justify-items: center;
     gap: 0.7rem;
@@ -37,6 +39,7 @@
 }
 
 .rating-leader-card > strong {
+    max-width: 100%;
     color: var(--text-color-1);
     font-family: var(--font-1);
     font-size: 1.1rem;
@@ -75,10 +78,13 @@
     border-bottom: 1px solid rgba(96, 149, 255, 0.14);
     color: var(--text-muted);
     font-size: 0.78rem;
+    min-width: 0;
 }
 
 .rating-leader-stat strong {
+    min-width: 0;
     color: var(--text-color-1);
+    overflow-wrap: anywhere;
     font-family: var(--font-1);
     text-align: right;
 }
@@ -92,5 +98,10 @@
 @media (max-width: 760px) {
     .rating-sidebar {
         grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+
+    .rating-leader-card {
+        min-height: 0;
     }
 }

@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
+import { getLocalizedEffectText } from '../catalog.js'
 import { getEffectPresentation } from '../runtime.js'
 import EffectScreenLayer from './EffectScreenLayer.jsx'
 
@@ -41,6 +43,8 @@ const EffectPresentationLayer = ({
     feedback = null,
     playSynthEffect,
 }) => {
+    const { i18n } = useTranslation()
+    const currentLanguage = i18n.language === 'en' ? 'en' : 'ru'
     const [impact, setImpact] = useState(null)
     const [now, setNow] = useState(() => Date.now())
     const previousEffectsRef = useRef(new Map())
@@ -125,14 +129,15 @@ const EffectPresentationLayer = ({
             <ActiveEffectsBar
                 activeEffects={activeEffects}
                 catalogByKey={catalogByKey}
+                currentLanguage={currentLanguage}
                 now={now}
             />
-            {impact ? <EffectImpact impact={impact} /> : null}
+            {impact ? <EffectImpact currentLanguage={currentLanguage} impact={impact} /> : null}
         </>
     )
 }
 
-const ActiveEffectsBar = ({ activeEffects, catalogByKey, now }) => {
+const ActiveEffectsBar = ({ activeEffects, catalogByKey, currentLanguage, now }) => {
     if (activeEffects.length === 0) {
         return null
     }
@@ -142,6 +147,7 @@ const ActiveEffectsBar = ({ activeEffects, catalogByKey, now }) => {
             {activeEffects.map((effect) => {
                 const presentation = getEffectPresentation(effect)
                 const catalogEffect = catalogByKey.get(effect.effectKey)
+                const localized = getLocalizedEffectText(catalogEffect, currentLanguage)
                 const remainingMs = Math.max(0, effect.expiresAt - now)
                 const progress = effect.durationMs > 0
                     ? Math.min(1, remainingMs / effect.durationMs)
@@ -160,8 +166,12 @@ const ActiveEffectsBar = ({ activeEffects, catalogByKey, now }) => {
                             <i className={`fa-solid ${presentation?.icon || catalogEffect?.icon || 'fa-bolt'}`} />
                         </span>
                         <span className="active-effect-chip__copy">
-                            <strong>{presentation?.label || catalogEffect?.titleRu || catalogEffect?.title || effect.effectKey}</strong>
-                            <small>{Math.max(0, Math.ceil(remainingMs / 1000))} сек.</small>
+                            <strong>{localized.title || presentation?.label || effect.effectKey}</strong>
+                            <small>
+                                {currentLanguage === 'en'
+                                    ? `${Math.max(0, Math.ceil(remainingMs / 1000))} sec.`
+                                    : `${Math.max(0, Math.ceil(remainingMs / 1000))} сек.`}
+                            </small>
                         </span>
                     </article>
                 )
@@ -170,8 +180,9 @@ const ActiveEffectsBar = ({ activeEffects, catalogByKey, now }) => {
     )
 }
 
-const EffectImpact = ({ impact }) => {
+const EffectImpact = ({ currentLanguage, impact }) => {
     const { catalogEffect, presentation } = impact
+    const localized = getLocalizedEffectText(catalogEffect, currentLanguage)
 
     return (
         <div
@@ -193,9 +204,17 @@ const EffectImpact = ({ impact }) => {
                     <i className={`fa-solid ${presentation.icon || catalogEffect?.icon || 'fa-bolt'}`} />
                 </span>
                 <div className="effect-impact__copy">
-                    <span className="effect-impact__eyebrow">Вражеский эффект</span>
-                    <strong>{presentation.label || catalogEffect?.titleRu || catalogEffect?.title}</strong>
-                    <small>{catalogEffect?.descriptionRu || catalogEffect?.description || 'Правила поля изменены'}</small>
+                    <span className="effect-impact__eyebrow">
+                        {currentLanguage === 'en' ? 'Enemy effect' : 'Вражеский эффект'}
+                    </span>
+                    <strong>{localized.title || presentation.label}</strong>
+                    <small>
+                        {localized.description || (
+                            currentLanguage === 'en'
+                                ? 'Field rules have changed'
+                                : 'Правила поля изменены'
+                        )}
+                    </small>
                 </div>
             </div>
         </div>

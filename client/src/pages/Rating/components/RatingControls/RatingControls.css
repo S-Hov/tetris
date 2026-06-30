@@ -1,4 +1,5 @@
 .rating-controls-card {
+    min-width: 0;
     margin: 1rem 0;
     border: var(--border);
     border-radius: var(--radius-panel);
@@ -12,6 +13,7 @@
     align-items: center;
     gap: 1rem;
     padding: 0.75rem 1rem;
+    min-width: 0;
 }
 
 .rating-control-group,
@@ -19,6 +21,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.52rem;
+    min-width: 0;
 }
 
 .rating-chip,
@@ -65,6 +68,7 @@
     display: flex;
     align-items: center;
     gap: 0.8rem;
+    min-width: 0;
 }
 
 .rating-sort-panel > span {
@@ -97,6 +101,10 @@
 }
 
 @media (max-width: 760px) {
+    .rating-controls {
+        padding: 0.65rem;
+    }
+
     .rating-control-group,
     .rating-sort-panel,
     .rating-sort-panel > div {
@@ -110,5 +118,13 @@
 
     .rating-sort-button {
         flex: 1 1 38px;
+    }
+}
+
+@media (max-width: 520px) {
+    .rating-chip {
+        flex-basis: calc(50% - 0.3rem);
+        padding-inline: 0.55rem;
+        font-size: 0.66rem;
     }
 }

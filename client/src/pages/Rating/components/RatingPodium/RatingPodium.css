@@ -4,9 +4,11 @@
     align-items: end;
     gap: 1rem;
     margin-bottom: 1rem;
+    min-width: 0;
 }
 
 .rating-podium-card {
+    min-width: 0;
     display: grid;
     justify-items: center;
     align-content: end;
@@ -63,7 +65,7 @@
 }
 
 .rating-podium-card--rank-1 .rating-avatar {
-    width: 160px;
+    width: clamp(108px, 12vw, 160px);
     box-shadow: 0 0 28px rgba(255, 228, 0, 0.42), 0 0 24px rgba(177, 45, 255, 0.4);
 }
 
@@ -99,15 +101,35 @@
 @media (max-width: 980px) {
     .rating-podium {
         grid-template-columns: 1fr;
+        gap: 0.75rem;
     }
 
     .rating-podium-card {
-        min-height: 360px;
+        width: min(100%, 520px);
+        min-height: 0;
+        aspect-ratio: 1.9 / 1;
+        justify-self: center;
     }
 }
 
 @media (max-width: 520px) {
+    .rating-podium-card {
+        width: 100%;
+        aspect-ratio: auto;
+        padding: 0.95rem;
+    }
+
     .rating-podium-stats {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.25rem;
+    }
+
+    .rating-podium-stats span {
+        padding: 0.52rem 0.25rem;
+        font-size: 0.78rem;
+    }
+
+    .rating-podium-stats small {
+        font-size: 0.58rem;
     }
 }

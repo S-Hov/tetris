@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import { getLocalizedGamePath } from '@/i18n'
+import { getLocalizedEffectText } from '@/features/tetris/effects/catalog.js'
 import { useEffectCatalog } from '@/features/tetris/effects/useEffectCatalog.js'
 import './EffectsPage.css'
 
@@ -40,13 +42,20 @@ const EffectsPage = () => {
 }
 
 export function EffectCard({ effect, compact = false }) {
+    const { i18n } = useTranslation()
+    const language = i18n.language === 'en' ? 'en' : 'ru'
+    const localized = getLocalizedEffectText(effect, language)
     const imageUrl = effect.imageUrl || ''
-    const label = effect.labelRu || effect.label || ''
-    const title = effect.titleRu || effect.title || ''
-    const description = effect.descriptionRu || effect.description || ''
+    const label = localized.label
+    const title = localized.title
+    const description = localized.description
     const durationSeconds = Number(effect.durationMs) > 100
-        ? `${Math.round(Number(effect.durationMs) / 1000)} сек.`
-        : 'Мгновенно'
+        ? (
+            language === 'en'
+                ? `${Math.round(Number(effect.durationMs) / 1000)} sec.`
+                : `${Math.round(Number(effect.durationMs) / 1000)} сек.`
+        )
+        : (language === 'en' ? 'Instant' : 'Мгновенно')
 
     return (
         <article className={`effect-card ${compact ? 'effect-card--compact' : ''}`}>

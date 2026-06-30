@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 import { useAbilityTimer } from '@/features/tetris/hooks/useAbilityTimer.js'
 import { useGameCountdown } from '@/features/tetris/hooks/useGameCountdown.js'
@@ -207,6 +208,8 @@ const MatchPageGame = ({
     playSynthEffect,
     stopMusic,
 }) => {
+    const { i18n } = useTranslation()
+    const currentLanguage = i18n.language === 'en' ? 'en' : 'ru'
     const randomPieceGenerator = useMemo(
         () => getRandomPieceGeneratorForSettings(roomSettings),
         [roomSettings]
@@ -789,8 +792,8 @@ const MatchPageGame = ({
         <>
             {effectiveAbilitiesEnabled && derivedState.isChoosingAbility && !targetChoice ? (
                 <AbilityOverlay
-                    eyebrow="Время остановлено"
-                    title="Выберите эффект"
+                    eyebrow={currentLanguage === 'en' ? 'Time stopped' : 'Время остановлено'}
+                    title={currentLanguage === 'en' ? 'Choose an effect' : 'Выберите эффект'}
                     secondsLeft={abilitySecondsLeft}
                     options={derivedState.abilityOptions}
                     onChoose={handleAbilityPick}

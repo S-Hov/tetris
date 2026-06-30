@@ -1,4 +1,7 @@
 .rating-board {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
     border: var(--border);
     border-radius: var(--radius-panel);
     box-shadow: var(--shadow);
@@ -6,6 +9,7 @@
 }
 
 .rating-board-inner {
+    min-width: 0;
     padding: 1rem;
 }
 
@@ -42,12 +46,34 @@
 }
 
 .rating-table-wrap {
+    max-width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
+    border: 1px solid rgba(83, 245, 255, 0.12);
+    border-radius: var(--radius-card-1);
+    background: rgba(4, 10, 18, 0.34);
+    scrollbar-color: var(--turquoise-border-strong) rgba(255, 255, 255, 0.06);
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.rating-table-wrap::-webkit-scrollbar {
+    height: 8px;
+}
+
+.rating-table-wrap::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+}
+
+.rating-table-wrap::-webkit-scrollbar-thumb {
+    background: var(--turquoise-border-strong);
+    border-radius: 999px;
 }
 
 .rating-table {
     width: 100%;
-    min-width: 900px;
+    min-width: 860px;
     border-collapse: collapse;
 }
 
@@ -100,6 +126,7 @@
     display: flex;
     align-items: center;
     gap: 0.72rem;
+    min-width: 0;
 }
 
 .rating-player strong {
@@ -120,6 +147,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
+    white-space: nowrap;
 }
 
 .rating-state {
@@ -171,15 +199,30 @@
 @media (max-width: 760px) {
     .rating-board-header {
         align-items: flex-start;
+        flex-direction: column;
+        gap: 0.55rem;
+    }
+
+    .rating-table {
+        min-width: 760px;
+    }
+
+    .rating-table th,
+    .rating-table td {
+        padding: 0.68rem 0.58rem;
     }
 }
 
 @media (max-width: 520px) {
     .rating-board-inner {
-        padding: 0.75rem;
+        padding: 0.62rem;
     }
 
     .rating-board-header {
-        flex-direction: column;
+        padding-inline: 0.15rem;
+    }
+
+    .rating-board-header h2 {
+        font-size: 0.98rem;
     }
 }

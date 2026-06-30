@@ -1,9 +1,11 @@
 .rating-page {
     padding-top: 24px;
+    overflow-x: hidden;
 }
 
 .rating-container {
     background: transparent;
+    min-width: 0;
 }
 
 .rating-content-grid {
@@ -13,8 +15,22 @@
     align-items: start;
 }
 
+.rating-content-grid > * {
+    min-width: 0;
+}
+
 @media (max-width: 1240px) {
     .rating-content-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .rating-page {
+        padding-top: 12px;
+    }
+
+    .rating-content-grid {
+        gap: 0.8rem;
     }
 }

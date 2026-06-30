@@ -11,13 +11,30 @@ const normalizeEffect = (effect) => ({
     id: effect.id || effect.key,
     key: effect.key || effect.id,
     effectKey: effect.effectKey || effect.key || effect.id,
+    descriptionRu: effect.descriptionRu || effect.description_ru || '',
+    imageUrl: normalizeAssetUrl(effect.imageUrl || effect.image_url || ''),
+    labelRu: effect.labelRu || effect.label_ru || '',
+    titleRu: effect.titleRu || effect.title_ru || '',
     durationMs: Math.max(0, Number(effect.durationMs) || 0),
     enabled: effect.enabled !== false,
-    imageUrl: normalizeAssetUrl(effect.imageUrl || effect.image_url || ''),
     parameters: effect.parameters && typeof effect.parameters === 'object'
         ? effect.parameters
         : {},
 })
+
+const getLocalizedValue = (entity, language, baseKey) => {
+    const normalizedLanguage = language === 'en' ? 'en' : 'ru'
+    const upperLanguage = normalizedLanguage === 'en' ? 'En' : 'Ru'
+    const snakeLanguage = normalizedLanguage === 'en' ? 'en' : 'ru'
+
+    return entity?.[`${baseKey}${upperLanguage}`] ||
+        entity?.[`${baseKey}_${snakeLanguage}`] ||
+        (normalizedLanguage === 'ru' ? entity?.[baseKey] : '') ||
+        entity?.[baseKey] ||
+        entity?.[`${baseKey}Ru`] ||
+        entity?.[`${baseKey}_ru`] ||
+        ''
+}
 
 const normalizeAssetUrl = (value) => {
     if (!value || /^(https?:)?\/\//i.test(value) || String(value).startsWith('data:')) {
@@ -62,6 +79,12 @@ export const getRandomEffects = (effects, count = 3, random = Math.random) => (
         .sort(() => random() - 0.5)
         .slice(0, Math.min(count, effects.length))
 )
+
+export const getLocalizedEffectText = (effect, language = 'ru') => ({
+    description: getLocalizedValue(effect, language, 'description'),
+    label: getLocalizedValue(effect, language, 'label'),
+    title: getLocalizedValue(effect, language, 'title'),
+})
 
 export const toEffectPayload = (effect) => effect ? ({
     effectKey: effect.effectKey,
