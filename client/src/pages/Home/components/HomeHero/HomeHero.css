@@ -15,7 +15,7 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 18px 22px;
+    padding: 18px 10px;
     color: #dce8ff;
     border-right: 1px solid rgba(130, 153, 255, 0.14);
 }
@@ -54,7 +54,7 @@
 .home-arena-panel__item small {
     margin-top: 3px;
     color: rgba(220, 232, 255, 0.68);
-    font-size: 0.72rem;
+    font-size: 0.62rem;
     font-weight: 800;
     text-transform: uppercase;
 }

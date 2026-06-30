@@ -14,7 +14,7 @@
     --text-color: #c9ffd4;
     --text-color-white: #c9ffd4;
     --text-color-1: #f5fff7;
-    --text-active-color: #031009;
+    --text-active-color: rgb(255, 255, 255);
     --description-color: #aaffba;
     --glow-gradient-lite: linear-gradient(135deg, #45ff72, #4ed9ff, #e4ff68, #45ff72);
     --elem-gradient-1: linear-gradient(160deg, rgba(69, 255, 114, 0.22), rgba(78, 217, 255, 0.14)), rgba(0, 10, 6, 0.48);
