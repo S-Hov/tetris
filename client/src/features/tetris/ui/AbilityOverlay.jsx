@@ -1,14 +1,16 @@
 const AbilityOverlay = ({ title, eyebrow, secondsLeft, options, onChoose }) => {
+    const optionCount = options.length
+
     return (
         <div className="game-overlay" role="dialog" aria-modal="true" aria-labelledby="ability-title">
             <div className="game-overlay__panel">
                 <div className="game-overlay__header">
                     <span className="game-overlay__eyebrow">{eyebrow}</span>
                     <h3 className="game-overlay__title" id="ability-title">{title}</h3>
-                    <p className="game-overlay__description">{secondsLeft}s left</p>
+                    <p className="game-overlay__description">Выбор закроется через {secondsLeft}с</p>
                 </div>
 
-                <div className="game-overlay__options">
+                <div className={`game-overlay__options game-overlay__options--count-${optionCount}`}>
                     {options.map((ability) => (
                         <button
                             type="button"
@@ -23,9 +25,11 @@ const AbilityOverlay = ({ title, eyebrow, secondsLeft, options, onChoose }) => {
                                     <i className={`fa-solid ${ability.icon}`} aria-hidden="true"></i>
                                 )}
                             </span>
-                            <span className="game-overlay__card-label">{ability.label}</span>
-                            <span className="game-overlay__card-title">{ability.title}</span>
-                            <span className="game-overlay__card-description">{ability.description}</span>
+                            <span className="game-overlay__card-body">
+                                <span className="game-overlay__card-label">{ability.label}</span>
+                                <span className="game-overlay__card-title">{ability.title}</span>
+                                <span className="game-overlay__card-description">{ability.description}</span>
+                            </span>
                         </button>
                     ))}
                 </div>

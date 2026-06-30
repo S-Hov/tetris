@@ -789,8 +789,8 @@ const MatchPageGame = ({
         <>
             {effectiveAbilitiesEnabled && derivedState.isChoosingAbility && !targetChoice ? (
                 <AbilityOverlay
-                    eyebrow="Time stopped"
-                    title="Choose a debuff"
+                    eyebrow="Время остановлено"
+                    title="Выберите эффект"
                     secondsLeft={abilitySecondsLeft}
                     options={derivedState.abilityOptions}
                     onChoose={handleAbilityPick}
