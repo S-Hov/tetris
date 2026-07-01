@@ -185,6 +185,16 @@
     line-height: 1.45;
 }
 
+.support-consent a {
+    color: var(--turquoise);
+    text-decoration: none;
+}
+
+.support-consent a:hover,
+.support-consent a:focus-visible {
+    text-shadow: var(--text-shadow);
+}
+
 .support-primary-button {
     grid-column: 1 / -1;
     min-height: 80px;

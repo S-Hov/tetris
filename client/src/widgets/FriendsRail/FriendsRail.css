@@ -308,6 +308,7 @@ button.friends-rail__item-main:focus-visible {
     text-transform: uppercase;
     background: var(--cta-gradient);
     box-shadow: var(--cta-shadow);
+    padding: 0 5px;
 }
 
 .friends-rail__invite {
