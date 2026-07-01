@@ -19,9 +19,16 @@ import PlayerActionTrigger from '@/shared/ui/PlayerActionTrigger'
 
 import './LobbyPage.css'
 
+const SOCKET_ACK_TIMEOUT_MS = 6000
+
 const emitWithAck = (eventName, payload, fallbackMessage = 'No response from server') => {
     return new Promise((resolve) => {
-        socket.emit(eventName, payload, (response) => {
+        socket.timeout(SOCKET_ACK_TIMEOUT_MS).emit(eventName, payload, (error, response) => {
+            if (error) {
+                resolve({ success: false, message: fallbackMessage })
+                return
+            }
+
             resolve(response || { success: false, message: fallbackMessage })
         })
     })
@@ -110,10 +117,10 @@ const LobbyPage = () => {
     const [joinRoomId, setJoinRoomId] = useState('')
     const [nickname, setNickname] = useState(() => getStoredGuestSession()?.nickname || '')
     const [isBusy, setIsBusy] = useState(false)
-    const [isSettingsUpdating, setIsSettingsUpdating] = useState(false)
     const [connectionState, setConnectionState] = useState(() => (socket.connected ? 'connected' : 'disconnected'))
     const notifiedRoomRef = useRef('')
     const restoredRoomRef = useRef('')
+    const restoringRoomRef = useRef('')
     const consumedAutoInviteRef = useRef('')
     const activeRoomIdRef = useRef('')
     const shouldLeaveRoomOnUnmountRef = useRef(true)
@@ -138,6 +145,21 @@ const LobbyPage = () => {
     const emit = useCallback((eventName, payload) => (
         emitWithAck(eventName, payload, t('lobby.notifications.noResponse'))
     ), [t])
+    const clearMissingRoomFromUrl = useCallback((missingRoomId) => {
+        setCurrentRoom(null)
+        setRoomId('')
+        setJoinRoomId('')
+        activeRoomIdRef.current = ''
+        restoredRoomRef.current = missingRoomId || ''
+        restoringRoomRef.current = ''
+        navigate(getLobbyRoomPath(currentLanguage, modeKey), {
+            replace: true,
+            state: {
+                modeKey,
+                roomSettings,
+            },
+        })
+    }, [currentLanguage, modeKey, navigate, roomSettings])
     const navigateToRoom = useCallback((room, { replace = true } = {}) => {
         if (!room?.id) {
             return
@@ -274,7 +296,6 @@ const LobbyPage = () => {
                 setCurrentRoom(null)
                 setRoomId('')
                 setJoinRoomId('')
-                setIsSettingsUpdating(false)
                 activeRoomIdRef.current = ''
                 restoredRoomRef.current = leftRoomId
                 navigate(getLobbyRoomPath(currentLanguage, modeKey), {
@@ -332,12 +353,22 @@ const LobbyPage = () => {
         return await ensureSocketSession({ nickname })
     }, [nickname, t, user])
 
+    const isCurrentSocketInRoom = Boolean(
+        requestedRoomId &&
+        currentRoom?.id === requestedRoomId &&
+        getRoomPlayers(currentRoom).some((player) => player.socketId === socket.id)
+    )
+
     useEffect(() => {
-        if (!requestedRoomId || restoredRoomRef.current === requestedRoomId || roomId === requestedRoomId) {
+        if (
+            !requestedRoomId ||
+            isCurrentSocketInRoom ||
+            restoringRoomRef.current === requestedRoomId
+        ) {
             return
         }
 
-        restoredRoomRef.current = requestedRoomId
+        restoringRoomRef.current = requestedRoomId
 
         const restoreRoom = async () => {
             try {
@@ -346,10 +377,17 @@ const LobbyPage = () => {
                 const response = await emit('room:join', { roomId: requestedRoomId })
 
                 if (!response.success) {
+                    if (isRoomNotFoundMessage(response.message)) {
+                        clearMissingRoomFromUrl(requestedRoomId)
+                        notify(t('lobby.notifications.roomFromUrlNotFound'), 'warning')
+                        return
+                    }
+
                     notify(response.message || t('lobby.notifications.restoreRoomFailed'), 'error')
                     return
                 }
 
+                restoredRoomRef.current = requestedRoomId
                 setCurrentRoom(response.room)
                 setRoomId(response.room.id)
                 setJoinRoomId(response.room.id)
@@ -359,11 +397,15 @@ const LobbyPage = () => {
                 navigateToRoom(response.room)
             } catch (error) {
                 notify(error.message || t('lobby.notifications.restoreRoomFailed'), 'error')
+            } finally {
+                if (restoringRoomRef.current === requestedRoomId) {
+                    restoringRoomRef.current = ''
+                }
             }
         }
 
         restoreRoom()
-    }, [emit, ensurePlayableIdentity, navigateToRoom, requestedRoomId, roomId, t])
+    }, [clearMissingRoomFromUrl, emit, ensurePlayableIdentity, isCurrentSocketInRoom, navigateToRoom, requestedRoomId, roomId, t])
 
     const handleCreateRoom = async () => {
         setIsBusy(true)
@@ -451,7 +493,6 @@ const LobbyPage = () => {
         setCurrentRoom(null)
         setRoomId('')
         setJoinRoomId('')
-        setIsSettingsUpdating(false)
         activeRoomIdRef.current = ''
         restoredRoomRef.current = roomId
         navigate(getLobbyRoomPath(currentLanguage, modeKey), {
@@ -617,8 +658,6 @@ const LobbyPage = () => {
             return
         }
 
-        setIsSettingsUpdating(true)
-
         try {
             const response = await emit('room:update-settings', {
                 roomId,
@@ -637,8 +676,6 @@ const LobbyPage = () => {
             notify(t(notificationKey), 'success')
         } catch (error) {
             notify(error.message || t('lobby.notifications.settingsUpdateFailed'), 'error')
-        } finally {
-            setIsSettingsUpdating(false)
         }
     }
 
@@ -693,8 +730,12 @@ const LobbyPage = () => {
     const activePlayerName = getPlayerDisplayName(user, nickname, t)
     const roomPlayers = getRoomPlayers(currentRoom)
     const activePlayer = roomPlayers.find((player) => player.socketId === socket.id)
-    const isRoomOwner = Boolean(currentRoom) &&
-        (currentRoom.ownerSocketId === socket.id || String(currentRoom.ownerUserId) === String(clientUserId))
+    const isRoomOwner = getIsRoomOwner({
+        activePlayer,
+        clientUserId,
+        room: currentRoom,
+        socketId: socket.id,
+    })
     const teamRoster = currentRoom?.teams?.length
         ? currentRoom.teams
         : [
@@ -703,7 +744,7 @@ const LobbyPage = () => {
         ]
     const maxPlayers = getModeRosterSize(modeKey)
     const isGuest = !user
-    const settingsControlsDisabled = isBusy || isSettingsUpdating || Boolean(currentRoom && !isRoomOwner)
+    const settingsControlsDisabled = isBusy || Boolean(currentRoom && !isRoomOwner)
 
     return (
         <section className="section lobby-page">
@@ -770,21 +811,34 @@ const LobbyPage = () => {
                         )}
                     </section>
 
-                    <section className="lobby-card flex">
-                        <div className="lobby-card-header">
-                            <h2>{t('lobby.create.title')}</h2>
-                            <p>{t('lobby.create.description')}</p>
-                        </div>
+                    {currentRoom ? (
+                        <section className="lobby-card flex lobby-card--active-room">
+                            <div className="lobby-card-header">
+                                <h2>{t('lobby.create.activeTitle')}</h2>
+                                <p>{t('lobby.create.activeDescription', { roomId })}</p>
+                            </div>
+                            <span className="lobby-active-room-badge">
+                                <i className="fas fa-door-open"></i>
+                                {isRoomOwner ? t('lobby.create.ownerBadge') : t('lobby.create.memberBadge')}
+                            </span>
+                        </section>
+                    ) : (
+                        <section className="lobby-card flex">
+                            <div className="lobby-card-header">
+                                <h2>{t('lobby.create.title')}</h2>
+                                <p>{t('lobby.create.description')}</p>
+                            </div>
 
-                        <button
-                            type="button"
-                            className="button lobby-primary-button"
-                            onClick={handleCreateRoom}
-                            disabled={isBusy}
-                        >
-                            {t('lobby.create.button')}
-                        </button>
-                    </section>
+                            <button
+                                type="button"
+                                className="button lobby-primary-button"
+                                onClick={handleCreateRoom}
+                                disabled={isBusy}
+                            >
+                                {t('lobby.create.button')}
+                            </button>
+                        </section>
+                    )}
 
                     <section className="lobby-card">
                         <div className="lobby-card-header">
@@ -1018,6 +1072,33 @@ const getRoomSettingsNotificationKey = (patch, settings) => {
     }
 
     return 'lobby.notifications.settingsUpdated'
+}
+
+const isRoomNotFoundMessage = (message = '') => String(message || '')
+    .trim()
+    .toLowerCase()
+    .includes('room not found')
+
+const getIsRoomOwner = ({ activePlayer, clientUserId, room, socketId }) => {
+    if (!room) {
+        return false
+    }
+
+    if (room.ownerSocketId && room.ownerSocketId === socketId) {
+        return true
+    }
+
+    if (room.ownerUserId && clientUserId && String(room.ownerUserId) === String(clientUserId)) {
+        return true
+    }
+
+    if (room.ownerUserId && activePlayer?.userId && String(room.ownerUserId) === String(activePlayer.userId)) {
+        return true
+    }
+
+    const players = getRoomPlayers(room)
+
+    return players.length === 1 && activePlayer?.socketId === socketId
 }
 
 export default LobbyPage

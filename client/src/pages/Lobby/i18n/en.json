@@ -29,7 +29,11 @@
     "create": {
       "title": "Create room",
       "description": "Open a room and send the ID to friends.",
-      "button": "Create room"
+      "button": "Create room",
+      "activeTitle": "You are already in a room",
+      "activeDescription": "Room {{roomId}} is active. Settings and roster are managed below.",
+      "ownerBadge": "You are the room creator",
+      "memberBadge": "You are a room member"
     },
     "join": {
       "title": "Join",
@@ -100,6 +104,7 @@
       "matchStartDuel": "Both players are ready. Match starts now",
       "invalidNickname": "Enter a valid nickname: 2-24 characters, letters, numbers, space, ., -, _",
       "restoreRoomFailed": "Could not restore the room after the match",
+      "roomFromUrlNotFound": "The room from the link no longer exists. The address was cleared.",
       "createRoomFailed": "Could not create the room",
       "roomCreated": "Room created",
       "joinRoomFailed": "Could not join the room",

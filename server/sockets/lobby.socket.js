@@ -68,6 +68,22 @@ const normalizeMatchType = (value) => {
     return 'private'
 }
 
+const isRoomOwnerSocket = (room, socket) => (
+    room?.ownerSocketId === socket.id ||
+    String(room?.ownerUserId) === String(socket.data.user?.id)
+)
+
+const refreshOwnerSocketIfNeeded = (room, socket) => {
+    if (!room || String(room.ownerUserId) !== String(socket.data.user?.id) || room.ownerSocketId === socket.id) {
+        return room
+    }
+
+    return {
+        ...room,
+        ownerSocketId: socket.id,
+    }
+}
+
 const getPlayerCountByTeam = (room, teamNumber) => {
     return getRoomPlayers(room).filter((player) => player.teamNumber === teamNumber).length
 }
@@ -350,10 +366,14 @@ export const registerLobbyHandlers = (io, socket) => {
             }
 
             if (isSocketRoomParticipant(room, socket)) {
+                const normalizedRoom = await roomStore.createRoom(refreshOwnerSocketIfNeeded(room, socket))
+
                 callback?.({
                     success: true,
-                    room,
+                    room: normalizedRoom,
                 })
+
+                io.to(roomId).emit('room:state', normalizedRoom)
                 return
             }
 
@@ -361,7 +381,7 @@ export const registerLobbyHandlers = (io, socket) => {
 
             if (existingPlayer) {
                 const rejoinedRoom = {
-                    ...room,
+                    ...refreshOwnerSocketIfNeeded(room, socket),
                     players: getRoomPlayers(room).map((player) => (
                         player.userId === user.id
                             ? {
@@ -643,7 +663,7 @@ export const registerLobbyHandlers = (io, socket) => {
                 return
             }
 
-            if (room.ownerSocketId !== socket.id && String(room.ownerUserId) !== String(socket.data.user?.id)) {
+            if (!isRoomOwnerSocket(room, socket)) {
                 callback?.({ success: false, message: 'Only room owner can change room mode' })
                 return
             }
@@ -711,7 +731,7 @@ export const registerLobbyHandlers = (io, socket) => {
                 return
             }
 
-            if (room.ownerSocketId !== socket.id && String(room.ownerUserId) !== String(socket.data.user?.id)) {
+            if (!isRoomOwnerSocket(room, socket)) {
                 callback?.({ success: false, message: 'Only room owner can change room settings' })
                 return
             }
@@ -765,7 +785,7 @@ export const registerLobbyHandlers = (io, socket) => {
                 return
             }
 
-            if (room.ownerSocketId !== socket.id && String(room.ownerUserId) !== String(socket.data.user?.id)) {
+            if (!isRoomOwnerSocket(room, socket)) {
                 callback?.({ success: false, message: 'Только создатель комнаты может менять команды' })
                 return
             }

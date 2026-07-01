@@ -161,6 +161,24 @@
     flex-direction: column;
 }
 
+.lobby-card--active-room {
+    justify-content: space-between;
+}
+
+.lobby-active-room-badge {
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 42px;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--turquoise-tint-medium);
+    border-radius: 999px;
+    background: var(--turquoise-tint-muted);
+    color: var(--turquoise-lite);
+    font-weight: 800;
+}
+
 .lobby-card-header {
     margin-bottom: 1rem;
 }

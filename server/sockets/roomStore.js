@@ -96,6 +96,25 @@ const rememberRoom = (room) => {
     return normalizedRoom
 }
 
+const resolveOwnerAfterPlayerRemoval = (room, removedPlayer, players) => {
+    const removedOwner = room?.ownerSocketId === removedPlayer?.socketId ||
+        String(room?.ownerUserId) === String(removedPlayer?.userId)
+
+    if (!removedOwner) {
+        return {
+            ownerSocketId: room.ownerSocketId,
+            ownerUserId: room.ownerUserId,
+        }
+    }
+
+    const nextOwner = players[0] || null
+
+    return {
+        ownerSocketId: nextOwner?.socketId || null,
+        ownerUserId: nextOwner?.userId || null,
+    }
+}
+
 export const isSocketRoomParticipant = (room, socketOrSocketId) => {
     if (!room || !socketOrSocketId) {
         return false
@@ -218,8 +237,11 @@ export const roomStore = {
             }
         }
 
+        const owner = resolveOwnerAfterPlayerRemoval(room, removedPlayer, players)
         const updatedRoom = {
             ...room,
+            ownerSocketId: owner.ownerSocketId,
+            ownerUserId: owner.ownerUserId,
             status: players.length === getMaxPlayersForMode(room.modeKey) ? room.status : 'waiting',
             players,
         }
