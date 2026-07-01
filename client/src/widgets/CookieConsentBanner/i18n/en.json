@@ -1,0 +1,9 @@
+{
+  "cookieConsentBanner": {
+    "ariaLabel": "Cookie usage notice",
+    "title": "We use cookies",
+    "description": "They are needed for the website to work, to save settings, and to send technical analytics to the server after your consent.",
+    "link": "Learn more",
+    "accept": "Accept"
+  }
+}
