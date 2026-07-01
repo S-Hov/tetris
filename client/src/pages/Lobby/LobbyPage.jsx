@@ -110,6 +110,7 @@ const LobbyPage = () => {
     const [joinRoomId, setJoinRoomId] = useState('')
     const [nickname, setNickname] = useState(() => getStoredGuestSession()?.nickname || '')
     const [isBusy, setIsBusy] = useState(false)
+    const [isSettingsUpdating, setIsSettingsUpdating] = useState(false)
     const [connectionState, setConnectionState] = useState(() => (socket.connected ? 'connected' : 'disconnected'))
     const notifiedRoomRef = useRef('')
     const restoredRoomRef = useRef('')
@@ -273,6 +274,9 @@ const LobbyPage = () => {
                 setCurrentRoom(null)
                 setRoomId('')
                 setJoinRoomId('')
+                setIsSettingsUpdating(false)
+                activeRoomIdRef.current = ''
+                restoredRoomRef.current = leftRoomId
                 navigate(getLobbyRoomPath(currentLanguage, modeKey), {
                     replace: true,
                     state: {
@@ -447,7 +451,9 @@ const LobbyPage = () => {
         setCurrentRoom(null)
         setRoomId('')
         setJoinRoomId('')
+        setIsSettingsUpdating(false)
         activeRoomIdRef.current = ''
+        restoredRoomRef.current = roomId
         navigate(getLobbyRoomPath(currentLanguage, modeKey), {
             replace: true,
             state: {
@@ -598,6 +604,44 @@ const LobbyPage = () => {
         })
     }
 
+    const handleRoomSettingsChange = async (patch) => {
+        const nextSettings = normalizeMatchSettings({
+            ...roomSettings,
+            ...patch,
+        })
+        const notificationKey = getRoomSettingsNotificationKey(patch, nextSettings)
+
+        if (!roomId) {
+            setRoomSettings(nextSettings)
+            notify(t(notificationKey), 'info')
+            return
+        }
+
+        setIsSettingsUpdating(true)
+
+        try {
+            const response = await emit('room:update-settings', {
+                roomId,
+                settings: nextSettings,
+            })
+
+            if (!response.success) {
+                notify(response.message || t('lobby.notifications.settingsUpdateFailed'), 'error')
+                return
+            }
+
+            setCurrentRoom(response.room)
+            if (response.room?.settings) {
+                setRoomSettings(normalizeMatchSettings(response.room.settings))
+            }
+            notify(t(notificationKey), 'success')
+        } catch (error) {
+            notify(error.message || t('lobby.notifications.settingsUpdateFailed'), 'error')
+        } finally {
+            setIsSettingsUpdating(false)
+        }
+    }
+
     useEffect(() => {
         const inviteFriendId = location.state?.inviteFriendId
 
@@ -659,6 +703,7 @@ const LobbyPage = () => {
         ]
     const maxPlayers = getModeRosterSize(modeKey)
     const isGuest = !user
+    const settingsControlsDisabled = isBusy || isSettingsUpdating || Boolean(currentRoom && !isRoomOwner)
 
     return (
         <section className="section lobby-page">
@@ -685,6 +730,7 @@ const LobbyPage = () => {
                                 value={modeConfig.key}
                                 options={lobbyModeOptions}
                                 onChange={handleModeChange}
+                                disabled={Boolean(currentRoom && !isRoomOwner)}
                                 menuPlacement="bottom"
                             />
                         </label>
@@ -849,6 +895,29 @@ const LobbyPage = () => {
                                 {roomSettings.specialBlocksEnabled ? t('lobby.settings.specialBlocksEnabled') : t('lobby.settings.specialBlocksDisabled')}
                             </span>
                         </div>
+
+                        <div className="lobby-settings-controls">
+                            <LobbySettingsToggle
+                                checked={roomSettings.abilitiesEnabled}
+                                disabled={settingsControlsDisabled}
+                                icon="fas fa-wand-magic-sparkles"
+                                title={t('lobby.settings.abilitiesToggleTitle')}
+                                description={t('lobby.settings.abilitiesToggleDescription')}
+                                onChange={(checked) => handleRoomSettingsChange({ abilitiesEnabled: checked })}
+                            />
+                            <LobbySettingsToggle
+                                checked={roomSettings.specialBlocksEnabled}
+                                disabled={settingsControlsDisabled}
+                                icon="fas fa-shapes"
+                                title={t('lobby.settings.specialBlocksToggleTitle')}
+                                description={t('lobby.settings.specialBlocksToggleDescription')}
+                                onChange={(checked) => handleRoomSettingsChange({ specialBlocksEnabled: checked })}
+                            />
+                        </div>
+
+                        {currentRoom && !isRoomOwner ? (
+                            <p className="lobby-settings-note">{t('lobby.settings.ownerOnly')}</p>
+                        ) : null}
                     </div>
 
                     <div className="lobby-roster lobby-roster--teams">
@@ -912,6 +981,43 @@ const LobbyPage = () => {
             </div>
         </section>
     )
+}
+
+const LobbySettingsToggle = ({ checked, description, disabled, icon, onChange, title }) => (
+    <label className={`lobby-settings-toggle ${checked ? 'is-active' : ''} ${disabled ? 'is-disabled' : ''}`}>
+        <input
+            type="checkbox"
+            checked={checked}
+            disabled={disabled}
+            onChange={(event) => onChange(event.target.checked)}
+        />
+        <span className="lobby-settings-toggle__icon">
+            <i className={icon}></i>
+        </span>
+        <span className="lobby-settings-toggle__copy">
+            <strong>{title}</strong>
+            <small>{description}</small>
+        </span>
+        <span className="lobby-settings-toggle__switch" aria-hidden="true">
+            <span></span>
+        </span>
+    </label>
+)
+
+const getRoomSettingsNotificationKey = (patch, settings) => {
+    if (Object.prototype.hasOwnProperty.call(patch, 'abilitiesEnabled')) {
+        return settings.abilitiesEnabled
+            ? 'lobby.notifications.abilitiesEnabled'
+            : 'lobby.notifications.abilitiesDisabled'
+    }
+
+    if (Object.prototype.hasOwnProperty.call(patch, 'specialBlocksEnabled')) {
+        return settings.specialBlocksEnabled
+            ? 'lobby.notifications.specialBlocksEnabled'
+            : 'lobby.notifications.specialBlocksDisabled'
+    }
+
+    return 'lobby.notifications.settingsUpdated'
 }
 
 export default LobbyPage

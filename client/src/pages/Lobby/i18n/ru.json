@@ -69,7 +69,12 @@
       "abilitiesEnabled": "Способности включены",
       "abilitiesDisabled": "Без способностей",
       "specialBlocksEnabled": "Нестандартные блоки включены",
-      "specialBlocksDisabled": "Только стандартные блоки"
+      "specialBlocksDisabled": "Только стандартные блоки",
+      "abilitiesToggleTitle": "Способности",
+      "abilitiesToggleDescription": "Включает выбор эффектов во время матча.",
+      "specialBlocksToggleTitle": "Нестандартные блоки",
+      "specialBlocksToggleDescription": "Добавляет в пул специальные фигуры и меняет привычный темп партии.",
+      "ownerOnly": "Настройки комнаты меняет только создатель комнаты."
     },
     "teams": {
       "team1": "Команда 1",
@@ -112,6 +117,12 @@
       "shareRoomFailed": "Не удалось поделиться комнатой",
       "modeUpdateFailed": "Не удалось поменять режим комнаты",
       "modeUpdated": "Режим комнаты обновлен",
+      "settingsUpdateFailed": "Не удалось обновить настройки комнаты",
+      "settingsUpdated": "Настройки комнаты обновлены",
+      "abilitiesEnabled": "Способности включены",
+      "abilitiesDisabled": "Способности выключены",
+      "specialBlocksEnabled": "Нестандартные блоки включены",
+      "specialBlocksDisabled": "Нестандартные блоки выключены",
       "inviteFailed": "Не удалось отправить приглашение",
       "inviteSent": "Приглашение отправлено"
     }

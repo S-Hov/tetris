@@ -692,6 +692,65 @@ export const registerLobbyHandlers = (io, socket) => {
         }
     })
 
+    socket.on('room:update-settings', async ({ roomId, settings } = {}, callback) => {
+        try {
+            const room = await roomStore.getRoom(roomId)
+
+            if (!room) {
+                callback?.({ success: false, message: 'Room not found' })
+                return
+            }
+
+            if (room.status === 'closed') {
+                callback?.({ success: false, message: 'Room is closed' })
+                return
+            }
+
+            if (room.status === 'playing') {
+                callback?.({ success: false, message: 'Match has already started' })
+                return
+            }
+
+            if (room.ownerSocketId !== socket.id && String(room.ownerUserId) !== String(socket.data.user?.id)) {
+                callback?.({ success: false, message: 'Only room owner can change room settings' })
+                return
+            }
+
+            if (!isSocketRoomParticipant(room, socket)) {
+                callback?.({ success: false, message: 'Player is not in this room' })
+                return
+            }
+
+            const nextSettings = normalizeRoomSettings({
+                ...(room.settings || {}),
+                ...(settings || {}),
+            })
+            const updatedPlayers = getRoomPlayers(room).map((player) => ({
+                ...player,
+                isReady: false,
+            }))
+            const updatedRoom = await roomStore.createRoom({
+                ...room,
+                status: 'waiting',
+                settings: nextSettings,
+                players: updatedPlayers,
+                teams: buildRoomTeams(updatedPlayers, room.teams),
+            })
+
+            trackRoomEvent('room_settings_updated', {
+                room: updatedRoom,
+                socket,
+                metadata: nextSettings,
+            })
+
+            io.to(roomId).emit('room:state', updatedRoom)
+            callback?.({ success: true, message: 'Room settings updated', room: updatedRoom })
+        } catch (error) {
+            console.error('room:update-settings error', error)
+            callback?.({ success: false, message: 'Could not update room settings' })
+        }
+    })
+
     socket.on('room:set-team', async ({ roomId, userId, teamId }, callback) => {
         try {
             const room = await roomStore.getRoom(roomId)
