@@ -20,6 +20,8 @@ import matchesEn from '../pages/Matches/i18n/en.json'
 import matchesRu from '../pages/Matches/i18n/ru.json'
 import lobbyEn from '../pages/Lobby/i18n/en.json'
 import lobbyRu from '../pages/Lobby/i18n/ru.json'
+import legalDocsEn from '../pages/LegalDocs/i18n/en.json'
+import legalDocsRu from '../pages/LegalDocs/i18n/ru.json'
 import modeSelectEn from '../pages/ModeSelect/i18n/en.json'
 import modeSelectRu from '../pages/ModeSelect/i18n/ru.json'
 import profileEn from '../pages/Profile/i18n/en.json'
@@ -99,8 +101,8 @@ i18n
     .use(initReactI18next)
     .init({
         resources: {
-            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...friendsRu, ...matchesRu, ...lobbyRu, ...modeSelectRu, ...supportRequestsRu, ...teamQueueRu, ...authRu, ...emailVerificationRu, ...siteFooterRu, ...simpleHeaderRu } },
-            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...friendsEn, ...matchesEn, ...lobbyEn, ...modeSelectEn, ...supportRequestsEn, ...teamQueueEn, ...authEn, ...emailVerificationEn, ...siteFooterEn, ...simpleHeaderEn } },
+            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...friendsRu, ...matchesRu, ...lobbyRu, ...legalDocsRu, ...modeSelectRu, ...supportRequestsRu, ...teamQueueRu, ...authRu, ...emailVerificationRu, ...siteFooterRu, ...simpleHeaderRu } },
+            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...friendsEn, ...matchesEn, ...lobbyEn, ...legalDocsEn, ...modeSelectEn, ...supportRequestsEn, ...teamQueueEn, ...authEn, ...emailVerificationEn, ...siteFooterEn, ...simpleHeaderEn } },
         },
         lng: getLanguageFromPathname(typeof window !== 'undefined' ? window.location.pathname : ''),
         fallbackLng: DEFAULT_LANGUAGE,

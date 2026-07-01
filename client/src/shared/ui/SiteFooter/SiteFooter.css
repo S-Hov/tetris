@@ -5,7 +5,7 @@
     
     & .site-footer__container {
         display: grid;
-        grid-template-columns: minmax(220px, 1fr) auto auto;
+        grid-template-columns: minmax(220px, 1fr) auto auto auto;
         align-items: center;
         gap: 1.2rem;
         padding-top: 1.25rem;
@@ -27,11 +27,18 @@
         }
     }
     
-    & .site-footer__nav {
+    & .site-footer__nav,
+    & .site-footer__legal {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
         gap: 1rem;
+    }
+
+    & .site-footer__legal {
+        max-width: 250px;
+        gap: 0.7rem 1rem;
+        font-size: 0.76rem;
     }
     
     & a {
@@ -75,7 +82,8 @@
             justify-items: start;
         }
     
-        & .site-footer__nav {
+        & .site-footer__nav,
+        & .site-footer__legal {
             justify-content: flex-start;
         }
     }

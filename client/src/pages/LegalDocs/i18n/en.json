@@ -1,0 +1,13 @@
+{
+  "legalDocs": {
+    "eyebrow": "Legal documents",
+    "updatedAt": "Last updated: {{date}}",
+    "notice": "This text is prepared as a baseline version for the PVP Tetris service. Before publishing it on behalf of a specific legal entity or sole proprietor, add the service owners legal details and contact information for requests.",
+    "navAriaLabel": "Legal documents navigation",
+    "nav": {
+      "cookie": "Cookie",
+      "terms": "Terms of Use",
+      "privacy": "Privacy"
+    }
+  }
+}

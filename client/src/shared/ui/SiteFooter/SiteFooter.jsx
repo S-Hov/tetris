@@ -11,6 +11,12 @@ const footerLinks = [
     { to: '/profile', labelKey: 'siteFooter.links.profile' },
 ]
 
+const legalLinks = [
+    { to: '/docs/cookie', labelKey: 'siteFooter.legal.cookie' },
+    { to: '/docs/terms', labelKey: 'siteFooter.legal.terms' },
+    { to: '/docs/privacy', labelKey: 'siteFooter.legal.privacy' },
+]
+
 const SiteFooter = () => {
     const { t, i18n } = useTranslation()
     const currentLanguage = i18n.language === 'en' ? 'en' : 'ru'
@@ -25,6 +31,14 @@ const SiteFooter = () => {
 
                 <nav className="site-footer__nav" aria-label={t('siteFooter.navAriaLabel')}>
                     {footerLinks.map((link) => (
+                        <Link key={link.to} to={getLocalizedPath(link.to, currentLanguage)}>
+                            {t(link.labelKey)}
+                        </Link>
+                    ))}
+                </nav>
+
+                <nav className="site-footer__legal" aria-label={t('siteFooter.legalAriaLabel')}>
+                    {legalLinks.map((link) => (
                         <Link key={link.to} to={getLocalizedPath(link.to, currentLanguage)}>
                             {t(link.labelKey)}
                         </Link>

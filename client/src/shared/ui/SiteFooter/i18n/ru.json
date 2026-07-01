@@ -2,6 +2,7 @@
   "siteFooter": {
     "tagline": "Честная кибер-арена без pay-to-win",
     "navAriaLabel": "Нижняя навигация",
+    "legalAriaLabel": "Правовые документы",
     "donate": "Поддержать автора",
     "links": {
       "home": "Главная",
@@ -9,6 +10,11 @@
       "support": "Поддержка",
       "rating": "Рейтинг",
       "profile": "Профиль"
+    },
+    "legal": {
+      "cookie": "Cookie",
+      "terms": "Соглашение",
+      "privacy": "Конфиденциальность"
     }
   }
 }

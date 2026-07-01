@@ -14,6 +14,7 @@ import SupportRequestsPage from '@/pages/SupportRequests/SupportRequestsPage.jsx
 import SupportRequestDetailsPage from '@/pages/SupportRequestDetails/SupportRequestDetailsPage.jsx'
 import EffectsPage from '@/pages/Effects/EffectsPage.jsx'
 import EffectPreviewPage from '@/pages/EffectPreview/EffectPreviewPage.jsx'
+import LegalDocsPage from '@/pages/LegalDocs/LegalDocsPage.jsx'
 
 import MainLayout from '../layouts/MainLayout.jsx'
 import InnerPageLayout from '../layouts/InnerPageLayout.jsx'
@@ -144,6 +145,14 @@ export const routes = [
         title: 'Поддержка',
         component: SupportPage,
         layout: MainLayout,
+    },
+    {
+        key: 'legal-docs',
+        path: '/:lang/docs/:documentSlug',
+        title: 'Правовые документы',
+        component: LegalDocsPage,
+        layout: MainLayout,
+        skipDocumentTitle: true,
     },
     {
         key: 'support-requests',
