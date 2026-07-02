@@ -8,6 +8,10 @@
       "cookie": "Cookie",
       "terms": "Terms of Use",
       "privacy": "Privacy"
+    },
+    "cookieSettings": {
+      "title": "Cookie settings",
+      "description": "You can change your cookie choice here at any time. If you keep necessary cookies only, analytics will not be sent to the server."
     }
   }
 }

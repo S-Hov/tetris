@@ -2,8 +2,21 @@
   "cookieConsentBanner": {
     "ariaLabel": "Cookie usage notice",
     "title": "We use cookies",
-    "description": "They are needed for the website to work, to save settings, and to send technical analytics to the server after your consent.",
+    "description": "Necessary cookies keep the website working. Analytics cookies are enabled only after your choice.",
     "link": "Learn more",
-    "accept": "Accept"
+    "settings": "Settings",
+    "acceptAll": "Accept all"
+  },
+  "cookieConsentControls": {
+    "statusLabel": "Current choice",
+    "statusUnset": "Not selected",
+    "statusNecessary": "Necessary only",
+    "statusAll": "All cookies",
+    "necessaryTitle": "Necessary only",
+    "necessaryDescription": "Authentication, language, interface settings and basic game operation. Analytics is disabled.",
+    "necessaryButton": "Accept necessary",
+    "allTitle": "All cookies",
+    "allDescription": "Necessary cookies plus technical analytics that helps improve website stability.",
+    "allButton": "Accept all"
   }
 }

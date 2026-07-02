@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { ensureSocketSession, socket } from '@/shared/api/socket'
 import { resetFriendsState } from '@/shared/realtime/friendsRealtime'
-import { COOKIE_CONSENT_ACCEPTED_EVENT } from '@/shared/lib/cookieConsent.js'
+import { COOKIE_CONSENT_CHANGED_EVENT } from '@/shared/lib/cookieConsent.js'
 import { useAuth } from './useAuth'
 
 const useAppSocketSession = () => {
@@ -40,16 +40,16 @@ const useAppSocketSession = () => {
             return undefined
         }
 
-        const handleCookieConsentAccepted = () => {
+        const handleCookieConsentChanged = () => {
             ensureSocketSession({ user }).catch(() => {
                 resetFriendsState()
             })
         }
 
-        window.addEventListener(COOKIE_CONSENT_ACCEPTED_EVENT, handleCookieConsentAccepted)
+        window.addEventListener(COOKIE_CONSENT_CHANGED_EVENT, handleCookieConsentChanged)
 
         return () => {
-            window.removeEventListener(COOKIE_CONSENT_ACCEPTED_EVENT, handleCookieConsentAccepted)
+            window.removeEventListener(COOKIE_CONSENT_CHANGED_EVENT, handleCookieConsentChanged)
         }
     }, [isAuth, isLoading, user])
 }

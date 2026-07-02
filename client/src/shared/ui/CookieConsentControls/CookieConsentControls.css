@@ -1,0 +1,108 @@
+.cookie-consent-controls {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+}
+
+.cookie-consent-controls__status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border: var(--border);
+    border-radius: var(--radius-card-2);
+    background: var(--input-bg);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+}
+
+.cookie-consent-controls__status strong {
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: 0.78rem;
+    text-align: right;
+}
+
+.cookie-consent-controls__choices {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.cookie-consent-controls__choices article {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 10px;
+    padding: 12px;
+    border: var(--border);
+    border-radius: var(--radius-card-2);
+    background: var(--input-bg);
+    color: var(--text-color-1);
+}
+
+.cookie-consent-controls__choices article.is-active {
+    border-color: var(--turquoise-border-strong);
+    background: var(--turquoise-tint-muted);
+    box-shadow: 0 0 18px var(--turquoise-tint-soft);
+}
+
+.cookie-consent-controls__choices article > span {
+    width: 34px;
+    aspect-ratio: 1;
+    display: inline-grid;
+    place-items: center;
+    border-radius: var(--radius-card-2);
+    background: var(--turquoise-tint-muted);
+    color: var(--turquoise);
+}
+
+.cookie-consent-controls__choices div {
+    min-width: 0;
+    display: grid;
+    gap: 5px;
+}
+
+.cookie-consent-controls__choices strong {
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: 0.84rem;
+    line-height: 1.25;
+}
+
+.cookie-consent-controls__choices p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.cookie-consent-controls__choices button {
+    grid-column: 1 / -1;
+    min-height: 38px;
+    border: none;
+    border-radius: var(--radius-card-2);
+    background: var(--btn-gradient-1);
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: 0.78rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: var(--transition);
+    height: min-content;
+    align-self: end;
+}
+
+.cookie-consent-controls__choices button:hover,
+.cookie-consent-controls__choices button:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: var(--lite-shadow);
+}
+
+@media (max-width: 720px) {
+    .cookie-consent-controls__choices {
+        grid-template-columns: 1fr;
+    }
+}

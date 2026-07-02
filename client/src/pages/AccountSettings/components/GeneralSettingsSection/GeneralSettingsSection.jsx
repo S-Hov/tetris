@@ -2,6 +2,7 @@ import AppSwitch from '@/shared/ui/AppSwitch'
 import CustomSelect from '@/shared/ui/CustomSelect'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
+import CookieConsentControls from '@/shared/ui/CookieConsentControls'
 import { BLUR_VARIABLES } from '@/shared/lib/interface-blur/blur.js'
 import { RADIUS_UNITS, RADIUS_VARIABLES } from '@/shared/lib/interface-radius/radius.js'
 import { THEME_PALETTE_OPTIONS } from '@/shared/lib/theme/theme.js'
@@ -188,6 +189,16 @@ const GeneralSettingsSection = ({
                             </label>
                         ))}
                     </div>
+                </div>
+                <div className="account-section-title">
+                    <i class="fa-solid fa-cookie-bite"></i>
+                    {t('accountSettings.general.cookieTitle')}
+                </div>
+                <div className="account-radius-settings account-cookie-settings">
+                    <div className="account-radius-settings__head">
+                        <small>{t('accountSettings.general.cookieDescription')}</small>
+                    </div>
+                    <CookieConsentControls />
                 </div>
             </div>
         </GlowEffect>

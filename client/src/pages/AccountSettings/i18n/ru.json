@@ -70,6 +70,8 @@
       "title": "Оформление",
       "languageTitle": "Язык интерфейса",
       "languageDescription": "Переключает язык текста в интерфейсе",
+      "cookieTitle": "Настройки cookie",
+      "cookieDescription": "Выберите, можно ли использовать техническую аналитику. Необходимые cookie остаются включенными для работы сайта.",
       "darkThemeTitle": "Тёмная тема",
       "darkThemeDescription": "Переключает цветовую схему интерфейса",
       "themePaletteTitle": "Цветовая палитра",

@@ -70,6 +70,8 @@
       "title": "Appearance",
       "languageTitle": "Interface language",
       "languageDescription": "Changes the text language in the interface",
+      "cookieTitle": "Cookie settings",
+      "cookieDescription": "Choose whether technical analytics may be used. Necessary cookies stay enabled for the website to work.",
       "darkThemeTitle": "Dark theme",
       "darkThemeDescription": "Switches the interface color scheme",
       "themePaletteTitle": "Color palette",

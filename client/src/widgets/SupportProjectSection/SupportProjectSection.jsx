@@ -37,7 +37,7 @@ const SupportProjectSection = ({ currentLanguage }) => {
                     ))}
                 </div>
 
-                <Link to={`/${currentLanguage}/support`} className="home-donation__button">
+                <Link to={`/${currentLanguage}/about#donate`} className="home-donation__button">
                     <i className="fas fa-heart"></i>
                     {t('home.donation.button')}
                 </Link>

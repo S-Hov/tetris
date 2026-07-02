@@ -1,5 +1,5 @@
 import { getBaseUrl } from '../apiClient.js'
-import { hasCookieConsent } from '@/shared/lib/cookieConsent.js'
+import { hasAnalyticsCookieConsent } from '@/shared/lib/cookieConsent.js'
 
 const ANALYTICS_SESSION_KEY = 'tetris.analytics-session'
 const SESSION_TTL_MS = 30 * 60 * 1000
@@ -9,7 +9,7 @@ export function getAnalyticsSessionKey() {
         return null
     }
 
-    if (!hasCookieConsent()) {
+    if (!hasAnalyticsCookieConsent()) {
         return null
     }
 
@@ -40,7 +40,7 @@ export function trackPageView({ path, title } = {}) {
         return
     }
 
-    if (!hasCookieConsent()) {
+    if (!hasAnalyticsCookieConsent()) {
         return
     }
 

@@ -150,9 +150,9 @@ const AboutSupportSection = ({ currentLanguage }) => {
                         <p className="about-kicker">{t('about.dev.kicker')}</p>
                         <h2>{t('about.dev.title')}</h2>
                         <p>{t('about.dev.description')}</p>
-                        <Link className="button about-button about-button--primary" to={`/${currentLanguage}/support`}>
+                        {/* <Link className="button about-button about-button--primary" to={`/${currentLanguage}/support`}>
                             {t('about.dev.button')}
-                        </Link>
+                        </Link> */}
                     </div>
                 </article>
 

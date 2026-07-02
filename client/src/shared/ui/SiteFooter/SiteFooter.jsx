@@ -27,23 +27,25 @@ const SiteFooter = () => {
                 <div className="site-footer__brand">
                     <strong>PVP Tetris</strong>
                     <span>{t('siteFooter.tagline')}</span>
+                
                 </div>
+                <div className='site-footer_nav-group'>
+                    <nav className="site-footer__nav" aria-label={t('siteFooter.navAriaLabel')}>
+                        {footerLinks.map((link) => (
+                            <Link key={link.to} to={getLocalizedPath(link.to, currentLanguage)}>
+                                {t(link.labelKey)}
+                            </Link>
+                        ))}
+                    </nav>
 
-                <nav className="site-footer__nav" aria-label={t('siteFooter.navAriaLabel')}>
-                    {footerLinks.map((link) => (
-                        <Link key={link.to} to={getLocalizedPath(link.to, currentLanguage)}>
-                            {t(link.labelKey)}
-                        </Link>
-                    ))}
-                </nav>
-
-                <nav className="site-footer__legal" aria-label={t('siteFooter.legalAriaLabel')}>
-                    {legalLinks.map((link) => (
-                        <Link key={link.to} to={getLocalizedPath(link.to, currentLanguage)}>
-                            {t(link.labelKey)}
-                        </Link>
-                    ))}
-                </nav>
+                    <nav className="site-footer__legal" aria-label={t('siteFooter.legalAriaLabel')}>
+                        {legalLinks.map((link) => (
+                            <Link key={link.to} to={getLocalizedPath(link.to, currentLanguage)}>
+                                {t(link.labelKey)}
+                            </Link>
+                        ))}
+                    </nav>
+                </div>
 
                 <Link to={getLocalizedPath('/about#donate', currentLanguage)} className="site-footer__donate">
                     <i className="fas fa-wallet"></i>

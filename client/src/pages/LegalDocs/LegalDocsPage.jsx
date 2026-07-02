@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { DEFAULT_LANGUAGE, getLocalizedPath, SUPPORTED_LANGUAGES } from '@/i18n'
+import CookieConsentControls from '@/shared/ui/CookieConsentControls'
 
 import { LEGAL_DOCUMENT_NAV, LEGAL_DOCUMENTS } from './legalDocs.content.js'
 
@@ -53,6 +54,16 @@ const LegalDocsPage = () => {
                         {t('legalDocs.updatedAt', { date: legalDocument.updatedAt })}
                     </p>
                     <p className="legal-docs-page__lead">{content.lead}</p>
+
+                    {documentSlug === 'cookie' && (
+                        <div className="legal-docs-page__cookie-settings">
+                            <div>
+                                <strong>{t('legalDocs.cookieSettings.title')}</strong>
+                                <p>{t('legalDocs.cookieSettings.description')}</p>
+                            </div>
+                            <CookieConsentControls />
+                        </div>
+                    )}
 
                     {/* <div className="legal-docs-page__notice">
                         {t('legalDocs.notice')}

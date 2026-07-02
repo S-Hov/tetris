@@ -2,7 +2,7 @@
     position: relative;
     z-index: 1;
     padding: 1rem 0 1.35rem;
-    
+
     & .site-footer__container {
         display: grid;
         grid-template-columns: minmax(220px, 1fr) auto auto auto;
@@ -14,11 +14,11 @@
         font-size: 0.82rem;
         background: none;
     }
-    
+
     & .site-footer__brand {
         display: grid;
         gap: 0.25rem;
-        
+
         & strong {
             color: var(--text-color);
             font-family: var(--font-1);
@@ -26,7 +26,13 @@
             text-shadow: var(--text-shadow);
         }
     }
-    
+
+    & .site-footer_nav-group {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 0.7rem 1rem;
+    }
+
     & .site-footer__nav,
     & .site-footer__legal {
         display: flex;
@@ -36,22 +42,21 @@
     }
 
     & .site-footer__legal {
-        max-width: 250px;
         gap: 0.7rem 1rem;
         font-size: 0.76rem;
     }
-    
+
     & a {
         color: var(--turquoise-lite);
         text-decoration: none;
         transition: var(--transition);
-        
+
         &:hover,
         &:focus-visible {
             text-shadow: var(--text-shadow);
         }
     }
-    
+
     & .site-footer__donate {
         min-height: 42px;
         display: inline-flex;
@@ -74,14 +79,14 @@
     }
 }
 
-@media (max-width: 900px) {
-    .site-footer{
+@media (max-width: 1300px) {
+    .site-footer {
 
         & .site-footer__container {
             grid-template-columns: 1fr;
             justify-items: start;
         }
-    
+
         & .site-footer__nav,
         & .site-footer__legal {
             justify-content: flex-start;
@@ -89,14 +94,23 @@
     }
 }
 
+@media (max-width: 850px) {
+    .site-footer {
+        & .site-footer_nav-group {
+            grid-template-columns: 1fr;
+            gap: 1.2rem;
+        }
+    }
+}
+
 @media (max-width: 770px) {
-    .site-footer{
+    .site-footer {
         margin-bottom: 60px;
     }
 }
 
 @media (max-width: 520px) {
-    .site-footer{
+    .site-footer {
 
         & .site-footer__container,
         & .site-footer__donate {
