@@ -1,3 +1,6 @@
+import { Link } from 'react-router-dom'
+import { getLocalizedPath } from '@/i18n'
+
 import './EmailChangeModal.css'
 
 const EmailChangeModal = ({
@@ -20,6 +23,15 @@ const EmailChangeModal = ({
                     autoFocus
                     required
                 />
+            </label>
+            <label className="account-email-modal__consent">
+                <input type="checkbox" required />
+                <span>
+                    {t('accountSettings.emailModal.consentPrefix')}{' '}
+                    <Link to={getLocalizedPath('/docs/privacy')}>
+                        {t('accountSettings.emailModal.privacy')}
+                    </Link>
+                </span>
             </label>
             <div className="account-email-modal__actions">
                 <button type="submit" className="button" disabled={isChangingEmail}>

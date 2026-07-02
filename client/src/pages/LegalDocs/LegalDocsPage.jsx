@@ -54,9 +54,9 @@ const LegalDocsPage = () => {
                     </p>
                     <p className="legal-docs-page__lead">{content.lead}</p>
 
-                    <div className="legal-docs-page__notice">
+                    {/* <div className="legal-docs-page__notice">
                         {t('legalDocs.notice')}
-                    </div>
+                    </div> */}
 
                     <div className="legal-docs-page__sections">
                         {content.sections.map((section) => (

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { getLocalizedPath } from '@/i18n'
 
 import CustomSelect from '@/shared/ui/CustomSelect'
 import GlowEffect from '@/shared/ui/GlowEffect'
@@ -265,7 +266,12 @@ const SupportMainGridSection = () => {
 
                                 <label className="support-consent support-field--wide">
                                     <input type="checkbox" required />
-                                    <span>{t('support.form.consent')}</span>
+                                    <span>
+                                        {t('support.form.consentPrefix')}{' '}
+                                        <Link to={getLocalizedPath('/docs/privacy')}>
+                                            {t('support.form.privacy')}
+                                        </Link>
+                                    </span>
                                 </label>
 
                                 <button type="submit" className="button support-primary-button" disabled={isSubmitting || !turnstileToken}>

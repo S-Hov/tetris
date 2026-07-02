@@ -3,7 +3,7 @@ import { useCallback, useState } from "react"
 import AuthInput from "@/shared/ui/Auth/AuthInput"
 import { getRegisterInputs } from "./AuthForm.data"
 import { useRegister } from "@/shared/hooks/useAuth"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import notify from "@/utils/Notifications"
 import TurnstileWidget from "@/shared/ui/TurnstileWidget"
 import { useTranslation } from "react-i18next"
@@ -90,7 +90,10 @@ const RegisterForm = () => {
                         {...register("terms", { required: t('auth.register.termsRequired') })}
                     />
                     <label htmlFor="termsCheckbox">
-                        {t('auth.register.termsPrefix')} <span>{t('auth.register.termsArena')}</span> {t('auth.register.termsMiddle')} <span>{t('auth.register.termsSecurity')}</span>
+                        {t('auth.register.termsPrefix')}{' '}
+                        <Link to={getLocalizedPath('/docs/terms')}>{t('auth.register.terms')}</Link>
+                        {' '}{t('auth.register.termsMiddle')}{' '}
+                        <Link to={getLocalizedPath('/docs/privacy')}>{t('auth.register.privacy')}</Link>
                     </label>
                 </div>
                 {errors.terms && <div className="form_error-msg">{errors.terms.message}</div>}

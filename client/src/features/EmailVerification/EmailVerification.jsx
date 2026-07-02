@@ -389,6 +389,15 @@ const EmailVerification = () => {
                                 required
                             />
                         </label>
+                        <label className="verify-email-modal__consent">
+                            <input type="checkbox" required />
+                            <span>
+                                {t('emailVerification.emailChangeConsentPrefix')}{' '}
+                                <Link to={getLocalizedPath('/docs/privacy')}>
+                                    {t('emailVerification.privacy')}
+                                </Link>
+                            </span>
+                        </label>
                         <div className="verify-email-modal__actions">
                             <button type="submit" className="submit-btn" disabled={isChangingEmail}>
                                 {isChangingEmail ? t('emailVerification.saving') : t('emailVerification.sendNewCode')}

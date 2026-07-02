@@ -30,7 +30,9 @@
       "success": "You have signed in successfully",
       "error": "Could not sign in",
       "resetSuccess": "Recovery code sent",
-      "resetError": "Could not send recovery code"
+      "resetError": "Could not send recovery code",
+      "resetConsentPrefix": "I consent to the processing of my email for account recovery under the",
+      "privacy": "Privacy Policy"
     },
     "register": {
       "title": "CYBER REGISTRATION",
@@ -40,9 +42,9 @@
       "passwordMismatch": "Passwords do not match",
       "termsRequired": "Your consent is required",
       "termsPrefix": "I agree to the",
-      "termsArena": "Arena Terms",
+      "terms": "Terms of Use",
       "termsMiddle": "and",
-      "termsSecurity": "Cyber Security Policy"
+      "privacy": "Privacy Policy"
     },
     "security": {
       "turnstile": "Security check has not passed"

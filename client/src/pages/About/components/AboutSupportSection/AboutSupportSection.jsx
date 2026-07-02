@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
 import { useTranslation } from 'react-i18next'
+import { getLocalizedPath } from '@/i18n'
 
 import CustomSelect from '@/shared/ui/CustomSelect'
 import GlowEffect from '@/shared/ui/GlowEffect'
@@ -237,6 +238,16 @@ const AboutSupportSection = ({ currentLanguage }) => {
                                 </label>
 
                                 <TurnstileWidget onTokenChange={handleTurnstileTokenChange} resetSignal={turnstileResetSignal} />
+
+                                <label className="about-field about-field--check about-field--consent about-field--wide">
+                                    <input type="checkbox" required />
+                                    <span>
+                                        {t('about.donate.consentPrefix')}{' '}
+                                        <Link to={getLocalizedPath('/docs/privacy')}>
+                                            {t('about.donate.privacy')}
+                                        </Link>
+                                    </span>
+                                </label>
 
                                 <button type="submit" className="button about-button about-button--primary" disabled={isDonationSubmitting || !selectedWallet || !turnstileToken}>
                                     <i className="fas fa-wallet"></i>

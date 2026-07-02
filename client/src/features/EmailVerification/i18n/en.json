@@ -34,6 +34,8 @@
     "changeEmail": "Change email",
     "currentEmail": "Current email",
     "newEmail": "New email",
+    "emailChangeConsentPrefix": "I consent to the processing of my new email under the",
+    "privacy": "Privacy Policy",
     "saving": "Saving...",
     "sendNewCode": "Send new code",
     "cancel": "Cancel"

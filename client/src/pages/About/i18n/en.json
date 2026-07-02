@@ -89,6 +89,8 @@
       "qrDialog": "Wallet QR code",
       "closeQr": "Close QR code",
       "memoRequired": "This network requires memo/tag. Add it in the wallet admin panel.",
+      "consentPrefix": "I consent to the processing of donation data under the",
+      "privacy": "Privacy Policy",
       "submit": "Create donation",
       "submitting": "Saving...",
       "inNetwork": "on",

@@ -205,6 +205,27 @@
     }
 }
 
+.about-field--consent {
+    align-self: stretch;
+
+    & > span {
+        color: var(--text-muted);
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+    & a {
+        color: var(--turquoise);
+        font-weight: 900;
+        text-decoration: none;
+    }
+
+    & a:hover,
+    & a:focus-visible {
+        text-shadow: var(--text-shadow);
+    }
+}
+
 .about-donate-form .about-button--primary,
 .about-donate-form .turnstile-widget {
     grid-column: 1 / -1;

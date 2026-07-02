@@ -138,7 +138,9 @@
     "emailModal": {
       "title": "Change email",
       "newEmail": "New email",
-      "sending": "Sending..."
+      "sending": "Sending...",
+      "consentPrefix": "I consent to the processing of my new email under the",
+      "privacy": "Privacy Policy"
     },
     "notifications": {
       "historyLoadError": "Could not load login history",

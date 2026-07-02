@@ -1,7 +1,7 @@
 import { getLoginInputs } from "./AuthForm.data"
 import AuthInput from "@/shared/ui/Auth/AuthInput"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "@/shared/hooks/useAuth"
 import { authenticationAPI } from "@/shared/api/auth"
 import { useCallback, useState } from "react"
@@ -147,6 +147,15 @@ const LoginForm = () => {
                                 required
                                 autoFocus
                             />
+                        </label>
+                        <label className="auth-modal__consent">
+                            <input type="checkbox" required />
+                            <span>
+                                {t('auth.login.resetConsentPrefix')}{' '}
+                                <Link to={getLocalizedPath('/docs/privacy')}>
+                                    {t('auth.login.privacy')}
+                                </Link>
+                            </span>
                         </label>
                         <div className="auth-modal__actions">
                             <button type="submit" className="submit-btn" disabled={isResetPending}>
