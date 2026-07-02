@@ -1,0 +1,98 @@
+.interface-scale-control {
+    display: grid;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.interface-scale-control__copy {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.interface-scale-control__copy span {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.interface-scale-control__copy strong {
+    display: block;
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: 0.94rem;
+}
+
+.interface-scale-control__copy small {
+    color: var(--text-color);
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+
+.interface-scale-control__copy output {
+    min-width: 58px;
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border);
+    border-radius: var(--radius-card-2);
+    background: var(--input-bg);
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: 0.82rem;
+}
+
+.interface-scale-control__inputs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.interface-scale-control__inputs input[type="range"] {
+    width: 100%;
+    min-width: 0;
+    accent-color: var(--turquoise);
+    cursor: pointer;
+}
+
+.interface-scale-control__inputs button {
+    min-height: 38px;
+    padding: 0 0.9rem;
+    border: var(--border);
+    border-radius: var(--radius-card-2);
+    background: var(--input-bg);
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: 0.76rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.interface-scale-control__inputs button:hover:not(:disabled),
+.interface-scale-control__inputs button:focus-visible:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: var(--lite-shadow);
+}
+
+.interface-scale-control__inputs button:disabled {
+    cursor: not-allowed;
+    opacity: 0.48;
+}
+
+@media (max-width: 520px) {
+    .interface-scale-control__copy {
+        display: grid;
+    }
+
+    .interface-scale-control__copy output {
+        width: fit-content;
+    }
+
+    .interface-scale-control__inputs {
+        grid-template-columns: 1fr;
+    }
+}

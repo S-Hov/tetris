@@ -1,7 +1,54 @@
 .account-general-settings {
     display: grid;
-    gap: 1rem;
+    gap: 1.1rem;
     padding: 1.4rem;
+}
+
+.account-settings-group {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
+    border: var(--border);
+    border-radius: var(--radius-card-1);
+    background: color-mix(in srgb, var(--elem-bg) 82%, transparent);
+}
+
+.account-settings-group__head {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.account-settings-group__head > span {
+    width: 38px;
+    aspect-ratio: 1;
+    display: inline-grid;
+    place-items: center;
+    border: var(--border);
+    border-radius: var(--radius-card-2);
+    background: var(--turquoise-tint-muted);
+    color: var(--turquoise);
+    text-shadow: var(--text-shadow);
+}
+
+.account-settings-group__head h3 {
+    margin: 0;
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: 1rem;
+}
+
+.account-settings-group__head p {
+    margin: 0.25rem 0 0;
+    color: var(--text-color);
+    font-size: 0.82rem;
+    line-height: 1.45;
+}
+
+.account-settings-group__body {
+    display: grid;
+    gap: 1rem;
 }
 
 .account-theme-toggle {
@@ -53,6 +100,10 @@
 
 .account-cookie-settings .cookie-consent-controls__choices {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.account-scale-settings {
+    padding: 1rem;
 }
 
 .account-theme-palette-setting:hover {

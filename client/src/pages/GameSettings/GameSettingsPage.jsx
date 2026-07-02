@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import AppSwitch from '@/shared/ui/AppSwitch'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
+import InterfaceScaleControl from '@/shared/ui/InterfaceScaleControl'
 import { getLocalizedGamePath } from '@/i18n'
 import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
@@ -67,6 +68,14 @@ const GameSettingsPage = () => {
                                         <small>{t('gameControls.settings.languageDescription')}</small>
                                     </span>
                                     <InterfaceLanguageSelect className="game-settings-page__language-select" />
+                                </div>
+                                <div className="game-settings-page__scale-setting">
+                                    <InterfaceScaleControl
+                                        title={t('gameControls.settings.scaleTitle')}
+                                        description={t('gameControls.settings.scaleDescription')}
+                                        resetLabel={t('gameControls.settings.scaleReset')}
+                                        valueAriaLabel={t('gameControls.settings.scaleAria')}
+                                    />
                                 </div>
                                 <button
                                     type="button"
