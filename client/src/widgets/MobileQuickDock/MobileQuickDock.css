@@ -1,0 +1,151 @@
+.mobile-quick-dock {
+    --mobile-quick-dock-size: 58px;
+    position: fixed;
+    right: 14px;
+    bottom: 65px;
+    z-index: 580;
+    width: var(--mobile-quick-dock-size);
+    height: var(--mobile-quick-dock-size);
+}
+
+.mobile-quick-dock button {
+    border: 0;
+    color: var(--text-color-1);
+    cursor: pointer;
+}
+
+.mobile-quick-dock__trigger,
+.mobile-quick-dock__action {
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--box-bg);
+    box-shadow: var(--lite-shadow);
+    backdrop-filter: var(--easy-blur);
+}
+
+.mobile-quick-dock__trigger {
+    position: relative;
+    z-index: 4;
+    width: var(--mobile-quick-dock-size);
+    height: var(--mobile-quick-dock-size);
+    border: 1px solid var(--turquoise-border-soft);
+    font-size: 1.05rem;
+    transition: filter 220ms ease, transform 220ms ease, color 180ms ease;
+}
+
+.mobile-quick-dock__trigger:hover,
+.mobile-quick-dock__trigger:focus-visible {
+    filter: brightness(1.12);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+.mobile-quick-dock--open .mobile-quick-dock__trigger {
+    color: var(--turquoise-bright);
+    transform: rotate(10deg);
+}
+
+.mobile-quick-dock__pulse {
+    position: absolute;
+    inset: -7px;
+    z-index: -1;
+    border: 1px solid var(--turquoise-border);
+    border-radius: 50%;
+    opacity: 0;
+}
+
+.mobile-quick-dock--open .mobile-quick-dock__pulse {
+    animation: mobile-quick-dock-pulse 1.8s ease-out infinite;
+}
+
+.mobile-quick-dock__actions {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.mobile-quick-dock__action {
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    width: 46px;
+    height: 46px;
+    border: 1px solid var(--turquoise-border-soft) !important;
+    opacity: 0;
+    transform: translate(0, 0) scale(0.55);
+    transition:
+        opacity 180ms ease,
+        transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+        color 180ms ease,
+        border-color 180ms ease,
+        background 180ms ease;
+}
+
+.mobile-quick-dock--open .mobile-quick-dock__actions {
+    pointer-events: auto;
+}
+
+.mobile-quick-dock--open .mobile-quick-dock__action {
+    opacity: 1;
+}
+
+.mobile-quick-dock--open .mobile-quick-dock__action--chat {
+    transform: translate(0, -78px) scale(1);
+}
+
+.mobile-quick-dock--open .mobile-quick-dock__action--audio {
+    transform: translate(-64px, -58px) scale(1);
+}
+
+.mobile-quick-dock--open .mobile-quick-dock__action--friends {
+    transform: translate(-84px, 10px) scale(1);
+}
+
+.mobile-quick-dock__action:hover,
+.mobile-quick-dock__action:focus-visible {
+    color: var(--turquoise-bright);
+    border-color: var(--turquoise-border-intense) !important;
+    background: var(--turquoise-tint-medium);
+    outline: none;
+    transform: translate(var(--dock-x, 0), var(--dock-y, 0)) scale(1.05);
+}
+
+.mobile-quick-dock--open .mobile-quick-dock__action--chat:hover,
+.mobile-quick-dock--open .mobile-quick-dock__action--chat:focus-visible {
+    --dock-x: 0;
+    --dock-y: -78px;
+}
+
+.mobile-quick-dock--open .mobile-quick-dock__action--audio:hover,
+.mobile-quick-dock--open .mobile-quick-dock__action--audio:focus-visible {
+    --dock-x: -64px;
+    --dock-y: -58px;
+}
+
+.mobile-quick-dock--open .mobile-quick-dock__action--friends:hover,
+.mobile-quick-dock--open .mobile-quick-dock__action--friends:focus-visible {
+    --dock-x: -84px;
+    --dock-y: 10px;
+}
+
+@keyframes mobile-quick-dock-pulse {
+    0% {
+        opacity: 0.72;
+        transform: scale(0.86);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.42);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mobile-quick-dock *,
+    .mobile-quick-dock *::before,
+    .mobile-quick-dock *::after {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+    }
+}

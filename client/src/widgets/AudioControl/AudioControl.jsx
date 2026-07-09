@@ -13,9 +13,10 @@ const TRACK_POSITIONS = [
     { x: -71, y: -164, mobileX: -64, mobileY: -150 },
 ]
 
-const AudioControl = () => {
+const AudioControl = ({ hideTrigger = false, openSignal = 0 } = {}) => {
     const { t } = useTranslation()
     const controlRef = useRef(null)
+    const previousOpenSignalRef = useRef(openSignal)
     const [isOpen, setIsOpen] = useState(false)
     const {
         currentTrack,
@@ -40,6 +41,25 @@ const AudioControl = () => {
 
         return () => registerPlaylist([])
     }, [registerPlaylist])
+
+    useEffect(() => {
+        if (previousOpenSignalRef.current === openSignal) {
+            return undefined
+        }
+
+        previousOpenSignalRef.current = openSignal
+        let isCancelled = false
+
+        queueMicrotask(() => {
+            if (!isCancelled) {
+                setIsOpen(true)
+            }
+        })
+
+        return () => {
+            isCancelled = true
+        }
+    }, [openSignal])
 
     useEffect(() => {
         if (!isOpen) {
@@ -200,10 +220,12 @@ const AudioControl = () => {
 
             <button
                 type="button"
-                className="audio-control__trigger"
+                className={`audio-control__trigger ${hideTrigger ? 'audio-control__trigger--hidden' : ''}`}
                 aria-expanded={isOpen}
                 aria-label={isOpen ? t('audioControl.close') : t('audioControl.open')}
+                aria-hidden={hideTrigger}
                 title={isOpen ? t('audioControl.close') : t('audioControl.open')}
+                tabIndex={hideTrigger ? -1 : 0}
                 onClick={() => setIsOpen((currentValue) => !currentValue)}
             >
                 <span className="audio-control__pulse"></span>

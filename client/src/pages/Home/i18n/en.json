@@ -205,6 +205,16 @@
       "send": "Could not send message"
     }
   },
+  "quickDock": {
+    "ariaLabel": "Quick actions",
+    "open": "Open quick actions",
+    "close": "Close quick actions",
+    "actions": {
+      "chat": "Open chat",
+      "audio": "Open music",
+      "friends": "Open friends"
+    }
+  },
   "audioControl": {
     "ariaLabel": "Audio controls",
     "open": "Open audio controls",

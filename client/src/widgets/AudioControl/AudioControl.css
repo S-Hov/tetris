@@ -37,6 +37,11 @@
     outline: none;
 }
 
+.audio-control__trigger--hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
 .audio-control--open .audio-control__trigger {
     transform: rotate(12deg);
 }

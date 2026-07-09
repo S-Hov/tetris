@@ -38,6 +38,11 @@
     transform: translateY(-2px);
 }
 
+.chat-widget__trigger--hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
 .chat-widget--open .chat-widget__trigger {
     color: var(--turquoise-bright);
     transform: rotate(-8deg);

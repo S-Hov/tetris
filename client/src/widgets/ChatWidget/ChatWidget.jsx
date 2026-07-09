@@ -50,9 +50,10 @@ const upsertMessage = (items, nextMessage) => {
     return [...items, nextMessage]
 }
 
-const ChatWidget = () => {
+const ChatWidget = ({ hideTrigger = false, openSignal = 0 } = {}) => {
     const { t } = useTranslation()
     const { isAuth, user } = useAuth()
+    const previousOpenSignalRef = useRef(openSignal)
     const [isOpen, setIsOpen] = useState(false)
     const [isSidebarVisible, setIsSidebarVisible] = useState(true)
     const [conversations, setConversations] = useState([])
@@ -129,6 +130,25 @@ const ChatWidget = () => {
     useEffect(() => {
         void loadConversations()
     }, [loadConversations])
+
+    useEffect(() => {
+        if (previousOpenSignalRef.current === openSignal) {
+            return undefined
+        }
+
+        previousOpenSignalRef.current = openSignal
+        let isCancelled = false
+
+        queueMicrotask(() => {
+            if (!isCancelled) {
+                setIsOpen(true)
+            }
+        })
+
+        return () => {
+            isCancelled = true
+        }
+    }, [openSignal])
 
     useEffect(() => {
         if (isOpen && activeConversationId && !messagesByConversation[activeConversationId]) {
@@ -383,10 +403,12 @@ const ChatWidget = () => {
 
             <button
                 type="button"
-                className="chat-widget__trigger"
+                className={`chat-widget__trigger ${hideTrigger ? 'chat-widget__trigger--hidden' : ''}`}
                 aria-expanded={isOpen}
                 aria-label={isOpen ? t('chatWidget.close') : t('chatWidget.open')}
+                aria-hidden={hideTrigger}
                 title={isOpen ? t('chatWidget.close') : t('chatWidget.open')}
+                tabIndex={hideTrigger ? -1 : 0}
                 onClick={() => setIsOpen((currentValue) => !currentValue)}
             >
                 {totalUnread > 0 ? <span className="chat-widget__badge">{Math.min(totalUnread, 99)}</span> : null}

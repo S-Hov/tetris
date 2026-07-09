@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import useMediaQuery from '@/shared/hooks/useMediaQuery'
 import AudioControl from '@/widgets/AudioControl'
 import ChatWidget from '@/widgets/ChatWidget'
+import MobileQuickDock from '@/widgets/MobileQuickDock'
 import './SideRailLayout.css'
 
 const ActivityFeed = lazy(() => import('@/widgets/ActivityFeed'))
@@ -13,6 +14,8 @@ const SideRailLayout = ({ children }) => {
     const { t } = useTranslation()
     const isCompactMobile = useMediaQuery('(max-width: 599px)')
     const [isFriendsOpen, setIsFriendsOpen] = useState(false)
+    const [audioOpenSignal, setAudioOpenSignal] = useState(0)
+    const [chatOpenSignal, setChatOpenSignal] = useState(0)
     const shouldShowFriendsModal = isCompactMobile && isFriendsOpen
 
     useEffect(() => {
@@ -47,16 +50,11 @@ const SideRailLayout = ({ children }) => {
 
             {isCompactMobile ? (
                 <>
-                    <button
-                        className="side-rail-layout__friends-button"
-                        type="button"
-                        aria-label={t('friendsRail.ariaLabel')}
-                        aria-haspopup="dialog"
-                        aria-expanded={shouldShowFriendsModal}
-                        onClick={() => setIsFriendsOpen(true)}
-                    >
-                        <i className="fas fa-user-group"></i>
-                    </button>
+                    <MobileQuickDock
+                        onAudio={() => setAudioOpenSignal((currentValue) => currentValue + 1)}
+                        onChat={() => setChatOpenSignal((currentValue) => currentValue + 1)}
+                        onFriends={() => setIsFriendsOpen(true)}
+                    />
 
                     {shouldShowFriendsModal ? (
                         <div
@@ -95,8 +93,14 @@ const SideRailLayout = ({ children }) => {
                 </div>
             )}
 
-            <AudioControl />
-            <ChatWidget />
+            <AudioControl
+                hideTrigger={isCompactMobile}
+                openSignal={audioOpenSignal}
+            />
+            <ChatWidget
+                hideTrigger={isCompactMobile}
+                openSignal={chatOpenSignal}
+            />
         </div>
     )
 }
