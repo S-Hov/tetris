@@ -104,11 +104,12 @@
 .chat-widget__shell {
     width: 100%;
     height: 100%;
+    min-height: 0;
     display: grid;
     grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
     overflow: hidden;
     border: 1px solid var(--turquoise-border-soft);
-    border-radius: var(--radius-card-2);
+    border-radius: var(--radius-panel);
     background:
         linear-gradient(135deg, var(--turquoise-tint-soft), transparent 38%),
         color-mix(in srgb, var(--surface-panel-bg) 92%, transparent);
@@ -123,8 +124,11 @@
 
 .chat-widget__sidebar {
     min-width: 0;
+    min-height: 0;
+    height: 100%;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
+    overflow: hidden;
     border-right: 1px solid var(--turquoise-border-soft);
     background: color-mix(in srgb, var(--elem-bg) 70%, transparent);
 }
@@ -136,7 +140,12 @@
     align-items: center;
     gap: 12px;
     padding: 12px;
+}
+
+.chat-widget__chat-header{
     border-bottom: 1px solid var(--turquoise-border-soft);
+    border-left: 1px solid var(--turquoise-border-soft);
+    border-bottom-left-radius: var(--radius-panel);
 }
 
 .chat-widget__sidebar-header {
@@ -189,6 +198,9 @@
     min-height: 0;
     overflow-y: auto;
     padding: 10px;
+    border-top-right-radius: var(--radius-panel);
+    border-right: 1px solid var(--turquoise-border-soft);
+    border-top: 1px solid var(--turquoise-border-soft);
 }
 
 .chat-widget__conversation {
@@ -275,8 +287,11 @@
 
 .chat-widget__main {
     min-width: 0;
+    min-height: 0;
+    height: 100%;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
 }
 
 .chat-widget__chat-title {
@@ -285,10 +300,12 @@
 
 .chat-widget__messages {
     min-height: 0;
+    height: 100%;
     display: flex;
     flex-direction: column;
     gap: 8px;
     overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 14px;
 }
 
@@ -332,6 +349,7 @@
     gap: 8px;
     padding: 12px;
     border-top: 1px solid var(--turquoise-border-soft);
+    border-top-left-radius: var(--radius-panel);
 }
 
 .chat-widget__composer textarea {
