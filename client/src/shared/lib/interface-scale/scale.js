@@ -40,6 +40,7 @@ export const applyInterfaceScale = (scale) => {
 
     if (typeof document !== 'undefined') {
         document.documentElement.style.setProperty('--interface-scale', String(nextScale / 100))
+        document.documentElement.classList.toggle('has-interface-scale', nextScale !== DEFAULT_INTERFACE_SCALE)
         document.body.style.zoom = String(nextScale / 100)
     }
 

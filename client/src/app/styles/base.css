@@ -7,7 +7,7 @@
 body {
     background: var(--main-bg);
     font-family: 'Inter', 'Orbitron', sans-serif;
-    height: 100vh;
+    height: 100svh;
     overflow: hidden;
     padding: 15px;
     color: var(--text-color);
@@ -16,7 +16,11 @@ body {
 #root {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100svh;
+}
+
+.has-interface-scale #root {
+    height: 100%;
 }
 
 main {
