@@ -7,6 +7,19 @@
     font-weight: 800;
 }
 
+.match-details-player-cell[data-player-action-trigger] {
+    cursor: pointer;
+    border-radius: 999px;
+    transition: color 0.18s ease, transform 0.18s ease;
+}
+
+.match-details-player-cell[data-player-action-trigger]:hover,
+.match-details-player-cell[data-player-action-trigger]:focus-visible {
+    color: var(--text-active-color);
+    transform: translateY(-1px);
+    outline: none;
+}
+
 .match-details-player-cell > span:last-child {
     min-width: 0;
     overflow-wrap: anywhere;

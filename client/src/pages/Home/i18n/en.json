@@ -171,7 +171,9 @@
       "friendRequestSent": "Friend request sent",
       "friendRequestError": "Could not send friend request",
       "inviteSent": "Invite sent",
-      "inviteError": "Could not send invite"
+      "inviteError": "Could not send invite",
+      "chatReady": "Conversation is ready",
+      "chatError": "Could not open conversation"
     }
   },
   "audioControl": {

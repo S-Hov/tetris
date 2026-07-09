@@ -5,6 +5,7 @@ import { getLocalizedEffectText } from '@/features/tetris/effects/catalog.js'
 import { useEffectCatalog } from '@/features/tetris/effects/useEffectCatalog.js'
 import { getLocalizedPath } from '@/i18n'
 import GlowEffect from '@/shared/ui/GlowEffect'
+import PlayerActionTrigger from '@/shared/ui/PlayerActionTrigger/PlayerActionTrigger.jsx'
 import { getBaseUrl } from '@/shared/api/apiClient.js'
 import { matchesAPI } from '@/shared/api/matches'
 import {
@@ -253,12 +254,31 @@ const MetaCard = ({ icon, label, value }) => (
     </GlowEffect>
 )
 
-const MatchPlayerCell = ({ player }) => (
-    <span className="match-details-player-cell">
-        <PlayerAvatar player={player} />
-        <span>{player.nickname}</span>
-    </span>
-)
+const MatchPlayerCell = ({ player }) => {
+    const actionPlayer = {
+        id: player.userId,
+        userId: player.userId,
+        username: player.nickname,
+        nickname: player.nickname,
+        avatarUrl: player.avatarUrl,
+    }
+    const content = (
+        <span className="match-details-player-cell">
+            <PlayerAvatar player={player} />
+            <span>{player.nickname}</span>
+        </span>
+    )
+
+    if (!player.isRegistered || !player.userId) {
+        return content
+    }
+
+    return (
+        <PlayerActionTrigger asChild player={actionPlayer}>
+            {content}
+        </PlayerActionTrigger>
+    )
+}
 
 const PlayerAvatar = ({ player }) => {
     const avatarUrl = getMediaUrl(player?.avatarUrl)

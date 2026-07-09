@@ -95,7 +95,8 @@ export const getUserActionsService = async ({ viewerId, targetUserId }) => {
     const matchInviteAllowed = canInteract && isAllowed(context.match_invites_visibility, baseContext)
     const messageAllowed = canInteract && isAllowed(context.messages_visibility, baseContext)
     const clubInviteAllowed = canInteract && isAllowed(context.club_invites_visibility, baseContext)
-    const roomInviteAvailable = Boolean(context.is_online) && !context.is_in_game
+    const userAvailableForInvite = Boolean(context.is_online) && !context.is_in_game
+    const inviteUnavailableReason = context.is_in_game ? 'USER_IN_GAME' : 'USER_OFFLINE'
 
     return {
         user: {
@@ -107,14 +108,14 @@ export const getUserActionsService = async ({ viewerId, targetUserId }) => {
         },
         actions: {
             roomInvite: createAction({
-                allowed: roomInviteAllowed && roomInviteAvailable,
-                available: roomInviteAvailable,
-                reason: context.is_in_game ? 'USER_IN_GAME' : 'USER_OFFLINE',
+                allowed: roomInviteAllowed,
+                available: userAvailableForInvite,
+                reason: inviteUnavailableReason,
             }),
             matchInvite: createAction({
                 allowed: matchInviteAllowed,
-                available: false,
-                reason: 'FEATURE_NOT_AVAILABLE',
+                available: userAvailableForInvite,
+                reason: inviteUnavailableReason,
             }),
             message: createAction({
                 allowed: messageAllowed,

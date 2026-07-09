@@ -20,9 +20,11 @@ const UserActionsMenu = ({
     anchorElement,
     anchorRect,
     isInviting,
+    isOpeningChat,
     isSendingFriendRequest,
     onClose,
     onFriendRequest,
+    onMessage,
     onRetry,
     onRoomInvite,
     result,
@@ -96,6 +98,14 @@ const UserActionsMenu = ({
         await onRoomInvite(result?.user || targetUser)
     }
 
+    const handleMessage = async () => {
+        if (isOpeningChat) {
+            return
+        }
+
+        await onMessage(result?.user || targetUser)
+    }
+
     const handleFriendRequest = async () => {
         if (isSendingFriendRequest) {
             return
@@ -152,14 +162,19 @@ const UserActionsMenu = ({
                         const action = result.actions[key]
                         const isFriendRequest = key === 'friendRequest'
                         const isRoomInvite = key === 'roomInvite'
+                        const isMatchInvite = key === 'matchInvite'
+                        const isMessage = key === 'message'
                         const isPending =
                             (isFriendRequest && isSendingFriendRequest) ||
-                            (isRoomInvite && isInviting)
+                            ((isRoomInvite || isMatchInvite) && isInviting) ||
+                            (isMessage && isOpeningChat)
                         const handleClick = isFriendRequest
                             ? handleFriendRequest
-                            : isRoomInvite
+                            : isRoomInvite || isMatchInvite
                                 ? handleRoomInvite
-                                : undefined
+                                : isMessage
+                                    ? handleMessage
+                                    : undefined
                         const isDisabled = !action.enabled || isPending
 
                         return (
