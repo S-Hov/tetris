@@ -11,6 +11,7 @@ import './ChatWidget.css'
 
 const CHAT_OPEN_EVENT = 'pvp-tetris:chat-open'
 const ENTER_KEY = 'Enter'
+const MOBILE_CHAT_MEDIA_QUERY = '(max-width: 560px)'
 
 const emitWithAck = (eventName, payload) => new Promise((resolve) => {
     if (!socket.connected) {
@@ -258,6 +259,10 @@ const ChatWidget = ({ hideTrigger = false, openSignal = 0 } = {}) => {
 
     const handleConversationSelect = (conversationId) => {
         setActiveConversationId(conversationId)
+
+        if (window.matchMedia?.(MOBILE_CHAT_MEDIA_QUERY).matches) {
+            setIsSidebarVisible(false)
+        }
 
         if (!messagesByConversation[conversationId]) {
             void loadMessages(conversationId)
