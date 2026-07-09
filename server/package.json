@@ -8,7 +8,7 @@
     "dev": "node server.js",
     "build": "node --check server.js",
     "db:migrate": "node scripts/migrate.js",
-    "test": "node --test tests/gameEffectsRepository.test.js"
+    "test": "node --test tests/gameEffectsRepository.test.js tests/chatCryptoService.test.js"
   },
   "keywords": [],
   "author": "",

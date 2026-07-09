@@ -52,6 +52,7 @@ npm run db:migrate
 | `020_user_privacy_settings.sql` | Per-user privacy modes, legacy permission migration and automatic defaults |
 | `021_game_effects_runtime_metadata.sql` | Runtime balance metadata for existing `game_effects` rows |
 | `022_garbage_rain_balance_metadata.sql` | Additional `garbage_rain` balance metadata |
+| `023_chat_schema.sql` | Direct chat conversations, members, encrypted message storage and read state |
 
 Миграции используют `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`
 и `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, поэтому baseline можно применить

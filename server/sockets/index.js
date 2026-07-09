@@ -1,6 +1,7 @@
 import { registerLobbyHandlers } from './lobby.socket.js'
 import { registerGameHandlers } from './game.handlers.js'
 import { registerSupportHandlers } from './support.socket.js'
+import { registerChatHandlers } from './chat.socket.js'
 import {
     emitPresenceAfterDisconnect,
     emitPresenceToFriends,
@@ -30,6 +31,7 @@ import {
     setActivityFeedIo,
 } from '../services/activityFeedService.js'
 import { setFriendsRealtimeIo } from '../services/friendsRealtimeService.js'
+import { setChatRealtimeIo } from '../services/chatRealtimeService.js'
 
 const getWinnerAfterPlayerLeft = (room, removedPlayer) => {
     const players = getRoomPlayers(room)
@@ -56,6 +58,7 @@ export const registerSocketHandlers = (io) => {
     setSupportRealtimeIo(io)
     setActivityFeedIo(io)
     setFriendsRealtimeIo(io)
+    setChatRealtimeIo(io)
     io.use(socketAuthMiddleware)
 
     io.on('connection', (socket) => {
@@ -95,6 +98,7 @@ export const registerSocketHandlers = (io) => {
         registerMatchmakingHandlers(io, socket)
         registerSupportHandlers(io, socket)
         registerFriendsHandlers(io, socket)
+        registerChatHandlers(io, socket)
         void emitPresenceToFriends(socket.data.user?.id, true).catch((error) => {
             console.error('presence connect emit error', error)
         })

@@ -118,8 +118,7 @@ export const getUserActionsService = async ({ viewerId, targetUserId }) => {
             }),
             message: createAction({
                 allowed: messageAllowed,
-                available: false,
-                reason: 'FEATURE_NOT_AVAILABLE',
+                available: true,
             }),
             profile: createAction({
                 allowed: profileAllowed,
