@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import useMediaQuery from '@/shared/hooks/useMediaQuery'
 import AudioControl from '@/widgets/AudioControl'
+import ChatWidget from '@/widgets/ChatWidget'
 import './SideRailLayout.css'
 
 const ActivityFeed = lazy(() => import('@/widgets/ActivityFeed'))
@@ -95,6 +96,7 @@ const SideRailLayout = ({ children }) => {
             )}
 
             <AudioControl />
+            <ChatWidget />
         </div>
     )
 }

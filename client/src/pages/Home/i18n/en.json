@@ -176,6 +176,35 @@
       "chatError": "Could not open conversation"
     }
   },
+  "chatWidget": {
+    "ariaLabel": "Chats",
+    "open": "Open chat",
+    "close": "Close chat",
+    "eyebrow": "Messages",
+    "title": "Chats",
+    "activeChat": "Active chat",
+    "hideSidebar": "Hide chat list",
+    "showSidebar": "Show chat list",
+    "loadingChats": "Loading chats...",
+    "loadingMessages": "Loading messages...",
+    "noChat": "Choose a chat",
+    "unknownUser": "User",
+    "emptyConversation": "No messages yet",
+    "emptyTitle": "No chat selected",
+    "emptyText": "Choose a chat on the left to open the conversation.",
+    "noChatsTitle": "No chats yet",
+    "noChatsText": "Open a player profile and press Send message.",
+    "noMessagesTitle": "Start the conversation",
+    "noMessagesText": "Messages will appear here after sending.",
+    "placeholder": "Write a message...",
+    "chooseChat": "Choose a chat first",
+    "send": "Send",
+    "errors": {
+      "loadConversations": "Could not load chats",
+      "loadMessages": "Could not load messages",
+      "send": "Could not send message"
+    }
+  },
   "audioControl": {
     "ariaLabel": "Audio controls",
     "open": "Open audio controls",

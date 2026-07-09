@@ -28,6 +28,8 @@ const emitWithAck = (eventName, payload) => new Promise((resolve) => {
     socket.emit(eventName, payload, (response) => resolve(response || { success: false }))
 })
 
+const CHAT_OPEN_EVENT = 'pvp-tetris:chat-open'
+
 export const UserActionsProvider = ({ children }) => {
     const { t } = useTranslation()
     const navigate = useNavigate()
@@ -156,7 +158,12 @@ export const UserActionsProvider = ({ children }) => {
         setIsOpeningChat(true)
 
         try {
-            await chatAPI.createDirectConversation(player.id)
+            const response = await chatAPI.createDirectConversation(player.id)
+            window.dispatchEvent(new CustomEvent(CHAT_OPEN_EVENT, {
+                detail: {
+                    conversation: response.conversation,
+                },
+            }))
             notify(t('userActions.notifications.chatReady'), 'success')
             closeUserActions()
             return true
