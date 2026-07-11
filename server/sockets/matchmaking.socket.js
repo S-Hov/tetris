@@ -109,16 +109,22 @@ const getQueuePosition = (socketId) => {
     return index === -1 ? null : index + 1
 }
 
-const buildSearchingPayload = (entry) => ({
-    modeKey: entry.modeKey,
-    matchType: entry.matchType,
-    settings: entry.settings,
-    joinedAt: entry.joinedAt,
-    queueSize: queue.length,
-    position: Math.min(...getEntrySocketIds(entry).map((socketId) => getQueuePosition(socketId)).filter(Boolean)),
-    teamSize: entry.players.length,
-    neededTeamSize: entry.modeKey === TEAM_MODE ? 2 : 1,
-})
+const buildSearchingPayload = (entry) => {
+    const positions = getEntrySocketIds(entry)
+        .map((socketId) => getQueuePosition(socketId))
+        .filter(Number.isInteger)
+
+    return {
+        modeKey: entry.modeKey,
+        matchType: entry.matchType,
+        settings: entry.settings,
+        joinedAt: entry.joinedAt,
+        queueSize: queue.length,
+        position: positions.length > 0 ? Math.min(...positions) : 1,
+        teamSize: entry.players.length,
+        neededTeamSize: entry.modeKey === TEAM_MODE ? 2 : 1,
+    }
+}
 
 const emitSearchingToEntry = (io, entry) => {
     const payload = buildSearchingPayload(entry)
@@ -268,6 +274,12 @@ const enqueueOrMatchEntry = async (io, entry) => {
             source: 'matched-team',
             joinedAt: teammateEntry.joinedAt,
         }
+
+        // Confirm the completed team before room persistence starts. Without this
+        // event the second pair remains displayed as two solo queue entries while
+        // the server creates the 2v2 match.
+        emitSearchingToEntry(io, teamEntry)
+
         const opponentIndex = findCompatibleEntryIndex(teamEntry, (queuedEntry) => queuedEntry.players.length === targetTeamSize)
 
         if (opponentIndex === -1) {
