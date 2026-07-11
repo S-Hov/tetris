@@ -6,6 +6,7 @@ import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedPath } from '@/i
 import { useAuth } from '@/shared/hooks/useAuth.js'
 import {
     ensureSocketSession,
+    getStoredGuestSession,
     socket,
 } from '@/shared/api/socket'
 import notify from '@/utils/Notifications'
@@ -76,6 +77,7 @@ const TeamQueuePage = () => {
     const [settings] = useState(() => normalizeMatchSettings(location.state?.roomSettings || defaultMatchSettings))
     const matchType = settings.matchType === 'ranked' ? 'ranked' : 'casual'
     const isRanked = matchType === 'ranked'
+    const guestNickname = location.state?.guestNickname || getStoredGuestSession()?.nickname || ''
     const [party, setParty] = useState(null)
     const [partyIdInput, setPartyIdInput] = useState('')
     const [isBusy, setIsBusy] = useState(false)
@@ -98,12 +100,12 @@ const TeamQueuePage = () => {
     }, [currentLanguage, i18n])
 
     const ensurePlayerSession = useCallback(async () => {
-        if (!user) {
+        if (!user && isRanked) {
             throw new Error(t('teamQueue.notifications.loginRequired'))
         }
 
-        return await ensureSocketSession({ user })
-    }, [t, user])
+        return await ensureSocketSession(user ? { user } : { nickname: guestNickname })
+    }, [guestNickname, isRanked, t, user])
 
     useEffect(() => {
         searchingRef.current = searchState.isSearching

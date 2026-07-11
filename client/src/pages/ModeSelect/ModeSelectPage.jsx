@@ -295,12 +295,23 @@ const ModeSelectPage = () => {
     }
 
     const openTeamQueue = (intent = 'join') => {
+        if (!user && selectedPlayType === MATCH_PLAY_OPTIONS.RANKED) {
+            notify(t('modeSelect.notifications.loginForRanked'), 'warning')
+            return
+        }
+
+        if (!user && !isValidGuestNickname(guestNickname)) {
+            notify(t('modeSelect.notifications.guestNicknameRequired'), 'warning')
+            return
+        }
+
         navigate(getGamePath(`/game/${modeConfig.key}/party`), {
             state: {
                 modeKey: modeConfig.key,
                 modeTitle: translatedModeConfig.title,
                 modeIcon: modeConfig.icon,
                 roomSettings: getRoomSettings(selectedPlayType),
+                guestNickname: user ? undefined : guestNickname,
                 partyIntent: intent,
             },
         })
