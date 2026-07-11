@@ -402,13 +402,19 @@ const MatchPageGame = ({
     const currentRoomPlayers = roomPlayers.length > 0 ? roomPlayers : getRoomPlayers(matchRoom)
     const selfPlayer = currentRoomPlayers.find((player) => player.socketId === socket.id) || null
     const selfTeamNumber = selfPlayer?.teamNumber || null
-    const targetablePlayers = isOnline
+    const isTeamMatch = isOnline && modeKey === '2v2'
+    const teammatePlayers = isTeamMatch
         ? currentRoomPlayers.filter((player) => (
-            selfTeamNumber &&
-            player.socketId !== socket.id &&
-            player.teamNumber !== selfTeamNumber &&
-            !player.gameState?.isGameOver
+            player.socketId !== socket.id && player.teamNumber === selfTeamNumber
         ))
+        : []
+    const opponentPlayers = isOnline
+        ? currentRoomPlayers.filter((player) => (
+            player.socketId !== socket.id && player.teamNumber !== selfTeamNumber
+        ))
+        : []
+    const targetablePlayers = isOnline
+        ? opponentPlayers.filter((player) => !player.gameState?.isGameOver)
         : []
     const shouldPickTarget = isOnline && modeKey !== '1v1' && targetablePlayers.length > 1
     const isDefeated = matchResult === 'lose' || isSoloGameOver
@@ -703,7 +709,7 @@ const MatchPageGame = ({
                 level={derivedState.level}
                 record={!isOnline ? Math.max(soloRecord, derivedState.score) : soloRecord}
             />
-            {isOnline ? (
+            {isOnline && !isTeamMatch ? (
                 <PlayerSummaryPanel
                     title="Opponent"
                     score={opponentState.score}
@@ -711,7 +717,7 @@ const MatchPageGame = ({
                     level={opponentState.level}
                     status={isMatchFinished ? 'Round ended' : opponentState.isGameOver ? 'Game Over' : 'Playing'}
                 />
-            ) : (
+            ) : !isOnline ? (
                 <>
                     {isSoloDebuffsEnabled ? (
                         <SoloDebuffTimerPanel
@@ -722,7 +728,7 @@ const MatchPageGame = ({
                     ) : null}
                     <ActionsPanel actions={actions} />
                 </>
-            )}
+            ) : null}
         </>
     )
 
@@ -735,19 +741,45 @@ const MatchPageGame = ({
         />
     )
 
-    const secondaryColumn = isOnline ? (
+    const secondaryColumn = isTeamMatch ? (
+        <div className="game-team-overview">
+            <section className="game-team-overview__group game-team-overview__group--allies">
+                <header className="game-team-overview__header">
+                    <span>Our team</span>
+                    <strong>Teammate</strong>
+                </header>
+                <div className="game-team-overview__boards game-team-overview__boards--ally">
+                    {teammatePlayers.map((player) => (
+                        <SecondaryBoardCard key={player.socketId} player={player} fallbackLabel="Teammate" />
+                    ))}
+                </div>
+            </section>
+
+            <section className="game-team-overview__group game-team-overview__group--opponents">
+                <header className="game-team-overview__header">
+                    <span>Opponent team</span>
+                    <strong>{opponentPlayers.length} players</strong>
+                </header>
+                <div className="game-team-overview__boards game-team-overview__boards--opponents">
+                    {opponentPlayers.map((player) => (
+                        <SecondaryBoardCard key={player.socketId} player={player} fallbackLabel="Opponent" />
+                    ))}
+                </div>
+            </section>
+        </div>
+    ) : isOnline ? (
         <>
             <h2 className="game-layout__secondary-title">
-                {targetablePlayers.length > 1 ? 'Opponent Boards' : 'Opponent Board'}
+                {opponentPlayers.length > 1 ? 'Opponent Boards' : 'Opponent Board'}
             </h2>
             <div className="game-layout__secondary-stack">
-                {(targetablePlayers.length > 0 ? targetablePlayers : [{ socketId: 'opponent', gameState: opponentState }]).map((player) => (
+                {(opponentPlayers.length > 0 ? opponentPlayers : [{ socketId: 'opponent', gameState: opponentState }]).map((player) => (
                     <div className="game-layout__secondary-board" key={player.socketId}>
-                        {targetablePlayers.length > 1 ? (
+                        {opponentPlayers.length > 1 ? (
                             <span className="game-layout__secondary-name">{player.username || 'Opponent'}</span>
                         ) : null}
                         <TetrisBoard
-                            board={player.gameState?.board || (targetablePlayers.length > 0 ? EMPTY_OPPONENT_BOARD : opponentState.board)}
+                            board={player.gameState?.board || (opponentPlayers.length > 0 ? EMPTY_OPPONENT_BOARD : opponentState.board)}
                             clearingRows={[]}
                             compact
                         />
@@ -860,7 +892,7 @@ const MatchPageGame = ({
 
     return (
         <GameLayout
-            mode={mode}
+            mode={isTeamMatch ? { ...mode, title: '2v2 Match' } : mode}
             score={derivedState.score}
             board={boardWithPiece}
             clearingRows={derivedState.clearingRows}
@@ -876,9 +908,24 @@ const MatchPageGame = ({
             overlay={overlay}
             banner={null}
             secondaryColumn={secondaryColumn}
+            isTeamLayout={isTeamMatch}
         />
     )
 }
+
+const SecondaryBoardCard = ({ player, fallbackLabel }) => (
+    <article className={`game-team-board ${player.gameState?.isGameOver ? 'game-team-board--finished' : ''}`}>
+        <header className="game-team-board__header">
+            <span>{player.username || fallbackLabel}</span>
+            <strong>{Number(player.gameState?.score) || 0}</strong>
+        </header>
+        <TetrisBoard
+            board={player.gameState?.board || EMPTY_OPPONENT_BOARD}
+            clearingRows={[]}
+            compact
+        />
+    </article>
+)
 
 const MatchIntroOverlay = ({ self, opponent, secondsLeft }) => (
     <div className="match-intro" role="dialog" aria-modal="true" aria-label="Знакомство соперников">

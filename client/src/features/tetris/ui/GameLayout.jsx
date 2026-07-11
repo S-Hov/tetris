@@ -20,9 +20,14 @@ const GameLayout = ({
     overlay = null,
     banner = null,
     secondaryColumn = null,
+    isTeamLayout = false,
 }) => {
     return (
-        <section className={joinClassNames('game-layout', `game-layout--${mode.variant}`)}>
+        <section className={joinClassNames(
+            'game-layout',
+            `game-layout--${mode.variant}`,
+            isTeamLayout && 'game-layout--team'
+        )}>
             <div className="container game-layout__container">
                 <div className="game-layout__primary-column">
                     <header className="game-layout__header">

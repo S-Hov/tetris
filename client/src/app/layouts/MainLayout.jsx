@@ -24,7 +24,7 @@ const MainLayout = ({ children, hideFooter = false }) => {
     return (
         <>
             <CyberBg />
-            <HeroHeader />
+            {!isGamePlayPage && <HeroHeader />}
             <main className={`main-layout__main ${isGamePlayPage ? 'main-layout__main--game' : ''}`}>
                 {isGamePlayPage ? content : (
                     <SideRailLayout>

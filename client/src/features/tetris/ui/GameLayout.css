@@ -122,6 +122,117 @@
     white-space: nowrap;
 }
 
+.game-layout--team .game-layout__container {
+    --team-secondary-width: min(34vw, 560px);
+    --team-mini-board-width: min(
+        calc((var(--team-secondary-width) - 32px) / 2),
+        calc((var(--game-board-width) - 72px) / 2),
+        230px
+    );
+    grid-template-columns: minmax(0, auto) var(--team-secondary-width);
+    gap: clamp(16px, 2vw, 30px);
+}
+
+.game-layout--team .game-layout__secondary-column {
+    width: var(--team-secondary-width);
+    height: calc((var(--game-board-width) * 2) + clamp(28px, 3.4vh, 42px));
+    min-height: 0;
+}
+
+.game-team-overview {
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: clamp(10px, 1.4vh, 16px);
+}
+
+.game-team-overview__group {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: clamp(6px, 0.8vh, 10px);
+    padding: clamp(8px, 1vh, 12px);
+    overflow: hidden;
+    border: 1px solid var(--turquoise-border-strong);
+    border-radius: var(--radius-card-1);
+    background: rgba(2, 10, 22, 0.42);
+    backdrop-filter: var(--medium-blur);
+}
+
+.game-team-overview__group--allies {
+    border-color: color-mix(in srgb, var(--turquoise-bright) 58%, transparent);
+}
+
+.game-team-overview__group--opponents {
+    border-color: color-mix(in srgb, #ff42c6 46%, transparent);
+}
+
+.game-team-overview__header,
+.game-team-board__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+}
+
+.game-team-overview__header span {
+    color: var(--turquoise-lite);
+    font-size: clamp(0.68rem, 0.8vw, 0.8rem);
+    text-transform: uppercase;
+}
+
+.game-team-overview__header strong {
+    font-size: clamp(0.78rem, 0.9vw, 0.9rem);
+}
+
+.game-team-overview__boards {
+    min-height: 0;
+    display: grid;
+    align-items: start;
+    justify-content: center;
+    gap: clamp(8px, 1vw, 14px);
+}
+
+.game-team-overview__boards--ally {
+    grid-template-columns: var(--team-mini-board-width);
+}
+
+.game-team-overview__boards--opponents {
+    grid-template-columns: repeat(2, var(--team-mini-board-width));
+}
+
+.game-team-board {
+    --tetris-board-width: var(--team-mini-board-width);
+    width: var(--team-mini-board-width);
+    min-width: 0;
+}
+
+.game-team-board__header {
+    min-height: 20px;
+    margin-bottom: 5px;
+    font-size: clamp(0.68rem, 0.8vw, 0.8rem);
+}
+
+.game-team-board__header span {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--text-color);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.game-team-board__header strong {
+    flex: 0 0 auto;
+    color: var(--turquoise-lite);
+}
+
+.game-team-board--finished {
+    opacity: 0.58;
+    filter: grayscale(0.45);
+}
+
 @keyframes board-effect-shake {
     0%, 100% {
         transform: translate3d(0, 0, 0) rotate(0deg);
@@ -1405,6 +1516,18 @@
         --game-board-width: min(42vw, calc((100dvh - 220px) / 2), 380px);
         --game-secondary-board-width: min(18vw, calc((100dvh - 270px) / 2), 190px);
         --game-sidebar-width: clamp(170px, 24vw, 220px);
+    }
+
+    .game-layout--team .game-layout__container {
+        --game-board-width: min(34vw, calc((100dvh - 220px) / 2), 380px);
+        --game-sidebar-width: clamp(150px, 20vw, 190px);
+        --team-secondary-width: min(28vw, 320px);
+        --team-mini-board-width: min(
+            calc((var(--team-secondary-width) - 24px) / 2),
+            calc((var(--game-board-width) - 64px) / 2),
+            170px
+        );
+        gap: 14px;
     }
 }
 
