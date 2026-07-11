@@ -16,6 +16,7 @@ const parties = new Map()
 const SUPPORTED_MODE = '1v1'
 const TEAM_MODE = '2v2'
 const MATCH_TYPES = new Set(['ranked', 'casual'])
+const ALLOW_SAME_BROWSER_PLAYERS = String(process.env.MATCHMAKING_ALLOW_SAME_BROWSER_PLAYERS).toLowerCase() === 'true'
 
 const normalizeBoolean = (value, fallback) => (
     typeof value === 'boolean' ? value : fallback
@@ -45,6 +46,7 @@ const createQueuePlayer = (socket) => {
         username: user.username || user.email || 'Player',
         avatarUrl: user.avatarUrl || null,
         rankStats: user.rankStats || null,
+        browserId: socket.data.browserId || null,
         isReady: true,
         gameState: null,
         teamId: null,
@@ -72,12 +74,19 @@ const getEntrySocketIds = (entry) => entry.players.map((player) => player.socket
 
 const getEntryUserIds = (entry) => entry.players.map((player) => player.userId)
 
+const getEntryBrowserIds = (entry) => entry.players
+    .map((player) => player.browserId)
+    .filter(Boolean)
+
 const haveSharedPlayer = (entry, candidate) => {
     const entrySocketIds = new Set(getEntrySocketIds(entry))
     const entryUserIds = new Set(getEntryUserIds(entry))
+    const entryBrowserIds = new Set(getEntryBrowserIds(entry))
 
     return candidate.players.some((player) => (
-        entrySocketIds.has(player.socketId) || entryUserIds.has(player.userId)
+        entrySocketIds.has(player.socketId) ||
+        entryUserIds.has(player.userId) ||
+        (!ALLOW_SAME_BROWSER_PLAYERS && player.browserId && entryBrowserIds.has(player.browserId))
     ))
 }
 

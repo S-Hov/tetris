@@ -61,6 +61,7 @@ npm run dev
 | `CORS_ORIGINS` | Список разрешённых origins через запятую |
 | `DB_USERNAME`, `DB_HOST`, `DB_DATABASE`, `DB_PASSWORD`, `DB_PORT` | Подключение PostgreSQL |
 | `TURNSTILE_SECRET_KEY` | Проверка Cloudflare Turnstile, если включена |
+| `MATCHMAKING_ALLOW_SAME_BROWSER_PLAYERS` | Разрешает разным гостевым вкладкам одного браузера попадать в один матч; включать только для локального тестирования |
 | `EMAIL_*`, `RESEND_API_KEY`, `BREVO_API_KEY` | Отправка email-кодов и писем поддержки |
 | `TELEGRAM_BOT_TOKEN`, `ADMIN_TELEGRAM_CHAT_ID` | Telegram-интеграция поддержки |
 | `*_CLIENT_ID`, `*_CLIENT_SECRET` | OAuth providers: Google, Discord, Yandex, VK, GitHub |
@@ -116,7 +117,7 @@ JSON headers, разбирает unified response `{ success, message, data }` �
 | Режим | Как работает |
 | --- | --- |
 | Авторизованный игрок | Клиент передаёт `{ mode: 'authenticated' }`, сервер берёт JWT из cookie |
-| Гость | Клиент хранит `guestId` и `nickname` в `localStorage`, передаёт их в handshake |
+| Гость | Клиент хранит nickname и browser ID в `localStorage`, отдельный guest ID вкладки в `sessionStorage` и передаёт их в handshake |
 
 `ensureSocketSession({ user, nickname })` сравнивает новый auth payload со
 старым, переподключает socket при необходимости и возвращает подключённый

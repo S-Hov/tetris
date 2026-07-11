@@ -2,6 +2,8 @@ import { io } from 'socket.io-client'
 import { getAnalyticsSessionKey } from '@/shared/api/analytics'
 
 const GUEST_SESSION_STORAGE_KEY = 'tetris.guest-session'
+const GUEST_TAB_SESSION_STORAGE_KEY = 'tetris.guest-tab-session-id'
+const BROWSER_ID_STORAGE_KEY = 'tetris.browser-id'
 const GUEST_NICKNAME_MIN_LENGTH = 2
 const GUEST_NICKNAME_MAX_LENGTH = 24
 
@@ -23,6 +25,50 @@ const createGuestId = () => {
     }
 
     return `guest-${Date.now()}-${Math.random().toString(16).slice(2)}`
+}
+
+const isValidGuestId = (value) => (
+    typeof value === 'string' && value.trim().length >= 8 && value.trim().length <= 128
+)
+
+const getGuestTabId = (fallbackId = null) => {
+    if (typeof window === 'undefined') {
+        return null
+    }
+
+    try {
+        const storedTabId = window.sessionStorage.getItem(GUEST_TAB_SESSION_STORAGE_KEY)
+
+        if (isValidGuestId(storedTabId)) {
+            return storedTabId.trim()
+        }
+
+        const tabId = createGuestId()
+        window.sessionStorage.setItem(GUEST_TAB_SESSION_STORAGE_KEY, tabId)
+        return tabId
+    } catch {
+        return isValidGuestId(fallbackId) ? fallbackId.trim() : createGuestId()
+    }
+}
+
+const getBrowserId = () => {
+    if (typeof window === 'undefined') {
+        return null
+    }
+
+    try {
+        const storedBrowserId = window.localStorage.getItem(BROWSER_ID_STORAGE_KEY)
+
+        if (isValidGuestId(storedBrowserId)) {
+            return storedBrowserId.trim()
+        }
+
+        const browserId = createGuestId()
+        window.localStorage.setItem(BROWSER_ID_STORAGE_KEY, browserId)
+        return browserId
+    } catch {
+        return null
+    }
 }
 
 export const normalizeGuestNickname = (value) => {
@@ -55,12 +101,12 @@ export const getStoredGuestSession = () => {
 
         const parsedValue = JSON.parse(rawValue)
 
-        if (!parsedValue?.id || !isValidGuestNickname(parsedValue.nickname)) {
+        if (!isValidGuestNickname(parsedValue?.nickname)) {
             return null
         }
 
         return {
-            id: parsedValue.id,
+            id: getGuestTabId(parsedValue.id),
             nickname: normalizeGuestNickname(parsedValue.nickname),
         }
     } catch {
@@ -77,7 +123,7 @@ export const saveGuestSession = (nickname) => {
 
     const previousSession = getStoredGuestSession()
     const guestSession = {
-        id: previousSession?.id || createGuestId(),
+        id: previousSession?.id || getGuestTabId(),
         nickname: normalizedNickname,
     }
 
@@ -88,9 +134,10 @@ export const saveGuestSession = (nickname) => {
 
 const getSocketAuthPayload = ({ user, nickname } = {}) => {
     const analyticsSessionKey = getAnalyticsSessionKey()
+    const browserId = getBrowserId()
 
     if (user?.id) {
-        return { mode: 'authenticated', analyticsSessionKey }
+        return { mode: 'authenticated', analyticsSessionKey, browserId }
     }
 
     const guestSession = nickname
@@ -106,6 +153,7 @@ const getSocketAuthPayload = ({ user, nickname } = {}) => {
         guestId: guestSession.id,
         nickname: guestSession.nickname,
         analyticsSessionKey,
+        browserId,
     }
 }
 

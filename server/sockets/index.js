@@ -64,6 +64,7 @@ export const registerSocketHandlers = (io) => {
     io.on('connection', (socket) => {
         console.log('Socket connected:', socket.id, socket.data.user?.id)
         socket.data.analyticsSessionKey = socket.handshake.auth?.analyticsSessionKey || `socket:${socket.id}`
+        socket.data.browserId = socket.handshake.auth?.browserId || null
 
         void upsertUserSessionRepo({
             userId: socket.data.user?.id,
