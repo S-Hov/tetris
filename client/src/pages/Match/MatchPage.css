@@ -103,6 +103,59 @@
     gap: 1rem;
 }
 
+.match-intro__panel--team {
+    width: min(1100px, 100%);
+    max-height: calc(100svh - 32px);
+    gap: 0.8rem;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.match-intro__teams {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.match-intro-team {
+    display: grid;
+    gap: 0.55rem;
+}
+
+.match-intro-team > h3 {
+    margin: 0;
+    color: var(--turquoise-lite);
+    font-family: var(--font-1);
+    font-size: 0.78rem;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.match-intro-team__players {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+}
+
+.match-intro__panel--team .match-intro-player {
+    gap: 0.45rem;
+    padding: 0.75rem;
+}
+
+.match-intro__panel--team .match-intro-player__avatar {
+    width: clamp(56px, 7vh, 76px);
+}
+
+.match-intro__panel--team .match-intro-player__stats small {
+    padding: 0.35rem;
+}
+
+.match-intro__versus--team {
+    width: 58px;
+    justify-self: center;
+}
+
 .match-intro__versus {
     width: 72px;
     aspect-ratio: 1;
@@ -302,6 +355,11 @@
         padding: 1rem;
     }
 
+    .match-intro__panel--team {
+        max-height: calc(100svh - 16px);
+        padding: 0.65rem;
+    }
+
     .match-intro__players {
         grid-template-columns: 1fr;
     }
@@ -313,6 +371,24 @@
 
     .match-intro-player__stats {
         grid-template-columns: 1fr;
+    }
+
+    .match-intro__panel--team .match-intro-player {
+        padding: 0.5rem;
+    }
+
+    .match-intro__panel--team .match-intro-player__avatar {
+        width: 46px;
+    }
+
+    .match-intro__panel--team .match-intro-player__stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.3rem;
+    }
+
+    .match-intro__panel--team .match-intro-player__stats small {
+        padding: 0.25rem;
+        font-size: 0.68rem;
     }
 
     .board-danger-status {

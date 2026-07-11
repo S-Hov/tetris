@@ -647,7 +647,11 @@ const MatchPageGame = ({
         return undefined
     }, [randomPieceGenerator, setGameState, targetChoice, targetablePlayers.length])
 
-    const introPlayers = getIntroPlayers(matchRoom)
+    const introTeams = getIntroTeams(currentRoomPlayers, socket.id)
+    const introPlayers = {
+        self: introTeams.allies[0] || null,
+        opponent: introTeams.opponents[0] || null,
+    }
 
     const handleBackToModeSelect = () => {
         navigate(getLocalizedGamePath('/game/solo'), {
@@ -866,8 +870,10 @@ const MatchPageGame = ({
             {isIntroVisible ? (
                 <MatchIntroOverlay
                     secondsLeft={introSecondsLeft}
+                    isTeamMatch={isTeamMatch}
                     opponent={introPlayers.opponent}
                     self={introPlayers.self}
+                    teams={introTeams}
                 />
             ) : null}
             {shouldShowCountdown ? <GameCountdownOverlay value={countdownValue} /> : null}
@@ -927,20 +933,36 @@ const SecondaryBoardCard = ({ player, fallbackLabel }) => (
     </article>
 )
 
-const MatchIntroOverlay = ({ self, opponent, secondsLeft }) => (
+const MatchIntroOverlay = ({ self, opponent, secondsLeft, isTeamMatch, teams }) => (
     <div className="match-intro" role="dialog" aria-modal="true" aria-label="Знакомство соперников">
         <div className="match-intro__backdrop" aria-hidden="true" />
-        <div className="match-intro__panel">
+        <div className={`match-intro__panel ${isTeamMatch ? 'match-intro__panel--team' : ''}`}>
             <div className="match-intro__heading">
                 <span>Match found</span>
-                <h2>Соперники готовы</h2>
+                <h2>{isTeamMatch ? 'Команды готовы' : 'Соперники готовы'}</h2>
             </div>
 
-            <div className="match-intro__players">
-                <IntroPlayerCard title="Вы" player={self} />
-                <div className="match-intro__versus">VS</div>
-                <IntroPlayerCard title="Соперник" player={opponent} />
-            </div>
+            {isTeamMatch ? (
+                <div className="match-intro__teams">
+                    <IntroTeam
+                        label="Команда 1"
+                        players={teams?.allies || []}
+                        titles={['Вы', 'Тиммейт']}
+                    />
+                    <div className="match-intro__versus match-intro__versus--team">VS</div>
+                    <IntroTeam
+                        label="Команда 2"
+                        players={teams?.opponents || []}
+                        titles={['Соперник 1', 'Соперник 2']}
+                    />
+                </div>
+            ) : (
+                <div className="match-intro__players">
+                    <IntroPlayerCard title="Вы" player={self} />
+                    <div className="match-intro__versus">VS</div>
+                    <IntroPlayerCard title="Соперник" player={opponent} />
+                </div>
+            )}
 
             <div className="match-intro__footer">
                 <i className="fas fa-bolt"></i>
@@ -948,6 +970,21 @@ const MatchIntroOverlay = ({ self, opponent, secondsLeft }) => (
             </div>
         </div>
     </div>
+)
+
+const IntroTeam = ({ label, players, titles }) => (
+    <section className="match-intro-team">
+        <h3>{label}</h3>
+        <div className="match-intro-team__players">
+            {players.map((player, index) => (
+                <IntroPlayerCard
+                    key={player.socketId || player.userId || index}
+                    title={titles[index] || `Игрок ${index + 1}`}
+                    player={player}
+                />
+            ))}
+        </div>
+    </section>
 )
 
 const TargetOverlay = ({ ability, secondsLeft, targets, onChoose }) => (
@@ -1018,12 +1055,17 @@ const IntroPlayerCard = ({ title, player }) => {
     )
 }
 
-const getIntroPlayers = (matchRoom) => {
-    const players = Array.isArray(matchRoom?.players) ? matchRoom.players : []
-    const self = players.find((player) => player.socketId === socket.id) || players[0] || null
-    const opponent = players.find((player) => player.socketId !== socket.id) || players[1] || null
+const getIntroTeams = (players = [], currentSocketId) => {
+    const self = players.find((player) => player.socketId === currentSocketId) || players[0] || null
+    const selfTeamNumber = self?.teamNumber
+    const allies = players
+        .filter((player) => player.teamNumber === selfTeamNumber)
+        .sort((left, right) => (
+            Number(right.socketId === currentSocketId) - Number(left.socketId === currentSocketId)
+        ))
+    const opponents = players.filter((player) => player.teamNumber !== selfTeamNumber)
 
-    return { self, opponent }
+    return { allies, opponents }
 }
 
 const getAssetUrl = (value) => {

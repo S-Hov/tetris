@@ -17,13 +17,29 @@ const getMatchByRoomIdQuery = `
     LIMIT 1
 `
 
-const mapPlayerIdentity = (player) => ({
-    userId: Number.isInteger(player.userId) ? player.userId : null,
-    isRegistered: player.isRegistered ?? Number.isInteger(player.userId),
-    nickname: player.username || player.nickname || 'Guest',
-})
+const mapPlayerIdentity = (player) => {
+    const userId = Number.isInteger(player.userId) ? player.userId : null
+    const isRegistered = player.isRegistered ?? Boolean(userId)
+    const identityValue = player.userId ?? player.socketId
 
-const getPlayerLookupClause = ({ userId, nickname, isRegistered }) => {
+    return {
+        userId,
+        isRegistered,
+        nickname: player.username || player.nickname || 'Guest',
+        playerKey: identityValue === null || identityValue === undefined
+            ? null
+            : `${isRegistered ? 'user' : 'guest'}:${String(identityValue)}`,
+    }
+}
+
+const getPlayerLookupClause = ({ playerKey, userId, nickname, isRegistered }) => {
+    if (playerKey) {
+        return {
+            clause: 'player_key = $2',
+            values: [playerKey],
+        }
+    }
+
     if (userId) {
         return {
             clause: 'user_id = $2',
@@ -83,7 +99,7 @@ const upsertMatchPlayer = async (client, { matchId, teamId, player }) => {
 
     const existingPlayer = await client.query(
         `
-        SELECT id, match_id, team_id, user_id, is_registered, nickname
+        SELECT id, match_id, team_id, user_id, player_key, is_registered, nickname
         FROM match_players
         WHERE match_id = $1 AND ${lookup.clause}
         ORDER BY id DESC
@@ -96,7 +112,7 @@ const upsertMatchPlayer = async (client, { matchId, teamId, player }) => {
         const reconnectedPlayer = await client.query(
             `
             UPDATE match_players
-            SET team_id = $2, nickname = $3, is_registered = $4, left_at = NULL
+            SET team_id = $2, nickname = $3, is_registered = $4, player_key = $5, left_at = NULL
             WHERE id = $1
             RETURNING id, match_id, team_id, user_id, is_registered, nickname
             `,
@@ -105,6 +121,7 @@ const upsertMatchPlayer = async (client, { matchId, teamId, player }) => {
                 teamId,
                 identity.nickname,
                 identity.isRegistered,
+                identity.playerKey,
             ]
         )
 
@@ -113,14 +130,15 @@ const upsertMatchPlayer = async (client, { matchId, teamId, player }) => {
 
     const insertedPlayer = await client.query(
         `
-        INSERT INTO match_players (match_id, team_id, user_id, is_registered, nickname)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING id, match_id, team_id, user_id, is_registered, nickname
+        INSERT INTO match_players (match_id, team_id, user_id, player_key, is_registered, nickname)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id, match_id, team_id, user_id, player_key, is_registered, nickname
         `,
         [
             matchId,
             teamId,
             identity.userId,
+            identity.playerKey,
             identity.isRegistered,
             identity.nickname,
         ]
@@ -135,7 +153,7 @@ const findMatchPlayerByIdentity = async (client, { matchId, player }) => {
 
     const result = await client.query(
         `
-        SELECT id, match_id, team_id, user_id, is_registered, nickname, score, lines_cleared, level_reached, result
+        SELECT id, match_id, team_id, user_id, player_key, is_registered, nickname, score, lines_cleared, level_reached, result
         FROM match_players
         WHERE match_id = $1 AND ${lookup.clause}
         ORDER BY id DESC
@@ -587,6 +605,7 @@ export const createSoloRecordMatchRepo = async ({ userId, username, stats }) => 
                 match_id,
                 team_id,
                 user_id,
+                player_key,
                 is_registered,
                 nickname,
                 score,
@@ -594,9 +613,9 @@ export const createSoloRecordMatchRepo = async ({ userId, username, stats }) => 
                 level_reached,
                 result
             )
-            VALUES ($1, $2, $3, TRUE, $4, $5, $6, $7, 'lose')
+            VALUES ($1, $2, $3, $4, TRUE, $5, $6, $7, $8, 'lose')
             `,
-            [match.id, team.id, userId, username || 'Player', score, linesCleared, levelReached]
+            [match.id, team.id, userId, `user:${userId}`, username || 'Player', score, linesCleared, levelReached]
         )
 
         await client.query(
@@ -827,6 +846,7 @@ export const getUserMatchDetailsRepo = async ({ userId, matchId }) => {
                 match_players.match_id,
                 match_players.team_id,
                 match_players.user_id,
+                match_players.player_key,
                 match_players.is_registered,
                 match_players.nickname,
                 match_players.score,

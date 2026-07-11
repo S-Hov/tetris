@@ -417,6 +417,7 @@ donations
 | `match_id` | `bigint` | нет |  | матч |
 | `team_id` | `bigint` | да |  | команда внутри матча |
 | `user_id` | `integer` | да |  | связанный пользователь |
+| `player_key` | `varchar(180)` | нет |  | стабильная identity участника: аккаунт или гостевая сессия |
 | `is_registered` | `boolean` | нет | `true` | зарегистрированный ли игрок |
 | `nickname` | `varchar(100)` | да |  | ник на момент матча |
 | `score` | `integer` | нет | `0` | очки |
@@ -451,11 +452,13 @@ donations
 - `idx_match_players_team_id` на `team_id`
 - `idx_match_players_user_id` на `user_id`
 - `idx_match_players_result` на `result`
+- UNIQUE `idx_match_players_match_player_key_unique` на `(match_id, player_key)`
 
 Замечания:
 
 - `user_id` nullable, значит таблица явно допускает незарегистрированных или исторически отвязанных игроков
 - `nickname` хранится прямо в матче, поэтому имя игрока в истории не зависит от будущих изменений в `users.username`
+- `player_key` не позволяет гостям с одинаковыми никами перезаписывать друг друга внутри одного матча
 
 ### `match_events`
 
