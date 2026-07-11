@@ -137,14 +137,22 @@ export const useMatchSocketSync = ({
             notify(message || 'Не удалось сохранить данные матча', 'error')
         }
 
+        const handlePersistenceSuccess = ({ message } = {}) => {
+            if (message) {
+                notify(message, 'success')
+            }
+        }
+
         socket.on('opponent:update', handleOpponentUpdate)
         socket.on('room:state', handleRoomState)
         socket.on('persistence:error', handlePersistenceError)
+        socket.on('persistence:success', handlePersistenceSuccess)
 
         return () => {
             socket.off('opponent:update', handleOpponentUpdate)
             socket.off('room:state', handleRoomState)
             socket.off('persistence:error', handlePersistenceError)
+            socket.off('persistence:success', handlePersistenceSuccess)
         }
     }, [enabled])
 

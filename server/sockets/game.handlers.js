@@ -8,25 +8,111 @@ import {
     finishRoomMatchService,
     recordMatchEventService,
 } from '../services/matchService.js'
-import { getActiveGameEffectByKeyRepo } from '../repositories/gameEffectsRepository.js'
+import { getActiveGameEffectsRepo } from '../repositories/gameEffectsRepository.js'
 import { publishActivityEvent, publishPlayerActivityEvent } from '../services/activityFeedService.js'
 
 const PLAYER_SNAPSHOT_PERSIST_DELAY_MS = 1500
+const PERSISTENCE_TIMEOUT_MS = 4000
+const EFFECT_CACHE_TTL_MS = 60_000
+const PERSIST_PLAYER_SNAPSHOTS = String(process.env.MATCH_PERSIST_PLAYER_SNAPSHOTS).toLowerCase() === 'true'
 const pendingPlayerSnapshotPersists = new Map()
+let activeEffectCache = new Map()
+let activeEffectCacheLoadedAt = 0
+let activeEffectCachePromise = null
 
-const notifyPersistenceError = (io, roomId, message = 'Не удалось сохранить данные матча') => {
+const notifyPersistenceError = (io, roomId, scope, message = 'Не удалось сохранить данные матча') => {
     io.to(roomId).emit('persistence:error', {
         roomId,
+        scope,
         message,
     })
 }
 
-const runPersistenceTask = (io, roomId, task, message) => {
-    void task().catch((error) => {
-        console.error(message, error)
-        notifyPersistenceError(io, roomId)
+const notifyPersistenceSuccess = (io, roomId, scope, message) => {
+    io.to(roomId).emit('persistence:success', {
+        roomId,
+        scope,
+        message,
     })
 }
+
+const withPersistenceTimeout = async (task) => {
+    let timeoutId
+
+    try {
+        return await Promise.race([
+            task(),
+            new Promise((_, reject) => {
+                timeoutId = setTimeout(() => reject(new Error('Persistence timeout')), PERSISTENCE_TIMEOUT_MS)
+            }),
+        ])
+    } finally {
+        clearTimeout(timeoutId)
+    }
+}
+
+const runPersistenceTask = (io, roomId, task, {
+    errorLog,
+    errorMessage = 'Не удалось сохранить данные матча',
+    notifyOnError = true,
+    scope,
+    successMessage = null,
+}) => {
+    void withPersistenceTimeout(task)
+        .then(() => {
+            if (successMessage) {
+                notifyPersistenceSuccess(io, roomId, scope, successMessage)
+            }
+        })
+        .catch((error) => {
+            console.error(errorLog, error)
+
+            if (notifyOnError) {
+                notifyPersistenceError(io, roomId, scope, errorMessage)
+            }
+        })
+}
+
+const refreshActiveEffectCache = async () => {
+    if (activeEffectCachePromise) {
+        return await activeEffectCachePromise
+    }
+
+    activeEffectCachePromise = getActiveGameEffectsRepo()
+        .then((effects) => {
+            activeEffectCache = new Map(effects.map((effect) => [effect.effect_key, effect]))
+            activeEffectCacheLoadedAt = Date.now()
+            return activeEffectCache
+        })
+        .finally(() => {
+            activeEffectCachePromise = null
+        })
+
+    return await activeEffectCachePromise
+}
+
+const getCachedActiveEffect = async (effectKey) => {
+    const cachedEffect = activeEffectCache.get(effectKey)
+    const isFresh = Date.now() - activeEffectCacheLoadedAt < EFFECT_CACHE_TTL_MS
+
+    if (cachedEffect && isFresh) {
+        return cachedEffect
+    }
+
+    if (cachedEffect) {
+        void refreshActiveEffectCache().catch((error) => {
+            console.error('ability catalog refresh error', error)
+        })
+        return cachedEffect
+    }
+
+    const effects = await refreshActiveEffectCache()
+    return effects.get(effectKey) || null
+}
+
+void refreshActiveEffectCache().catch((error) => {
+    console.error('ability catalog warmup error', error)
+})
 
 const schedulePlayerSnapshotPersist = (io, roomId, socketId, payload) => {
     const key = `${roomId}:${socketId}`
@@ -52,7 +138,11 @@ const schedulePlayerSnapshotPersist = (io, roomId, socketId, payload) => {
                 ...player,
                 gameState: task.payload,
             })),
-            'game:update persistence error'
+            {
+                errorLog: 'game:update persistence error',
+                notifyOnError: false,
+                scope: 'player_snapshot',
+            }
         )
     }, PLAYER_SNAPSHOT_PERSIST_DELAY_MS)
 
@@ -90,7 +180,9 @@ export const registerGameHandlers = (io, socket) => {
             payload,
         })
 
-        schedulePlayerSnapshotPersist(io, roomId, socket.id, payload)
+        if (PERSIST_PLAYER_SNAPSHOTS) {
+            schedulePlayerSnapshotPersist(io, roomId, socket.id, payload)
+        }
     })
 
     socket.on('game:over', async ({ roomId, payload }) => {
@@ -178,7 +270,11 @@ export const registerGameHandlers = (io, socket) => {
                 io,
                 roomId,
                 () => updatedRoom ? roomStore.createRoom(updatedRoom) : Promise.resolve(null),
-                'game:over room persistence error'
+                {
+                    errorLog: 'game:over room persistence error',
+                    notifyOnError: false,
+                    scope: 'match_state',
+                }
             )
             return
         }
@@ -228,7 +324,11 @@ export const registerGameHandlers = (io, socket) => {
                     await roomStore.deleteRoom(roomId)
                 }
             },
-            'game:over persistence error'
+            {
+                errorLog: 'game:over persistence error',
+                scope: 'match_result',
+                successMessage: 'Данные матча успешно сохранены',
+            }
         )
     })
 
@@ -272,7 +372,7 @@ export const registerGameHandlers = (io, socket) => {
         let ability
 
         try {
-            ability = await getActiveGameEffectByKeyRepo(abilityId)
+            ability = await getCachedActiveEffect(abilityId)
         } catch (error) {
             console.error('ability catalog lookup error', error)
             callback?.({
@@ -330,7 +430,11 @@ export const registerGameHandlers = (io, socket) => {
                     durationMs: effect.durationMs,
                 },
             }),
-            'ability:use persistence error'
+            {
+                errorLog: 'ability:use persistence error',
+                errorMessage: 'Не удалось сохранить событие матча',
+                scope: 'match_event',
+            }
         )
     })
 }
