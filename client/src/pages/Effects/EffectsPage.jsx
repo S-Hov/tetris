@@ -7,6 +7,7 @@ import { useEffectCatalog } from '@/features/tetris/effects/useEffectCatalog.js'
 import './EffectsPage.css'
 
 const EffectsPage = () => {
+    const { t } = useTranslation()
     const { effects, error, isLoading } = useEffectCatalog()
 
     return (
@@ -15,23 +16,20 @@ const EffectsPage = () => {
                 <section className="effects-hero">
                     <GlowEffect>
                         <div className="glow-effect effects-hero__content">
-                            <p className="effects-eyebrow">PvP effects</p>
-                            <h1>Тетрис, где каждая линия может стать атакой</h1>
-                            <p>
-                                В режимах с эффектами игроки копят энергию и выбирают дебаффы для соперника:
-                                ускорение, затемнение поля, сбитое управление и другие тактические помехи.
-                            </p>
+                            <p className="effects-eyebrow">{t('effectsPage.hero.eyebrow')}</p>
+                            <h1>{t('effectsPage.hero.title')}</h1>
+                            <p>{t('effectsPage.hero.description')}</p>
                             <Link className="button effects-hero__button" to={getLocalizedGamePath('/game/1v1')}>
                                 <i className="fas fa-play"></i>
-                                Играть с эффектами
+                                {t('effectsPage.hero.playButton')}
                             </Link>
                         </div>
                     </GlowEffect>
                 </section>
 
-                <section className="effects-grid" aria-label="Список игровых эффектов">
-                    {isLoading ? <p>Загрузка эффектов...</p> : null}
-                    {error ? <p>Каталог эффектов временно недоступен.</p> : null}
+                <section className="effects-grid" aria-label={t('effectsPage.catalogAriaLabel')}>
+                    {isLoading ? <p>{t('effectsPage.loading')}</p> : null}
+                    {error ? <p>{t('effectsPage.error')}</p> : null}
                     {effects.map((effect) => (
                         <EffectCard effect={effect} key={effect.id || effect.key} />
                     ))}
@@ -42,7 +40,7 @@ const EffectsPage = () => {
 }
 
 export function EffectCard({ effect, compact = false }) {
-    const { i18n } = useTranslation()
+    const { i18n, t } = useTranslation()
     const language = i18n.language === 'en' ? 'en' : 'ru'
     const localized = getLocalizedEffectText(effect, language)
     const imageUrl = effect.imageUrl || ''
@@ -50,12 +48,8 @@ export function EffectCard({ effect, compact = false }) {
     const title = localized.title
     const description = localized.description
     const durationSeconds = Number(effect.durationMs) > 100
-        ? (
-            language === 'en'
-                ? `${Math.round(Number(effect.durationMs) / 1000)} sec.`
-                : `${Math.round(Number(effect.durationMs) / 1000)} сек.`
-        )
-        : (language === 'en' ? 'Instant' : 'Мгновенно')
+        ? t('effectsPage.duration.seconds', { count: Math.round(Number(effect.durationMs) / 1000) })
+        : t('effectsPage.duration.instant')
 
     return (
         <article className={`effect-card ${compact ? 'effect-card--compact' : ''}`}>

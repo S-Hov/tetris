@@ -8,6 +8,8 @@ import emailVerificationEn from '../features/EmailVerification/i18n/en.json'
 import emailVerificationRu from '../features/EmailVerification/i18n/ru.json'
 import aboutEn from '../pages/About/i18n/en.json'
 import aboutRu from '../pages/About/i18n/ru.json'
+import effectsEn from '../pages/Effects/i18n/en.json'
+import effectsRu from '../pages/Effects/i18n/ru.json'
 import homeEn from '../pages/Home/i18n/en.json'
 import homeRu from '../pages/Home/i18n/ru.json'
 import gameControlsEn from '../pages/GameSettings/i18n/en.json'
@@ -103,8 +105,8 @@ i18n
     .use(initReactI18next)
     .init({
         resources: {
-            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...friendsRu, ...matchesRu, ...lobbyRu, ...legalDocsRu, ...modeSelectRu, ...supportRequestsRu, ...teamQueueRu, ...authRu, ...emailVerificationRu, ...siteFooterRu, ...cookieConsentBannerRu, ...simpleHeaderRu } },
-            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...friendsEn, ...matchesEn, ...lobbyEn, ...legalDocsEn, ...modeSelectEn, ...supportRequestsEn, ...teamQueueEn, ...authEn, ...emailVerificationEn, ...siteFooterEn, ...cookieConsentBannerEn, ...simpleHeaderEn } },
+            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...effectsRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...friendsRu, ...matchesRu, ...lobbyRu, ...legalDocsRu, ...modeSelectRu, ...supportRequestsRu, ...teamQueueRu, ...authRu, ...emailVerificationRu, ...siteFooterRu, ...cookieConsentBannerRu, ...simpleHeaderRu } },
+            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...effectsEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...friendsEn, ...matchesEn, ...lobbyEn, ...legalDocsEn, ...modeSelectEn, ...supportRequestsEn, ...teamQueueEn, ...authEn, ...emailVerificationEn, ...siteFooterEn, ...cookieConsentBannerEn, ...simpleHeaderEn } },
         },
         lng: getLanguageFromPathname(typeof window !== 'undefined' ? window.location.pathname : ''),
         fallbackLng: DEFAULT_LANGUAGE,
