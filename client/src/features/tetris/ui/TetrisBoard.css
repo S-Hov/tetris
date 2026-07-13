@@ -62,11 +62,11 @@
 }
 
 .tetris-cell.cell--O.filled {
-    background: #f5d742;
+    background: #e73434;
 }
 
 .tetris-cell.cell--T.filled {
-    background: #b36cff;
+    background: #683ffd;
 }
 
 .tetris-cell.cell--L.filled {
@@ -74,7 +74,7 @@
 }
 
 .tetris-cell.cell--⅃.filled {
-    background: #4d7cff;
+    background: #de4dff;
 }
 
 .tetris-cell.cell--U.filled {
