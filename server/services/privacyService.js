@@ -1,4 +1,5 @@
-import { badRequest, notFound } from '../helpers/error.helper.js'
+import { badRequest, forbidden, notFound } from '../helpers/error.helper.js'
+import { getUserService } from './authService.js'
 import {
     getUserActionContextRepo,
     getUserPrivacySettingsRepo,
@@ -121,11 +122,11 @@ export const getUserActionsService = async ({ viewerId, targetUserId }) => {
                 allowed: messageAllowed,
                 available: true,
             }),
-            profile: createAction({
-                allowed: profileAllowed,
-                available: false,
-                reason: 'FEATURE_NOT_AVAILABLE',
-            }),
+            profile: {
+                visible: true,
+                enabled: profileAllowed,
+                reason: profileAllowed ? null : 'PRIVACY_RESTRICTED',
+            },
             friendRequest: createAction({
                 allowed: friendRequestAllowed,
                 available: true,
@@ -141,6 +142,32 @@ export const getUserActionsService = async ({ viewerId, targetUserId }) => {
             isFriend,
             isBlocked,
         },
+    }
+}
+
+export const getPublicUserProfileService = async ({ viewerId, targetUserId }) => {
+    const actions = await getUserActionsService({ viewerId, targetUserId })
+
+    if (!actions.actions.profile.enabled) {
+        throw forbidden('USERS.PROFILE_PRIVATE')
+    }
+
+    const user = await getUserService(actions.user.id)
+
+    if (!user || user.status !== 'active') {
+        throw notFound('FRIENDS.USER_NOT_FOUND')
+    }
+
+    return {
+        id: user.id,
+        username: user.username,
+        avatarUrl: user.avatar_url || null,
+        status: user.status,
+        createdAt: user.created_at,
+        lastLoginAt: user.last_login_at,
+        stats: user.stats,
+        rankStats: user.rankStats,
+        recentMatches: user.recentMatches,
     }
 }
 

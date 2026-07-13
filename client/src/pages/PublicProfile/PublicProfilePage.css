@@ -1,0 +1,45 @@
+.public-profile-shell {
+    background: transparent;
+}
+
+.public-profile-state {
+    min-height: 420px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 14px;
+    padding: 32px;
+    border: var(--border);
+    border-radius: var(--radius-panel);
+    color: var(--text-muted);
+    background: var(--box-bg);
+    box-shadow: var(--shadow);
+    text-align: center;
+    backdrop-filter: var(--medium-blur);
+}
+
+.public-profile-state > i {
+    color: var(--turquoise-bright);
+    font-size: 2.25rem;
+}
+
+.public-profile-state h1,
+.public-profile-state p {
+    margin: 0;
+}
+
+.public-profile-state h1 {
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    text-transform: uppercase;
+}
+
+.public-profile-state p {
+    max-width: 560px;
+}
+
+.public-profile-state .button {
+    margin-top: 6px;
+    text-decoration: none;
+}

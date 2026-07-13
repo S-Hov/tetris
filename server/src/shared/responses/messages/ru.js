@@ -98,6 +98,8 @@ export default {
     'PRIVACY.UPDATED': 'Настройки приватности обновлены',
     'PRIVACY.INVALID_VISIBILITY': 'Неподдерживаемый режим приватности',
     'USERS.ACTIONS_LOADED': 'Действия с пользователем загружены',
+    'USERS.PROFILE_LOADED': 'Профиль игрока загружен',
+    'USERS.PROFILE_PRIVATE': 'Игрок ограничил доступ к своему профилю',
 
     'COMMON.OK': 'Готово',
     'COMMON.BAD_REQUEST': 'Некорректный запрос',

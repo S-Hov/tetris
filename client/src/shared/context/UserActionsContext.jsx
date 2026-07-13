@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedGamePath } from '@/i18n'
+import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedGamePath, getLocalizedPath } from '@/i18n'
 import { friendsAPI } from '@/shared/api/friends'
 import { chatAPI } from '@/shared/api/chat'
 import { socket } from '@/shared/api/socket'
@@ -201,6 +201,16 @@ export const UserActionsProvider = ({ children }) => {
         }
     }, [closeUserActions, isSendingFriendRequest, t])
 
+    const openProfile = useCallback((player) => {
+        if (!player?.id) {
+            return
+        }
+
+        const language = getLanguageFromPathname(location.pathname) || DEFAULT_LANGUAGE
+        navigate(getLocalizedPath(`/profile/${player.id}`, language))
+        closeUserActions()
+    }, [closeUserActions, location.pathname, navigate])
+
     useEffect(() => () => {
         requestControllerRef.current?.abort()
     }, [])
@@ -230,6 +240,7 @@ export const UserActionsProvider = ({ children }) => {
                     onClose={closeUserActions}
                     onFriendRequest={sendFriendRequest}
                     onMessage={openDirectChat}
+                    onProfile={openProfile}
                     onRetry={retryUserActions}
                     onRoomInvite={inviteToRoom}
                 />

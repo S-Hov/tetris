@@ -5,16 +5,16 @@ import { formatDateTime, getProfileMatchData } from '../../profile.utils.js'
 import ProfilePanel from '../ProfilePanel/ProfilePanel.jsx'
 import './ProfileMatchesPanel.css'
 
-const ProfileMatchesPanel = ({ currentLanguage, matchHistory, t }) => (
+const ProfileMatchesPanel = ({ currentLanguage, linkMatches = true, matchHistory, showViewAll = true, t }) => (
     <ProfilePanel
         className="profile-panel--matches"
         title={t('profile.matches.title')}
-        action={<Link to={getLocalizedPath('/matches', currentLanguage)}>{t('profile.matches.viewAll')}</Link>}
+        action={showViewAll ? <Link to={getLocalizedPath('/matches', currentLanguage)}>{t('profile.matches.viewAll')}</Link> : null}
     >
         <div className="profile-match-list">
             {matchHistory.length > 0 ? (
                 matchHistory.map((match) => (
-                    <MatchRow key={match.id} match={match} lang={currentLanguage} t={t} />
+                    <MatchRow key={match.id} linkMatches={linkMatches} match={match} lang={currentLanguage} t={t} />
                 ))
             ) : (
                 <div className="profile-empty">
@@ -27,11 +27,10 @@ const ProfileMatchesPanel = ({ currentLanguage, matchHistory, t }) => (
     </ProfilePanel>
 )
 
-const MatchRow = ({ match, lang, t }) => {
+const MatchRow = ({ linkMatches, match, lang, t }) => {
     const matchData = getProfileMatchData(match, t)
-
-    return (
-        <Link to={getLocalizedPath(`/matches/${match.id}`, lang)} className={`profile-match-row profile-match-row--${matchData.resultClass}`}>
+    const content = (
+        <>
             <div>
                 <strong>{matchData.resultLabel}</strong>
                 <span>vs {matchData.opponent}</span>
@@ -41,7 +40,14 @@ const MatchRow = ({ match, lang, t }) => {
                 <strong>{matchData.score}</strong>
                 <span>{formatDateTime(match.playedAt, lang, t)}</span>
             </div>
-        </Link>
+        </>
+    )
+    const className = `profile-match-row profile-match-row--${matchData.resultClass}`
+
+    return linkMatches ? (
+        <Link to={getLocalizedPath(`/matches/${match.id}`, lang)} className={className}>{content}</Link>
+    ) : (
+        <article className={className}>{content}</article>
     )
 }
 

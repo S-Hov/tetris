@@ -98,6 +98,8 @@ export default {
     'PRIVACY.UPDATED': 'Privacy settings updated',
     'PRIVACY.INVALID_VISIBILITY': 'Unsupported privacy visibility',
     'USERS.ACTIONS_LOADED': 'User actions loaded',
+    'USERS.PROFILE_LOADED': 'Player profile loaded',
+    'USERS.PROFILE_PRIVATE': 'The player has restricted access to their profile',
 
     'COMMON.OK': 'Done',
     'COMMON.BAD_REQUEST': 'Bad request',

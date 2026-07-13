@@ -25,6 +25,7 @@ const UserActionsMenu = ({
     onClose,
     onFriendRequest,
     onMessage,
+    onProfile,
     onRetry,
     onRoomInvite,
     result,
@@ -114,6 +115,10 @@ const UserActionsMenu = ({
         await onFriendRequest(result?.user || targetUser)
     }
 
+    const handleProfile = () => {
+        onProfile(result?.user || targetUser)
+    }
+
     const visibleActions = ACTIONS.filter(({ key }) => result?.actions?.[key]?.visible)
     const user = result?.user || targetUser
 
@@ -164,6 +169,7 @@ const UserActionsMenu = ({
                         const isRoomInvite = key === 'roomInvite'
                         const isMatchInvite = key === 'matchInvite'
                         const isMessage = key === 'message'
+                        const isProfile = key === 'profile'
                         const isPending =
                             (isFriendRequest && isSendingFriendRequest) ||
                             ((isRoomInvite || isMatchInvite) && isInviting) ||
@@ -174,7 +180,9 @@ const UserActionsMenu = ({
                                 ? handleRoomInvite
                                 : isMessage
                                     ? handleMessage
-                                    : undefined
+                                    : isProfile
+                                        ? handleProfile
+                                        : undefined
                         const isDisabled = !action.enabled || isPending
 
                         return (

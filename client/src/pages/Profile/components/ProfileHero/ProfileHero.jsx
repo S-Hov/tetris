@@ -6,7 +6,7 @@ import GlowEffect from '@/shared/ui/GlowEffect'
 import { formatNumber } from '../../profile.utils.js'
 import './ProfileHero.css'
 
-const ProfileHero = ({ currentLanguage, profile, t }) => (
+const ProfileHero = ({ currentLanguage, profile, showEdit = true, t }) => (
     <GlowEffect className="profile-hero-glow">
         <section
             className={`profile-hero profile-hero--${profile.rankKey}`}
@@ -20,9 +20,11 @@ const ProfileHero = ({ currentLanguage, profile, t }) => (
                 <span className="profile-rank-pill">{profile.rankName}</span>
                 <div className="profile-hero__name-row">
                     <h1>{profile.name}</h1>
-                    <Link className="profile-edit-link" to={getLocalizedPath('/account-settings/account', currentLanguage)} aria-label={t('profile.hero.editAria')}>
-                        <i className="fas fa-pen"></i>
-                    </Link>
+                    {showEdit ? (
+                        <Link className="profile-edit-link" to={getLocalizedPath('/account-settings/account', currentLanguage)} aria-label={t('profile.hero.editAria')}>
+                            <i className="fas fa-pen"></i>
+                        </Link>
+                    ) : null}
                 </div>
                 <div className="profile-hero__rating">
                     <i className="fas fa-trophy"></i>

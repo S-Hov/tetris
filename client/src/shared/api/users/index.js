@@ -7,4 +7,10 @@ export const usersAPI = {
             ...options,
         })
     },
+    getProfile(userId, options = {}) {
+        return apiClient(`/api/users/${encodeURIComponent(userId)}/profile`, {
+            method: 'GET',
+            ...options,
+        })
+    },
 }

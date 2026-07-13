@@ -77,6 +77,20 @@
       "lastLogin": "Last login",
       "status": "Status",
       "logout": "Log out"
+    },
+    "public": {
+      "seoTitle": "{{username}} — PVP Tetris player profile",
+      "seoDescription": "Rank, statistics and recent matches of {{username}} in PVP Tetris.",
+      "createdAt": "Registration date",
+      "loading": "Loading profile",
+      "loadingText": "Collecting the player's statistics and recent matches.",
+      "privateTitle": "Profile is private",
+      "privateText": "The player has restricted profile viewing in their privacy settings.",
+      "notFoundTitle": "Player not found",
+      "notFoundText": "The account may have been deleted or the link is no longer valid.",
+      "errorTitle": "Could not open profile",
+      "errorText": "An error occurred while loading. Please try again later.",
+      "backToRating": "Back to rating"
     }
   }
 }

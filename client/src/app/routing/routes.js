@@ -2,6 +2,7 @@ import HomePage from '@/pages/Home/HomePage.jsx'
 import LoginPage from '@/pages/Login/LoginPage.jsx'
 import RegisterPage from '@/pages/Register/RegisterPage.jsx'
 import ProfilePage from '@/pages/Profile/ProfilePage.jsx'
+import PublicProfilePage from '@/pages/PublicProfile/PublicProfilePage.jsx'
 import AccountSettingsPage from '@/pages/AccountSettings/AccountSettingsPage.jsx'
 import FriendsPage from '@/pages/Friends/FriendsPage.jsx'
 import MatchesPage from '@/pages/Matches/MatchesPage.jsx'
@@ -151,6 +152,14 @@ export const routes = [
         path: '/:lang/docs/:documentSlug',
         title: 'Правовые документы',
         component: LegalDocsPage,
+        layout: MainLayout,
+        skipDocumentTitle: true,
+    },
+    {
+        key: 'public-profile',
+        path: '/:lang/profile/:userId',
+        title: 'Профиль игрока',
+        component: PublicProfilePage,
         layout: MainLayout,
         skipDocumentTitle: true,
     },
