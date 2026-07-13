@@ -23,6 +23,14 @@
       "ratingButton": "Arena rating",
       "previewAriaLabel": "PvP Tetris preview"
     },
+    "effectsLab": {
+      "eyebrow": "Effects laboratory",
+      "title": "Test",
+      "titleHighlight": "every effect",
+      "description": "Open the dedicated playground, try every effect in action and see how it changes a match.",
+      "testButton": "Open test page",
+      "catalogButton": "View all effects"
+    },
     "modes": {
       "title": "Choose a mode",
       "items": {

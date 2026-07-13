@@ -23,6 +23,14 @@
       "ratingButton": "Рейтинг арены",
       "previewAriaLabel": "Превью PvP Tetris"
     },
+    "effectsLab": {
+      "eyebrow": "Лаборатория эффектов",
+      "title": "Протестируй",
+      "titleHighlight": "каждый эффект",
+      "description": "Перейди на отдельную страницу, попробуй эффекты в действии и узнай, как они влияют на матч.",
+      "testButton": "Открыть тестовую страницу",
+      "catalogButton": "Смотреть все эффекты"
+    },
     "modes": {
       "title": "Выбери режим",
       "items": {

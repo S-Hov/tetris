@@ -11,6 +11,7 @@ import GameModesSection from '@/widgets/GameModesSection'
 import SupportProjectSection from '@/widgets/SupportProjectSection'
 
 import HomeHero from './components/HomeHero/HomeHero.jsx'
+import EffectsLabSection from './components/EffectsLabSection/EffectsLabSection.jsx'
 import { SITE_URL } from './homePage.config.js'
 
 import './HomePage.css'
@@ -48,6 +49,7 @@ const HomePage = () => {
             <div className="container home-container">
                 <HomeHero />
                 <GameModesSection />
+                <EffectsLabSection />
                 <ArenaDashboardSection currentLanguage={currentLanguage} />
                 <GameFeaturesSection />
                 <FutureArenasSection />
