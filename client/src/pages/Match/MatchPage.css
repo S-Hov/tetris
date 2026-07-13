@@ -45,6 +45,64 @@
     animation: board-defeat-fall 1.24s cubic-bezier(0.16, 0.76, 0.14, 1) forwards;
 }
 
+.player-board-shell--spectating {
+    animation: board-spectator-enter 420ms cubic-bezier(0.2, 0.82, 0.24, 1) both;
+}
+
+.player-elimination-banner {
+    position: absolute;
+    top: 42%;
+    left: 0;
+    z-index: 8;
+    width: var(--game-board-width);
+    display: grid;
+    justify-items: center;
+    gap: 0.25rem;
+    padding: clamp(12px, 2vmin, 20px);
+    border-block: 1px solid rgba(255, 100, 110, 0.58);
+    background: linear-gradient(90deg, transparent, rgba(24, 4, 10, 0.94) 14%, rgba(24, 4, 10, 0.94) 86%, transparent);
+    color: #fff2f3;
+    text-align: center;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+    pointer-events: none;
+    animation: player-elimination-banner-in 240ms ease-out both;
+}
+
+.player-elimination-banner strong {
+    font-family: var(--font-1);
+    font-size: clamp(1.05rem, 2vw, 1.5rem);
+    text-transform: uppercase;
+}
+
+.player-elimination-banner span {
+    color: #ffc3c8;
+    font-size: clamp(0.72rem, 1vw, 0.9rem);
+}
+
+.player-elimination-banner--spectating {
+    top: clamp(8px, 1.5vmin, 14px);
+    width: auto;
+    max-width: calc(var(--game-board-width) - 24px);
+    margin-left: 12px;
+    justify-items: start;
+    padding: 0.55rem 0.8rem;
+    border: 1px solid color-mix(in srgb, var(--turquoise-bright) 54%, transparent);
+    border-radius: 12px;
+    background: rgba(3, 13, 24, 0.86);
+    text-align: left;
+    backdrop-filter: var(--medium-blur);
+}
+
+.player-elimination-banner--spectating strong {
+    color: var(--turquoise-lite);
+    font-size: clamp(0.72rem, 1vw, 0.88rem);
+}
+
+.player-elimination-banner--spectating span {
+    color: var(--text-color);
+    font-size: 0.7rem;
+}
+
 .match-intro {
     position: fixed;
     inset: 0;
@@ -346,6 +404,32 @@
     }
 }
 
+@keyframes board-spectator-enter {
+    from {
+        transform: perspective(1100px) translate3d(8vw, -2vh, -180px) rotateY(42deg) scale(0.86);
+        filter: brightness(0.7) blur(2px);
+        opacity: 0;
+    }
+
+    to {
+        transform: perspective(1100px) translate3d(0, 0, 0) rotateY(0deg) scale(1);
+        filter: none;
+        opacity: 1;
+    }
+}
+
+@keyframes player-elimination-banner-in {
+    from {
+        transform: translateY(-8px) scale(0.96);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
 @media (max-width: 620px) {
     .match-intro {
         padding: 12px;
@@ -396,5 +480,9 @@
         left: 8px;
         gap: 0.4rem;
         padding: 0.42rem 0.62rem;
+    }
+
+    .player-elimination-banner {
+        left: calc(var(--mobile-side-width) + var(--mobile-stage-gap));
     }
 }

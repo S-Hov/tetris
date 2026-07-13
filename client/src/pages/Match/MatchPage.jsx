@@ -64,6 +64,7 @@ import winSound from './assets/audio/win.wav'
 import './MatchPage.css'
 
 const DANGER_ZONE_ROWS = 7
+const BOARD_DEFEAT_ANIMATION_MS = 1240
 const DEFAULT_ONLINE_MODE_KEY = '1v1'
 const MATCH_INTRO_DURATION_MS = 5000
 const EMPTY_OPPONENT_BOARD = createBoard()
@@ -225,6 +226,7 @@ const MatchPageGame = ({
     const [targetChoice, setTargetChoice] = useState(null)
     const [targetSecondsLeft, setTargetSecondsLeft] = useState(0)
     const [soloRecord, setSoloRecord] = useState(() => Number(user?.rankStats?.bestSoloScore) || 0)
+    const [isSpectatingTeammate, setIsSpectatingTeammate] = useState(false)
     const boardShellRef = useRef(null)
     const didPlayMatchFoundRef = useRef(false)
     const playedResultRef = useRef(null)
@@ -394,11 +396,7 @@ const MatchPageGame = ({
         () => getEffectPresentationState(derivedState),
         [derivedState]
     )
-    const hasFogPiece = Boolean(effectPresentation.fogPiece)
-    const hasScreenShake = Boolean(effectPresentation.screenShake)
-    const hasInvisibleCells = effectPresentation.invisibleCells || false
     const isSoloGameOver = !isOnline && derivedState.isGameOver
-    const audibleResult = matchResult || (isSoloGameOver ? 'lose' : null)
     const currentRoomPlayers = roomPlayers.length > 0 ? roomPlayers : getRoomPlayers(matchRoom)
     const selfPlayer = currentRoomPlayers.find((player) => player.socketId === socket.id) || null
     const selfTeamNumber = selfPlayer?.teamNumber || null
@@ -408,6 +406,25 @@ const MatchPageGame = ({
             player.socketId !== socket.id && player.teamNumber === selfTeamNumber
         ))
         : []
+    const spectatedTeammate = teammatePlayers.find((player) => !player.gameState?.isGameOver) || teammatePlayers[0] || null
+    const isEliminatedInTeamMatch = isTeamMatch && derivedState.isGameOver
+    const isWatchingTeammate = Boolean(
+        isEliminatedInTeamMatch &&
+        !isMatchFinished &&
+        isSpectatingTeammate &&
+        spectatedTeammate
+    )
+    const viewedGameState = isWatchingTeammate ? spectatedTeammate.gameState : derivedState
+    const viewedBoard = isWatchingTeammate
+        ? (spectatedTeammate.gameState?.board || EMPTY_OPPONENT_BOARD)
+        : boardWithPiece
+    const viewedScore = Number(viewedGameState?.score) || 0
+    const viewedLines = Number(viewedGameState?.linesCleared) || 0
+    const viewedLevel = Number(viewedGameState?.level) || 1
+    const hasFogPiece = Boolean(effectPresentation.fogPiece) && !derivedState.isGameOver
+    const hasScreenShake = Boolean(effectPresentation.screenShake) && !derivedState.isGameOver
+    const hasInvisibleCells = (effectPresentation.invisibleCells || false) && !derivedState.isGameOver
+    const audibleResult = matchResult || ((isSoloGameOver || isEliminatedInTeamMatch) ? 'lose' : null)
     const opponentPlayers = isOnline
         ? currentRoomPlayers.filter((player) => (
             player.socketId !== socket.id && player.teamNumber !== selfTeamNumber
@@ -417,18 +434,32 @@ const MatchPageGame = ({
         ? opponentPlayers.filter((player) => !player.gameState?.isGameOver)
         : []
     const shouldPickTarget = isOnline && modeKey !== '1v1' && targetablePlayers.length > 1
-    const isDefeated = matchResult === 'lose' || isSoloGameOver
+    const isDefeated = matchResult === 'lose' || isSoloGameOver || (isEliminatedInTeamMatch && !isWatchingTeammate)
+    const isBoardInDanger = dangerLevel > 0 && !derivedState.isGameOver
     const boardShellClassName = [
         'player-board-shell',
-        dangerLevel > 0 ? 'player-board-shell--danger' : '',
+        isBoardInDanger ? 'player-board-shell--danger' : '',
         hasScreenShake ? 'player-board-shell--effect-shake' : '',
         isDefeated ? 'player-board-shell--defeated' : '',
+        isWatchingTeammate ? 'player-board-shell--spectating' : '',
         matchResult === 'win' ? 'player-board-shell--victorious' : '',
     ].filter(Boolean).join(' ')
     const dangerStyle = {
         '--danger-level': dangerLevel.toFixed(3),
         '--danger-shake-duration': `${Math.max(700 - dangerLevel * 420, 220)}ms`,
     }
+
+    useEffect(() => {
+        if (!isEliminatedInTeamMatch || isMatchFinished || !spectatedTeammate?.socketId) {
+            return undefined
+        }
+
+        const timeoutId = setTimeout(() => {
+            setIsSpectatingTeammate(true)
+        }, BOARD_DEFEAT_ANIMATION_MS)
+
+        return () => clearTimeout(timeoutId)
+    }, [isEliminatedInTeamMatch, isMatchFinished, spectatedTeammate?.socketId])
 
     useEffect(() => {
         if (!isIntroVisible || didPlayMatchFoundRef.current) {
@@ -663,14 +694,14 @@ const MatchPageGame = ({
 
     const boardDecor = (
         <>
-            {dangerLevel > 0 && !isMatchFinished && (
+            {isBoardInDanger && !isMatchFinished && (
                 <div className="board-danger-status" aria-hidden="true">
                     <span>CRITICAL ZONE</span>
                     <strong>{Math.round(dangerLevel * 100)}%</strong>
                 </div>
             )}
 
-            {!isMatchFinished ? (
+            {!isMatchFinished && !derivedState.isGameOver ? (
                 <EffectBoardLayer
                     activeEffects={derivedState.activeEffects}
                     feedback={derivedState.effectFeedback}
@@ -706,11 +737,21 @@ const MatchPageGame = ({
 
     const sidebar = (
         <>
-            <NextPiecePanel hidden={hasFogPiece} nextPiece={derivedState.nextPiece} />
+            {isWatchingTeammate ? (
+                <PlayerSummaryPanel
+                    title={`Наблюдение: ${spectatedTeammate.username || 'тиммейт'}`}
+                    score={viewedScore}
+                    lines={viewedLines}
+                    level={viewedLevel}
+                    status="В игре"
+                />
+            ) : (
+                <NextPiecePanel hidden={hasFogPiece} nextPiece={derivedState.nextPiece} />
+            )}
             <StatsPanel
-                score={derivedState.score}
-                lines={derivedState.linesCleared}
-                level={derivedState.level}
+                score={viewedScore}
+                lines={viewedLines}
+                level={viewedLevel}
                 record={!isOnline ? Math.max(soloRecord, derivedState.score) : soloRecord}
             />
             {isOnline && !isTeamMatch ? (
@@ -738,26 +779,28 @@ const MatchPageGame = ({
 
     const headerStats = (
         <StatsPanel
-            score={derivedState.score}
-            lines={derivedState.linesCleared}
-            level={derivedState.level}
+            score={viewedScore}
+            lines={viewedLines}
+            level={viewedLevel}
             record={!isOnline ? Math.max(soloRecord, derivedState.score) : soloRecord}
         />
     )
 
     const secondaryColumn = isTeamMatch ? (
-        <div className="game-team-overview">
-            <section className="game-team-overview__group game-team-overview__group--allies">
-                <header className="game-team-overview__header">
-                    <span>Our team</span>
-                    <strong>Teammate</strong>
-                </header>
-                <div className="game-team-overview__boards game-team-overview__boards--ally">
-                    {teammatePlayers.map((player) => (
-                        <SecondaryBoardCard key={player.socketId} player={player} fallbackLabel="Teammate" />
-                    ))}
-                </div>
-            </section>
+        <div className={`game-team-overview ${isWatchingTeammate ? 'game-team-overview--spectating' : ''}`}>
+            {!isWatchingTeammate ? (
+                <section className="game-team-overview__group game-team-overview__group--allies">
+                    <header className="game-team-overview__header">
+                        <span>Our team</span>
+                        <strong>Teammate</strong>
+                    </header>
+                    <div className="game-team-overview__boards game-team-overview__boards--ally">
+                        {teammatePlayers.map((player) => (
+                            <SecondaryBoardCard key={player.socketId} player={player} fallbackLabel="Teammate" />
+                        ))}
+                    </div>
+                </section>
+            ) : null}
 
             <section className="game-team-overview__group game-team-overview__group--opponents">
                 <header className="game-team-overview__header">
@@ -791,6 +834,17 @@ const MatchPageGame = ({
                 ))}
             </div>
         </>
+    ) : null
+
+    const eliminationBanner = isEliminatedInTeamMatch && !isMatchFinished ? (
+        <div
+            className={`player-elimination-banner ${isWatchingTeammate ? 'player-elimination-banner--spectating' : ''}`}
+            role="status"
+            aria-live="polite"
+        >
+            <strong>{isWatchingTeammate ? `Наблюдение: ${spectatedTeammate.username || 'тиммейт'}` : 'Вы проиграли'}</strong>
+            <span>{isWatchingTeammate ? 'Ваш тиммейт ещё в игре' : 'Команда ещё в игре'}</span>
+        </div>
     ) : null
 
     const resultStats = {
@@ -850,7 +904,7 @@ const MatchPageGame = ({
 
     const overlay = (
         <>
-            {effectiveAbilitiesEnabled && derivedState.isChoosingAbility && !targetChoice ? (
+            {effectiveAbilitiesEnabled && derivedState.isChoosingAbility && !targetChoice && !isEliminatedInTeamMatch ? (
                 <AbilityOverlay
                     eyebrow={currentLanguage === 'en' ? 'Time stopped' : 'Время остановлено'}
                     title={currentLanguage === 'en' ? 'Choose an effect' : 'Выберите эффект'}
@@ -859,7 +913,7 @@ const MatchPageGame = ({
                     onChoose={handleAbilityPick}
                 />
             ) : null}
-            {targetChoice ? (
+            {targetChoice && !isEliminatedInTeamMatch ? (
                 <TargetOverlay
                     ability={targetChoice.ability}
                     secondsLeft={targetSecondsLeft}
@@ -877,7 +931,7 @@ const MatchPageGame = ({
                 />
             ) : null}
             {shouldShowCountdown ? <GameCountdownOverlay value={countdownValue} /> : null}
-            {!isMatchFinished ? (
+            {!isMatchFinished && !derivedState.isGameOver ? (
                 <EffectPresentationLayer
                     activeEffects={derivedState.activeEffects}
                     catalog={effectCatalog}
@@ -889,7 +943,7 @@ const MatchPageGame = ({
             {soloResultOverlay}
             <MobileButtonsOverlay
                 controls={mobileControls.settings.buttonControls}
-                disabled={isIntroVisible || isMatchFinished || isCountingDown || Boolean(targetChoice)}
+                disabled={isIntroVisible || isMatchFinished || isCountingDown || isEliminatedInTeamMatch || Boolean(targetChoice)}
                 onAction={mobileControls.runAction}
                 visible={mobileControls.isButtonsEnabled}
             />
@@ -898,21 +952,23 @@ const MatchPageGame = ({
 
     return (
         <GameLayout
-            mode={isTeamMatch ? { ...mode, title: '2v2 Match' } : mode}
-            score={derivedState.score}
-            board={boardWithPiece}
-            clearingRows={derivedState.clearingRows}
-            boardClassName={dangerLevel > 0 ? 'tetris-board--danger' : ''}
+            mode={isWatchingTeammate
+                ? { ...mode, title: `Наблюдение: ${spectatedTeammate.username || 'тиммейт'}` }
+                : isTeamMatch ? { ...mode, title: '2v2 Match' } : mode}
+            score={viewedScore}
+            board={viewedBoard}
+            clearingRows={isWatchingTeammate ? [] : derivedState.clearingRows}
+            boardClassName={isBoardInDanger ? 'tetris-board--danger' : ''}
             boardShellRef={boardShellRef}
             boardShellClassName={boardShellClassName}
             boardShellStyle={dangerStyle}
             boardDecor={boardDecor}
             boardInvisibleCells={hasInvisibleCells}
-            leftRail={effectiveAbilitiesEnabled ? <EnergyPanel energy={derivedState.energy} /> : null}
+            leftRail={effectiveAbilitiesEnabled && !isWatchingTeammate ? <EnergyPanel energy={derivedState.energy} /> : null}
             headerStats={headerStats}
             sidebar={sidebar}
             overlay={overlay}
-            banner={null}
+            banner={eliminationBanner}
             secondaryColumn={secondaryColumn}
             isTeamLayout={isTeamMatch}
         />

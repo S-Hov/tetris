@@ -17,7 +17,7 @@ import {
 
 const createState = () => ({
     activeEffects: [],
-    board: Array.from({ length: 20 }, () => Array(10).fill(null)),
+    board: Array.from({ length: 21 }, () => Array(10).fill(null)),
     currentPiece: {
         shape: [[1]],
         type: 'I',
@@ -252,8 +252,8 @@ test('garbage rain uses database parameters and applies immediately', () => {
         effectKey: 'garbage_rain',
         occurredAt: 100,
         placements: [
-            { delayMs: 0, x: 0, y: 19 },
-            { delayMs: 95, x: 0, y: 18 },
+            { delayMs: 0, x: 0, y: 20 },
+            { delayMs: 95, x: 0, y: 19 },
         ],
         sequence: 1,
         type: 'garbageDrop',

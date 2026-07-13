@@ -6,9 +6,9 @@
 }
 
 .game-layout__container {
-    --game-board-width: min(34vw, calc((100dvh - 210px) / 2), 600px);
+    --game-board-width: min(34vw, calc((100dvh - 210px) / 2.1), 600px);
     --game-sidebar-width: clamp(180px, 13vw, 230px);
-    --game-secondary-board-width: min(18vw, calc((100dvh - 260px) / 2), 370px);
+    --game-secondary-board-width: min(18vw, calc((100dvh - 260px) / 2.1), 370px);
     --next-piece-cell-size: clamp(18px, calc(var(--game-board-width) / 15), 30px);
     --tetris-board-width: var(--game-board-width);
 
@@ -135,7 +135,7 @@
 
 .game-layout--team .game-layout__secondary-column {
     width: var(--team-secondary-width);
-    height: calc((var(--game-board-width) * 2) + clamp(28px, 3.4vh, 42px));
+    height: calc((var(--game-board-width) * 2.1) + clamp(28px, 3.4vh, 42px));
     min-height: 0;
 }
 
@@ -145,6 +145,10 @@
     display: grid;
     grid-template-rows: repeat(2, minmax(0, 1fr));
     gap: clamp(10px, 1.4vh, 16px);
+}
+
+.game-team-overview--spectating {
+    grid-template-rows: minmax(0, 1fr);
 }
 
 .game-team-overview__group {
@@ -1513,13 +1517,13 @@
 
 @media (max-width: 1100px) {
     .game-layout__container {
-        --game-board-width: min(42vw, calc((100dvh - 220px) / 2), 380px);
-        --game-secondary-board-width: min(18vw, calc((100dvh - 270px) / 2), 190px);
+        --game-board-width: min(42vw, calc((100dvh - 220px) / 2.1), 380px);
+        --game-secondary-board-width: min(18vw, calc((100dvh - 270px) / 2.1), 190px);
         --game-sidebar-width: clamp(170px, 24vw, 220px);
     }
 
     .game-layout--team .game-layout__container {
-        --game-board-width: min(34vw, calc((100dvh - 220px) / 2), 380px);
+        --game-board-width: min(34vw, calc((100dvh - 220px) / 2.1), 380px);
         --game-sidebar-width: clamp(150px, 20vw, 190px);
         --team-secondary-width: min(28vw, 320px);
         --team-mini-board-width: min(
@@ -1534,13 +1538,13 @@
 @media (max-width: 820px) {
     .game-layout--solo .game-layout__container,
     .game-layout--versus .game-layout__container {
-        --game-board-width: min(58vw, calc((100dvh - 220px) / 2), 340px);
+        --game-board-width: min(58vw, calc((100dvh - 220px) / 2.1), 340px);
         --game-sidebar-width: clamp(170px, 28vw, 220px);
         overflow-y: auto;
     }
 
     .game-layout--versus .game-layout__container {
-        --game-secondary-board-width: min(28vw, calc((100dvh - 250px) / 2), 180px);
+        --game-secondary-board-width: min(28vw, calc((100dvh - 250px) / 2.1), 180px);
         grid-template-columns: 1fr;
         grid-template-rows: auto auto;
         justify-items: center;
@@ -1605,7 +1609,7 @@
         --mobile-stage-gap: 6px;
         --game-board-width: min(
             calc(100vw - (var(--mobile-side-width) * 2) - (var(--mobile-stage-gap) * 2) - 16px),
-            calc((100dvh - 118px) / 2),
+            calc((100dvh - 118px) / 2.1),
             320px
         );
         --game-sidebar-width: var(--mobile-side-width);
@@ -1762,7 +1766,7 @@
         grid-column: 1;
         grid-row: 1 / span 4;
         width: var(--mobile-side-width);
-        height: calc(var(--game-board-width) * 2);
+        height: calc(var(--game-board-width) * 2.1);
         padding: 7px 5px;
         flex-direction: column;
         justify-self: stretch;
@@ -1799,7 +1803,7 @@
     .game-layout--versus .game-player-summary {
         grid-column: 3;
         grid-row: 2;
-        height: calc((var(--game-board-width) * 2) - var(--mobile-side-width) - var(--mobile-stage-gap));
+        height: calc((var(--game-board-width) * 2.1) - var(--mobile-side-width) - var(--mobile-stage-gap));
         padding: 8px 5px;
         display: flex;
         flex-direction: column;
@@ -1858,7 +1862,7 @@
     }
 
     .solo-debuff-panel {
-        height: calc((var(--game-board-width) * 2) - (var(--mobile-side-width) * 3) - 18px);
+        height: calc((var(--game-board-width) * 2.1) - (var(--mobile-side-width) * 3) - 18px);
         min-height: 0;
         justify-content: start;
         align-items: center;
