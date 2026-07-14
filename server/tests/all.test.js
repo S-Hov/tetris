@@ -1,0 +1,7 @@
+import './adminContracts.test.js'
+import './architectureBaseline.test.js'
+import './authContracts.test.js'
+import './chatCryptoService.test.js'
+import './gameEffectsRepository.test.js'
+import './matchContracts.test.js'
+import './responseContracts.test.js'

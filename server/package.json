@@ -6,9 +6,12 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "build": "node --check server.js",
+    "build": "node --check server.js && node --check scripts/architecture-inventory.js",
     "db:migrate": "node scripts/migrate.js",
-    "test": "node --test tests/gameEffectsRepository.test.js tests/chatCryptoService.test.js"
+    "architecture:inventory": "node scripts/architecture-inventory.js --summary",
+    "architecture:baseline:check": "node scripts/architecture-inventory.js --check",
+    "architecture:baseline:update": "node scripts/architecture-inventory.js --write",
+    "test": "node --test tests/all.test.js"
   },
   "keywords": [],
   "author": "",

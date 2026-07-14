@@ -1,0 +1,2624 @@
+{
+  "rest": [
+    {
+      "method": "GET",
+      "path": "/api/admin/analytics/games",
+      "routePath": "/analytics/games",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/analytics/visits",
+      "routePath": "/analytics/visits",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/audit",
+      "routePath": "/audit",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/auth/logs",
+      "routePath": "/auth/logs",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/dashboard",
+      "routePath": "/dashboard",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/database/backups",
+      "routePath": "/database/backups",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/database/backups",
+      "routePath": "/database/backups",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/database/backups/:fileName",
+      "routePath": "/database/backups/:fileName",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/database/backups/:fileName/download",
+      "routePath": "/database/backups/:fileName/download",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/database/backups/:fileName/restore",
+      "routePath": "/database/backups/:fileName/restore",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/database/control",
+      "routePath": "/database/control",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/database/export",
+      "routePath": "/database/export",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/database/import",
+      "routePath": "/database/import",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/database/schema",
+      "routePath": "/database/schema",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/donations",
+      "routePath": "/donations",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/donations/verification-events",
+      "routePath": "/donations/verification-events",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/donations/wallets",
+      "routePath": "/donations/wallets",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/email-verifications",
+      "routePath": "/email-verifications",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/match-teams/:teamId",
+      "routePath": "/match-teams/:teamId",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/matches",
+      "routePath": "/matches",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/matches/:matchId",
+      "routePath": "/matches/:matchId",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/matches/:matchId/events",
+      "routePath": "/matches/:matchId/events",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/matches/:matchId/players",
+      "routePath": "/matches/:matchId/players",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/matches/:matchId/teams",
+      "routePath": "/matches/:matchId/teams",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/me",
+      "routePath": "/me",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/migrations",
+      "routePath": "/migrations",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/migrations/run",
+      "routePath": "/migrations/run",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/navigation",
+      "routePath": "/navigation",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/rating/history",
+      "routePath": "/rating/history",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/rating/stats",
+      "routePath": "/rating/stats",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/resources/:resourceKey",
+      "routePath": "/resources/:resourceKey",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/resources/:resourceKey",
+      "routePath": "/resources/:resourceKey",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/resources/:resourceKey/:resourceId",
+      "routePath": "/resources/:resourceKey/:resourceId",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/resources/:resourceKey/:resourceId",
+      "routePath": "/resources/:resourceKey/:resourceId",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/resources/:resourceKey/:resourceId/status",
+      "routePath": "/resources/:resourceKey/:resourceId/status",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/resources/:resourceKey/upload",
+      "routePath": "/resources/:resourceKey/upload",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/roles",
+      "routePath": "/roles",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/rooms",
+      "routePath": "/rooms",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/rooms/:roomId/players",
+      "routePath": "/rooms/:roomId/players",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/sessions",
+      "routePath": "/sessions",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/support/requests",
+      "routePath": "/support/requests",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/support/requests/:requestId",
+      "routePath": "/support/requests/:requestId",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/support/requests/:requestId/close",
+      "routePath": "/support/requests/:requestId/close",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/support/requests/:requestId/reply",
+      "routePath": "/support/requests/:requestId/reply",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/users",
+      "routePath": "/users",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/users/:userId",
+      "routePath": "/users/:userId",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/users/:userId",
+      "routePath": "/users/:userId",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/:userId",
+      "routePath": "/users/:userId",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/users/:userId/accounts/:accountId",
+      "routePath": "/users/:userId/accounts/:accountId",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/users/:userId/avatar",
+      "routePath": "/users/:userId/avatar",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/admin/users/:userId/manage",
+      "routePath": "/users/:userId/manage",
+      "mountPath": "/api/admin",
+      "source": "routes/admin.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/analytics/page-view",
+      "routePath": "/page-view",
+      "mountPath": "/api/analytics",
+      "source": "routes/analytics.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/authentication/:provider",
+      "routePath": "/:provider",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/authentication/:provider/callback",
+      "routePath": "/:provider/callback",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/authentication/change-unverified-email",
+      "routePath": "/change-unverified-email",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/authentication/login",
+      "routePath": "/login",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/authentication/logout",
+      "routePath": "/logout",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/authentication/me",
+      "routePath": "/me",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/authentication/me",
+      "routePath": "/me",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/authentication/me/avatar",
+      "routePath": "/me/avatar",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/authentication/me/password",
+      "routePath": "/me/password",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/authentication/password-reset",
+      "routePath": "/password-reset",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/authentication/password-reset/verification-time/:email",
+      "routePath": "/password-reset/verification-time/:email",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/authentication/password-reset/verify/:email",
+      "routePath": "/password-reset/verify/:email",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/authentication/password/login",
+      "routePath": "/password/login",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/authentication/password/set",
+      "routePath": "/password/set",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/authentication/register",
+      "routePath": "/register",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/authentication/resend-verification-email",
+      "routePath": "/resend-verification-email",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/authentication/verification-time/:email",
+      "routePath": "/verification-time/:email",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/authentication/verify-email/:email",
+      "routePath": "/verify-email/:email",
+      "mountPath": "/api/authentication",
+      "source": "routes/auth.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/conversations",
+      "routePath": "/conversations",
+      "mountPath": "/api/chat",
+      "source": "routes/chat.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/chat/conversations/:conversationId/messages",
+      "routePath": "/conversations/:conversationId/messages",
+      "mountPath": "/api/chat",
+      "source": "routes/chat.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/chat/conversations/:conversationId/read",
+      "routePath": "/conversations/:conversationId/read",
+      "mountPath": "/api/chat",
+      "source": "routes/chat.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat/conversations/direct",
+      "routePath": "/conversations/direct",
+      "mountPath": "/api/chat",
+      "source": "routes/chat.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/effects",
+      "routePath": "/",
+      "mountPath": "/api/effects",
+      "source": "routes/effects.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/feedback",
+      "routePath": "/",
+      "mountPath": "/api/feedback",
+      "source": "routes/feedback.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/friends",
+      "routePath": "/",
+      "mountPath": "/api/friends",
+      "source": "routes/friends.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/friends/requests",
+      "routePath": "/requests",
+      "mountPath": "/api/friends",
+      "source": "routes/friends.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/friends/requests/:requestId",
+      "routePath": "/requests/:requestId",
+      "mountPath": "/api/friends",
+      "source": "routes/friends.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/friends/requests/incoming",
+      "routePath": "/requests/incoming",
+      "mountPath": "/api/friends",
+      "source": "routes/friends.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/friends/search/:userId",
+      "routePath": "/search/:userId",
+      "mountPath": "/api/friends",
+      "source": "routes/friends.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/leaderboard",
+      "routePath": "/",
+      "mountPath": "/api/leaderboard",
+      "source": "routes/leaderboard.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches",
+      "routePath": "/",
+      "mountPath": "/api/matches",
+      "source": "routes/matches.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/:matchId",
+      "routePath": "/:matchId",
+      "mountPath": "/api/matches",
+      "source": "routes/matches.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/solo/record",
+      "routePath": "/solo/record",
+      "mountPath": "/api/matches",
+      "source": "routes/matches.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/matches/solo/results",
+      "routePath": "/solo/results",
+      "mountPath": "/api/matches",
+      "source": "routes/matches.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/settings/account/email",
+      "routePath": "/account/email",
+      "mountPath": "/api/settings",
+      "source": "routes/settings.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/settings/account/login-history",
+      "routePath": "/account/login-history",
+      "mountPath": "/api/settings",
+      "source": "routes/settings.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/settings/connections",
+      "routePath": "/connections",
+      "mountPath": "/api/settings",
+      "source": "routes/settings.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/settings/connections/:provider/link",
+      "routePath": "/connections/:provider/link",
+      "mountPath": "/api/settings",
+      "source": "routes/settings.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/settings/connections/:provider/unlink",
+      "routePath": "/connections/:provider/unlink",
+      "mountPath": "/api/settings",
+      "source": "routes/settings.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/settings/privacy",
+      "routePath": "/privacy",
+      "mountPath": "/api/settings",
+      "source": "routes/settings.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/settings/privacy",
+      "routePath": "/privacy",
+      "mountPath": "/api/settings",
+      "source": "routes/settings.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/support/donations",
+      "routePath": "/donations",
+      "mountPath": "/api/support",
+      "source": "routes/support.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/support/donations/wallets",
+      "routePath": "/donations/wallets",
+      "mountPath": "/api/support",
+      "source": "routes/support.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/support/requests",
+      "routePath": "/requests",
+      "mountPath": "/api/support",
+      "source": "routes/support.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/support/requests/my",
+      "routePath": "/requests/my",
+      "mountPath": "/api/support",
+      "source": "routes/support.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/support/requests/my/:ticketId",
+      "routePath": "/requests/my/:ticketId",
+      "mountPath": "/api/support",
+      "source": "routes/support.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/support/requests/my/:ticketId/messages",
+      "routePath": "/requests/my/:ticketId/messages",
+      "mountPath": "/api/support",
+      "source": "routes/support.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/telegram/webhook",
+      "routePath": "/webhook",
+      "mountPath": "/api/telegram",
+      "source": "routes/telegram.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/users/:userId/actions",
+      "routePath": "/:userId/actions",
+      "mountPath": "/api/users",
+      "source": "routes/users.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/users/:userId/profile",
+      "routePath": "/:userId/profile",
+      "mountPath": "/api/users",
+      "source": "routes/users.js"
+    }
+  ],
+  "sockets": [
+    {
+      "direction": "incoming",
+      "event": "ability:use",
+      "source": "sockets/game.handlers.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "activity:feed",
+      "source": "services/activityFeedService.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "activity:feed:init",
+      "source": "sockets/index.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "chat:conversation:join",
+      "source": "sockets/chat.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "chat:conversation:leave",
+      "source": "sockets/chat.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "chat:message:new",
+      "source": "services/chatRealtimeService.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "chat:message:read",
+      "source": "sockets/chat.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "chat:message:read",
+      "source": "services/chatRealtimeService.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "chat:message:send",
+      "source": "sockets/chat.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "chat:typing:start",
+      "source": "sockets/chat.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "chat:typing:start",
+      "source": "sockets/chat.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "chat:typing:stop",
+      "source": "sockets/chat.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "chat:typing:stop",
+      "source": "sockets/chat.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "connection",
+      "source": "sockets/index.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "disconnect",
+      "source": "sockets/index.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "effect:apply",
+      "source": "sockets/game.handlers.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "friends:room-invite",
+      "source": "sockets/friends.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "friends:room-invite:respond",
+      "source": "sockets/friends.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "friends:room-invite:response",
+      "source": "sockets/friends.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "friends:room-invite:send",
+      "source": "sockets/friends.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "friends:state",
+      "source": "services/friendsRealtimeService.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "friends:state:get",
+      "source": "sockets/friends.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "game:over",
+      "source": "sockets/game.handlers.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "game:update",
+      "source": "sockets/game.handlers.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "match:end",
+      "source": "sockets/game.handlers.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "match:end",
+      "source": "sockets/index.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "match:end",
+      "source": "sockets/lobby.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "match:start",
+      "source": "sockets/lobby.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "match:start",
+      "source": "sockets/matchmaking.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "matchmaking:cancelled",
+      "source": "sockets/matchmaking.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "matchmaking:found",
+      "source": "sockets/matchmaking.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "matchmaking:join",
+      "source": "sockets/matchmaking.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "matchmaking:leave",
+      "source": "sockets/matchmaking.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "matchmaking:searching",
+      "source": "sockets/matchmaking.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "opponent:update",
+      "source": "sockets/game.handlers.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "party:cancel-search",
+      "source": "sockets/matchmaking.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "party:create",
+      "source": "sockets/matchmaking.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "party:join",
+      "source": "sockets/matchmaking.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "party:leave",
+      "source": "sockets/matchmaking.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "party:start-search",
+      "source": "sockets/matchmaking.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "party:state",
+      "source": "sockets/matchmaking.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "persistence:error",
+      "source": "sockets/game.handlers.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "persistence:success",
+      "source": "sockets/game.handlers.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "ping:measure",
+      "source": "sockets/index.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "player:ready",
+      "source": "sockets/lobby.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "presence:update",
+      "source": "services/friendsRealtimeService.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "room:create",
+      "source": "sockets/lobby.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "room:join",
+      "source": "sockets/lobby.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "room:leave",
+      "source": "sockets/lobby.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "room:left",
+      "source": "sockets/lobby.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "room:player-joined",
+      "source": "sockets/lobby.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "room:player-left",
+      "source": "sockets/index.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "room:player-left",
+      "source": "sockets/lobby.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "room:set-team",
+      "source": "sockets/lobby.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "room:state",
+      "source": "sockets/game.handlers.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "room:state",
+      "source": "sockets/index.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "room:state",
+      "source": "sockets/lobby.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "room:state",
+      "source": "sockets/matchmaking.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "room:update-mode",
+      "source": "sockets/lobby.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "room:update-settings",
+      "source": "sockets/lobby.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "support:join",
+      "source": "sockets/support.socket.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "support:leave",
+      "source": "sockets/support.socket.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "support:message",
+      "source": "services/supportRealtimeService.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "support:updated",
+      "source": "services/supportRealtimeService.js"
+    }
+  ],
+  "tables": [
+    {
+      "table": "accounts",
+      "introducedBy": "migrations/009_oauth_accounts_schema.sql"
+    },
+    {
+      "table": "admin_audit_logs",
+      "introducedBy": "migrations/008_admin_analytics_schema.sql"
+    },
+    {
+      "table": "auth_logs",
+      "introducedBy": "migrations/001_auth_schema.sql"
+    },
+    {
+      "table": "chat_conversation_members",
+      "introducedBy": "migrations/023_chat_schema.sql"
+    },
+    {
+      "table": "chat_conversations",
+      "introducedBy": "migrations/023_chat_schema.sql"
+    },
+    {
+      "table": "chat_direct_conversations",
+      "introducedBy": "migrations/023_chat_schema.sql"
+    },
+    {
+      "table": "chat_messages",
+      "introducedBy": "migrations/023_chat_schema.sql"
+    },
+    {
+      "table": "cosmetic_collections",
+      "introducedBy": "migrations/025_cosmetic_catalog_schema.sql"
+    },
+    {
+      "table": "cosmetic_items",
+      "introducedBy": "migrations/025_cosmetic_catalog_schema.sql"
+    },
+    {
+      "table": "donation_currencies",
+      "introducedBy": "migrations/011_donation_catalogs_schema.sql"
+    },
+    {
+      "table": "donation_currency_networks",
+      "introducedBy": "migrations/011_donation_catalogs_schema.sql"
+    },
+    {
+      "table": "donation_networks",
+      "introducedBy": "migrations/011_donation_catalogs_schema.sql"
+    },
+    {
+      "table": "donation_verification_events",
+      "introducedBy": "migrations/007_support_and_donations_schema.sql"
+    },
+    {
+      "table": "donation_wallets",
+      "introducedBy": "migrations/007_support_and_donations_schema.sql"
+    },
+    {
+      "table": "donations",
+      "introducedBy": "migrations/007_support_and_donations_schema.sql"
+    },
+    {
+      "table": "email_verifications",
+      "introducedBy": "migrations/001_auth_schema.sql"
+    },
+    {
+      "table": "friendships",
+      "introducedBy": "migrations/019_friends_schema.sql"
+    },
+    {
+      "table": "game_activity_events",
+      "introducedBy": "migrations/008_admin_analytics_schema.sql"
+    },
+    {
+      "table": "game_effects",
+      "introducedBy": "migrations/015_game_effects_catalog.sql"
+    },
+    {
+      "table": "game_room_players",
+      "introducedBy": "migrations/006_game_rooms_schema.sql"
+    },
+    {
+      "table": "game_rooms",
+      "introducedBy": "migrations/006_game_rooms_schema.sql"
+    },
+    {
+      "table": "match_events",
+      "introducedBy": "migrations/003_match_schema.sql"
+    },
+    {
+      "table": "match_players",
+      "introducedBy": "migrations/003_match_schema.sql"
+    },
+    {
+      "table": "match_teams",
+      "introducedBy": "migrations/003_match_schema.sql"
+    },
+    {
+      "table": "matches",
+      "introducedBy": "migrations/003_match_schema.sql"
+    },
+    {
+      "table": "rank_tiers",
+      "introducedBy": "migrations/016_rank_tiers_catalog.sql"
+    },
+    {
+      "table": "rating_history",
+      "introducedBy": "migrations/005_rating_schema.sql"
+    },
+    {
+      "table": "roles",
+      "introducedBy": "migrations/001_auth_schema.sql"
+    },
+    {
+      "table": "site_visit_events",
+      "introducedBy": "migrations/008_admin_analytics_schema.sql"
+    },
+    {
+      "table": "skin_pack_manifests",
+      "introducedBy": "migrations/025_cosmetic_catalog_schema.sql"
+    },
+    {
+      "table": "support_request_messages",
+      "introducedBy": "migrations/014_support_request_messages.sql"
+    },
+    {
+      "table": "support_requests",
+      "introducedBy": "migrations/007_support_and_donations_schema.sql"
+    },
+    {
+      "table": "support_user_blocks",
+      "introducedBy": "migrations/012_feedback_channels_and_support_blocks.sql"
+    },
+    {
+      "table": "uploaded_assets",
+      "introducedBy": "migrations/017_uploaded_assets_storage.sql"
+    },
+    {
+      "table": "user_cosmetic_loadouts",
+      "introducedBy": "migrations/026_cosmetic_inventory_schema.sql"
+    },
+    {
+      "table": "user_inventory_events",
+      "introducedBy": "migrations/026_cosmetic_inventory_schema.sql"
+    },
+    {
+      "table": "user_inventory_items",
+      "introducedBy": "migrations/026_cosmetic_inventory_schema.sql"
+    },
+    {
+      "table": "user_privacy_settings",
+      "introducedBy": "migrations/020_user_privacy_settings.sql"
+    },
+    {
+      "table": "user_rank_stats",
+      "introducedBy": "migrations/005_rating_schema.sql"
+    },
+    {
+      "table": "user_sessions",
+      "introducedBy": "migrations/008_admin_analytics_schema.sql"
+    },
+    {
+      "table": "users",
+      "introducedBy": "migrations/001_auth_schema.sql"
+    }
+  ],
+  "imports": [
+    {
+      "from": "config/passport.js",
+      "fromArea": "config",
+      "to": "config/oauthProviders.js",
+      "toArea": "config"
+    },
+    {
+      "from": "controllers/adminController.js",
+      "fromArea": "controllers",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "controllers/adminController.js",
+      "fromArea": "controllers",
+      "to": "repositories/adminRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "controllers/adminController.js",
+      "fromArea": "controllers",
+      "to": "repositories/supportRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "controllers/adminController.js",
+      "fromArea": "controllers",
+      "to": "repositories/uploadedAssetRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "controllers/adminController.js",
+      "fromArea": "controllers",
+      "to": "services/authService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/adminController.js",
+      "fromArea": "controllers",
+      "to": "services/migrationService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/adminController.js",
+      "fromArea": "controllers",
+      "to": "services/supportCloseService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/adminController.js",
+      "fromArea": "controllers",
+      "to": "services/supportReplyService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/adminController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/analyticsController.js",
+      "fromArea": "controllers",
+      "to": "middleware/checkAuth.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "controllers/analyticsController.js",
+      "fromArea": "controllers",
+      "to": "repositories/analyticsRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "controllers/analyticsController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/authController.js",
+      "fromArea": "controllers",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "controllers/authController.js",
+      "fromArea": "controllers",
+      "to": "services/activityFeedService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/authController.js",
+      "fromArea": "controllers",
+      "to": "services/authService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/authController.js",
+      "fromArea": "controllers",
+      "to": "services/emailService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/authController.js",
+      "fromArea": "controllers",
+      "to": "services/oauthService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/authController.js",
+      "fromArea": "controllers",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "controllers/authController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/authController.js",
+      "fromArea": "controllers",
+      "to": "utils/authCookie.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/authController.js",
+      "fromArea": "controllers",
+      "to": "utils/loginTurnstile.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/authController.js",
+      "fromArea": "controllers",
+      "to": "utils/turnstile.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/chatController.js",
+      "fromArea": "controllers",
+      "to": "services/chatRealtimeService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/chatController.js",
+      "fromArea": "controllers",
+      "to": "services/chatService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/chatController.js",
+      "fromArea": "controllers",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "controllers/chatController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/effectsController.js",
+      "fromArea": "controllers",
+      "to": "repositories/gameEffectsRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "controllers/effectsController.js",
+      "fromArea": "controllers",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "controllers/effectsController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/friendsController.js",
+      "fromArea": "controllers",
+      "to": "services/friendsRealtimeService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/friendsController.js",
+      "fromArea": "controllers",
+      "to": "services/friendsService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/friendsController.js",
+      "fromArea": "controllers",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "controllers/friendsController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/leaderboardController.js",
+      "fromArea": "controllers",
+      "to": "services/leaderboardService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/leaderboardController.js",
+      "fromArea": "controllers",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "controllers/leaderboardController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/matchesController.js",
+      "fromArea": "controllers",
+      "to": "services/userMatchesService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/matchesController.js",
+      "fromArea": "controllers",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "controllers/matchesController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/oauthController.js",
+      "fromArea": "controllers",
+      "to": "config/oauthProviders.js",
+      "toArea": "config"
+    },
+    {
+      "from": "controllers/oauthController.js",
+      "fromArea": "controllers",
+      "to": "config/passport.js",
+      "toArea": "config"
+    },
+    {
+      "from": "controllers/oauthController.js",
+      "fromArea": "controllers",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "controllers/oauthController.js",
+      "fromArea": "controllers",
+      "to": "services/authService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/oauthController.js",
+      "fromArea": "controllers",
+      "to": "services/oauthService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/oauthController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/oauthController.js",
+      "fromArea": "controllers",
+      "to": "utils/authCookie.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/oauthController.js",
+      "fromArea": "controllers",
+      "to": "utils/oauthState.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/settingsController.js",
+      "fromArea": "controllers",
+      "to": "services/authService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/settingsController.js",
+      "fromArea": "controllers",
+      "to": "services/emailService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/settingsController.js",
+      "fromArea": "controllers",
+      "to": "services/oauthService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/settingsController.js",
+      "fromArea": "controllers",
+      "to": "services/privacyService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/settingsController.js",
+      "fromArea": "controllers",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "controllers/settingsController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/settingsController.js",
+      "fromArea": "controllers",
+      "to": "utils/authCookie.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/supportController.js",
+      "fromArea": "controllers",
+      "to": "services/supportService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/supportController.js",
+      "fromArea": "controllers",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "controllers/supportController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/telegramController.js",
+      "fromArea": "controllers",
+      "to": "services/supportCloseService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/telegramController.js",
+      "fromArea": "controllers",
+      "to": "services/supportReplyService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/telegramController.js",
+      "fromArea": "controllers",
+      "to": "services/telegramSupportService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/telegramController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/uploadsController.js",
+      "fromArea": "controllers",
+      "to": "repositories/uploadedAssetRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "controllers/uploadsController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "controllers/usersController.js",
+      "fromArea": "controllers",
+      "to": "services/privacyService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/usersController.js",
+      "fromArea": "controllers",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "controllers/usersController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "helpers/error.helper.js",
+      "fromArea": "helpers",
+      "to": "src/shared/responses/errors.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "middleware/checkAdmin.js",
+      "fromArea": "middleware",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "middleware/checkAdmin.js",
+      "fromArea": "middleware",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "middleware/checkAdmin.js",
+      "fromArea": "middleware",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "middleware/checkAuth.js",
+      "fromArea": "middleware",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "middleware/errorHandler.js",
+      "fromArea": "middleware",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "middleware/requireTurnstile.js",
+      "fromArea": "middleware",
+      "to": "utils/turnstile.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "middleware/validateAuth.js",
+      "fromArea": "middleware",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "repositories/adminRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "repositories/adminRepository.js",
+      "fromArea": "repositories",
+      "to": "repositories/analyticsRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "repositories/adminRepository.js",
+      "fromArea": "repositories",
+      "to": "services/rankRules.js",
+      "toArea": "services"
+    },
+    {
+      "from": "repositories/analyticsRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "repositories/authRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "repositories/chatRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "repositories/friendsRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "repositories/gameEffectsRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "repositories/helper.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "repositories/leaderboardRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "repositories/matchRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "repositories/matchRepository.js",
+      "fromArea": "repositories",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "repositories/matchRepository.js",
+      "fromArea": "repositories",
+      "to": "repositories/rankRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "repositories/oauthRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "repositories/privacyRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "repositories/rankRepository.js",
+      "fromArea": "repositories",
+      "to": "services/rankRules.js",
+      "toArea": "services"
+    },
+    {
+      "from": "repositories/roomRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "repositories/supportRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "repositories/uploadedAssetRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "routes/admin.js",
+      "fromArea": "routes",
+      "to": "controllers/adminController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/admin.js",
+      "fromArea": "routes",
+      "to": "middleware/checkAdmin.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/admin.js",
+      "fromArea": "routes",
+      "to": "middleware/checkAuth.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/analytics.js",
+      "fromArea": "routes",
+      "to": "controllers/analyticsController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/auth.js",
+      "fromArea": "routes",
+      "to": "controllers/authController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/auth.js",
+      "fromArea": "routes",
+      "to": "controllers/oauthController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/auth.js",
+      "fromArea": "routes",
+      "to": "middleware/checkAuth.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/auth.js",
+      "fromArea": "routes",
+      "to": "middleware/requireTurnstile.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/auth.js",
+      "fromArea": "routes",
+      "to": "middleware/validateAuth.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/auth.js",
+      "fromArea": "routes",
+      "to": "validations/auth.validation.js",
+      "toArea": "validations"
+    },
+    {
+      "from": "routes/chat.js",
+      "fromArea": "routes",
+      "to": "controllers/chatController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/chat.js",
+      "fromArea": "routes",
+      "to": "middleware/checkAuth.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/effects.js",
+      "fromArea": "routes",
+      "to": "controllers/effectsController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/feedback.js",
+      "fromArea": "routes",
+      "to": "controllers/supportController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/feedback.js",
+      "fromArea": "routes",
+      "to": "middleware/checkAuth.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/feedback.js",
+      "fromArea": "routes",
+      "to": "middleware/requireTurnstile.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/friends.js",
+      "fromArea": "routes",
+      "to": "controllers/friendsController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/friends.js",
+      "fromArea": "routes",
+      "to": "middleware/checkAuth.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/leaderboard.js",
+      "fromArea": "routes",
+      "to": "controllers/leaderboardController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/matches.js",
+      "fromArea": "routes",
+      "to": "controllers/matchesController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/matches.js",
+      "fromArea": "routes",
+      "to": "middleware/checkAuth.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/settings.js",
+      "fromArea": "routes",
+      "to": "controllers/oauthController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/settings.js",
+      "fromArea": "routes",
+      "to": "controllers/settingsController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/settings.js",
+      "fromArea": "routes",
+      "to": "middleware/checkAuth.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/settings.js",
+      "fromArea": "routes",
+      "to": "middleware/validateAuth.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/settings.js",
+      "fromArea": "routes",
+      "to": "validations/auth.validation.js",
+      "toArea": "validations"
+    },
+    {
+      "from": "routes/settings.js",
+      "fromArea": "routes",
+      "to": "validations/privacy.validation.js",
+      "toArea": "validations"
+    },
+    {
+      "from": "routes/support.js",
+      "fromArea": "routes",
+      "to": "controllers/supportController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/support.js",
+      "fromArea": "routes",
+      "to": "middleware/checkAuth.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/support.js",
+      "fromArea": "routes",
+      "to": "middleware/requireTurnstile.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "routes/telegram.js",
+      "fromArea": "routes",
+      "to": "controllers/telegramController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/users.js",
+      "fromArea": "routes",
+      "to": "controllers/usersController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/users.js",
+      "fromArea": "routes",
+      "to": "middleware/checkAuth.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "config/passport.js",
+      "toArea": "config"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "controllers/uploadsController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "middleware/errorHandler.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "middleware/logger.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "routes/admin.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "routes/analytics.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "routes/auth.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "routes/chat.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "routes/effects.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "routes/feedback.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "routes/friends.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "routes/leaderboard.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "routes/matches.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "routes/settings.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "routes/support.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "routes/telegram.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "routes/users.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "services/uploadedAssetService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "server.js",
+      "fromArea": "server.js",
+      "to": "sockets/index.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "services/authService.js",
+      "fromArea": "services",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "services/authService.js",
+      "fromArea": "services",
+      "to": "repositories/authRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/authService.js",
+      "fromArea": "services",
+      "to": "repositories/helper.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/authService.js",
+      "fromArea": "services",
+      "to": "repositories/uploadedAssetRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/authService.js",
+      "fromArea": "services",
+      "to": "services/rankRules.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/chatCryptoService.js",
+      "fromArea": "services",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "services/chatRealtimeService.js",
+      "fromArea": "services",
+      "to": "services/chatService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/chatService.js",
+      "fromArea": "services",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "services/chatService.js",
+      "fromArea": "services",
+      "to": "repositories/chatRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/chatService.js",
+      "fromArea": "services",
+      "to": "services/chatCryptoService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/chatService.js",
+      "fromArea": "services",
+      "to": "services/privacyService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/emailService.js",
+      "fromArea": "services",
+      "to": "services/emailTemplateService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/friendsRealtimeService.js",
+      "fromArea": "services",
+      "to": "services/friendsService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/friendsService.js",
+      "fromArea": "services",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "services/friendsService.js",
+      "fromArea": "services",
+      "to": "repositories/friendsRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/friendsService.js",
+      "fromArea": "services",
+      "to": "services/privacyService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/friendsService.js",
+      "fromArea": "services",
+      "to": "services/rankRules.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/leaderboardService.js",
+      "fromArea": "services",
+      "to": "repositories/leaderboardRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/leaderboardService.js",
+      "fromArea": "services",
+      "to": "services/rankRules.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/matchService.js",
+      "fromArea": "services",
+      "to": "repositories/matchRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/migrationService.js",
+      "fromArea": "services",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "services/oauthService.js",
+      "fromArea": "services",
+      "to": "config/oauthProviders.js",
+      "toArea": "config"
+    },
+    {
+      "from": "services/oauthService.js",
+      "fromArea": "services",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "services/oauthService.js",
+      "fromArea": "services",
+      "to": "repositories/authRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/oauthService.js",
+      "fromArea": "services",
+      "to": "repositories/helper.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/oauthService.js",
+      "fromArea": "services",
+      "to": "repositories/oauthRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/oauthService.js",
+      "fromArea": "services",
+      "to": "services/authService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/privacyService.js",
+      "fromArea": "services",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "services/privacyService.js",
+      "fromArea": "services",
+      "to": "repositories/privacyRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/privacyService.js",
+      "fromArea": "services",
+      "to": "services/authService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/rankRules.js",
+      "fromArea": "services",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "services/supportCloseService.js",
+      "fromArea": "services",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "services/supportCloseService.js",
+      "fromArea": "services",
+      "to": "repositories/supportRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/supportCloseService.js",
+      "fromArea": "services",
+      "to": "services/supportRealtimeService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/supportCloseService.js",
+      "fromArea": "services",
+      "to": "services/telegramSupportService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/supportReplyService.js",
+      "fromArea": "services",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "services/supportReplyService.js",
+      "fromArea": "services",
+      "to": "repositories/supportRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/supportReplyService.js",
+      "fromArea": "services",
+      "to": "services/emailService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/supportReplyService.js",
+      "fromArea": "services",
+      "to": "services/supportRealtimeService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/supportReplyService.js",
+      "fromArea": "services",
+      "to": "services/telegramSupportService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/supportService.js",
+      "fromArea": "services",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
+    },
+    {
+      "from": "services/supportService.js",
+      "fromArea": "services",
+      "to": "repositories/supportRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/supportService.js",
+      "fromArea": "services",
+      "to": "services/emailService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/supportService.js",
+      "fromArea": "services",
+      "to": "services/telegramSupportService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/telegramSupportService.js",
+      "fromArea": "services",
+      "to": "repositories/supportRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/telegramSupportService.js",
+      "fromArea": "services",
+      "to": "services/supportRealtimeService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "services/uploadedAssetService.js",
+      "fromArea": "services",
+      "to": "repositories/uploadedAssetRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/userMatchesService.js",
+      "fromArea": "services",
+      "to": "repositories/matchRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "sockets/chat.socket.js",
+      "fromArea": "sockets",
+      "to": "services/chatRealtimeService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/chat.socket.js",
+      "fromArea": "sockets",
+      "to": "services/chatService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/friends.socket.js",
+      "fromArea": "sockets",
+      "to": "services/friendsRealtimeService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/friends.socket.js",
+      "fromArea": "sockets",
+      "to": "services/friendsService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/friends.socket.js",
+      "fromArea": "sockets",
+      "to": "services/privacyService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/friends.socket.js",
+      "fromArea": "sockets",
+      "to": "sockets/roomStore.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "sockets/game.handlers.js",
+      "fromArea": "sockets",
+      "to": "repositories/gameEffectsRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "sockets/game.handlers.js",
+      "fromArea": "sockets",
+      "to": "services/activityFeedService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/game.handlers.js",
+      "fromArea": "sockets",
+      "to": "services/matchService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/game.handlers.js",
+      "fromArea": "sockets",
+      "to": "sockets/roomStore.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "repositories/analyticsRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "services/activityFeedService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "services/chatRealtimeService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "services/friendsRealtimeService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "services/matchService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "services/supportRealtimeService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "sockets/chat.socket.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "sockets/friends.socket.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "sockets/game.handlers.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "sockets/lobby.socket.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "sockets/matchmaking.socket.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "sockets/roomStore.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "sockets/socketAuth.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "sockets/support.socket.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "sockets/lobby.socket.js",
+      "fromArea": "sockets",
+      "to": "repositories/analyticsRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "sockets/lobby.socket.js",
+      "fromArea": "sockets",
+      "to": "services/activityFeedService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/lobby.socket.js",
+      "fromArea": "sockets",
+      "to": "services/matchService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/lobby.socket.js",
+      "fromArea": "sockets",
+      "to": "sockets/roomStore.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "sockets/matchmaking.socket.js",
+      "fromArea": "sockets",
+      "to": "repositories/analyticsRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "sockets/matchmaking.socket.js",
+      "fromArea": "sockets",
+      "to": "services/activityFeedService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/matchmaking.socket.js",
+      "fromArea": "sockets",
+      "to": "services/matchService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/matchmaking.socket.js",
+      "fromArea": "sockets",
+      "to": "sockets/roomStore.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "sockets/roomStore.js",
+      "fromArea": "sockets",
+      "to": "repositories/roomRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "sockets/socketAuth.js",
+      "fromArea": "sockets",
+      "to": "repositories/authRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "sockets/support.socket.js",
+      "fromArea": "sockets",
+      "to": "repositories/supportRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "sockets/support.socket.js",
+      "fromArea": "sockets",
+      "to": "services/supportRealtimeService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "src/shared/responses/errors.js",
+      "fromArea": "shared",
+      "to": "utils/ApiError.js",
+      "toArea": "utils"
+    },
+    {
+      "from": "src/shared/responses/messages/index.js",
+      "fromArea": "shared",
+      "to": "src/shared/responses/messages/en.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/shared/responses/messages/index.js",
+      "fromArea": "shared",
+      "to": "src/shared/responses/messages/ru.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/shared/responses/send.js",
+      "fromArea": "shared",
+      "to": "src/shared/responses/messages/index.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/shared/responses/success.js",
+      "fromArea": "shared",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "utils/turnstile.js",
+      "fromArea": "utils",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    }
+  ]
+}

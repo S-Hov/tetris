@@ -12,7 +12,7 @@ const normalizeScore = (value) => (Number.isFinite(value) ? Math.max(0, Math.flo
 const normalizeLines = (value) => (Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0)
 const normalizeLevel = (value) => (Number.isFinite(value) ? Math.max(1, Math.floor(value)) : 1)
 
-const getPlayerStats = (player, fallbackPayload = null) => {
+export const normalizeMatchPlayerStats = (player, fallbackPayload = null) => {
     const snapshot = fallbackPayload || player?.gameState || {}
 
     return {
@@ -22,9 +22,9 @@ const getPlayerStats = (player, fallbackPayload = null) => {
     }
 }
 
-const getTeamStats = (players = []) => {
+export const aggregateMatchTeamStats = (players = []) => {
     return players.reduce((stats, player) => {
-        const playerStats = getPlayerStats(player)
+        const playerStats = normalizeMatchPlayerStats(player)
 
         return {
             score: stats.score + playerStats.score,
@@ -91,8 +91,8 @@ export const finishRoomMatchService = async ({
     loserTeamPlayers = null,
 }) => {
     if (winnerTeamPlayers?.length && loserTeamPlayers?.length) {
-        const winnerStats = getTeamStats(winnerTeamPlayers)
-        const loserStats = getTeamStats(loserTeamPlayers)
+        const winnerStats = aggregateMatchTeamStats(winnerTeamPlayers)
+        const loserStats = aggregateMatchTeamStats(loserTeamPlayers)
         const winnerTeamId = winnerTeamPlayers[0]?.teamId || null
         const loserTeamId = loserTeamPlayers[0]?.teamId || null
 
@@ -115,12 +115,12 @@ export const finishRoomMatchService = async ({
             players: [
                 ...winnerTeamPlayers.map((player) => ({
                     matchPlayerId: player.matchPlayerId,
-                    ...getPlayerStats(player),
+                    ...normalizeMatchPlayerStats(player),
                     result: 'win',
                 })),
                 ...loserTeamPlayers.map((player) => ({
                     matchPlayerId: player.matchPlayerId,
-                    ...getPlayerStats(player, player.socketId === loserPlayer?.socketId ? loserPayload : null),
+                    ...normalizeMatchPlayerStats(player, player.socketId === loserPlayer?.socketId ? loserPayload : null),
                     result: 'lose',
                 })),
             ].filter((player) => player.matchPlayerId),
@@ -131,8 +131,8 @@ export const finishRoomMatchService = async ({
         return null
     }
 
-    const winnerStats = getPlayerStats(winnerPlayer)
-    const loserStats = getPlayerStats(loserPlayer, loserPayload)
+    const winnerStats = normalizeMatchPlayerStats(winnerPlayer)
+    const loserStats = normalizeMatchPlayerStats(loserPlayer, loserPayload)
 
     return await markRoomMatchFinishedRepo({
         roomId,
@@ -167,8 +167,8 @@ export const finishRoomMatchService = async ({
 
 export const abandonRoomMatchService = async ({ roomId, winnerPlayer = null, loserPlayer = null }) => {
     const now = new Date()
-    const winnerStats = winnerPlayer ? getPlayerStats(winnerPlayer) : null
-    const loserStats = loserPlayer ? getPlayerStats(loserPlayer) : null
+    const winnerStats = winnerPlayer ? normalizeMatchPlayerStats(winnerPlayer) : null
+    const loserStats = loserPlayer ? normalizeMatchPlayerStats(loserPlayer) : null
 
     return await markRoomMatchFinishedRepo({
         roomId,
@@ -225,8 +225,8 @@ export const abandonRoomTeamMatchService = async ({
     }
 
     const now = new Date()
-    const winnerStats = getTeamStats(winnerTeamPlayers)
-    const loserStats = getTeamStats(loserTeamPlayers)
+    const winnerStats = aggregateMatchTeamStats(winnerTeamPlayers)
+    const loserStats = aggregateMatchTeamStats(loserTeamPlayers)
     const winnerTeamId = winnerTeamPlayers[0]?.teamId || null
     const loserTeamId = loserTeamPlayers[0]?.teamId || null
 
@@ -249,12 +249,12 @@ export const abandonRoomTeamMatchService = async ({
         players: [
             ...winnerTeamPlayers.map((player) => ({
                 matchPlayerId: player.matchPlayerId,
-                ...getPlayerStats(player),
+                ...normalizeMatchPlayerStats(player),
                 result: 'win',
             })),
             ...loserTeamPlayers.map((player) => ({
                 matchPlayerId: player.matchPlayerId,
-                ...getPlayerStats(player),
+                ...normalizeMatchPlayerStats(player),
                 result: 'lose',
                 leftAt: player.socketId === loserPlayer?.socketId ? now : null,
             })),
