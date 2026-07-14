@@ -11,10 +11,10 @@ export const useEffectPreview = ({
     setGameState,
 }) => {
     const appliedInitialEffectKeyRef = useRef('')
-    const isPreviewMode = import.meta.env.DEV && (forcePreviewMode || Boolean(initialEffectKey))
+    const isPreviewMode = forcePreviewMode || Boolean(initialEffectKey)
 
     const previewEffect = useCallback((effect, options = {}) => {
-        if (!import.meta.env.DEV || !enabled) {
+        if (!enabled || !isPreviewMode) {
             return false
         }
 
@@ -36,10 +36,10 @@ export const useEffectPreview = ({
         }))
 
         return true
-    }, [enabled, setGameState])
+    }, [enabled, isPreviewMode, setGameState])
 
     const clearPreviewEffects = useCallback(() => {
-        if (!import.meta.env.DEV) {
+        if (!enabled || !isPreviewMode) {
             return
         }
 
@@ -48,10 +48,10 @@ export const useEffectPreview = ({
             activeEffects: [],
             effectFeedback: null,
         }))
-    }, [setGameState])
+    }, [enabled, isPreviewMode, setGameState])
 
     useEffect(() => {
-        if (!import.meta.env.DEV) {
+        if (!enabled || !isPreviewMode) {
             return undefined
         }
 
@@ -62,7 +62,7 @@ export const useEffectPreview = ({
         window.addEventListener(EFFECT_PREVIEW_EVENT, handlePreviewEffect)
 
         return () => window.removeEventListener(EFFECT_PREVIEW_EVENT, handlePreviewEffect)
-    }, [previewEffect])
+    }, [enabled, isPreviewMode, previewEffect])
 
     useEffect(() => {
         if (
