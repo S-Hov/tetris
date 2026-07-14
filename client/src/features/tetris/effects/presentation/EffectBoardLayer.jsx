@@ -64,13 +64,16 @@ const EffectBoardLayer = ({ activeEffects = [], feedback = null }) => {
                 }
 
                 const isFeedbackActive = isFeedbackVisible && feedback?.effectKey === effect.effectKey
+                const feedbackSequence = feedback?.effectKey === effect.effectKey
+                    ? feedback.sequence
+                    : null
 
                 return (
                     <BoardEffect
                         effect={effect}
                         feedback={isFeedbackActive ? feedback : null}
                         feedbackActive={isFeedbackActive}
-                        key={`${effect.effectKey}-${isFeedbackActive ? feedback.sequence : 'idle'}`}
+                        key={`${effect.effectKey}-${feedbackSequence || 'idle'}`}
                     />
                 )
             })}
