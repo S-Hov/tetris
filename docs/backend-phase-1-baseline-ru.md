@@ -19,7 +19,7 @@ legacy backend перед началом структурного перенос
 server/tests/contracts/baseline/architecture.json
 ```
 
-Snapshot содержит полный список:
+Snapshot содержит актуальный полный список:
 
 - зарегистрированных Express endpoints;
 - literal incoming и outgoing Socket.IO events;
@@ -42,7 +42,11 @@ server/scripts/lib/architectureInventory.js
 | Outgoing Socket.IO events | 33 |
 | Всего Socket.IO contracts | 64 |
 | PostgreSQL tables из migrations | 41 |
-| Относительные production imports | 236 |
+| Относительные production imports на момент завершения фазы 1 | 236 |
+
+REST, Socket.IO и database sections этого snapshot защищают публичные контракты.
+Import graph является архитектурной картой и намеренно обновляется после
+проверенного структурного переноса в следующих фазах.
 
 Dynamic socket emits, где имя события хранится в переменной, не могут быть
 надёжно извлечены регулярным анализом. Они дополнительно должны быть защищены
@@ -329,7 +333,9 @@ service.
 
 ## 10. Карта legacy imports
 
-Полная карта из 236 направленных import edges хранится в architecture snapshot.
+На момент завершения фазы 1 карта содержала 236 направленных import edges.
+Актуальная карта после каждой принятой архитектурной фазы хранится в architecture
+snapshot.
 Основные связи текущих областей:
 
 | Связь | Количество |

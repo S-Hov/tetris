@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url)
 const serverRoot = path.resolve(path.dirname(__filename), '..')
 const baselinePath = path.join(serverRoot, 'tests', 'contracts', 'baseline', 'architecture.json')
 
-test('REST, Socket.IO, database and legacy import contracts match the phase 1 baseline', async () => {
+test('REST, Socket.IO, database and import contracts match the reviewed architecture baseline', async () => {
     const expected = JSON.parse(await readFile(baselinePath, 'utf8'))
     const actual = await collectArchitectureInventory(serverRoot)
 

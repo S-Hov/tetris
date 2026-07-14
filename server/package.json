@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "build": "node --check server.js && node --check scripts/architecture-inventory.js",
+    "start": "node src/main.js",
+    "dev": "node src/main.js",
+    "build": "node --check src/main.js && node --check server.js && node --check scripts/architecture-inventory.js",
     "db:migrate": "node scripts/migrate.js",
     "architecture:inventory": "node scripts/architecture-inventory.js --summary",
     "architecture:baseline:check": "node scripts/architecture-inventory.js --check",

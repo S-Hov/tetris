@@ -1969,116 +1969,8 @@
     {
       "from": "server.js",
       "fromArea": "server.js",
-      "to": "config/passport.js",
-      "toArea": "config"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "controllers/uploadsController.js",
-      "toArea": "controllers"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "middleware/errorHandler.js",
-      "toArea": "middleware"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "middleware/logger.js",
-      "toArea": "middleware"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "routes/admin.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "routes/analytics.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "routes/auth.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "routes/chat.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "routes/effects.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "routes/feedback.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "routes/friends.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "routes/leaderboard.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "routes/matches.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "routes/settings.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "routes/support.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "routes/telegram.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "routes/users.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "services/uploadedAssetService.js",
-      "toArea": "services"
-    },
-    {
-      "from": "server.js",
-      "fromArea": "server.js",
-      "to": "sockets/index.js",
-      "toArea": "sockets"
+      "to": "src/main.js",
+      "toArea": "src"
     },
     {
       "from": "services/authService.js",
@@ -2583,6 +2475,186 @@
       "fromArea": "sockets",
       "to": "services/supportRealtimeService.js",
       "toArea": "services"
+    },
+    {
+      "from": "src/app/bootstrap.js",
+      "fromArea": "src",
+      "to": "src/app/createApp.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/bootstrap.js",
+      "fromArea": "src",
+      "to": "src/app/createContainer.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/bootstrap.js",
+      "fromArea": "src",
+      "to": "src/app/createHttpServer.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/bootstrap.js",
+      "fromArea": "src",
+      "to": "src/app/createSocketServer.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/bootstrap.js",
+      "fromArea": "src",
+      "to": "src/app/lifecycle.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/createApp.js",
+      "fromArea": "src",
+      "to": "config/passport.js",
+      "toArea": "config"
+    },
+    {
+      "from": "src/app/createApp.js",
+      "fromArea": "src",
+      "to": "controllers/uploadsController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "src/app/createApp.js",
+      "fromArea": "src",
+      "to": "middleware/errorHandler.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "src/app/createApp.js",
+      "fromArea": "src",
+      "to": "middleware/logger.js",
+      "toArea": "middleware"
+    },
+    {
+      "from": "src/app/createApp.js",
+      "fromArea": "src",
+      "to": "src/app/registerModules.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/createContainer.js",
+      "fromArea": "src",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
+      "from": "src/app/createContainer.js",
+      "fromArea": "src",
+      "to": "services/uploadedAssetService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "src/app/createContainer.js",
+      "fromArea": "src",
+      "to": "sockets/game.handlers.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "src/app/createSocketServer.js",
+      "fromArea": "src",
+      "to": "src/app/registerModules.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/admin.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/analytics.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/auth.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/chat.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/effects.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/feedback.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/friends.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/leaderboard.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/matches.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/settings.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/support.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/telegram.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/users.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "sockets/index.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "src/main.js",
+      "fromArea": "src",
+      "to": "src/app/bootstrap.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/main.js",
+      "fromArea": "src",
+      "to": "src/app/lifecycle.js",
+      "toArea": "src"
     },
     {
       "from": "src/shared/responses/errors.js",

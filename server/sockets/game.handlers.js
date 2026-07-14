@@ -73,7 +73,7 @@ const runPersistenceTask = (io, roomId, task, {
         })
 }
 
-const refreshActiveEffectCache = async () => {
+export const warmActiveEffectCache = async () => {
     if (activeEffectCachePromise) {
         return await activeEffectCachePromise
     }
@@ -100,19 +100,15 @@ const getCachedActiveEffect = async (effectKey) => {
     }
 
     if (cachedEffect) {
-        void refreshActiveEffectCache().catch((error) => {
+        void warmActiveEffectCache().catch((error) => {
             console.error('ability catalog refresh error', error)
         })
         return cachedEffect
     }
 
-    const effects = await refreshActiveEffectCache()
+    const effects = await warmActiveEffectCache()
     return effects.get(effectKey) || null
 }
-
-void refreshActiveEffectCache().catch((error) => {
-    console.error('ability catalog warmup error', error)
-})
 
 const schedulePlayerSnapshotPersist = (io, roomId, socketId, payload) => {
     const key = `${roomId}:${socketId}`

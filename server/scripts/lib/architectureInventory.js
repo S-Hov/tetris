@@ -45,19 +45,33 @@ const joinRoutePath = (mountPath, routePath) => {
 }
 
 export const collectRestInventory = async (serverRoot) => {
-    const serverSource = await readFile(path.join(serverRoot, 'server.js'), 'utf8')
+    const registrationFiles = [
+        path.join(serverRoot, 'server.js'),
+        path.join(serverRoot, 'src', 'app', 'registerModules.js'),
+    ]
+    const registrationSource = (await Promise.all(registrationFiles.map(async (filePath) => {
+        try {
+            return await readFile(filePath, 'utf8')
+        } catch (error) {
+            if (error.code === 'ENOENT') {
+                return ''
+            }
+
+            throw error
+        }
+    }))).join('\n')
     const routerImports = new Map()
-    const importPattern = /import\s+(\w+)\s+from\s+['"]\.\/routes\/([^'"]+)['"]/g
+    const importPattern = /import\s+(\w+)\s+from\s+['"](?:\.{1,2}\/)+routes\/([^'"]+)['"]/g
     const mountPattern = /app\.use\s*\(\s*(['"])(\/api\/[^'"]+)\1\s*,\s*(\w+)/g
     let match
 
-    while ((match = importPattern.exec(serverSource)) !== null) {
+    while ((match = importPattern.exec(registrationSource)) !== null) {
         routerImports.set(match[1], `routes/${match[2]}`)
     }
 
     const mountsByFile = new Map()
 
-    while ((match = mountPattern.exec(serverSource)) !== null) {
+    while ((match = mountPattern.exec(registrationSource)) !== null) {
         const routeFile = routerImports.get(match[3])
 
         if (routeFile) {
