@@ -57,6 +57,7 @@ npm run db:migrate
 | `025_cosmetic_catalog_schema.sql` | Cosmetic collections, catalog items and versioned skin manifests |
 | `026_cosmetic_inventory_schema.sql` | Player cosmetic inventory, inventory event log and active loadouts |
 | `027_seed_default_skin.sql` | Default skin catalog seed, inventory backfill and automatic grants for new users |
+| `028_depth_core_registration_gift.sql` | Depth Core CSS skin, registration gifts, NEW/viewed state and idempotent grants |
 
 Миграции используют `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`
 и `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, поэтому baseline можно применить

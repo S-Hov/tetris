@@ -611,6 +611,13 @@
     },
     {
       "method": "PATCH",
+      "path": "/api/me/inventory/cosmetics/:inventoryItemId/viewed",
+      "routePath": "/inventory/cosmetics/:inventoryItemId/viewed",
+      "mountPath": "/api/me",
+      "source": "routes/me.js"
+    },
+    {
+      "method": "PATCH",
       "path": "/api/settings/account/email",
       "routePath": "/account/email",
       "mountPath": "/api/settings",
@@ -2080,6 +2087,12 @@
       "fromArea": "services",
       "to": "services/privacyService.js",
       "toArea": "services"
+    },
+    {
+      "from": "services/cosmeticsService.js",
+      "fromArea": "services",
+      "to": "helpers/error.helper.js",
+      "toArea": "helpers"
     },
     {
       "from": "services/cosmeticsService.js",

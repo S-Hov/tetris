@@ -6,6 +6,7 @@ const mapInventoryItem = (row) => ({
     source: row.source,
     acquiredAt: row.acquired_at,
     isEquipped: row.is_equipped,
+    isNew: row.viewed_at === null,
     item: {
         id: row.cosmetic_item_id,
         key: row.item_key,
@@ -42,6 +43,7 @@ export const getUserCosmeticInventoryRepo = async (userId) => {
             inventory.status AS inventory_status,
             inventory.source,
             inventory.acquired_at,
+            inventory.viewed_at,
             item.id AS cosmetic_item_id,
             item.item_key,
             item.type,
@@ -83,4 +85,137 @@ export const getUserCosmeticInventoryRepo = async (userId) => {
     )
 
     return result.rows.map(mapInventoryItem)
+}
+
+export const markUserCosmeticViewedRepo = async ({ inventoryItemId, userId }) => {
+    const result = await pool.query(
+        `
+        UPDATE user_inventory_items
+        SET viewed_at = COALESCE(viewed_at, NOW()),
+            updated_at = NOW()
+        WHERE id = $1
+            AND user_id = $2
+            AND status IN ('active', 'locked')
+        RETURNING id
+        `,
+        [inventoryItemId, userId]
+    )
+
+    return result.rows[0] || null
+}
+
+export const grantCosmeticItemRepo = async ({
+    attributes = {},
+    itemKey,
+    source,
+    sourceRef = null,
+    userId,
+}) => {
+    const client = await pool.connect()
+
+    try {
+        await client.query('BEGIN')
+
+        const itemResult = await client.query(
+            `
+            SELECT id, item_key, type, status
+            FROM cosmetic_items
+            WHERE item_key = $1
+                AND status = 'active'
+            LIMIT 1
+            `,
+            [itemKey]
+        )
+        const item = itemResult.rows[0]
+
+        if (!item) {
+            await client.query('ROLLBACK')
+            return null
+        }
+
+        if (sourceRef) {
+            const existingResult = await client.query(
+                `
+                SELECT id, user_id, cosmetic_item_id, source, source_ref, status, acquired_at
+                FROM user_inventory_items
+                WHERE user_id = $1
+                    AND cosmetic_item_id = $2
+                    AND source = $3
+                    AND source_ref = $4
+                    AND status <> 'revoked'
+                LIMIT 1
+                `,
+                [userId, item.id, source, sourceRef]
+            )
+
+            if (existingResult.rows[0]) {
+                await client.query('COMMIT')
+                return { ...existingResult.rows[0], alreadyGranted: true }
+            }
+        }
+
+        const inventoryResult = await client.query(
+            `
+            INSERT INTO user_inventory_items (
+                user_id,
+                cosmetic_item_id,
+                source,
+                source_ref,
+                status,
+                attributes,
+                viewed_at
+            )
+            VALUES ($1, $2, $3, $4, 'active', $5::jsonb, NULL)
+            ON CONFLICT DO NOTHING
+            RETURNING id, user_id, cosmetic_item_id, source, source_ref, status, acquired_at
+            `,
+            [userId, item.id, source, sourceRef, JSON.stringify(attributes)]
+        )
+        const inventoryItem = inventoryResult.rows[0]
+
+        if (!inventoryItem && sourceRef) {
+            const concurrentGrantResult = await client.query(
+                `
+                SELECT id, user_id, cosmetic_item_id, source, source_ref, status, acquired_at
+                FROM user_inventory_items
+                WHERE user_id = $1
+                    AND cosmetic_item_id = $2
+                    AND source = $3
+                    AND source_ref = $4
+                    AND status <> 'revoked'
+                LIMIT 1
+                `,
+                [userId, item.id, source, sourceRef]
+            )
+
+            await client.query('COMMIT')
+            return { ...concurrentGrantResult.rows[0], alreadyGranted: true }
+        }
+
+        await client.query(
+            `
+            INSERT INTO user_inventory_events (
+                user_id,
+                inventory_item_id,
+                event_type,
+                payload
+            )
+            VALUES ($1, $2, 'granted', $3::jsonb)
+            `,
+            [
+                userId,
+                inventoryItem.id,
+                JSON.stringify({ itemKey, source, sourceRef }),
+            ]
+        )
+
+        await client.query('COMMIT')
+
+        return { ...inventoryItem, alreadyGranted: false }
+    } catch (error) {
+        await client.query('ROLLBACK')
+        throw error
+    } finally {
+        client.release()
+    }
 }

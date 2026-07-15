@@ -108,6 +108,28 @@
     font-size: 0.72rem;
 }
 
+.inventory-card__new-mark {
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+    top: 10px;
+    right: 10px;
+    padding: 0.3rem 0.45rem;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 5px;
+    color: #071019;
+    background: linear-gradient(135deg, #7ffff1, #45b8ff);
+    box-shadow: 0 0 16px rgba(69, 184, 255, 0.52);
+    font-family: var(--font-1);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+}
+
+.inventory-card:has(.inventory-card__active-mark) .inventory-card__new-mark {
+    right: 47px;
+}
+
 .inventory-card__preview {
     position: relative;
     min-height: 160px;
@@ -224,6 +246,57 @@
 
 .inventory-piece-shape__cell--empty {
     visibility: hidden;
+}
+
+.inventory-skin--depth-core .inventory-piece-shape__cell.filled {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    box-shadow:
+        inset 2px 2px 4px rgba(255, 255, 255, 0.34),
+        inset -3px -3px 6px rgba(0, 0, 0, 0.48),
+        0 0 8px rgba(0, 246, 255, 0.18);
+    filter: saturate(0.92) contrast(1.08);
+}
+
+.inventory-skin--depth-core .inventory-piece-shape__cell.filled::before,
+.inventory-skin--depth-core .inventory-piece-shape__cell.filled::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+}
+
+.inventory-skin--depth-core .inventory-piece-shape__cell.filled::before {
+    z-index: 1;
+    inset: 18%;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: max(2px, calc(var(--piece-cell-size) * 0.12));
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.18));
+    box-shadow:
+        inset 1px 1px 3px rgba(255, 255, 255, 0.34),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.38),
+        0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.inventory-skin--depth-core .inventory-piece-shape__cell.filled::after {
+    z-index: 2;
+    inset: 0;
+    opacity: 0.72;
+    background:
+        linear-gradient(135deg, transparent 44%, rgba(255, 255, 255, 0.72) 46% 53%, transparent 55%) top left / 25% 25% no-repeat,
+        linear-gradient(45deg, transparent 44%, rgba(255, 255, 255, 0.48) 46% 53%, transparent 55%) top right / 25% 25% no-repeat,
+        linear-gradient(45deg, transparent 44%, rgba(0, 0, 0, 0.52) 46% 53%, transparent 55%) bottom left / 25% 25% no-repeat,
+        linear-gradient(135deg, transparent 44%, rgba(0, 0, 0, 0.62) 46% 53%, transparent 55%) bottom right / 25% 25% no-repeat;
+}
+
+.inventory-card__preview.inventory-skin--depth-core {
+    background:
+        linear-gradient(rgba(104, 144, 170, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(104, 144, 170, 0.05) 1px, transparent 1px),
+        radial-gradient(circle at 50% 42%, rgba(85, 207, 255, 0.2), transparent 52%),
+        linear-gradient(145deg, #111b29, #05080e);
+    background-size: 18px 18px, 18px 18px, auto, auto;
 }
 
 .inventory-modal {

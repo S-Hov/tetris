@@ -9,6 +9,7 @@
     "error": "Could not load the inventory. Try refreshing the page.",
     "empty": "There are no cosmetic items in your inventory yet.",
     "equipped": "Equipped",
+    "new": "NEW",
     "skinPack": "Skin pack",
     "openPack": "Open the {{name}} pack",
     "modal": {

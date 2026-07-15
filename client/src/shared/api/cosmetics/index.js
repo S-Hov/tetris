@@ -7,4 +7,10 @@ export const cosmeticsAPI = {
             ...options,
         })
     },
+
+    markViewed(inventoryItemId) {
+        return apiClient(`/api/me/inventory/cosmetics/${encodeURIComponent(inventoryItemId)}/viewed`, {
+            method: 'PATCH',
+        })
+    },
 }

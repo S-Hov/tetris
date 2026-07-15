@@ -63,6 +63,26 @@ const InventoryPage = () => {
 
     const isRussian = i18n.language !== 'en'
 
+    const handleOpenPack = (inventoryItem) => {
+        setSelectedInventoryItem(inventoryItem)
+
+        if (!inventoryItem.isNew) return
+
+        setItems((currentItems) => currentItems.map((currentItem) => (
+            currentItem.inventoryId === inventoryItem.inventoryId
+                ? { ...currentItem, isNew: false }
+                : currentItem
+        )))
+
+        cosmeticsAPI.markViewed(inventoryItem.inventoryId).catch(() => {
+            setItems((currentItems) => currentItems.map((currentItem) => (
+                currentItem.inventoryId === inventoryItem.inventoryId
+                    ? { ...currentItem, isNew: true }
+                    : currentItem
+            )))
+        })
+    }
+
     return (
         <section className="section inventory-page">
             <Helmet>
@@ -106,16 +126,19 @@ const InventoryPage = () => {
                                         <button
                                             aria-label={t('inventory.openPack', { name: label })}
                                             className="inventory-card__hit-target"
-                                            onClick={() => setSelectedInventoryItem(inventoryItem)}
+                                            onClick={() => handleOpenPack(inventoryItem)}
                                             type="button"
                                         />
+                                        {inventoryItem.isNew && (
+                                            <span className="inventory-card__new-mark">{t('inventory.new')}</span>
+                                        )}
                                         {inventoryItem.isEquipped && (
                                             <span className="inventory-card__active-mark" title={t('inventory.equipped')}>
                                                 <i className="fas fa-check"></i>
                                             </span>
                                         )}
 
-                                        <SkinPackArtwork />
+                                        <SkinPackArtwork skinKey={item.key} />
 
                                         <div className="inventory-card__body">
                                             <div className="inventory-card__meta">
@@ -154,11 +177,11 @@ const InventoryPage = () => {
     )
 }
 
-const SkinPackArtwork = () => (
-    <div className="inventory-card__preview" aria-hidden="true">
+const SkinPackArtwork = ({ skinKey }) => (
+    <div className={`inventory-card__preview ${getSkinClassName(skinKey)}`} aria-hidden="true">
         <div className="inventory-card__pack-art">
             {PACK_PREVIEW_PIECES.map((piece) => (
-                <PieceShape compact key={piece.type} piece={piece} />
+                <PieceShape compact key={piece.type} piece={piece} skinKey={skinKey} />
             ))}
         </div>
         <span className="inventory-card__pack-icon"><i className="fas fa-layer-group"></i></span>
@@ -207,11 +230,13 @@ const SkinPackModal = ({ inventoryItem, isRussian, onClose, t }) => {
 
                 <PieceCollection
                     pieces={STANDARD_PIECES}
+                    skinKey={item.key}
                     subtitle={t('inventory.modal.standardDescription')}
                     title={t('inventory.modal.standard', { count: STANDARD_PIECES.length })}
                 />
                 <PieceCollection
                     pieces={PROJECT_PIECES}
+                    skinKey={item.key}
                     subtitle={t('inventory.modal.specialDescription')}
                     title={t('inventory.modal.special', { count: PROJECT_PIECES.length })}
                 />
@@ -220,7 +245,7 @@ const SkinPackModal = ({ inventoryItem, isRussian, onClose, t }) => {
     )
 }
 
-const PieceCollection = ({ pieces, subtitle, title }) => (
+const PieceCollection = ({ pieces, skinKey, subtitle, title }) => (
     <section className="inventory-piece-section">
         <div className="inventory-piece-section__header">
             <h3>{title}</h3>
@@ -230,7 +255,7 @@ const PieceCollection = ({ pieces, subtitle, title }) => (
             {pieces.map((piece) => (
                 <article className="inventory-piece-card" key={piece.type}>
                     <div className="inventory-piece-card__visual">
-                        <PieceShape piece={piece} />
+                        <PieceShape piece={piece} skinKey={skinKey} />
                     </div>
                     <strong>{piece.type}</strong>
                 </article>
@@ -239,9 +264,9 @@ const PieceCollection = ({ pieces, subtitle, title }) => (
     </section>
 )
 
-const PieceShape = ({ compact = false, piece }) => (
+const PieceShape = ({ compact = false, piece, skinKey }) => (
     <div
-        className={`inventory-piece-shape ${compact ? 'inventory-piece-shape--compact' : ''}`}
+        className={`inventory-piece-shape ${compact ? 'inventory-piece-shape--compact' : ''} ${getSkinClassName(skinKey)}`}
         style={{
             '--piece-columns': piece.shape[0].length,
             '--piece-rows': piece.shape.length,
@@ -259,6 +284,8 @@ const getLocalizedItem = (item, isRussian) => ({
     label: isRussian ? item.labelRu || item.label : item.label,
     description: isRussian ? item.descriptionRu || item.description : item.description,
 })
+
+const getSkinClassName = (skinKey) => `inventory-skin--${String(skinKey || 'default').replaceAll('_', '-')}`
 
 const InventoryState = ({ icon, text }) => (
     <div className="inventory-page__state">
