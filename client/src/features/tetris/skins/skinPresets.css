@@ -46,7 +46,9 @@
 }
 
 .tetris-skin--friend-glow .tetris-cell.filled,
-.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled {
+.tetris-skin--friend-glow-color .tetris-cell.filled,
+.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled,
+.game-next-piece-grid.tetris-skin--friend-glow-color .game-next-piece-cell.filled {
     position: relative;
     overflow: hidden;
     isolation: isolate;
@@ -56,17 +58,28 @@
         0 0 9px color-mix(in srgb, var(--turquoise) 34%, transparent);
 }
 
+.tetris-skin--friend-glow .tetris-cell.filled,
+.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled {
+    background: linear-gradient(145deg, #71808c, #394957);
+}
+
 .tetris-skin--friend-glow .tetris-cell.filled::before,
 .tetris-skin--friend-glow .tetris-cell.filled::after,
+.tetris-skin--friend-glow-color .tetris-cell.filled::before,
+.tetris-skin--friend-glow-color .tetris-cell.filled::after,
 .game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::before,
-.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::after {
+.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::after,
+.game-next-piece-grid.tetris-skin--friend-glow-color .game-next-piece-cell.filled::before,
+.game-next-piece-grid.tetris-skin--friend-glow-color .game-next-piece-cell.filled::after {
     content: '';
     position: absolute;
     pointer-events: none;
 }
 
 .tetris-skin--friend-glow .tetris-cell.filled::before,
-.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::before {
+.tetris-skin--friend-glow-color .tetris-cell.filled::before,
+.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::before,
+.game-next-piece-grid.tetris-skin--friend-glow-color .game-next-piece-cell.filled::before {
     z-index: 2;
     inset: 0;
     padding: clamp(1px, 9%, 3px);
@@ -81,7 +94,9 @@
 }
 
 .tetris-skin--friend-glow .tetris-cell.filled::after,
-.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::after {
+.tetris-skin--friend-glow-color .tetris-cell.filled::after,
+.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::after,
+.game-next-piece-grid.tetris-skin--friend-glow-color .game-next-piece-cell.filled::after {
     z-index: 1;
     inset: 15%;
     border-radius: 12%;
@@ -91,7 +106,9 @@
 
 @media (prefers-reduced-motion: reduce) {
     .tetris-skin--friend-glow .tetris-cell.filled::before,
-    .game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::before {
+    .tetris-skin--friend-glow-color .tetris-cell.filled::before,
+    .game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::before,
+    .game-next-piece-grid.tetris-skin--friend-glow-color .game-next-piece-cell.filled::before {
         animation: none;
     }
 }

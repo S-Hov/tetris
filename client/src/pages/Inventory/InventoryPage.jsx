@@ -341,6 +341,7 @@ const getAcquisitionReason = (inventoryItem, t) => {
         'default-skin': 'inventory.acquisition.default',
         'registration-gift-v1': 'inventory.acquisition.registration',
         'first-friend-reward': 'inventory.acquisition.firstFriend',
+        'three-friends-reward': 'inventory.acquisition.threeFriends',
     }
     const sourceKey = reasonBySourceRef[inventoryItem.sourceRef]
 

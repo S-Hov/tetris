@@ -299,25 +299,32 @@
     background-size: 18px 18px, 18px 18px, auto, auto;
 }
 
-.inventory-skin--friend-glow .inventory-piece-shape__cell.filled {
+.inventory-skin--friend-glow .inventory-piece-shape__cell.filled,
+.inventory-skin--friend-glow-color .inventory-piece-shape__cell.filled {
     position: relative;
     overflow: hidden;
     isolation: isolate;
     border: 0;
-    background: color-mix(in srgb, currentColor 34%, #101522);
     box-shadow:
         inset 0 0 8px rgba(255, 255, 255, 0.12),
         0 0 9px color-mix(in srgb, var(--turquoise) 34%, transparent);
 }
 
+.inventory-skin--friend-glow .inventory-piece-shape__cell.filled {
+    background: linear-gradient(145deg, #71808c, #394957);
+}
+
 .inventory-skin--friend-glow .inventory-piece-shape__cell.filled::before,
-.inventory-skin--friend-glow .inventory-piece-shape__cell.filled::after {
+.inventory-skin--friend-glow .inventory-piece-shape__cell.filled::after,
+.inventory-skin--friend-glow-color .inventory-piece-shape__cell.filled::before,
+.inventory-skin--friend-glow-color .inventory-piece-shape__cell.filled::after {
     content: '';
     position: absolute;
     pointer-events: none;
 }
 
-.inventory-skin--friend-glow .inventory-piece-shape__cell.filled::before {
+.inventory-skin--friend-glow .inventory-piece-shape__cell.filled::before,
+.inventory-skin--friend-glow-color .inventory-piece-shape__cell.filled::before {
     z-index: 2;
     inset: 0;
     padding: max(1px, calc(var(--piece-cell-size) * 0.09));
@@ -331,7 +338,8 @@
     mask-composite: exclude;
 }
 
-.inventory-skin--friend-glow .inventory-piece-shape__cell.filled::after {
+.inventory-skin--friend-glow .inventory-piece-shape__cell.filled::after,
+.inventory-skin--friend-glow-color .inventory-piece-shape__cell.filled::after {
     z-index: 1;
     inset: 15%;
     border-radius: max(2px, calc(var(--piece-cell-size) * 0.12));
@@ -339,7 +347,8 @@
     box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.1);
 }
 
-.inventory-card__preview.inventory-skin--friend-glow {
+.inventory-card__preview.inventory-skin--friend-glow,
+.inventory-card__preview.inventory-skin--friend-glow-color {
     background:
         linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
