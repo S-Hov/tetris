@@ -4,6 +4,7 @@ import RegisterPage from '@/pages/Register/RegisterPage.jsx'
 import ProfilePage from '@/pages/Profile/ProfilePage.jsx'
 import PublicProfilePage from '@/pages/PublicProfile/PublicProfilePage.jsx'
 import AccountSettingsPage from '@/pages/AccountSettings/AccountSettingsPage.jsx'
+import InventoryPage from '@/pages/Inventory/InventoryPage.jsx'
 import FriendsPage from '@/pages/Friends/FriendsPage.jsx'
 import MatchesPage from '@/pages/Matches/MatchesPage.jsx'
 import MatchDetailsPage from '@/pages/MatchDetails/MatchDetailsPage.jsx'
@@ -66,6 +67,15 @@ export const routes = [
         path: '/:lang/profile',
         title: 'Профиль',
         component: ProfilePage,
+        layout: MainLayout,
+        guard: ProtectedRoute,
+        skipDocumentTitle: true,
+    },
+    {
+        key: 'inventory',
+        path: '/inventory',
+        title: 'Инвентарь',
+        component: InventoryPage,
         layout: MainLayout,
         guard: ProtectedRoute,
         skipDocumentTitle: true,

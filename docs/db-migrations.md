@@ -54,6 +54,9 @@ npm run db:migrate
 | `022_garbage_rain_balance_metadata.sql` | Additional `garbage_rain` balance metadata |
 | `023_chat_schema.sql` | Direct chat conversations, members, encrypted message storage and read state |
 | `024_match_player_identity.sql` | Stable per-match player identity for registered users and guest sessions |
+| `025_cosmetic_catalog_schema.sql` | Cosmetic collections, catalog items and versioned skin manifests |
+| `026_cosmetic_inventory_schema.sql` | Player cosmetic inventory, inventory event log and active loadouts |
+| `027_seed_default_skin.sql` | Default skin catalog seed, inventory backfill and automatic grants for new users |
 
 Миграции используют `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`
 и `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, поэтому baseline можно применить

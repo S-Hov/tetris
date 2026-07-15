@@ -6,6 +6,7 @@ import './ProfileSideNav.css'
 
 const PROFILE_NAV_ITEMS = [
     { key: 'profile', labelKey: 'profile.sideNav.profile', icon: 'fas fa-user', to: '/profile' },
+    { key: 'inventory', labelKey: 'profile.sideNav.inventory', icon: 'fas fa-box-open', to: '/inventory' },
     // { key: 'stats', labelKey: 'profile.sideNav.stats', icon: 'fas fa-chart-line', to: '/profile#profile-stats' },
     { key: 'matches', labelKey: 'profile.sideNav.matches', icon: 'fas fa-gamepad', to: '/matches' },
     { key: 'friends', labelKey: 'profile.sideNav.friends', icon: 'fas fa-user-group', to: '/friends/friends' },
@@ -55,6 +56,10 @@ const isItemActive = (key, location) => {
 
     if (key === 'matches') {
         return pathname.startsWith('/matches')
+    }
+
+    if (key === 'inventory') {
+        return pathname.startsWith('/inventory')
     }
 
     if (key === 'settings') {

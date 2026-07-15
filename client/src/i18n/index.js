@@ -28,6 +28,8 @@ import modeSelectEn from '../pages/ModeSelect/i18n/en.json'
 import modeSelectRu from '../pages/ModeSelect/i18n/ru.json'
 import profileEn from '../pages/Profile/i18n/en.json'
 import profileRu from '../pages/Profile/i18n/ru.json'
+import inventoryEn from '../pages/Inventory/i18n/en.json'
+import inventoryRu from '../pages/Inventory/i18n/ru.json'
 import ratingEn from '../pages/Rating/i18n/en.json'
 import ratingRu from '../pages/Rating/i18n/ru.json'
 import supportEn from '../pages/Support/i18n/en.json'
@@ -105,8 +107,8 @@ i18n
     .use(initReactI18next)
     .init({
         resources: {
-            ru: { translation: { ...homeRu, ...profileRu, ...aboutRu, ...effectsRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...friendsRu, ...matchesRu, ...lobbyRu, ...legalDocsRu, ...modeSelectRu, ...supportRequestsRu, ...teamQueueRu, ...authRu, ...emailVerificationRu, ...siteFooterRu, ...cookieConsentBannerRu, ...simpleHeaderRu } },
-            en: { translation: { ...homeEn, ...profileEn, ...aboutEn, ...effectsEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...friendsEn, ...matchesEn, ...lobbyEn, ...legalDocsEn, ...modeSelectEn, ...supportRequestsEn, ...teamQueueEn, ...authEn, ...emailVerificationEn, ...siteFooterEn, ...cookieConsentBannerEn, ...simpleHeaderEn } },
+            ru: { translation: { ...homeRu, ...profileRu, ...inventoryRu, ...aboutRu, ...effectsRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...friendsRu, ...matchesRu, ...lobbyRu, ...legalDocsRu, ...modeSelectRu, ...supportRequestsRu, ...teamQueueRu, ...authRu, ...emailVerificationRu, ...siteFooterRu, ...cookieConsentBannerRu, ...simpleHeaderRu } },
+            en: { translation: { ...homeEn, ...profileEn, ...inventoryEn, ...aboutEn, ...effectsEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...friendsEn, ...matchesEn, ...lobbyEn, ...legalDocsEn, ...modeSelectEn, ...supportRequestsEn, ...teamQueueEn, ...authEn, ...emailVerificationEn, ...siteFooterEn, ...cookieConsentBannerEn, ...simpleHeaderEn } },
         },
         lng: getLanguageFromPathname(typeof window !== 'undefined' ? window.location.pathname : ''),
         fallbackLng: DEFAULT_LANGUAGE,

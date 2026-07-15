@@ -7,6 +7,7 @@ import feedbackRouter from '../../routes/feedback.js'
 import friendsRouter from '../../routes/friends.js'
 import leaderboardRouter from '../../routes/leaderboard.js'
 import matchesRouter from '../../routes/matches.js'
+import meRouter from '../../routes/me.js'
 import settingsRouter from '../../routes/settings.js'
 import supportRouter from '../../routes/support.js'
 import telegramRouter from '../../routes/telegram.js'
@@ -18,6 +19,7 @@ export const registerLegacyHttpModules = (app) => {
     app.use('/api/authentication', authRouter)
     app.use('/api/settings', settingsRouter)
     app.use('/api/matches', matchesRouter)
+    app.use('/api/me', meRouter)
     app.use('/api/leaderboard', leaderboardRouter)
     app.use('/api/analytics', analyticsRouter)
     app.use('/api/feedback', feedbackRouter)

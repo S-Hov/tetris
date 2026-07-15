@@ -603,6 +603,13 @@
       "source": "routes/matches.js"
     },
     {
+      "method": "GET",
+      "path": "/api/me/inventory/cosmetics",
+      "routePath": "/inventory/cosmetics",
+      "mountPath": "/api/me",
+      "source": "routes/me.js"
+    },
+    {
       "method": "PATCH",
       "path": "/api/settings/account/email",
       "routePath": "/account/email",
@@ -1367,6 +1374,24 @@
       "toArea": "utils"
     },
     {
+      "from": "controllers/cosmeticsController.js",
+      "fromArea": "controllers",
+      "to": "services/cosmeticsService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/cosmeticsController.js",
+      "fromArea": "controllers",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "controllers/cosmeticsController.js",
+      "fromArea": "controllers",
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
+    },
+    {
       "from": "controllers/effectsController.js",
       "fromArea": "controllers",
       "to": "repositories/gameEffectsRepository.js",
@@ -1691,6 +1716,12 @@
       "toArea": "db"
     },
     {
+      "from": "repositories/cosmeticsRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
       "from": "repositories/friendsRepository.js",
       "fromArea": "repositories",
       "to": "db/index.js",
@@ -1895,6 +1926,18 @@
       "toArea": "middleware"
     },
     {
+      "from": "routes/me.js",
+      "fromArea": "routes",
+      "to": "controllers/cosmeticsController.js",
+      "toArea": "controllers"
+    },
+    {
+      "from": "routes/me.js",
+      "fromArea": "routes",
+      "to": "middleware/checkAuth.js",
+      "toArea": "middleware"
+    },
+    {
       "from": "routes/settings.js",
       "fromArea": "routes",
       "to": "controllers/oauthController.js",
@@ -2037,6 +2080,12 @@
       "fromArea": "services",
       "to": "services/privacyService.js",
       "toArea": "services"
+    },
+    {
+      "from": "services/cosmeticsService.js",
+      "fromArea": "services",
+      "to": "repositories/cosmeticsRepository.js",
+      "toArea": "repositories"
     },
     {
       "from": "services/emailService.js",
@@ -2612,6 +2661,12 @@
       "from": "src/app/registerModules.js",
       "fromArea": "src",
       "to": "routes/matches.js",
+      "toArea": "routes"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "routes/me.js",
       "toArea": "routes"
     },
     {

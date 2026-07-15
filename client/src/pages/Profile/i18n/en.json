@@ -21,6 +21,7 @@
     "sideNav": {
       "ariaLabel": "Profile menu",
       "profile": "Profile",
+      "inventory": "Inventory",
       "stats": "Statistics",
       "matches": "Matches",
       "friends": "Friends",

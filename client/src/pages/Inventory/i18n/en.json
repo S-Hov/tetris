@@ -1,0 +1,21 @@
+{
+  "inventory": {
+    "seoTitle": "Inventory — PVP Tetris",
+    "seoDescription": "Skins and cosmetic items in your PVP Tetris account.",
+    "eyebrow": "Player cosmetics",
+    "title": "Inventory",
+    "description": "Your account's available skins are collected here. The Classic skin is granted to every player and equipped by default.",
+    "loading": "Loading inventory…",
+    "error": "Could not load the inventory. Try refreshing the page.",
+    "empty": "There are no cosmetic items in your inventory yet.",
+    "equipped": "Equipped",
+    "skinPack": "Skin pack",
+    "rarity": {
+      "common": "Common",
+      "rare": "Rare",
+      "epic": "Epic",
+      "legendary": "Legendary",
+      "mythic": "Mythic"
+    }
+  }
+}

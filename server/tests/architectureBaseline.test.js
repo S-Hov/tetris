@@ -15,7 +15,7 @@ test('REST, Socket.IO, database and import contracts match the reviewed architec
     const actual = await collectArchitectureInventory(serverRoot)
 
     assert.deepEqual(actual, expected)
-    assert.equal(actual.rest.length, 102)
+    assert.equal(actual.rest.length, 103)
     assert.equal(actual.sockets.filter((event) => event.direction === 'incoming').length, 31)
     assert.equal(actual.sockets.filter((event) => event.direction === 'outgoing').length, 33)
     assert.equal(actual.tables.length, 41)
@@ -31,6 +31,7 @@ test('critical public contracts are present in the architecture baseline', async
         'POST /api/authentication/login',
         'GET /api/authentication/me',
         'GET /api/matches',
+        'GET /api/me/inventory/cosmetics',
         'POST /api/matches/solo/results',
         'GET /api/admin/dashboard',
         'POST /api/admin/migrations/run',

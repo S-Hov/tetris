@@ -21,6 +21,7 @@
     "sideNav": {
       "ariaLabel": "Меню профиля",
       "profile": "Профиль",
+      "inventory": "Инвентарь",
       "stats": "Статистика",
       "matches": "Матчи",
       "friends": "Друзья",
