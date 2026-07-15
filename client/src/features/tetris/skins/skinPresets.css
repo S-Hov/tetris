@@ -25,7 +25,7 @@
     z-index: 1;
     inset: 18%;
     border: 1px solid rgba(255, 255, 255, 0.28);
-    border-radius: 12%;
+    border-radius: 7px;
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.18));
     box-shadow:
         inset 1px 1px 3px rgba(255, 255, 255, 0.34),
@@ -112,3 +112,65 @@
         animation: none;
     }
 }
+
+.tetris-skin--stone-garden .tetris-cell.filled,
+.inventory-skin--stone-garden .tetris-cell.filled,
+.game-next-piece-grid.tetris-skin--stone-garden .game-next-piece-cell.filled {
+    background: #7b7370;
+}
+
+.tetris-skin--stone-garden .cell--I.filled,
+.inventory-skin--stone-garden .cell--I.filled,
+.game-next-piece-grid.tetris-skin--stone-garden .cell--I.filled { background: #77858a; }
+.tetris-skin--stone-garden .cell--O.filled,
+.inventory-skin--stone-garden .cell--O.filled,
+.game-next-piece-grid.tetris-skin--stone-garden .cell--O.filled { background: #a18e72; }
+.tetris-skin--stone-garden .cell--T.filled,
+.inventory-skin--stone-garden .cell--T.filled,
+.game-next-piece-grid.tetris-skin--stone-garden .cell--T.filled { background: #847286; }
+.tetris-skin--stone-garden .cell--L.filled,
+.inventory-skin--stone-garden .cell--L.filled,
+.game-next-piece-grid.tetris-skin--stone-garden .cell--L.filled { background: #8d7868; }
+.tetris-skin--stone-garden .cell--U.filled,
+.inventory-skin--stone-garden .cell--U.filled,
+.game-next-piece-grid.tetris-skin--stone-garden .cell--U.filled { background: #718071; }
+.tetris-skin--stone-garden .cell--Z.filled,
+.inventory-skin--stone-garden .cell--Z.filled,
+.game-next-piece-grid.tetris-skin--stone-garden .cell--Z.filled { background: #8f6f74; }
+.tetris-skin--stone-garden .cell--P.filled,
+.inventory-skin--stone-garden .cell--P.filled,
+.game-next-piece-grid.tetris-skin--stone-garden .cell--P.filled { background: #67777b; }
+.tetris-skin--stone-garden .cell--_.filled,
+.inventory-skin--stone-garden .cell--_.filled,
+.game-next-piece-grid.tetris-skin--stone-garden .cell--_.filled { background: #9b8b79; }
+
+.tetris-skin--night-bloom .tetris-cell.filled,
+.inventory-skin--night-bloom .tetris-cell.filled,
+.game-next-piece-grid.tetris-skin--night-bloom .game-next-piece-cell.filled {
+    background: #805f76;
+}
+
+.tetris-skin--night-bloom .cell--I.filled,
+.inventory-skin--night-bloom .cell--I.filled,
+.game-next-piece-grid.tetris-skin--night-bloom .cell--I.filled { background: #6f8790; }
+.tetris-skin--night-bloom .cell--O.filled,
+.inventory-skin--night-bloom .cell--O.filled,
+.game-next-piece-grid.tetris-skin--night-bloom .cell--O.filled { background: #ad7b68; }
+.tetris-skin--night-bloom .cell--T.filled,
+.inventory-skin--night-bloom .cell--T.filled,
+.game-next-piece-grid.tetris-skin--night-bloom .cell--T.filled { background: #766b9b; }
+.tetris-skin--night-bloom .cell--L.filled,
+.inventory-skin--night-bloom .cell--L.filled,
+.game-next-piece-grid.tetris-skin--night-bloom .cell--L.filled { background: #aa895d; }
+.tetris-skin--night-bloom .cell--U.filled,
+.inventory-skin--night-bloom .cell--U.filled,
+.game-next-piece-grid.tetris-skin--night-bloom .cell--U.filled { background: #668b7b; }
+.tetris-skin--night-bloom .cell--Z.filled,
+.inventory-skin--night-bloom .cell--Z.filled,
+.game-next-piece-grid.tetris-skin--night-bloom .cell--Z.filled { background: #a45f72; }
+.tetris-skin--night-bloom .cell--P.filled,
+.inventory-skin--night-bloom .cell--P.filled,
+.game-next-piece-grid.tetris-skin--night-bloom .cell--P.filled { background: #65789c; }
+.tetris-skin--night-bloom .cell--_.filled,
+.inventory-skin--night-bloom .cell--_.filled,
+.game-next-piece-grid.tetris-skin--night-bloom .cell--_.filled { background: #9a7764; }

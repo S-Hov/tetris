@@ -9,6 +9,7 @@ import ProfileSideNav from '@/widgets/ProfileSideNav'
 import notify from '@/utils/Notifications'
 
 import '@/features/tetris/ui/TetrisBoard.css'
+import '@/features/tetris/skins/skinPresets.css'
 import './InventoryPage.css'
 
 const STANDARD_PIECES = Object.values(PIECES)
@@ -162,7 +163,7 @@ const InventoryPage = () => {
                                             </span>
                                         )}
 
-                                        <SkinPackArtwork skinKey={item.key} />
+                                        <SkinPackArtwork skinKey={getInventorySkinPreset(inventoryItem)} />
 
                                         <div className="inventory-card__body">
                                             <div className="inventory-card__meta">
@@ -216,6 +217,7 @@ const SkinPackArtwork = ({ skinKey }) => (
 
 const SkinPackModal = ({ inventoryItem, isEquipping, isRussian, onClose, onEquip, t }) => {
     const item = inventoryItem.item || {}
+    const skinPreset = getInventorySkinPreset(inventoryItem)
     const { description, label } = getLocalizedItem(item, isRussian)
 
     const handleBackdropClick = (event) => {
@@ -279,13 +281,13 @@ const SkinPackModal = ({ inventoryItem, isEquipping, isRussian, onClose, onEquip
 
                 <PieceCollection
                     pieces={STANDARD_PIECES}
-                    skinKey={item.key}
+                    skinKey={skinPreset}
                     subtitle={t('inventory.modal.standardDescription')}
                     title={t('inventory.modal.standard', { count: STANDARD_PIECES.length })}
                 />
                 <PieceCollection
                     pieces={PROJECT_PIECES}
-                    skinKey={item.key}
+                    skinKey={skinPreset}
                     subtitle={t('inventory.modal.specialDescription')}
                     title={t('inventory.modal.special', { count: PROJECT_PIECES.length })}
                 />
@@ -336,12 +338,22 @@ const getLocalizedItem = (item, isRussian) => ({
 
 const getSkinClassName = (skinKey) => `inventory-skin--${String(skinKey || 'default').replaceAll('_', '-')}`
 
+const getInventorySkinPreset = (inventoryItem) => (
+    inventoryItem?.manifest?.data?.preset
+    || inventoryItem?.item?.metadata?.cssPreset
+    || inventoryItem?.item?.key
+    || 'default'
+)
+
 const getAcquisitionReason = (inventoryItem, t) => {
     const reasonBySourceRef = {
         'default-skin': 'inventory.acquisition.default',
         'registration-gift-v1': 'inventory.acquisition.registration',
         'first-friend-reward': 'inventory.acquisition.firstFriend',
         'three-friends-reward': 'inventory.acquisition.threeFriends',
+        'five-friends-reward': 'inventory.acquisition.fiveFriends',
+        'ten-friends-reward': 'inventory.acquisition.tenFriends',
+        'first-match-reward': 'inventory.acquisition.firstMatch',
     }
     const sourceKey = reasonBySourceRef[inventoryItem.sourceRef]
 

@@ -60,6 +60,7 @@ npm run db:migrate
 | `028_depth_core_registration_gift.sql` | Depth Core CSS skin, registration gifts, NEW/viewed state and idempotent grants |
 | `029_friend_glow_skin.sql` | Animated glow skin and automatic first-friend rewards |
 | `030_friend_glow_color_skin.sql` | Colored Spectrum Edge skin and automatic three-friend rewards |
+| `031_cosmetic_reward_milestones.sql` | Rebalanced friend rewards, two palette packs and first-match rewards |
 
 Миграции используют `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`
 и `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, поэтому baseline можно применить

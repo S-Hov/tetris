@@ -3,7 +3,14 @@ import { useEffect, useState } from 'react'
 import { cosmeticsAPI } from '@/shared/api/cosmetics/index.js'
 import { useAuth } from '@/shared/hooks/useAuth.js'
 
-const AVAILABLE_SKIN_PRESETS = new Set(['default', 'depth-core', 'friend-glow', 'friend-glow-color'])
+const AVAILABLE_SKIN_PRESETS = new Set([
+    'default',
+    'depth-core',
+    'friend-glow',
+    'friend-glow-color',
+    'stone-garden',
+    'night-bloom',
+])
 
 const normalizeSkinPreset = (value) => {
     const preset = String(value || 'default').replaceAll('_', '-').toLowerCase()

@@ -2337,6 +2337,12 @@
       "toArea": "repositories"
     },
     {
+      "from": "services/userMatchesService.js",
+      "fromArea": "services",
+      "to": "services/cosmeticsService.js",
+      "toArea": "services"
+    },
+    {
       "from": "sockets/chat.socket.js",
       "fromArea": "sockets",
       "to": "services/chatRealtimeService.js",
