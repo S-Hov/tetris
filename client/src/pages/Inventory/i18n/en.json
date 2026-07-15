@@ -10,6 +10,16 @@
     "empty": "There are no cosmetic items in your inventory yet.",
     "equipped": "Equipped",
     "skinPack": "Skin pack",
+    "openPack": "Open the {{name}} pack",
+    "modal": {
+      "eyebrow": "Pack preview",
+      "close": "Close pack preview",
+      "total": "{{count}} pieces in the pack",
+      "standard": "Standard pieces · {{count}}",
+      "standardDescription": "The core piece set available across all game modes.",
+      "special": "Special pieces · {{count}}",
+      "specialDescription": "Non-standard pieces designed for PVP Tetris modes."
+    },
     "rarity": {
       "common": "Common",
       "rare": "Rare",
