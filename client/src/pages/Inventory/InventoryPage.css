@@ -299,6 +299,55 @@
     background-size: 18px 18px, 18px 18px, auto, auto;
 }
 
+.inventory-skin--friend-glow .inventory-piece-shape__cell.filled {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border: 0;
+    background: color-mix(in srgb, currentColor 34%, #101522);
+    box-shadow:
+        inset 0 0 8px rgba(255, 255, 255, 0.12),
+        0 0 9px color-mix(in srgb, var(--turquoise) 34%, transparent);
+}
+
+.inventory-skin--friend-glow .inventory-piece-shape__cell.filled::before,
+.inventory-skin--friend-glow .inventory-piece-shape__cell.filled::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+}
+
+.inventory-skin--friend-glow .inventory-piece-shape__cell.filled::before {
+    z-index: 2;
+    inset: 0;
+    padding: max(1px, calc(var(--piece-cell-size) * 0.09));
+    border-radius: inherit;
+    background: var(--glow-gradient);
+    background-size: 300% 300%;
+    animation: borderFlow 3.8s ease infinite;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.inventory-skin--friend-glow .inventory-piece-shape__cell.filled::after {
+    z-index: 1;
+    inset: 15%;
+    border-radius: max(2px, calc(var(--piece-cell-size) * 0.12));
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(2, 5, 14, 0.28));
+    box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.1);
+}
+
+.inventory-card__preview.inventory-skin--friend-glow {
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        radial-gradient(circle at 50% 42%, rgba(181, 83, 255, 0.22), transparent 54%),
+        linear-gradient(145deg, #101124, #05050d);
+    background-size: 18px 18px, 18px 18px, auto, auto;
+}
+
 .inventory-modal {
     position: fixed;
     z-index: 1000;
@@ -405,6 +454,94 @@
 
 .inventory-modal__summary strong {
     color: var(--green);
+}
+
+.inventory-modal__actions {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+}
+
+.inventory-modal__acquisition {
+    min-width: 0;
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: var(--radius-card-1);
+    background: var(--input-bg);
+}
+
+.inventory-modal__acquisition > i {
+    flex: 0 0 auto;
+    color: var(--turquoise);
+    font-size: 1.05rem;
+}
+
+.inventory-modal__acquisition > span {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.inventory-modal__acquisition small {
+    color: var(--text-muted);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.inventory-modal__acquisition strong {
+    overflow: hidden;
+    color: var(--text-color-1);
+    font-size: 0.82rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.inventory-modal__equip {
+    min-height: 52px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    border: 0;
+    border-radius: var(--radius-card-1);
+    color: #f7fbff;
+    background: var(--cta-gradient);
+    box-shadow: var(--cta-shadow);
+    font-family: var(--font-1);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.inventory-modal__equip:hover:not(:disabled),
+.inventory-modal__equip:focus-visible:not(:disabled) {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.inventory-modal__equip:disabled {
+    cursor: default;
+    opacity: 0.72;
+}
+
+.inventory-modal__equip--active {
+    color: #07140c;
+    background: var(--green);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--green) 35%, transparent);
 }
 
 .inventory-piece-section {
@@ -539,6 +676,14 @@
     .inventory-modal__summary {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .inventory-modal__actions {
+        flex-direction: column;
+    }
+
+    .inventory-modal__equip {
+        width: 100%;
     }
 
     .inventory-piece-grid {

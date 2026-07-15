@@ -49,6 +49,7 @@ import PlayerSummaryPanel from '@/features/tetris/ui/PlayerSummaryPanel.jsx'
 import SoloDebuffTimerPanel from '@/features/tetris/ui/SoloDebuffTimerPanel.jsx'
 import StatsPanel from '@/features/tetris/ui/StatsPanel.jsx'
 import TetrisBoard from '@/features/tetris/ui/TetrisBoard.jsx'
+import { useActiveSkinPack } from '@/features/tetris/skins/useActiveSkinPack.js'
 import gameStartSound from '@/features/tetris/assets/audio/game-start.mp3'
 import hardDropSound from '@/features/tetris/assets/audio/hard_drop.mp3'
 import { getLocalizedGamePath } from '@/i18n'
@@ -210,6 +211,7 @@ const MatchPageGame = ({
     stopMusic,
 }) => {
     const { i18n } = useTranslation()
+    const activeSkinPreset = useActiveSkinPack()
     const currentLanguage = i18n.language === 'en' ? 'en' : 'ru'
     const randomPieceGenerator = useMemo(
         () => getRandomPieceGeneratorForSettings(roomSettings),
@@ -746,7 +748,7 @@ const MatchPageGame = ({
                     status="В игре"
                 />
             ) : (
-                <NextPiecePanel hidden={hasFogPiece} nextPiece={derivedState.nextPiece} />
+                <NextPiecePanel hidden={hasFogPiece} nextPiece={derivedState.nextPiece} skinPreset={activeSkinPreset} />
             )}
             <StatsPanel
                 score={viewedScore}
@@ -796,7 +798,7 @@ const MatchPageGame = ({
                     </header>
                     <div className="game-team-overview__boards game-team-overview__boards--ally">
                         {teammatePlayers.map((player) => (
-                            <SecondaryBoardCard key={player.socketId} player={player} fallbackLabel="Teammate" />
+                            <SecondaryBoardCard key={player.socketId} player={player} fallbackLabel="Teammate" skinPreset={activeSkinPreset} />
                         ))}
                     </div>
                 </section>
@@ -809,7 +811,7 @@ const MatchPageGame = ({
                 </header>
                 <div className="game-team-overview__boards game-team-overview__boards--opponents">
                     {opponentPlayers.map((player) => (
-                        <SecondaryBoardCard key={player.socketId} player={player} fallbackLabel="Opponent" />
+                        <SecondaryBoardCard key={player.socketId} player={player} fallbackLabel="Opponent" skinPreset={activeSkinPreset} />
                     ))}
                 </div>
             </section>
@@ -829,6 +831,7 @@ const MatchPageGame = ({
                             board={player.gameState?.board || (opponentPlayers.length > 0 ? EMPTY_OPPONENT_BOARD : opponentState.board)}
                             clearingRows={[]}
                             compact
+                            skinPreset={activeSkinPreset}
                         />
                     </div>
                 ))}
@@ -971,11 +974,12 @@ const MatchPageGame = ({
             banner={eliminationBanner}
             secondaryColumn={secondaryColumn}
             isTeamLayout={isTeamMatch}
+            skinPreset={activeSkinPreset}
         />
     )
 }
 
-const SecondaryBoardCard = ({ player, fallbackLabel }) => (
+const SecondaryBoardCard = ({ player, fallbackLabel, skinPreset }) => (
     <article className={`game-team-board ${player.gameState?.isGameOver ? 'game-team-board--finished' : ''}`}>
         <header className="game-team-board__header">
             <span>{player.username || fallbackLabel}</span>
@@ -985,6 +989,7 @@ const SecondaryBoardCard = ({ player, fallbackLabel }) => (
             board={player.gameState?.board || EMPTY_OPPONENT_BOARD}
             clearingRows={[]}
             compact
+            skinPreset={skinPreset}
         />
     </article>
 )

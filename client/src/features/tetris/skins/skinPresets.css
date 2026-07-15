@@ -1,0 +1,97 @@
+.tetris-skin--depth-core .tetris-cell.filled,
+.game-next-piece-grid.tetris-skin--depth-core .game-next-piece-cell.filled {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    box-shadow:
+        inset 2px 2px 4px rgba(255, 255, 255, 0.34),
+        inset -3px -3px 6px rgba(0, 0, 0, 0.48),
+        0 0 8px rgba(0, 246, 255, 0.18);
+    filter: saturate(0.92) contrast(1.08);
+}
+
+.tetris-skin--depth-core .tetris-cell.filled::before,
+.tetris-skin--depth-core .tetris-cell.filled::after,
+.game-next-piece-grid.tetris-skin--depth-core .game-next-piece-cell.filled::before,
+.game-next-piece-grid.tetris-skin--depth-core .game-next-piece-cell.filled::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+}
+
+.tetris-skin--depth-core .tetris-cell.filled::before,
+.game-next-piece-grid.tetris-skin--depth-core .game-next-piece-cell.filled::before {
+    z-index: 1;
+    inset: 18%;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 12%;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.18));
+    box-shadow:
+        inset 1px 1px 3px rgba(255, 255, 255, 0.34),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.38),
+        0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.tetris-skin--depth-core .tetris-cell.filled::after,
+.game-next-piece-grid.tetris-skin--depth-core .game-next-piece-cell.filled::after {
+    z-index: 2;
+    inset: 0;
+    opacity: 0.72;
+    background:
+        linear-gradient(135deg, transparent 44%, rgba(255, 255, 255, 0.72) 46% 53%, transparent 55%) top left / 25% 25% no-repeat,
+        linear-gradient(45deg, transparent 44%, rgba(255, 255, 255, 0.48) 46% 53%, transparent 55%) top right / 25% 25% no-repeat,
+        linear-gradient(45deg, transparent 44%, rgba(0, 0, 0, 0.52) 46% 53%, transparent 55%) bottom left / 25% 25% no-repeat,
+        linear-gradient(135deg, transparent 44%, rgba(0, 0, 0, 0.62) 46% 53%, transparent 55%) bottom right / 25% 25% no-repeat;
+}
+
+.tetris-skin--friend-glow .tetris-cell.filled,
+.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border: 0;
+    box-shadow:
+        inset 0 0 8px rgba(255, 255, 255, 0.12),
+        0 0 9px color-mix(in srgb, var(--turquoise) 34%, transparent);
+}
+
+.tetris-skin--friend-glow .tetris-cell.filled::before,
+.tetris-skin--friend-glow .tetris-cell.filled::after,
+.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::before,
+.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+}
+
+.tetris-skin--friend-glow .tetris-cell.filled::before,
+.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::before {
+    z-index: 2;
+    inset: 0;
+    padding: clamp(1px, 9%, 3px);
+    border-radius: inherit;
+    background: var(--glow-gradient);
+    background-size: 300% 300%;
+    animation: borderFlow 3.8s ease infinite;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.tetris-skin--friend-glow .tetris-cell.filled::after,
+.game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::after {
+    z-index: 1;
+    inset: 15%;
+    border-radius: 12%;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(2, 5, 14, 0.28));
+    box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tetris-skin--friend-glow .tetris-cell.filled::before,
+    .game-next-piece-grid.tetris-skin--friend-glow .game-next-piece-cell.filled::before {
+        animation: none;
+    }
+}

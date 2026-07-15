@@ -6,6 +6,7 @@ import { PIECES } from '@/features/tetris/model/pieces.js'
 import { SPECIAL_PIECES } from '@/features/tetris/model/specialPieces.js'
 import { cosmeticsAPI } from '@/shared/api/cosmetics'
 import ProfileSideNav from '@/widgets/ProfileSideNav'
+import notify from '@/utils/Notifications'
 
 import '@/features/tetris/ui/TetrisBoard.css'
 import './InventoryPage.css'
@@ -19,6 +20,7 @@ const InventoryPage = () => {
     const [items, setItems] = useState([])
     const [status, setStatus] = useState('loading')
     const [selectedInventoryItem, setSelectedInventoryItem] = useState(null)
+    const [equippingInventoryId, setEquippingInventoryId] = useState(null)
 
     useEffect(() => {
         const controller = new AbortController()
@@ -81,6 +83,28 @@ const InventoryPage = () => {
                     : currentItem
             )))
         })
+    }
+
+    const handleEquipPack = async (inventoryItem) => {
+        if (inventoryItem.isEquipped || equippingInventoryId) return
+
+        setEquippingInventoryId(inventoryItem.inventoryId)
+
+        try {
+            await cosmeticsAPI.equipSkinPack(inventoryItem.inventoryId)
+            setItems((currentItems) => currentItems.map((currentItem) => ({
+                ...currentItem,
+                isEquipped: currentItem.inventoryId === inventoryItem.inventoryId,
+            })))
+            setSelectedInventoryItem((currentItem) => currentItem
+                ? { ...currentItem, isEquipped: true }
+                : currentItem)
+            notify(t('inventory.notifications.equipped'), 'success')
+        } catch (error) {
+            notify(error.message || t('inventory.notifications.equipError'), 'error')
+        } finally {
+            setEquippingInventoryId(null)
+        }
     }
 
     return (
@@ -168,8 +192,10 @@ const InventoryPage = () => {
             {selectedInventoryItem && (
                 <SkinPackModal
                     inventoryItem={selectedInventoryItem}
+                    isEquipping={equippingInventoryId === selectedInventoryItem.inventoryId}
                     isRussian={isRussian}
                     onClose={() => setSelectedInventoryItem(null)}
+                    onEquip={handleEquipPack}
                     t={t}
                 />
             )}
@@ -188,7 +214,7 @@ const SkinPackArtwork = ({ skinKey }) => (
     </div>
 )
 
-const SkinPackModal = ({ inventoryItem, isRussian, onClose, t }) => {
+const SkinPackModal = ({ inventoryItem, isEquipping, isRussian, onClose, onEquip, t }) => {
     const item = inventoryItem.item || {}
     const { description, label } = getLocalizedItem(item, isRussian)
 
@@ -226,6 +252,29 @@ const SkinPackModal = ({ inventoryItem, isRussian, onClose, t }) => {
                     {inventoryItem.isEquipped && (
                         <strong><i className="fas fa-check"></i>{t('inventory.equipped')}</strong>
                     )}
+                </div>
+
+                <div className="inventory-modal__actions">
+                    <div className="inventory-modal__acquisition">
+                        <i className="fas fa-gift"></i>
+                        <span>
+                            <small>{t('inventory.modal.receivedFor')}</small>
+                            <strong>{getAcquisitionReason(inventoryItem, t)}</strong>
+                        </span>
+                    </div>
+                    <button
+                        className={`inventory-modal__equip ${inventoryItem.isEquipped ? 'inventory-modal__equip--active' : ''}`}
+                        disabled={inventoryItem.isEquipped || isEquipping}
+                        onClick={() => onEquip(inventoryItem)}
+                        type="button"
+                    >
+                        <i className={inventoryItem.isEquipped ? 'fas fa-check' : 'fas fa-shirt'}></i>
+                        {inventoryItem.isEquipped
+                            ? t('inventory.modal.selected')
+                            : isEquipping
+                                ? t('inventory.modal.selecting')
+                                : t('inventory.modal.select')}
+                    </button>
                 </div>
 
                 <PieceCollection
@@ -286,6 +335,19 @@ const getLocalizedItem = (item, isRussian) => ({
 })
 
 const getSkinClassName = (skinKey) => `inventory-skin--${String(skinKey || 'default').replaceAll('_', '-')}`
+
+const getAcquisitionReason = (inventoryItem, t) => {
+    const reasonBySourceRef = {
+        'default-skin': 'inventory.acquisition.default',
+        'registration-gift-v1': 'inventory.acquisition.registration',
+        'first-friend-reward': 'inventory.acquisition.firstFriend',
+    }
+    const sourceKey = reasonBySourceRef[inventoryItem.sourceRef]
+
+    if (sourceKey) return t(sourceKey)
+
+    return t(`inventory.acquisition.${inventoryItem.source || 'system'}`)
+}
 
 const InventoryState = ({ icon, text }) => (
     <div className="inventory-page__state">

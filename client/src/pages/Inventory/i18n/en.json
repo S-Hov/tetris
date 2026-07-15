@@ -19,7 +19,27 @@
       "standard": "Standard pieces · {{count}}",
       "standardDescription": "The core piece set available across all game modes.",
       "special": "Special pieces · {{count}}",
-      "specialDescription": "Non-standard pieces designed for PVP Tetris modes."
+      "specialDescription": "Non-standard pieces designed for PVP Tetris modes.",
+      "receivedFor": "Received for",
+      "select": "Select pack",
+      "selecting": "Selecting…",
+      "selected": "Pack selected"
+    },
+    "acquisition": {
+      "default": "Base pack for every player",
+      "registration": "Registration gift",
+      "firstFriend": "First friend reward",
+      "achievement": "Achievement reward",
+      "event": "Event reward",
+      "promo": "Promo code reward",
+      "gift": "Gift",
+      "shop": "Purchased in the shop",
+      "admin_grant": "Granted by an administrator",
+      "system": "System reward"
+    },
+    "notifications": {
+      "equipped": "Pack selected",
+      "equipError": "Could not select the pack"
     },
     "rarity": {
       "common": "Common",

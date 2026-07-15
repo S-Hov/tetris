@@ -1,6 +1,8 @@
 import { createBoard } from '../model/createBoard.js'
+import { getTetrisSkinClassName } from '../skins/useActiveSkinPack.js'
 
 import './TetrisBoard.css'
+import '../skins/skinPresets.css'
 
 const shouldHideCell = (rowIndex, cellIndex, settings) => (
     ((rowIndex * 17 + cellIndex * 31) % settings.hiddenModulo) < settings.hiddenThreshold
@@ -12,6 +14,7 @@ const TetrisBoard = ({
     compact = false,
     className = '',
     invisibleCells = false,
+    skinPreset = 'default',
     style,
 }) => {
     const safeBoard = Array.isArray(board) ? board : createBoard()
@@ -24,7 +27,12 @@ const TetrisBoard = ({
 
     return (
         <div
-            className={['tetris-board', compact ? 'tetris-board--compact' : '', className].filter(Boolean).join(' ')}
+            className={[
+                'tetris-board',
+                getTetrisSkinClassName(skinPreset),
+                compact ? 'tetris-board--compact' : '',
+                className,
+            ].filter(Boolean).join(' ')}
             style={style}
         >
             {safeBoard.map((row, rowIndex) =>

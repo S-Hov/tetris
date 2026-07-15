@@ -21,6 +21,7 @@ const GameLayout = ({
     banner = null,
     secondaryColumn = null,
     isTeamLayout = false,
+    skinPreset = 'default',
 }) => {
     return (
         <section className={joinClassNames(
@@ -51,6 +52,7 @@ const GameLayout = ({
                                 clearingRows={clearingRows}
                                 className={boardClassName}
                                 invisibleCells={boardInvisibleCells}
+                                skinPreset={skinPreset}
                             />
                             {boardDecor}
                         </div>

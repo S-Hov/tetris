@@ -604,6 +604,20 @@
     },
     {
       "method": "GET",
+      "path": "/api/me/cosmetics/loadout",
+      "routePath": "/cosmetics/loadout",
+      "mountPath": "/api/me",
+      "source": "routes/me.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/me/cosmetics/loadout",
+      "routePath": "/cosmetics/loadout",
+      "mountPath": "/api/me",
+      "source": "routes/me.js"
+    },
+    {
+      "method": "GET",
       "path": "/api/me/inventory/cosmetics",
       "routePath": "/inventory/cosmetics",
       "mountPath": "/api/me",

@@ -4,6 +4,7 @@ const mapInventoryItem = (row) => ({
     inventoryId: row.inventory_id,
     status: row.inventory_status,
     source: row.source,
+    sourceRef: row.source_ref,
     acquiredAt: row.acquired_at,
     isEquipped: row.is_equipped,
     isNew: row.viewed_at === null,
@@ -42,6 +43,7 @@ export const getUserCosmeticInventoryRepo = async (userId) => {
             inventory.id AS inventory_id,
             inventory.status AS inventory_status,
             inventory.source,
+            inventory.source_ref,
             inventory.acquired_at,
             inventory.viewed_at,
             item.id AS cosmetic_item_id,
@@ -87,6 +89,54 @@ export const getUserCosmeticInventoryRepo = async (userId) => {
     return result.rows.map(mapInventoryItem)
 }
 
+export const getUserActiveSkinPackRepo = async (userId) => {
+    const result = await pool.query(
+        `
+        SELECT
+            inventory.id AS inventory_id,
+            item.item_key,
+            item.label,
+            item.label_ru,
+            item.metadata AS item_metadata,
+            manifest.version AS manifest_version,
+            manifest.manifest
+        FROM user_cosmetic_loadouts AS loadout
+        JOIN user_inventory_items AS inventory
+            ON inventory.id = loadout.active_skin_pack_inventory_id
+            AND inventory.user_id = loadout.user_id
+            AND inventory.status = 'active'
+        JOIN cosmetic_items AS item
+            ON item.id = inventory.cosmetic_item_id
+            AND item.status = 'active'
+            AND item.type = 'skin_pack'
+        JOIN skin_pack_manifests AS manifest
+            ON manifest.cosmetic_item_id = item.id
+            AND manifest.status = 'active'
+        WHERE loadout.user_id = $1
+        ORDER BY manifest.version DESC
+        LIMIT 1
+        `,
+        [userId]
+    )
+    const row = result.rows[0]
+
+    if (!row) return null
+
+    return {
+        inventoryId: row.inventory_id,
+        item: {
+            key: row.item_key,
+            label: row.label,
+            labelRu: row.label_ru,
+            metadata: row.item_metadata,
+        },
+        manifest: {
+            version: row.manifest_version,
+            data: row.manifest,
+        },
+    }
+}
+
 export const markUserCosmeticViewedRepo = async ({ inventoryItemId, userId }) => {
     const result = await pool.query(
         `
@@ -102,6 +152,95 @@ export const markUserCosmeticViewedRepo = async ({ inventoryItemId, userId }) =>
     )
 
     return result.rows[0] || null
+}
+
+export const equipUserSkinPackRepo = async ({ inventoryItemId, userId }) => {
+    const client = await pool.connect()
+
+    try {
+        await client.query('BEGIN')
+
+        const inventoryResult = await client.query(
+            `
+            SELECT inventory.id
+            FROM user_inventory_items AS inventory
+            JOIN cosmetic_items AS item
+                ON item.id = inventory.cosmetic_item_id
+            JOIN skin_pack_manifests AS manifest
+                ON manifest.cosmetic_item_id = item.id
+                AND manifest.status = 'active'
+            WHERE inventory.id = $1
+                AND inventory.user_id = $2
+                AND inventory.status = 'active'
+                AND item.status = 'active'
+                AND item.type = 'skin_pack'
+            LIMIT 1
+            `,
+            [inventoryItemId, userId]
+        )
+
+        if (!inventoryResult.rows[0]) {
+            await client.query('ROLLBACK')
+            return null
+        }
+
+        const currentLoadoutResult = await client.query(
+            `
+            SELECT active_skin_pack_inventory_id
+            FROM user_cosmetic_loadouts
+            WHERE user_id = $1
+            FOR UPDATE
+            `,
+            [userId]
+        )
+        const previousInventoryItemId = currentLoadoutResult.rows[0]?.active_skin_pack_inventory_id || null
+
+        if (String(previousInventoryItemId || '') === String(inventoryItemId)) {
+            await client.query('COMMIT')
+            return { inventoryItemId, alreadyEquipped: true }
+        }
+
+        await client.query(
+            `
+            INSERT INTO user_cosmetic_loadouts (
+                user_id,
+                active_skin_pack_inventory_id,
+                updated_at
+            )
+            VALUES ($1, $2, NOW())
+            ON CONFLICT (user_id) DO UPDATE
+            SET active_skin_pack_inventory_id = EXCLUDED.active_skin_pack_inventory_id,
+                updated_at = NOW()
+            `,
+            [userId, inventoryItemId]
+        )
+
+        await client.query(
+            `
+            INSERT INTO user_inventory_events (
+                user_id,
+                inventory_item_id,
+                event_type,
+                payload
+            )
+            VALUES ($1, $2, 'equipped', $3::jsonb)
+            `,
+            [
+                userId,
+                inventoryItemId,
+                JSON.stringify({ previousInventoryItemId }),
+            ]
+        )
+
+        await client.query('COMMIT')
+
+        return { inventoryItemId, alreadyEquipped: false }
+    } catch (error) {
+        await client.query('ROLLBACK')
+        throw error
+    } finally {
+        client.release()
+    }
 }
 
 export const grantCosmeticItemRepo = async ({

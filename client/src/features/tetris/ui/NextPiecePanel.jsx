@@ -1,4 +1,7 @@
-const NextPiecePanel = ({ hidden = false, nextPiece }) => {
+import { getTetrisSkinClassName } from '../skins/useActiveSkinPack.js'
+import '../skins/skinPresets.css'
+
+const NextPiecePanel = ({ hidden = false, nextPiece, skinPreset = 'default' }) => {
     return (
         <section className="game-panel game-next-piece-panel">
             <h3 className="game-panel__title"><i className="fa-solid fa-eye"></i> Next Piece</h3>
@@ -8,7 +11,7 @@ const NextPiecePanel = ({ hidden = false, nextPiece }) => {
             ].filter(Boolean).join(' ')}
             >
                 <div
-                    className="game-next-piece-grid"
+                    className={`game-next-piece-grid ${getTetrisSkinClassName(skinPreset)}`}
                     style={{
                         gridTemplateColumns: `repeat(${nextPiece.shape[0].length}, var(--next-piece-cell-size))`,
                         gridTemplateRows: `repeat(${nextPiece.shape.length}, var(--next-piece-cell-size))`,
@@ -18,7 +21,7 @@ const NextPiecePanel = ({ hidden = false, nextPiece }) => {
                         row.map((cell, cellIndex) => (
                             <div
                                 key={`${rowIndex}-${cellIndex}`}
-                                className={`game-next-piece-cell ${cell ? 'filled' : ''}`}
+                                className={`game-next-piece-cell ${cell ? `cell--${nextPiece.type} filled` : ''}`}
                             />
                         ))
                     )}

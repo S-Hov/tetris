@@ -13,4 +13,18 @@ export const cosmeticsAPI = {
             method: 'PATCH',
         })
     },
+
+    getLoadout(options = {}) {
+        return apiClient('/api/me/cosmetics/loadout', {
+            method: 'GET',
+            ...options,
+        })
+    },
+
+    equipSkinPack(inventoryItemId) {
+        return apiClient('/api/me/cosmetics/loadout', {
+            method: 'PUT',
+            body: JSON.stringify({ inventoryItemId }),
+        })
+    },
 }

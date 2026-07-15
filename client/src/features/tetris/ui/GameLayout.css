@@ -327,6 +327,19 @@
     background: var(--turquoise);
 }
 
+.game-next-piece-cell.cell--I.filled { background: #46dff0; }
+.game-next-piece-cell.cell--O.filled { background: #e73434; }
+.game-next-piece-cell.cell--T.filled { background: #683ffd; }
+.game-next-piece-cell.cell--L.filled { background: #ff9f43; }
+.game-next-piece-cell.cell--⅃.filled { background: #de4dff; }
+.game-next-piece-cell.cell--U.filled { background: #00b725; }
+.game-next-piece-cell.cell--Z.filled { background: #c6009e; }
+.game-next-piece-cell.cell--Е.filled { background: #ff8c00; }
+.game-next-piece-cell.cell--P.filled { background: #e22626; }
+.game-next-piece-cell.cell--_.filled { background: #0fa7ac; }
+.game-next-piece-cell.cell--⁄.filled { background: #bedcff; }
+.game-next-piece-cell.cell--garbage.filled { background: #7f8a96; }
+
 .game-stats-panel {
     display: flex;
     flex-direction: column;

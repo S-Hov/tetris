@@ -1,6 +1,8 @@
 import { badRequest, notFound } from '../helpers/error.helper.js'
 import {
     getUserCosmeticInventoryRepo,
+    getUserActiveSkinPackRepo,
+    equipUserSkinPackRepo,
     grantCosmeticItemRepo,
     markUserCosmeticViewedRepo,
 } from '../repositories/cosmeticsRepository.js'
@@ -9,6 +11,10 @@ const GRANT_SOURCES = new Set(['shop', 'achievement', 'admin_grant', 'event', 'p
 
 export const getUserCosmeticInventoryService = async (userId) => {
     return await getUserCosmeticInventoryRepo(userId)
+}
+
+export const getUserActiveSkinPackService = async (userId) => {
+    return await getUserActiveSkinPackRepo(userId)
 }
 
 export const markUserCosmeticViewedService = async ({ inventoryItemId, userId }) => {
@@ -30,6 +36,28 @@ export const markUserCosmeticViewedService = async ({ inventoryItemId, userId })
     return {
         inventoryId: inventoryItem.id,
         isNew: false,
+    }
+}
+
+export const equipUserSkinPackService = async ({ inventoryItemId, userId }) => {
+    const normalizedInventoryItemId = Number(inventoryItemId)
+
+    if (!Number.isInteger(normalizedInventoryItemId) || normalizedInventoryItemId <= 0) {
+        throw badRequest('COMMON.BAD_REQUEST')
+    }
+
+    const loadout = await equipUserSkinPackRepo({
+        inventoryItemId: normalizedInventoryItemId,
+        userId,
+    })
+
+    if (!loadout) {
+        throw notFound('COMMON.NOT_FOUND')
+    }
+
+    return {
+        inventoryItemId: loadout.inventoryItemId,
+        isEquipped: true,
     }
 }
 

@@ -22,6 +22,7 @@ import { togglePause } from '@/features/tetris/model/tetrisEngine.js'
 import ActionsPanel from '@/features/tetris/ui/ActionsPanel.jsx'
 import GameLayout from '@/features/tetris/ui/GameLayout.jsx'
 import NextPiecePanel from '@/features/tetris/ui/NextPiecePanel.jsx'
+import { useActiveSkinPack } from '@/features/tetris/skins/useActiveSkinPack.js'
 import StatsPanel from '@/features/tetris/ui/StatsPanel.jsx'
 import hardDropSound from '@/features/tetris/assets/audio/hard_drop.mp3'
 import useAudio from '@/shared/hooks/useAudio.js'
@@ -39,6 +40,7 @@ const previewSettings = normalizeMatchSettings({
 })
 
 const EffectPreviewPage = () => {
+    const activeSkinPreset = useActiveSkinPack()
     const location = useLocation()
     const effectPreviewKey = getPreviewEffectKey(location.search)
     const { playEffect, playSynthEffect } = useAudio()
@@ -128,7 +130,7 @@ const EffectPreviewPage = () => {
     )
     const sidebar = (
         <>
-            <NextPiecePanel hidden={hasFogPiece} nextPiece={derivedState.nextPiece} />
+            <NextPiecePanel hidden={hasFogPiece} nextPiece={derivedState.nextPiece} skinPreset={activeSkinPreset} />
             <StatsPanel
                 score={derivedState.score}
                 lines={derivedState.linesCleared}
@@ -186,6 +188,7 @@ const EffectPreviewPage = () => {
             boardShellClassName={hasScreenShake ? 'player-board-shell--effect-shake' : ''}
             boardDecor={boardDecor}
             boardInvisibleCells={hasInvisibleCells}
+            skinPreset={activeSkinPreset}
             headerStats={(
                 <StatsPanel
                     score={derivedState.score}
