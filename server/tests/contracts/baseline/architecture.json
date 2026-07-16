@@ -603,6 +603,20 @@
       "source": "routes/matches.js"
     },
     {
+      "method": "PUT",
+      "path": "/api/me/cosmetics/admin-preview",
+      "routePath": "/cosmetics/admin-preview",
+      "mountPath": "/api/me",
+      "source": "routes/me.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/me/cosmetics/catalog",
+      "routePath": "/cosmetics/catalog",
+      "mountPath": "/api/me",
+      "source": "routes/me.js"
+    },
+    {
       "method": "GET",
       "path": "/api/me/cosmetics/loadout",
       "routePath": "/cosmetics/loadout",
@@ -1951,6 +1965,12 @@
       "fromArea": "routes",
       "to": "controllers/cosmeticsController.js",
       "toArea": "controllers"
+    },
+    {
+      "from": "routes/me.js",
+      "fromArea": "routes",
+      "to": "middleware/checkAdmin.js",
+      "toArea": "middleware"
     },
     {
       "from": "routes/me.js",

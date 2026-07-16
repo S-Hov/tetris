@@ -11,6 +11,17 @@
     "equipped": "Выбран",
     "new": "NEW",
     "skinPack": "Комплект скина",
+    "earnedEyebrow": "Личный прогресс",
+    "earnedTitle": "Заслуженные награды",
+    "earnedDescriptionAdmin": "Комплекты, полученные за ваш собственный прогресс, матчи, дружбу и развитие аккаунта.",
+    "adminCatalogEyebrow": "Инструменты администратора",
+    "adminCatalogTitle": "Полный каталог скинов",
+    "adminCatalogDescription": "Защищённый серверный каталог для тестирования всех активных комплектов. Тестовый выбор не выдаёт предмет и не влияет на прогресс наград.",
+    "adminCatalogEmpty": "В активном каталоге пока нет комплектов.",
+    "adminCatalogItem": "Каталог администратора",
+    "adminPreviewActive": "Активный тестовый комплект",
+    "testing": "Тестируется",
+    "owned": "Получен",
     "openPack": "Открыть комплект «{{name}}»",
     "modal": {
       "eyebrow": "Просмотр комплекта",
@@ -21,6 +32,10 @@
       "special": "Специальные фигуры · {{count}}",
       "specialDescription": "Нестандартные фигуры, разработанные для режимов PVP Blocks.",
       "receivedFor": "Получено за",
+      "adminAccess": "Доступ администратора",
+      "adminAccessDescription": "Временное тестирование из защищённого каталога",
+      "adminPreviewSelect": "Применить для теста",
+      "adminPreviewSelected": "Тестовый комплект выбран",
       "select": "Выбрать комплект",
       "selecting": "Выбираем…",
       "selected": "Комплект выбран"
@@ -49,6 +64,7 @@
     },
     "notifications": {
       "equipped": "Комплект выбран",
+      "adminPreviewEquipped": "Тестовый комплект администратора выбран",
       "equipError": "Не удалось выбрать комплект"
     },
     "rarity": {

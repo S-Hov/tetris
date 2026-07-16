@@ -6,6 +6,7 @@ import { PIECES } from '@/features/tetris/model/pieces.js'
 import { SPECIAL_PIECES } from '@/features/tetris/model/specialPieces.js'
 import SkinCellLayers from '@/features/tetris/skins/SkinCellLayers.jsx'
 import { cosmeticsAPI } from '@/shared/api/cosmetics'
+import { useAuth } from '@/shared/hooks/useAuth.js'
 import ProfileSideNav from '@/widgets/ProfileSideNav'
 import notify from '@/utils/Notifications'
 
@@ -19,10 +20,13 @@ const PACK_PREVIEW_PIECES = [PIECES.T, PIECES.I, PIECES.O, SPECIAL_PIECES.U]
 
 const InventoryPage = () => {
     const { i18n, t } = useTranslation()
+    const { user } = useAuth()
     const [items, setItems] = useState([])
+    const [catalogItems, setCatalogItems] = useState([])
     const [status, setStatus] = useState('loading')
     const [selectedInventoryItem, setSelectedInventoryItem] = useState(null)
     const [equippingInventoryId, setEquippingInventoryId] = useState(null)
+    const isAdmin = user?.role === 'admin'
 
     useEffect(() => {
         const controller = new AbortController()
@@ -31,8 +35,15 @@ const InventoryPage = () => {
             setStatus('loading')
 
             try {
-                const response = await cosmeticsAPI.getInventory({ signal: controller.signal })
-                setItems(Array.isArray(response.items) ? response.items : [])
+                const [inventoryResponse, catalogResponse] = await Promise.all([
+                    cosmeticsAPI.getInventory({ signal: controller.signal }),
+                    isAdmin
+                        ? cosmeticsAPI.getAdminCatalog({ signal: controller.signal })
+                        : Promise.resolve({ items: [] }),
+                ])
+
+                setItems(Array.isArray(inventoryResponse.items) ? inventoryResponse.items : [])
+                setCatalogItems(Array.isArray(catalogResponse.items) ? catalogResponse.items : [])
                 setStatus('ready')
             } catch (error) {
                 if (error?.name !== 'AbortError') {
@@ -44,7 +55,7 @@ const InventoryPage = () => {
         loadInventory()
 
         return () => controller.abort()
-    }, [])
+    }, [isAdmin])
 
     useEffect(() => {
         if (!selectedInventoryItem) return undefined
@@ -70,7 +81,7 @@ const InventoryPage = () => {
     const handleOpenPack = (inventoryItem) => {
         setSelectedInventoryItem(inventoryItem)
 
-        if (!inventoryItem.isNew) return
+        if (inventoryItem.isAdminCatalogItem || !inventoryItem.isNew) return
 
         setItems((currentItems) => currentItems.map((currentItem) => (
             currentItem.inventoryId === inventoryItem.inventoryId
@@ -90,18 +101,38 @@ const InventoryPage = () => {
     const handleEquipPack = async (inventoryItem) => {
         if (inventoryItem.isEquipped || equippingInventoryId) return
 
-        setEquippingInventoryId(inventoryItem.inventoryId)
+        const itemIdentifier = getInventoryItemIdentifier(inventoryItem)
+        setEquippingInventoryId(itemIdentifier)
 
         try {
-            await cosmeticsAPI.equipSkinPack(inventoryItem.inventoryId)
-            setItems((currentItems) => currentItems.map((currentItem) => ({
-                ...currentItem,
-                isEquipped: currentItem.inventoryId === inventoryItem.inventoryId,
-            })))
+            if (inventoryItem.isAdminCatalogItem) {
+                await cosmeticsAPI.equipAdminPreview(inventoryItem.catalogItemId)
+                setCatalogItems((currentItems) => currentItems.map((currentItem) => ({
+                    ...currentItem,
+                    isEquipped: currentItem.catalogItemId === inventoryItem.catalogItemId,
+                })))
+                setItems((currentItems) => currentItems.map((currentItem) => ({
+                    ...currentItem,
+                    isEquipped: false,
+                })))
+            } else {
+                await cosmeticsAPI.equipSkinPack(inventoryItem.inventoryId)
+                setItems((currentItems) => currentItems.map((currentItem) => ({
+                    ...currentItem,
+                    isEquipped: currentItem.inventoryId === inventoryItem.inventoryId,
+                })))
+                setCatalogItems((currentItems) => currentItems.map((currentItem) => ({
+                    ...currentItem,
+                    isEquipped: false,
+                })))
+            }
+
             setSelectedInventoryItem((currentItem) => currentItem
                 ? { ...currentItem, isEquipped: true }
                 : currentItem)
-            notify(t('inventory.notifications.equipped'), 'success')
+            notify(t(inventoryItem.isAdminCatalogItem
+                ? 'inventory.notifications.adminPreviewEquipped'
+                : 'inventory.notifications.equipped'), 'success')
         } catch (error) {
             notify(error.message || t('inventory.notifications.equipError'), 'error')
         } finally {
@@ -134,59 +165,31 @@ const InventoryPage = () => {
                         <InventoryState icon="fas fa-triangle-exclamation" text={t('inventory.error')} />
                     )}
 
-                    {status === 'ready' && items.length === 0 && (
+                    {status === 'ready' && items.length === 0 && catalogItems.length === 0 && (
                         <InventoryState icon="fas fa-box-open" text={t('inventory.empty')} />
                     )}
 
                     {status === 'ready' && items.length > 0 && (
-                        <div className="inventory-page__grid">
-                            {items.map((inventoryItem) => {
-                                const item = inventoryItem.item || {}
-                                const { description, label } = getLocalizedItem(item, isRussian)
+                        <InventorySection
+                            description={isAdmin ? t('inventory.earnedDescriptionAdmin') : null}
+                            isRussian={isRussian}
+                            items={items}
+                            onOpen={handleOpenPack}
+                            t={t}
+                            title={isAdmin ? t('inventory.earnedTitle') : null}
+                        />
+                    )}
 
-                                return (
-                                    <article
-                                        className={`inventory-card inventory-card--rarity-${item.rarity || 'common'} ${inventoryItem.isEquipped ? 'inventory-card--active' : ''}`}
-                                        key={inventoryItem.inventoryId}
-                                    >
-                                        <button
-                                            aria-label={t('inventory.openPack', { name: label })}
-                                            className="inventory-card__hit-target"
-                                            onClick={() => handleOpenPack(inventoryItem)}
-                                            type="button"
-                                        />
-                                        {inventoryItem.isNew && (
-                                            <span className="inventory-card__new-mark">{t('inventory.new')}</span>
-                                        )}
-                                        {inventoryItem.isEquipped && (
-                                            <span className="inventory-card__active-mark" title={t('inventory.equipped')}>
-                                                <i className="fas fa-check"></i>
-                                            </span>
-                                        )}
-
-                                        <SkinPackArtwork skinKey={getInventorySkinPreset(inventoryItem)} />
-
-                                        <div className="inventory-card__body">
-                                            <div className="inventory-card__meta">
-                                                <span>{t(`inventory.rarity.${item.rarity || 'common'}`)}</span>
-                                                {inventoryItem.isEquipped && (
-                                                    <strong>
-                                                        <i className="fas fa-check"></i>
-                                                        {t('inventory.equipped')}
-                                                    </strong>
-                                                )}
-                                            </div>
-                                            <h2>{label}</h2>
-                                            <p>{description}</p>
-                                            <small>
-                                                <i className="fas fa-layer-group"></i>
-                                                {t('inventory.skinPack')}
-                                            </small>
-                                        </div>
-                                    </article>
-                                )
-                            })}
-                        </div>
+                    {status === 'ready' && isAdmin && (
+                        <InventorySection
+                            adminCatalog
+                            description={t('inventory.adminCatalogDescription')}
+                            isRussian={isRussian}
+                            items={catalogItems}
+                            onOpen={handleOpenPack}
+                            t={t}
+                            title={t('inventory.adminCatalogTitle')}
+                        />
                     )}
                 </div>
             </div>
@@ -194,7 +197,7 @@ const InventoryPage = () => {
             {selectedInventoryItem && (
                 <SkinPackModal
                     inventoryItem={selectedInventoryItem}
-                    isEquipping={equippingInventoryId === selectedInventoryItem.inventoryId}
+                    isEquipping={equippingInventoryId === getInventoryItemIdentifier(selectedInventoryItem)}
                     isRussian={isRussian}
                     onClose={() => setSelectedInventoryItem(null)}
                     onEquip={handleEquipPack}
@@ -204,6 +207,74 @@ const InventoryPage = () => {
         </section>
     )
 }
+
+const InventorySection = ({ adminCatalog = false, description, isRussian, items, onOpen, t, title }) => (
+    <section className={`inventory-section ${adminCatalog ? 'inventory-section--admin' : ''}`}>
+        {title && (
+            <header className="inventory-section__header">
+                <span>{adminCatalog ? t('inventory.adminCatalogEyebrow') : t('inventory.earnedEyebrow')}</span>
+                <h2>{title}</h2>
+                {description ? <p>{description}</p> : null}
+            </header>
+        )}
+
+        {items.length > 0 ? (
+            <div className="inventory-page__grid">
+                {items.map((inventoryItem) => {
+                    const item = inventoryItem.item || {}
+                    const { description: itemDescription, label } = getLocalizedItem(item, isRussian)
+
+                    return (
+                        <article
+                            className={`inventory-card inventory-card--rarity-${item.rarity || 'common'} ${inventoryItem.isEquipped ? 'inventory-card--active' : ''} ${adminCatalog ? 'inventory-card--admin-catalog' : ''}`}
+                            key={getInventoryItemIdentifier(inventoryItem)}
+                        >
+                            <button
+                                aria-label={t('inventory.openPack', { name: label })}
+                                className="inventory-card__hit-target"
+                                onClick={() => onOpen(inventoryItem)}
+                                type="button"
+                            />
+                            {inventoryItem.isNew && (
+                                <span className="inventory-card__new-mark">{t('inventory.new')}</span>
+                            )}
+                            {adminCatalog && inventoryItem.isOwned && (
+                                <span className="inventory-card__owned-mark">{t('inventory.owned')}</span>
+                            )}
+                            {inventoryItem.isEquipped && (
+                                <span className="inventory-card__active-mark" title={t(adminCatalog ? 'inventory.adminPreviewActive' : 'inventory.equipped')}>
+                                    <i className={adminCatalog ? 'fas fa-flask' : 'fas fa-check'}></i>
+                                </span>
+                            )}
+
+                            <SkinPackArtwork skinKey={getInventorySkinPreset(inventoryItem)} />
+
+                            <div className="inventory-card__body">
+                                <div className="inventory-card__meta">
+                                    <span>{t(`inventory.rarity.${item.rarity || 'common'}`)}</span>
+                                    {inventoryItem.isEquipped && (
+                                        <strong>
+                                            <i className={adminCatalog ? 'fas fa-flask' : 'fas fa-check'}></i>
+                                            {t(adminCatalog ? 'inventory.testing' : 'inventory.equipped')}
+                                        </strong>
+                                    )}
+                                </div>
+                                <h2>{label}</h2>
+                                <p>{itemDescription}</p>
+                                <small>
+                                    <i className={adminCatalog ? 'fas fa-shield-halved' : 'fas fa-layer-group'}></i>
+                                    {t(adminCatalog ? 'inventory.adminCatalogItem' : 'inventory.skinPack')}
+                                </small>
+                            </div>
+                        </article>
+                    )
+                })}
+            </div>
+        ) : (
+            <InventoryState icon="fas fa-box-open" text={t('inventory.adminCatalogEmpty')} />
+        )}
+    </section>
+)
 
 const SkinPackArtwork = ({ skinKey }) => (
     <div className={`inventory-card__preview ${getSkinClassName(skinKey)}`} aria-hidden="true">
@@ -219,6 +290,7 @@ const SkinPackArtwork = ({ skinKey }) => (
 const SkinPackModal = ({ inventoryItem, isEquipping, isRussian, onClose, onEquip, t }) => {
     const item = inventoryItem.item || {}
     const skinPreset = getInventorySkinPreset(inventoryItem)
+    const isAdminCatalogItem = Boolean(inventoryItem.isAdminCatalogItem)
     const { description, label } = getLocalizedItem(item, isRussian)
 
     const handleBackdropClick = (event) => {
@@ -253,16 +325,21 @@ const SkinPackModal = ({ inventoryItem, isEquipping, isRussian, onClose, onEquip
                 <div className="inventory-modal__summary">
                     <span><i className="fas fa-shapes"></i>{t('inventory.modal.total', { count: STANDARD_PIECES.length + PROJECT_PIECES.length })}</span>
                     {inventoryItem.isEquipped && (
-                        <strong><i className="fas fa-check"></i>{t('inventory.equipped')}</strong>
+                        <strong>
+                            <i className={isAdminCatalogItem ? 'fas fa-flask' : 'fas fa-check'}></i>
+                            {t(isAdminCatalogItem ? 'inventory.testing' : 'inventory.equipped')}
+                        </strong>
                     )}
                 </div>
 
                 <div className="inventory-modal__actions">
                     <div className="inventory-modal__acquisition">
-                        <i className="fas fa-gift"></i>
+                        <i className={isAdminCatalogItem ? 'fas fa-shield-halved' : 'fas fa-gift'}></i>
                         <span>
-                            <small>{t('inventory.modal.receivedFor')}</small>
-                            <strong>{getAcquisitionReason(inventoryItem, t)}</strong>
+                            <small>{t(isAdminCatalogItem ? 'inventory.modal.adminAccess' : 'inventory.modal.receivedFor')}</small>
+                            <strong>{isAdminCatalogItem
+                                ? t('inventory.modal.adminAccessDescription')
+                                : getAcquisitionReason(inventoryItem, t)}</strong>
                         </span>
                     </div>
                     <button
@@ -271,12 +348,14 @@ const SkinPackModal = ({ inventoryItem, isEquipping, isRussian, onClose, onEquip
                         onClick={() => onEquip(inventoryItem)}
                         type="button"
                     >
-                        <i className={inventoryItem.isEquipped ? 'fas fa-check' : 'fas fa-shirt'}></i>
+                        <i className={inventoryItem.isEquipped
+                            ? isAdminCatalogItem ? 'fas fa-flask' : 'fas fa-check'
+                            : isAdminCatalogItem ? 'fas fa-vial' : 'fas fa-shirt'}></i>
                         {inventoryItem.isEquipped
-                            ? t('inventory.modal.selected')
+                            ? t(isAdminCatalogItem ? 'inventory.modal.adminPreviewSelected' : 'inventory.modal.selected')
                             : isEquipping
                                 ? t('inventory.modal.selecting')
-                                : t('inventory.modal.select')}
+                                : t(isAdminCatalogItem ? 'inventory.modal.adminPreviewSelect' : 'inventory.modal.select')}
                     </button>
                 </div>
 
@@ -348,6 +427,12 @@ const getInventorySkinPreset = (inventoryItem) => (
     || inventoryItem?.item?.metadata?.cssPreset
     || inventoryItem?.item?.key
     || 'default'
+)
+
+const getInventoryItemIdentifier = (inventoryItem) => (
+    inventoryItem?.isAdminCatalogItem
+        ? `catalog-${inventoryItem.catalogItemId}`
+        : `inventory-${inventoryItem?.inventoryId}`
 )
 
 const getAcquisitionReason = (inventoryItem, t) => {

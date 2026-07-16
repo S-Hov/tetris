@@ -62,6 +62,7 @@ npm run db:migrate
 | `030_friend_glow_color_skin.sql` | Colored Spectrum Edge skin and automatic three-friend rewards |
 | `031_cosmetic_reward_milestones.sql` | Rebalanced friend rewards, two palette packs and first-match rewards |
 | `032_match_skin_progression.sql` | Match-count skin progression, rarity rebalance and milestone reward triggers |
+| `033_admin_cosmetic_preview.sql` | Role-gated admin skin catalog preview override in cosmetic loadouts |
 
 Миграции используют `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`
 и `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, поэтому baseline можно применить

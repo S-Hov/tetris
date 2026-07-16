@@ -15,6 +15,19 @@ test('all admin routes retain the shared authentication and authorization guard'
     assert.match(source, /adminRouter\.use\(checkAuth, checkAdmin\)/)
 })
 
+test('admin cosmetic catalog and preview remain protected by both guards', async () => {
+    const source = await readFile(path.join(serverRoot, 'routes', 'me.js'), 'utf8')
+
+    assert.match(
+        source,
+        /meRouter\.get\('\/cosmetics\/catalog', checkAuth, checkAdmin, getMyAdminSkinPackCatalog\)/
+    )
+    assert.match(
+        source,
+        /meRouter\.put\('\/cosmetics\/admin-preview', checkAuth, checkAdmin, equipMyAdminSkinPackPreview\)/
+    )
+})
+
 test('critical admin control endpoints remain registered under /api/admin', async () => {
     const endpoints = await collectRestInventory(serverRoot)
     const adminContracts = new Set(

@@ -36,6 +36,29 @@ const mapInventoryItem = (row) => ({
         : null,
 })
 
+const mapCatalogItem = (row) => ({
+    catalogItemId: row.cosmetic_item_id,
+    isAdminCatalogItem: true,
+    isEquipped: row.is_equipped,
+    isOwned: row.is_owned,
+    item: {
+        id: row.cosmetic_item_id,
+        key: row.item_key,
+        type: row.type,
+        rarity: row.rarity,
+        label: row.label,
+        labelRu: row.label_ru,
+        description: row.description,
+        descriptionRu: row.description_ru,
+        previewUrl: row.preview_url,
+        metadata: row.item_metadata,
+    },
+    manifest: {
+        version: row.manifest_version,
+        data: row.manifest,
+    },
+})
+
 export const getUserCosmeticInventoryRepo = async (userId) => {
     const result = await pool.query(
         `
@@ -63,14 +86,19 @@ export const getUserCosmeticInventoryRepo = async (userId) => {
             active_manifest.id AS manifest_id,
             active_manifest.version AS manifest_version,
             active_manifest.manifest,
-            (
+            (NOT (
+                inventory_role.key = 'admin'
+                AND loadout.admin_preview_skin_pack_item_id IS NOT NULL
+            ) AND (
                 loadout.active_skin_pack_inventory_id = inventory.id
                 OR loadout.active_board_skin_inventory_id = inventory.id
                 OR loadout.active_piece_skin_inventory_id = inventory.id
-            ) AS is_equipped
+            )) AS is_equipped
         FROM user_inventory_items AS inventory
         JOIN cosmetic_items AS item
             ON item.id = inventory.cosmetic_item_id
+        JOIN users AS inventory_user ON inventory_user.id = inventory.user_id
+        JOIN roles AS inventory_role ON inventory_role.id = inventory_user.role_id
         LEFT JOIN cosmetic_collections AS collection
             ON collection.id = item.collection_id
         LEFT JOIN skin_pack_manifests AS active_manifest
@@ -89,24 +117,77 @@ export const getUserCosmeticInventoryRepo = async (userId) => {
     return result.rows.map(mapInventoryItem)
 }
 
+export const getAdminSkinPackCatalogRepo = async (userId) => {
+    const result = await pool.query(
+        `
+        SELECT
+            item.id AS cosmetic_item_id,
+            item.item_key,
+            item.type,
+            item.rarity,
+            item.label,
+            item.label_ru,
+            item.description,
+            item.description_ru,
+            item.preview_url,
+            item.metadata AS item_metadata,
+            manifest.version AS manifest_version,
+            manifest.manifest,
+            EXISTS (
+                SELECT 1
+                FROM user_inventory_items AS owned_inventory
+                WHERE owned_inventory.user_id = $1
+                    AND owned_inventory.cosmetic_item_id = item.id
+                    AND owned_inventory.status = 'active'
+            ) AS is_owned,
+            (loadout.admin_preview_skin_pack_item_id = item.id) AS is_equipped
+        FROM users
+        JOIN roles ON roles.id = users.role_id AND roles.key = 'admin'
+        CROSS JOIN cosmetic_items AS item
+        JOIN skin_pack_manifests AS manifest
+            ON manifest.cosmetic_item_id = item.id
+            AND manifest.status = 'active'
+        LEFT JOIN user_cosmetic_loadouts AS loadout ON loadout.user_id = users.id
+        WHERE users.id = $1
+            AND item.status = 'active'
+            AND item.type = 'skin_pack'
+        ORDER BY item.sort_order, item.id
+        `,
+        [userId]
+    )
+
+    return result.rows.map(mapCatalogItem)
+}
+
 export const getUserActiveSkinPackRepo = async (userId) => {
     const result = await pool.query(
         `
         SELECT
-            inventory.id AS inventory_id,
+            CASE WHEN roles.key = 'admin' AND preview_item.id IS NOT NULL THEN NULL ELSE inventory.id END AS inventory_id,
             item.item_key,
             item.label,
             item.label_ru,
             item.metadata AS item_metadata,
             manifest.version AS manifest_version,
-            manifest.manifest
+            manifest.manifest,
+            (roles.key = 'admin' AND preview_item.id IS NOT NULL) AS is_admin_preview
         FROM user_cosmetic_loadouts AS loadout
-        JOIN user_inventory_items AS inventory
+        JOIN users ON users.id = loadout.user_id
+        JOIN roles ON roles.id = users.role_id
+        LEFT JOIN cosmetic_items AS preview_item
+            ON preview_item.id = loadout.admin_preview_skin_pack_item_id
+            AND preview_item.status = 'active'
+            AND preview_item.type = 'skin_pack'
+            AND roles.key = 'admin'
+        LEFT JOIN user_inventory_items AS inventory
             ON inventory.id = loadout.active_skin_pack_inventory_id
             AND inventory.user_id = loadout.user_id
             AND inventory.status = 'active'
         JOIN cosmetic_items AS item
-            ON item.id = inventory.cosmetic_item_id
+            ON item.id = CASE
+                WHEN roles.key = 'admin' AND preview_item.id IS NOT NULL THEN preview_item.id
+                ELSE inventory.cosmetic_item_id
+            END
             AND item.status = 'active'
             AND item.type = 'skin_pack'
         JOIN skin_pack_manifests AS manifest
@@ -124,6 +205,7 @@ export const getUserActiveSkinPackRepo = async (userId) => {
 
     return {
         inventoryId: row.inventory_id,
+        isAdminPreview: row.is_admin_preview,
         item: {
             key: row.item_key,
             label: row.label,
@@ -186,7 +268,7 @@ export const equipUserSkinPackRepo = async ({ inventoryItemId, userId }) => {
 
         const currentLoadoutResult = await client.query(
             `
-            SELECT active_skin_pack_inventory_id
+            SELECT active_skin_pack_inventory_id, admin_preview_skin_pack_item_id
             FROM user_cosmetic_loadouts
             WHERE user_id = $1
             FOR UPDATE
@@ -195,7 +277,12 @@ export const equipUserSkinPackRepo = async ({ inventoryItemId, userId }) => {
         )
         const previousInventoryItemId = currentLoadoutResult.rows[0]?.active_skin_pack_inventory_id || null
 
-        if (String(previousInventoryItemId || '') === String(inventoryItemId)) {
+        const previousAdminPreviewItemId = currentLoadoutResult.rows[0]?.admin_preview_skin_pack_item_id || null
+
+        if (
+            String(previousInventoryItemId || '') === String(inventoryItemId)
+            && previousAdminPreviewItemId === null
+        ) {
             await client.query('COMMIT')
             return { inventoryItemId, alreadyEquipped: true }
         }
@@ -210,6 +297,7 @@ export const equipUserSkinPackRepo = async ({ inventoryItemId, userId }) => {
             VALUES ($1, $2, NOW())
             ON CONFLICT (user_id) DO UPDATE
             SET active_skin_pack_inventory_id = EXCLUDED.active_skin_pack_inventory_id,
+                admin_preview_skin_pack_item_id = NULL,
                 updated_at = NOW()
             `,
             [userId, inventoryItemId]
@@ -228,7 +316,7 @@ export const equipUserSkinPackRepo = async ({ inventoryItemId, userId }) => {
             [
                 userId,
                 inventoryItemId,
-                JSON.stringify({ previousInventoryItemId }),
+                JSON.stringify({ previousAdminPreviewItemId, previousInventoryItemId }),
             ]
         )
 
@@ -241,6 +329,44 @@ export const equipUserSkinPackRepo = async ({ inventoryItemId, userId }) => {
     } finally {
         client.release()
     }
+}
+
+export const equipAdminSkinPackPreviewRepo = async ({ cosmeticItemId, userId }) => {
+    const result = await pool.query(
+        `
+        WITH allowed_item AS (
+            SELECT item.id
+            FROM users
+            JOIN roles ON roles.id = users.role_id AND roles.key = 'admin'
+            CROSS JOIN cosmetic_items AS item
+            JOIN skin_pack_manifests AS manifest
+                ON manifest.cosmetic_item_id = item.id
+                AND manifest.status = 'active'
+            WHERE users.id = $1
+                AND item.id = $2
+                AND item.status = 'active'
+                AND item.type = 'skin_pack'
+            LIMIT 1
+        ), updated_loadout AS (
+            INSERT INTO user_cosmetic_loadouts (
+                user_id,
+                admin_preview_skin_pack_item_id,
+                updated_at
+            )
+            SELECT $1, allowed_item.id, NOW()
+            FROM allowed_item
+            ON CONFLICT (user_id) DO UPDATE
+            SET admin_preview_skin_pack_item_id = EXCLUDED.admin_preview_skin_pack_item_id,
+                updated_at = NOW()
+            RETURNING admin_preview_skin_pack_item_id
+        )
+        SELECT admin_preview_skin_pack_item_id AS cosmetic_item_id
+        FROM updated_loadout
+        `,
+        [userId, cosmeticItemId]
+    )
+
+    return result.rows[0] || null
 }
 
 export const grantCosmeticItemRepo = async ({

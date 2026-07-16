@@ -1,7 +1,9 @@
 import { badRequest, notFound } from '../helpers/error.helper.js'
 import {
     getUserCosmeticInventoryRepo,
+    getAdminSkinPackCatalogRepo,
     getUserActiveSkinPackRepo,
+    equipAdminSkinPackPreviewRepo,
     equipUserSkinPackRepo,
     grantCosmeticItemRepo,
     markUserCosmeticViewedRepo,
@@ -11,6 +13,10 @@ const GRANT_SOURCES = new Set(['shop', 'achievement', 'admin_grant', 'event', 'p
 
 export const getUserCosmeticInventoryService = async (userId) => {
     return await getUserCosmeticInventoryRepo(userId)
+}
+
+export const getAdminSkinPackCatalogService = async (userId) => {
+    return await getAdminSkinPackCatalogRepo(userId)
 }
 
 export const getUserActiveSkinPackService = async (userId) => {
@@ -57,6 +63,29 @@ export const equipUserSkinPackService = async ({ inventoryItemId, userId }) => {
 
     return {
         inventoryItemId: loadout.inventoryItemId,
+        isEquipped: true,
+    }
+}
+
+export const equipAdminSkinPackPreviewService = async ({ cosmeticItemId, userId }) => {
+    const normalizedCosmeticItemId = Number(cosmeticItemId)
+
+    if (!Number.isInteger(normalizedCosmeticItemId) || normalizedCosmeticItemId <= 0) {
+        throw badRequest('COMMON.BAD_REQUEST')
+    }
+
+    const loadout = await equipAdminSkinPackPreviewRepo({
+        cosmeticItemId: normalizedCosmeticItemId,
+        userId,
+    })
+
+    if (!loadout) {
+        throw notFound('COMMON.NOT_FOUND')
+    }
+
+    return {
+        cosmeticItemId: loadout.cosmetic_item_id,
+        isAdminPreview: true,
         isEquipped: true,
     }
 }

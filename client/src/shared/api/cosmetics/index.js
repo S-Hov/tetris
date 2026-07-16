@@ -21,10 +21,24 @@ export const cosmeticsAPI = {
         })
     },
 
+    getAdminCatalog(options = {}) {
+        return apiClient('/api/me/cosmetics/catalog', {
+            method: 'GET',
+            ...options,
+        })
+    },
+
     equipSkinPack(inventoryItemId) {
         return apiClient('/api/me/cosmetics/loadout', {
             method: 'PUT',
             body: JSON.stringify({ inventoryItemId }),
+        })
+    },
+
+    equipAdminPreview(cosmeticItemId) {
+        return apiClient('/api/me/cosmetics/admin-preview', {
+            method: 'PUT',
+            body: JSON.stringify({ cosmeticItemId }),
         })
     },
 }

@@ -11,6 +11,17 @@
     "equipped": "Equipped",
     "new": "NEW",
     "skinPack": "Skin pack",
+    "earnedEyebrow": "Personal progression",
+    "earnedTitle": "Earned rewards",
+    "earnedDescriptionAdmin": "Packs earned through your own progress, matches, friendships and account milestones.",
+    "adminCatalogEyebrow": "Administrator tools",
+    "adminCatalogTitle": "Complete skin catalog",
+    "adminCatalogDescription": "A server-protected catalog for testing every active pack. Testing a pack does not grant ownership or alter reward progress.",
+    "adminCatalogEmpty": "The active skin catalog is empty.",
+    "adminCatalogItem": "Admin catalog",
+    "adminPreviewActive": "Active admin preview",
+    "testing": "Testing",
+    "owned": "Owned",
     "openPack": "Open the {{name}} pack",
     "modal": {
       "eyebrow": "Pack preview",
@@ -21,6 +32,10 @@
       "special": "Special pieces · {{count}}",
       "specialDescription": "Non-standard pieces designed for PVP Blocks modes.",
       "receivedFor": "Received for",
+      "adminAccess": "Administrator access",
+      "adminAccessDescription": "Temporary testing from the protected catalog",
+      "adminPreviewSelect": "Use for testing",
+      "adminPreviewSelected": "Testing pack selected",
       "select": "Select pack",
       "selecting": "Selecting…",
       "selected": "Pack selected"
@@ -49,6 +64,7 @@
     },
     "notifications": {
       "equipped": "Pack selected",
+      "adminPreviewEquipped": "Admin testing pack selected",
       "equipError": "Could not select the pack"
     },
     "rarity": {

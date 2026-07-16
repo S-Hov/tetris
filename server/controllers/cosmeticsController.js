@@ -1,6 +1,8 @@
 import {
     getUserCosmeticInventoryService,
+    getAdminSkinPackCatalogService,
     getUserActiveSkinPackService,
+    equipAdminSkinPackPreviewService,
     equipUserSkinPackService,
     markUserCosmeticViewedService,
 } from '../services/cosmeticsService.js'
@@ -9,6 +11,14 @@ import { asyncHandler } from '../utils/asyncHandler.js'
 
 export const getMyCosmeticInventory = asyncHandler(async (req, res) => {
     const items = await getUserCosmeticInventoryService(req.user.id)
+
+    return ok(res, req, 'COMMON.OK', {
+        data: { items },
+    })
+})
+
+export const getMyAdminSkinPackCatalog = asyncHandler(async (req, res) => {
+    const items = await getAdminSkinPackCatalogService(req.user.id)
 
     return ok(res, req, 'COMMON.OK', {
         data: { items },
@@ -37,6 +47,17 @@ export const markMyCosmeticViewed = asyncHandler(async (req, res) => {
 export const equipMySkinPack = asyncHandler(async (req, res) => {
     const loadout = await equipUserSkinPackService({
         inventoryItemId: req.body?.inventoryItemId,
+        userId: req.user.id,
+    })
+
+    return ok(res, req, 'COMMON.OK', {
+        data: { loadout },
+    })
+})
+
+export const equipMyAdminSkinPackPreview = asyncHandler(async (req, res) => {
+    const loadout = await equipAdminSkinPackPreviewService({
+        cosmeticItemId: req.body?.cosmeticItemId,
         userId: req.user.id,
     })
 

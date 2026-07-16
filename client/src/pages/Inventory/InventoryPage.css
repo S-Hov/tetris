@@ -13,6 +13,59 @@
     gap: 18px;
 }
 
+.inventory-section {
+    display: grid;
+    gap: 14px;
+}
+
+.inventory-section--admin {
+    margin-top: 10px;
+    padding-top: 24px;
+    border-top: 1px solid var(--turquoise-border-soft);
+}
+
+.inventory-section__header {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: var(--radius-panel);
+    background: linear-gradient(135deg, rgba(0, 246, 255, 0.08), transparent 55%), var(--box-bg);
+}
+
+.inventory-section--admin .inventory-section__header {
+    border-color: rgba(255, 104, 189, 0.32);
+    background:
+        radial-gradient(circle at 90% 0%, rgba(255, 104, 189, 0.16), transparent 34%),
+        linear-gradient(135deg, rgba(105, 78, 255, 0.1), transparent 58%),
+        var(--box-bg);
+}
+
+.inventory-section__header > span {
+    color: var(--turquoise);
+    font-family: var(--font-1);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.inventory-section--admin .inventory-section__header > span {
+    color: #ff68bd;
+}
+
+.inventory-section__header h2 {
+    margin: 0.3rem 0 0.35rem;
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+}
+
+.inventory-section__header p {
+    max-width: 720px;
+    margin: 0;
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
 .inventory-page__hero,
 .inventory-card,
 .inventory-page__state {
@@ -122,6 +175,10 @@
     box-shadow: var(--shadow), 0 0 0 1px var(--green), 0 0 24px color-mix(in srgb, var(--green) 25%, transparent);
 }
 
+.inventory-card--admin-catalog {
+    box-shadow: var(--shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+
 .inventory-card__active-mark {
     position: absolute;
     z-index: 3;
@@ -156,6 +213,25 @@
     font-size: 0.62rem;
     font-weight: 900;
     letter-spacing: 0.08em;
+}
+
+.inventory-card__owned-mark {
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+    top: 10px;
+    left: 10px;
+    padding: 0.3rem 0.48rem;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    color: #eefcff;
+    background: rgba(12, 25, 38, 0.82);
+    box-shadow: 0 0 12px rgba(0, 246, 255, 0.18);
+    font-family: var(--font-1);
+    font-size: 0.58rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
 .inventory-card:has(.inventory-card__active-mark) .inventory-card__new-mark {
