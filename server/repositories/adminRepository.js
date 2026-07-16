@@ -1607,7 +1607,7 @@ async function buildDatabaseExport(tableNames) {
     }
 
     return {
-        format: 'pvp-tetris-database-backup',
+        format: 'pvp-blocks-database-backup',
         formatVersion: BACKUP_FORMAT_VERSION,
         createdAt: new Date().toISOString(),
         database: process.env.DB_DATABASE || process.env.LOCAL_DB_DATABASE || null,
@@ -1853,7 +1853,7 @@ function parseDatabaseImportPayload(payload) {
     const text = Buffer.isBuffer(payload) ? payload.toString('utf8') : String(payload || '')
     const parsed = JSON.parse(text)
 
-    if (parsed?.format !== 'pvp-tetris-database-backup' || parsed?.formatVersion !== BACKUP_FORMAT_VERSION || !Array.isArray(parsed.tables)) {
+    if (parsed?.format !== 'pvp-blocks-database-backup' || parsed?.formatVersion !== BACKUP_FORMAT_VERSION || !Array.isArray(parsed.tables)) {
         throw new Error('Unsupported database backup format')
     }
 

@@ -4,7 +4,7 @@ import AudioManager from '@/shared/lib/audio/AudioManager.js'
 
 import AudioContext from './audioContext.js'
 
-const AUDIO_SETTINGS_STORAGE_KEY = 'pvp-tetris-audio-settings'
+const AUDIO_SETTINGS_STORAGE_KEY = 'pvp-blocks-audio-settings'
 const DEFAULT_SETTINGS = {
     effectsMuted: false,
     masterMuted: false,

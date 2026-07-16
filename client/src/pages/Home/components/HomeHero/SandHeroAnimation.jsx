@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 
 const settings = {
     cellSize: 5,
-    startText: 'PVP-TETRIS',
+    startText: 'PVP-BLOCKS',
     hiddenText: 'matchmaking online',
     releaseTestsPerFrame: 320,
     releaseChance: 0.035,

@@ -324,7 +324,7 @@ function normalizeTrafficSource({ source, referrer, path }) {
 
 function getUtmSource(path) {
     try {
-        const url = new URL(String(path || '/'), 'https://pvp-tetris.online')
+        const url = new URL(String(path || '/'), 'https://pvp-blocks.online')
         return url.searchParams.get('utm_source')
     } catch {
         return null

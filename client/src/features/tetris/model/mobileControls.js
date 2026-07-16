@@ -1,4 +1,4 @@
-export const MOBILE_CONTROLS_STORAGE_KEY = 'pvp-tetris.mobile-controls'
+export const MOBILE_CONTROLS_STORAGE_KEY = 'pvp-blocks.mobile-controls'
 
 export const MOBILE_CONTROL_METHODS = {
     GESTURES: 'gestures',

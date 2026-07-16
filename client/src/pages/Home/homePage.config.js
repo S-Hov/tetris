@@ -1,1 +1,1 @@
-export const SITE_URL = 'https://www.pvp-tetris.online'
+export const SITE_URL = 'https://www.pvp-blocks.online'

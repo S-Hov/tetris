@@ -146,7 +146,7 @@ export const exportDatabase = asyncHandler(async (req, res) => {
     const data = await exportDatabaseDataRepo({
         tables: normalizeTableList(req.body?.tables),
     })
-    const fileName = `pvp-tetris-db-export-${new Date().toISOString().replace(/[:.]/g, '-')}.json`
+    const fileName = `pvp-blocks-db-export-${new Date().toISOString().replace(/[:.]/g, '-')}.json`
 
     res.setHeader('Content-Type', 'application/json')
     res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)

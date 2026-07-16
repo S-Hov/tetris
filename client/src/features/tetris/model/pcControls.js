@@ -1,4 +1,4 @@
-export const PC_CONTROLS_STORAGE_KEY = 'pvp-tetris.pc-controls'
+export const PC_CONTROLS_STORAGE_KEY = 'pvp-blocks.pc-controls'
 
 export const PC_CONTROL_ACTIONS = {
     MOVE_LEFT: 'moveLeft',

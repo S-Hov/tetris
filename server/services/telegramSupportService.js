@@ -9,8 +9,8 @@ import {
 import { emitSupportRequestMessage, emitSupportRequestUpdated } from './supportRealtimeService.js'
 
 const TELEGRAM_API_BASE_URL = 'https://api.telegram.org'
-const DEFAULT_ADMIN_URL = 'https://admin.pvp-tetris.online'
-const DEFAULT_CLIENT_URL = 'https://pvp-tetris.online'
+const DEFAULT_ADMIN_URL = 'https://admin.pvp-blocks.online'
+const DEFAULT_CLIENT_URL = 'https://pvp-blocks.online'
 const TELEGRAM_LINKED_MESSAGE = 'Спасибо! Ваше обращение отправлено в поддержку. Мы ответим вам здесь.'
 const NO_ACTIVE_TICKET_MESSAGE = 'У вас нет активного обращения. Пожалуйста, создайте новое обращение на сайте.'
 const SUPPORT_CATEGORY_LABELS = {

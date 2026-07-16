@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { applyIncomingEffect } from '../runtime.js'
 
-export const EFFECT_PREVIEW_EVENT = 'pvp-tetris:preview-effect'
+export const EFFECT_PREVIEW_EVENT = 'pvp-blocks:preview-effect'
 
 export const useEffectPreview = ({
     enabled = true,

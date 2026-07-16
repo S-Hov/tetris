@@ -9,7 +9,7 @@ import notify from '@/utils/Notifications'
 
 import './ChatWidget.css'
 
-const CHAT_OPEN_EVENT = 'pvp-tetris:chat-open'
+const CHAT_OPEN_EVENT = 'pvp-blocks:chat-open'
 const ENTER_KEY = 'Enter'
 const MOBILE_CHAT_MEDIA_QUERY = '(max-width: 560px)'
 

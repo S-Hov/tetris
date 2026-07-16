@@ -15,9 +15,9 @@ export const DEFAULT_ALLOWED_ORIGINS = Object.freeze([
     'http://127.0.0.1:5174',
     'http://localhost:5175',
     'http://127.0.0.1:5175',
-    'https://pvp-tetris.online',
-    'https://www.pvp-tetris.online',
-    'https://admin.pvp-tetris.online',
+    'https://pvp-blocks.online',
+    'https://www.pvp-blocks.online',
+    'https://admin.pvp-blocks.online',
 ])
 
 export const resolveAllowedOrigins = (value) => {

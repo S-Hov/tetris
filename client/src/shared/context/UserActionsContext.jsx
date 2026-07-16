@@ -28,7 +28,7 @@ const emitWithAck = (eventName, payload) => new Promise((resolve) => {
     socket.emit(eventName, payload, (response) => resolve(response || { success: false }))
 })
 
-const CHAT_OPEN_EVENT = 'pvp-tetris:chat-open'
+const CHAT_OPEN_EVENT = 'pvp-blocks:chat-open'
 
 export const UserActionsProvider = ({ children }) => {
     const { t } = useTranslation()

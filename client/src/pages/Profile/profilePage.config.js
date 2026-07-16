@@ -21,7 +21,7 @@ import diamondFrame from './assets/ranks_frames/diamond.png'
 import masterFrame from './assets/ranks_frames/master.png'
 import legendFrame from './assets/ranks_frames/legend.png'
 
-export const SITE_URL = 'https://www.pvp-tetris.online'
+export const SITE_URL = 'https://www.pvp-blocks.online'
 
 export const RANK_ASSETS = {
     bronze: { icon: bronzeRank, bg: bronzeBg, frame: bronzeFrame },
