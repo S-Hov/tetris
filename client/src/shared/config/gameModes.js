@@ -101,7 +101,7 @@ export const modeSelectionCatalog = {
     },
     [PLAY_MODE_KEYS.ROYALE]: {
         key: PLAY_MODE_KEYS.ROYALE,
-        title: 'Tetris Royale',
+        title: 'Blocks Royale',
         subtitle: 'Выживайте дольше остальных и прорывайтесь к финальной дуэли за первое место.',
         icon: 'fas fa-crown',
         online: '1,908 игроков онлайн',

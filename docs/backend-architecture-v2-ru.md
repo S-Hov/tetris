@@ -1,4 +1,4 @@
-# Целевая архитектура backend PVP Tetris
+# Целевая архитектура backend PVP Blocks
 
 ## Статус документа
 

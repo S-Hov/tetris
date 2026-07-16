@@ -28,7 +28,7 @@ export const PC_CONTROL_ACTION_ORDER = [
 ]
 
 export const DEFAULT_PC_CONTROL_SETTINGS = {
-    description: 'PVP Tetris PC control settings. Defaults match the original keyboard controls.',
+    description: 'PVP Blocks PC control settings. Defaults match the original keyboard controls.',
     bindings: {
         [PC_CONTROL_ACTIONS.MOVE_LEFT]: ['ArrowLeft', 'KeyA'],
         [PC_CONTROL_ACTIONS.MOVE_RIGHT]: ['ArrowRight', 'KeyD'],

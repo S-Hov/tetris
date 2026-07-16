@@ -1,8 +1,8 @@
 {
   "emailVerification": {
     "seo": {
-      "title": "Email verification - PVP Tetris",
-      "description": "Enter the PVP Tetris verification code to activate your account or restore access."
+      "title": "Email verification - PVP Blocks",
+      "description": "Enter the PVP Blocks verification code to activate your account or restore access."
     },
     "invalidLink": "The verification link is invalid. Please register again.",
     "alreadyVerified": "Email is already verified. Redirecting to login...",

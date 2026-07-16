@@ -1,8 +1,8 @@
 {
   "seo": {
-    "title": "PVP Tetris - online PvP tetris arena",
-    "description": "Play PVP Tetris online with competitive Solo, 1v1, 2v2, 5v5 and Royale modes, player rankings and seasonal stats.",
-    "ogTitle": "PVP Tetris - competitive arena for tetris players",
+    "title": "PVP Blocks - online falling-block PvP arena",
+    "description": "Play PVP Blocks online with competitive Solo, 1v1, 2v2, 5v5 and Royale modes, player rankings and seasonal stats.",
+    "ogTitle": "PVP Blocks - competitive arena for block-game players",
     "ogDescription": "Fight in fast PvP matches, choose your mode, climb the leaderboard and become an arena legend."
   },
   "home": {
@@ -18,10 +18,10 @@
     "hero": {
       "titleLine": "Fight. Become",
       "titleHighlight": "a legend.",
-      "subtitle": "Classic tetris in a new format. Fast PvP battles, unique modes and a true competitive arena are waiting for you!",
+      "subtitle": "Classic falling-block gameplay in a new format. Fast PvP battles, unique modes and a true competitive arena are waiting for you!",
       "playButton": "Play now",
       "ratingButton": "Arena rating",
-      "previewAriaLabel": "PvP Tetris preview"
+      "previewAriaLabel": "PvP Blocks preview"
     },
     "effectsLab": {
       "eyebrow": "Effects laboratory",
@@ -85,7 +85,7 @@
     "donation": {
       "titlePrefix": "Support",
       "titleHighlight": "project growth",
-      "description": "PvP Tetris is a solo developer project made with love for the game and esports. Your support helps the project grow and improve every day.",
+      "description": "PvP Blocks is a solo developer project made with love for the game and esports. Your support helps the project grow and improve every day.",
       "button": "Support the project",
       "note": "No gameplay advantages - only support and development.",
       "benefits": {

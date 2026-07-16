@@ -1,6 +1,6 @@
-# PVP Tetris
+# PVP Blocks
 
-PVP Tetris - full-stack проект с публичным клиентом, административной панелью
+PVP Blocks - full-stack проект с публичным клиентом, административной панелью
 и Node.js backend для REST API, Socket.IO матчей и PostgreSQL-хранилища.
 
 Подробная русскоязычная карта проекта лежит в
@@ -19,10 +19,10 @@ PVP Tetris - full-stack проект с публичным клиентом, а�
 
 | Слой | За что отвечает |
 | --- | --- |
-| Public frontend | Маршруты, локализация, страницы, игровой UI и клиентская Tetris-логика |
+| Public frontend | Маршруты, локализация, страницы, игровой UI и клиентская игровая логика |
 | Admin frontend | Дашборд, таблицы ресурсов, редакторы справочников, контроль БД |
 | Shared frontend | `apiClient`, auth context, socket session, общие UI-компоненты |
-| Tetris feature | Доска, фигуры, игровой цикл, управление, эффекты, панели матча |
+| Game feature | Доска, фигуры, игровой цикл, управление, эффекты, панели матча |
 | REST API | Auth/OAuth, профиль, настройки, матчи, рейтинг, support, donations, analytics, admin |
 | Socket API | Лобби, matchmaking, party, live-синхронизация матча, support realtime |
 | Persistence | PostgreSQL-таблицы пользователей, матчей, рейтинга, support/donations, справочников |
@@ -79,7 +79,7 @@ npm run dev
 | `client/src/main.jsx` | Монтирует public React-приложение, `HelmetProvider`, `AuthProvider`, router |
 | `client/src/app/routing/routes.js` | Карта публичных страниц |
 | `client/src/pages/Match/MatchPage.jsx` | Главный экран игры, склеивает движок, UI и сокеты |
-| `client/src/features/tetris/model/tetrisEngine.js` | Основная игровая логика Tetris |
+| `client/src/features/tetris/model/tetrisEngine.js` | Основная игровая логика |
 | `client/src/shared/api/socket/index.js` | Socket.IO client, guest/auth session |
 | `client/src/shared/realtime/friendsRealtime.js` | Realtime store друзей, заявок и presence |
 | `admin/src/main.jsx` | Монтирует админское React-приложение |

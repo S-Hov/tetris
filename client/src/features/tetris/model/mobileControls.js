@@ -104,7 +104,7 @@ export const DEFAULT_MOBILE_BUTTON_LAYOUT = {
 }
 
 export const DEFAULT_MOBILE_CONTROL_SETTINGS = {
-    description: 'PVP Tetris mobile control settings. Gestures are enabled by default for touch screens.',
+    description: 'PVP Blocks mobile control settings. Gestures are enabled by default for touch screens.',
     method: MOBILE_CONTROL_METHODS.BUTTONS,
     sensitivity: {
         minSwipe: 24,

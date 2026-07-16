@@ -1,10 +1,10 @@
 {
   "profile": {
     "seo": {
-      "title": "Personal account - PVP Tetris",
-      "description": "Open your PVP Tetris personal account to view your rank, MMR, match history, quick settings and account status.",
-      "ogTitle": "PVP Tetris personal account",
-      "ogDescription": "Track your seasonal progress, wins, win rate, rank and recent matches in your PVP Tetris account."
+      "title": "Personal account - PVP Blocks",
+      "description": "Open your PVP Blocks personal account to view your rank, MMR, match history, quick settings and account status.",
+      "ogTitle": "PVP Blocks personal account",
+      "ogDescription": "Track your seasonal progress, wins, win rate, rank and recent matches in your PVP Blocks account."
     },
     "common": {
       "playerFallback": "Player",
@@ -80,8 +80,8 @@
       "logout": "Log out"
     },
     "public": {
-      "seoTitle": "{{username}} — PVP Tetris player profile",
-      "seoDescription": "Rank, statistics and recent matches of {{username}} in PVP Tetris.",
+      "seoTitle": "{{username}} — PVP Blocks player profile",
+      "seoDescription": "Rank, statistics and recent matches of {{username}} in PVP Blocks.",
       "createdAt": "Registration date",
       "loading": "Loading profile",
       "loadingText": "Collecting the player's statistics and recent matches.",

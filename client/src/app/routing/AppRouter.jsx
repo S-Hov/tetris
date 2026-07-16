@@ -7,7 +7,7 @@ import { trackPageView } from '@/shared/api/analytics'
 import InnerPageLayout from '../layouts/InnerPageLayout.jsx'
 import { DEFAULT_LANGUAGE, getLanguageFromPathname, getLocalizedPath, stripLanguageFromPathname, SUPPORTED_LANGUAGES } from '@/i18n'
 
-const APP_TITLE = 'PVP Tetris'
+const APP_TITLE = 'PVP Blocks'
 
 const AppRouter = () => {
     const location = useLocation()

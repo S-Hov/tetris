@@ -3264,7 +3264,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 390,
               "height": 844
@@ -3283,7 +3283,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 390,
               "height": 844
@@ -3302,7 +3302,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3321,7 +3321,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3340,7 +3340,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3359,7 +3359,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3378,7 +3378,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3397,7 +3397,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Лобби: Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Лобби: Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3416,7 +3416,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3435,7 +3435,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3454,7 +3454,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3473,7 +3473,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3492,7 +3492,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3511,7 +3511,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 800,
               "height": 600
@@ -3530,7 +3530,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3549,7 +3549,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3568,7 +3568,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3587,7 +3587,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3606,7 +3606,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3625,7 +3625,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3644,7 +3644,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3663,7 +3663,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3682,7 +3682,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3701,7 +3701,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3720,7 +3720,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3739,7 +3739,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3758,7 +3758,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3777,7 +3777,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3796,7 +3796,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3815,7 +3815,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Арена 5 VS 5 | PVP Tetris",
+            "title": "Арена 5 VS 5 | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3834,7 +3834,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3853,7 +3853,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3872,7 +3872,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 3440,
               "height": 1440
@@ -3891,7 +3891,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 800,
               "height": 600
@@ -3910,7 +3910,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3929,7 +3929,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3948,7 +3948,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3967,7 +3967,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -3986,7 +3986,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4005,7 +4005,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4024,7 +4024,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4043,7 +4043,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4062,7 +4062,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4081,7 +4081,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4100,7 +4100,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4119,7 +4119,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4138,7 +4138,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4157,7 +4157,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4176,7 +4176,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4195,7 +4195,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4214,7 +4214,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4233,7 +4233,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4252,7 +4252,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4271,7 +4271,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4290,7 +4290,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4309,7 +4309,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4328,7 +4328,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4347,7 +4347,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4366,7 +4366,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4385,7 +4385,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4404,7 +4404,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4423,7 +4423,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4442,7 +4442,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4461,7 +4461,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4480,7 +4480,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4499,7 +4499,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4518,7 +4518,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4537,7 +4537,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4556,7 +4556,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4575,7 +4575,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4594,7 +4594,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4613,7 +4613,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4632,7 +4632,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4651,7 +4651,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4670,7 +4670,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4689,7 +4689,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4708,7 +4708,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4727,7 +4727,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4746,7 +4746,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4765,7 +4765,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4784,7 +4784,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4803,7 +4803,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4822,7 +4822,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4841,7 +4841,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4860,7 +4860,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4879,7 +4879,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4898,7 +4898,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4917,7 +4917,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4936,7 +4936,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4955,7 +4955,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4974,7 +4974,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -4993,7 +4993,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5012,7 +5012,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5031,7 +5031,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5050,7 +5050,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5069,7 +5069,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5088,7 +5088,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5107,7 +5107,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5126,7 +5126,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5145,7 +5145,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5164,7 +5164,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 800,
               "height": 600
@@ -5183,7 +5183,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 800,
               "height": 600
@@ -5202,7 +5202,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5221,7 +5221,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5240,7 +5240,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5259,7 +5259,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5278,7 +5278,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5297,7 +5297,7 @@
           "source": "vercel.com",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5316,7 +5316,7 @@
           "source": "vercel.com",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5335,7 +5335,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5354,7 +5354,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -5373,7 +5373,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5392,7 +5392,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5411,7 +5411,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Регистрация | PVP Tetris",
+            "title": "Регистрация | PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5430,7 +5430,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5449,7 +5449,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5468,7 +5468,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Регистрация | PVP Tetris",
+            "title": "Регистрация | PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5487,7 +5487,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5506,7 +5506,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 2560,
               "height": 1440
@@ -5525,7 +5525,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2560,
               "height": 1440
@@ -5544,7 +5544,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2560,
               "height": 1440
@@ -5563,7 +5563,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2560,
               "height": 1440
@@ -5582,7 +5582,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2560,
               "height": 1440
@@ -5601,7 +5601,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2560,
               "height": 1440
@@ -5620,7 +5620,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 800,
               "height": 600
@@ -5639,7 +5639,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 800,
               "height": 600
@@ -5658,7 +5658,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5677,7 +5677,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2560,
               "height": 1440
@@ -5696,7 +5696,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 800,
               "height": 600
@@ -5715,7 +5715,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 800,
               "height": 600
@@ -5734,7 +5734,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2560,
               "height": 1440
@@ -5753,7 +5753,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2560,
               "height": 1440
@@ -5772,7 +5772,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5791,7 +5791,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 800,
               "height": 600
@@ -5810,7 +5810,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 800,
               "height": 600
@@ -5829,7 +5829,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5848,7 +5848,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5867,7 +5867,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5886,7 +5886,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5905,7 +5905,7 @@
           "source": "organic: google",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 3840,
               "height": 2160
@@ -5924,7 +5924,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -5943,7 +5943,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -5962,7 +5962,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -5981,7 +5981,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -6000,7 +6000,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -6019,7 +6019,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 400,
               "height": 400
@@ -6038,7 +6038,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6057,7 +6057,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6076,7 +6076,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6095,7 +6095,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6114,7 +6114,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 400,
               "height": 400
@@ -6133,7 +6133,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6152,7 +6152,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6171,7 +6171,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -6190,7 +6190,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 400,
               "height": 400
@@ -6209,7 +6209,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6228,7 +6228,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6247,7 +6247,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 400,
               "height": 400
@@ -6266,7 +6266,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6285,7 +6285,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 400,
               "height": 400
@@ -6304,7 +6304,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6323,7 +6323,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6342,7 +6342,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6361,7 +6361,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6380,7 +6380,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6399,7 +6399,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6418,7 +6418,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6437,7 +6437,7 @@
           "source": "snapchat.com",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6456,7 +6456,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -6475,7 +6475,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -6494,7 +6494,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -6513,7 +6513,7 @@
           "source": "snapchat.com",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6532,7 +6532,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -6551,7 +6551,7 @@
           "source": "organic: google",
           "device_type": "mobile",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -6570,7 +6570,7 @@
           "source": "snapchat.com",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6589,7 +6589,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -6608,7 +6608,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -6627,7 +6627,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -6646,7 +6646,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6665,7 +6665,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 832,
               "height": 384
@@ -6684,7 +6684,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -6703,7 +6703,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -6722,7 +6722,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 854
@@ -6741,7 +6741,7 @@
           "source": "direct",
           "device_type": "bot",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 1920,
               "height": 1080
@@ -6760,7 +6760,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 800,
               "height": 600
@@ -6779,7 +6779,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -6798,7 +6798,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -6817,7 +6817,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -6836,7 +6836,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -6855,7 +6855,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -6874,7 +6874,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6893,7 +6893,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 400,
               "height": 400
@@ -6912,7 +6912,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 400,
               "height": 400
@@ -6931,7 +6931,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6950,7 +6950,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -6969,7 +6969,7 @@
           "source": "direct",
           "device_type": "bot",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 1920,
               "height": 1080
@@ -6988,7 +6988,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7007,7 +7007,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7026,7 +7026,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7045,7 +7045,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7064,7 +7064,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7083,7 +7083,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7102,7 +7102,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7121,7 +7121,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7140,7 +7140,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7159,7 +7159,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7178,7 +7178,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7197,7 +7197,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7216,7 +7216,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7235,7 +7235,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7254,7 +7254,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7273,7 +7273,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7292,7 +7292,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7311,7 +7311,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Обращение #31 | PVP Tetris",
+            "title": "Обращение #31 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7330,7 +7330,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7349,7 +7349,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7368,7 +7368,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7387,7 +7387,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7406,7 +7406,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7425,7 +7425,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7444,7 +7444,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7463,7 +7463,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7482,7 +7482,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7501,7 +7501,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7520,7 +7520,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7539,7 +7539,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7558,7 +7558,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7577,7 +7577,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Обращение #31 | PVP Tetris",
+            "title": "Обращение #31 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7596,7 +7596,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7615,7 +7615,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7634,7 +7634,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7653,7 +7653,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7672,7 +7672,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Лобби: Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Лобби: Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7691,7 +7691,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7710,7 +7710,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7729,7 +7729,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7748,7 +7748,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Обращение #31 | PVP Tetris",
+            "title": "Обращение #31 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7767,7 +7767,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7786,7 +7786,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7805,7 +7805,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7824,7 +7824,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Обращение #31 | PVP Tetris",
+            "title": "Обращение #31 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7843,7 +7843,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7862,7 +7862,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7881,7 +7881,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7900,7 +7900,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Обращение #31 | PVP Tetris",
+            "title": "Обращение #31 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7919,7 +7919,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7938,7 +7938,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Обращение #31 | PVP Tetris",
+            "title": "Обращение #31 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7957,7 +7957,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7976,7 +7976,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Обращение #31 | PVP Tetris",
+            "title": "Обращение #31 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -7995,7 +7995,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8014,7 +8014,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Обращение #26 | PVP Tetris",
+            "title": "Обращение #26 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8033,7 +8033,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8052,7 +8052,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8071,7 +8071,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8090,7 +8090,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Обращение #26 | PVP Tetris",
+            "title": "Обращение #26 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8109,7 +8109,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8128,7 +8128,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8147,7 +8147,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8166,7 +8166,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8185,7 +8185,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8204,7 +8204,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8223,7 +8223,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8242,7 +8242,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8261,7 +8261,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8280,7 +8280,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8299,7 +8299,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8318,7 +8318,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8337,7 +8337,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8356,7 +8356,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8375,7 +8375,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8394,7 +8394,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 390,
               "height": 844
@@ -8413,7 +8413,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8432,7 +8432,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8451,7 +8451,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8470,7 +8470,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8489,7 +8489,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8508,7 +8508,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8527,7 +8527,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8546,7 +8546,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8565,7 +8565,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 390,
               "height": 844
@@ -8584,7 +8584,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8603,7 +8603,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8622,7 +8622,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8641,7 +8641,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8660,7 +8660,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8679,7 +8679,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8698,7 +8698,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8717,7 +8717,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8736,7 +8736,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8755,7 +8755,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8774,7 +8774,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8793,7 +8793,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8812,7 +8812,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8831,7 +8831,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8850,7 +8850,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8869,7 +8869,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8888,7 +8888,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8907,7 +8907,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8926,7 +8926,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8945,7 +8945,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8964,7 +8964,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -8983,7 +8983,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9002,7 +9002,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9021,7 +9021,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9040,7 +9040,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9059,7 +9059,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9078,7 +9078,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9097,7 +9097,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9116,7 +9116,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9135,7 +9135,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9154,7 +9154,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9173,7 +9173,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9192,7 +9192,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9211,7 +9211,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9230,7 +9230,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9249,7 +9249,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9268,7 +9268,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9287,7 +9287,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9306,7 +9306,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9325,7 +9325,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9344,7 +9344,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9363,7 +9363,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9382,7 +9382,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9401,7 +9401,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9420,7 +9420,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9439,7 +9439,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9458,7 +9458,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9477,7 +9477,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9496,7 +9496,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9515,7 +9515,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9534,7 +9534,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9553,7 +9553,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9572,7 +9572,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9591,7 +9591,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9610,7 +9610,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9629,7 +9629,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9648,7 +9648,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9667,7 +9667,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9686,7 +9686,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9705,7 +9705,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9724,7 +9724,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9743,7 +9743,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9762,7 +9762,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9781,7 +9781,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9800,7 +9800,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9819,7 +9819,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9838,7 +9838,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9857,7 +9857,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9876,7 +9876,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9895,7 +9895,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9914,7 +9914,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9933,7 +9933,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9952,7 +9952,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9971,7 +9971,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -9990,7 +9990,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10009,7 +10009,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10028,7 +10028,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10047,7 +10047,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10066,7 +10066,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10085,7 +10085,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10104,7 +10104,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10123,7 +10123,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10142,7 +10142,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10161,7 +10161,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10180,7 +10180,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10199,7 +10199,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10218,7 +10218,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10237,7 +10237,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10256,7 +10256,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10275,7 +10275,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10294,7 +10294,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10313,7 +10313,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10332,7 +10332,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10351,7 +10351,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10370,7 +10370,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10389,7 +10389,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10408,7 +10408,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10427,7 +10427,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10446,7 +10446,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10465,7 +10465,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10484,7 +10484,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10503,7 +10503,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10522,7 +10522,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10541,7 +10541,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10560,7 +10560,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10579,7 +10579,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10598,7 +10598,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10617,7 +10617,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10636,7 +10636,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10655,7 +10655,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10674,7 +10674,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10693,7 +10693,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10712,7 +10712,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10731,7 +10731,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10750,7 +10750,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10769,7 +10769,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10788,7 +10788,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10807,7 +10807,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10826,7 +10826,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10845,7 +10845,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10864,7 +10864,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10883,7 +10883,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10902,7 +10902,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Арена 5 VS 5 | PVP Tetris",
+            "title": "Арена 5 VS 5 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10921,7 +10921,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10940,7 +10940,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10959,7 +10959,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10978,7 +10978,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -10997,7 +10997,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11016,7 +11016,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11035,7 +11035,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11054,7 +11054,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11073,7 +11073,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11092,7 +11092,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11111,7 +11111,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11130,7 +11130,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11149,7 +11149,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11168,7 +11168,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11187,7 +11187,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11206,7 +11206,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11225,7 +11225,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11244,7 +11244,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11263,7 +11263,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11282,7 +11282,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11301,7 +11301,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11320,7 +11320,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11339,7 +11339,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11358,7 +11358,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11377,7 +11377,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11396,7 +11396,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Обращение #31 | PVP Tetris",
+            "title": "Обращение #31 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11415,7 +11415,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11434,7 +11434,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11453,7 +11453,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11472,7 +11472,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Обращение #31 | PVP Tetris",
+            "title": "Обращение #31 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11491,7 +11491,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11510,7 +11510,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Обращение #30 | PVP Tetris",
+            "title": "Обращение #30 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11529,7 +11529,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Мои обращения | PVP Tetris",
+            "title": "Мои обращения | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11548,7 +11548,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "История матчей | PVP Tetris",
+            "title": "История матчей | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11567,7 +11567,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11586,7 +11586,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11605,7 +11605,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11624,7 +11624,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11643,7 +11643,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11662,7 +11662,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11681,7 +11681,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11700,7 +11700,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11719,7 +11719,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11738,7 +11738,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11757,7 +11757,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11776,7 +11776,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "История матчей | PVP Tetris",
+            "title": "История матчей | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11795,7 +11795,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "История матчей | PVP Tetris",
+            "title": "История матчей | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11814,7 +11814,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "История матчей | PVP Tetris",
+            "title": "История матчей | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11833,7 +11833,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "История матчей | PVP Tetris",
+            "title": "История матчей | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11852,7 +11852,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Матч #11 | PVP Tetris",
+            "title": "Матч #11 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11871,7 +11871,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "История матчей | PVP Tetris",
+            "title": "История матчей | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11890,7 +11890,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11909,7 +11909,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "История матчей | PVP Tetris",
+            "title": "История матчей | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11928,7 +11928,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11947,7 +11947,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11966,7 +11966,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -11985,7 +11985,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12004,7 +12004,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12023,7 +12023,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12042,7 +12042,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12061,7 +12061,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12080,7 +12080,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12099,7 +12099,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12118,7 +12118,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Арена 5 VS 5 | PVP Tetris",
+            "title": "Арена 5 VS 5 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12137,7 +12137,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Tetris Royale | PVP Tetris",
+            "title": "Blocks Royale | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12156,7 +12156,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Арена 5 VS 5 | PVP Tetris",
+            "title": "Арена 5 VS 5 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12175,7 +12175,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12194,7 +12194,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12213,7 +12213,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12232,7 +12232,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12251,7 +12251,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Лобби: Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Лобби: Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12270,7 +12270,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12289,7 +12289,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12308,7 +12308,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Команда: Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Команда: Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12327,7 +12327,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12346,7 +12346,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Арена 5 VS 5 | PVP Tetris",
+            "title": "Арена 5 VS 5 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12365,7 +12365,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12384,7 +12384,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Команда: Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Команда: Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12403,7 +12403,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12422,7 +12422,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Арена 5 VS 5 | PVP Tetris",
+            "title": "Арена 5 VS 5 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12441,7 +12441,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Арена 5 VS 5 | PVP Tetris",
+            "title": "Арена 5 VS 5 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12460,7 +12460,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Арена 5 VS 5 | PVP Tetris",
+            "title": "Арена 5 VS 5 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12479,7 +12479,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12498,7 +12498,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Команда: Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Команда: Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12517,7 +12517,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Командный бой 2 VS 2 | PVP Tetris",
+            "title": "Командный бой 2 VS 2 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12536,7 +12536,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12555,7 +12555,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12574,7 +12574,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Регистрация | PVP Tetris",
+            "title": "Регистрация | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12593,7 +12593,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12612,7 +12612,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12631,7 +12631,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12650,7 +12650,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12669,7 +12669,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12688,7 +12688,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12707,7 +12707,7 @@
           "source": "localhost",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2071,
               "height": 977
@@ -12726,7 +12726,7 @@
           "source": "localhost",
           "device_type": "mobile",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2071,
               "height": 977
@@ -12745,7 +12745,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12764,7 +12764,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12783,7 +12783,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12802,7 +12802,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Дуэль 1 VS 1 | PVP Tetris",
+            "title": "Дуэль 1 VS 1 | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12821,7 +12821,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12840,7 +12840,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12859,7 +12859,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12878,7 +12878,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12897,7 +12897,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12916,7 +12916,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12935,7 +12935,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12954,7 +12954,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12973,7 +12973,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -12992,7 +12992,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13011,7 +13011,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13030,7 +13030,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13049,7 +13049,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13068,7 +13068,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13087,7 +13087,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -13106,7 +13106,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13125,7 +13125,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13144,7 +13144,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13163,7 +13163,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13182,7 +13182,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13201,7 +13201,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13220,7 +13220,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13239,7 +13239,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13258,7 +13258,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Одиночная игра | PVP Tetris",
+            "title": "Одиночная игра | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13277,7 +13277,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13296,7 +13296,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "О нас | PVP Tetris",
+            "title": "О нас | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13315,7 +13315,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13334,7 +13334,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13353,7 +13353,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13372,7 +13372,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13391,7 +13391,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13410,7 +13410,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13429,7 +13429,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13448,7 +13448,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13467,7 +13467,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13486,7 +13486,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -13505,7 +13505,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13524,7 +13524,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13543,7 +13543,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13562,7 +13562,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -13581,7 +13581,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -13600,7 +13600,7 @@
           "source": "organic: google",
           "device_type": "mobile",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 440,
               "height": 956
@@ -13619,7 +13619,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13638,7 +13638,7 @@
           "source": "direct",
           "device_type": "bot",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 1920,
               "height": 1080
@@ -13657,7 +13657,7 @@
           "source": "organic: google",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 402,
               "height": 874
@@ -13676,7 +13676,7 @@
           "source": "organic: google",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 402,
               "height": 874
@@ -13695,7 +13695,7 @@
           "source": "organic: google",
           "device_type": "mobile",
           "metadata": {
-            "title": "Вход | PVP Tetris",
+            "title": "Вход | PVP Blocks",
             "screen": {
               "width": 402,
               "height": 874
@@ -13714,7 +13714,7 @@
           "source": "organic: google",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 402,
               "height": 874
@@ -13733,7 +13733,7 @@
           "source": "organic: google",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 402,
               "height": 874
@@ -13752,7 +13752,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13771,7 +13771,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Арена 5 VS 5 | PVP Tetris",
+            "title": "Арена 5 VS 5 | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13790,7 +13790,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13809,7 +13809,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13828,7 +13828,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13847,7 +13847,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13866,7 +13866,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13885,7 +13885,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 384,
               "height": 832
@@ -13904,7 +13904,7 @@
           "source": "direct",
           "device_type": "mobile",
           "metadata": {
-            "title": "Поддержка | PVP Tetris",
+            "title": "Поддержка | PVP Blocks",
             "screen": {
               "width": 402,
               "height": 874
@@ -13923,7 +13923,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 1024,
               "height": 1024
@@ -13942,7 +13942,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 800,
               "height": 600
@@ -13961,7 +13961,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -13980,7 +13980,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -13999,7 +13999,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -14018,7 +14018,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Главная | PVP Tetris",
+            "title": "Главная | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -14037,7 +14037,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Рейтинг | PVP Tetris",
+            "title": "Рейтинг | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -14056,7 +14056,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Профиль | PVP Tetris",
+            "title": "Профиль | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -14075,7 +14075,7 @@
           "source": "direct",
           "device_type": "desktop",
           "metadata": {
-            "title": "Настройки аккаунта | PVP Tetris",
+            "title": "Настройки аккаунта | PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -14094,7 +14094,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -14113,7 +14113,7 @@
           "source": "localhost",
           "device_type": "desktop",
           "metadata": {
-            "title": "PVP Tetris",
+            "title": "PVP Blocks",
             "screen": {
               "width": 2752,
               "height": 1152
@@ -15578,7 +15578,7 @@
           "updated_at": "2026-05-18T08:44:00.388Z",
           "preferred_channel": "telegram",
           "telegram_token": "zJ5ylnOmyO-tmtwhaAou6KWDbsPvSOZf",
-          "telegram_url": "https://t.me/PvpTetris_bot?start=zJ5ylnOmyO-tmtwhaAou6KWDbsPvSOZf",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=zJ5ylnOmyO-tmtwhaAou6KWDbsPvSOZf",
           "telegram_user_id": null,
           "telegram_chat_id": null,
           "telegram_username": null,
@@ -15665,7 +15665,7 @@
           "updated_at": "2026-05-18T09:26:55.061Z",
           "preferred_channel": "telegram",
           "telegram_token": "g2jytUpXr5vOvr-8eB-vEgwZ0B1eNfgf",
-          "telegram_url": "https://t.me/PvpTetris_bot?start=g2jytUpXr5vOvr-8eB-vEgwZ0B1eNfgf",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=g2jytUpXr5vOvr-8eB-vEgwZ0B1eNfgf",
           "telegram_user_id": null,
           "telegram_chat_id": null,
           "telegram_username": null,
@@ -15897,7 +15897,7 @@
           "updated_at": "2026-05-18T11:00:45.420Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=9eDvB8SUbqHYT7e_RZsaSCEq1n7M3BkL",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=9eDvB8SUbqHYT7e_RZsaSCEq1n7M3BkL",
           "telegram_user_id": "5615423008",
           "telegram_chat_id": "5615423008",
           "telegram_username": null,
@@ -15984,7 +15984,7 @@
           "updated_at": "2026-05-18T16:40:51.980Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=KxrP-qox0sKn9s2VmQXiOYbRZZrCSbhv",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=KxrP-qox0sKn9s2VmQXiOYbRZZrCSbhv",
           "telegram_user_id": "7474276333",
           "telegram_chat_id": "7474276333",
           "telegram_username": "H0vv5",
@@ -16013,7 +16013,7 @@
           "updated_at": "2026-05-18T11:58:03.075Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=ULjNnqZ9z-511Yt74Zjfjfm8x3VmcOqb",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=ULjNnqZ9z-511Yt74Zjfjfm8x3VmcOqb",
           "telegram_user_id": "5615423008",
           "telegram_chat_id": "5615423008",
           "telegram_username": null,
@@ -16071,7 +16071,7 @@
           "updated_at": "2026-05-18T17:05:33.592Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=zmoGDl09uTKCI2OvfgH5HJ-WopMIc1g3",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=zmoGDl09uTKCI2OvfgH5HJ-WopMIc1g3",
           "telegram_user_id": "5615423008",
           "telegram_chat_id": "5615423008",
           "telegram_username": null,
@@ -16100,7 +16100,7 @@
           "updated_at": "2026-05-18T17:31:03.203Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=h4WkmCCub0tX5GruNTEdpegiO1BaC4CU",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=h4WkmCCub0tX5GruNTEdpegiO1BaC4CU",
           "telegram_user_id": "5615423008",
           "telegram_chat_id": "5615423008",
           "telegram_username": null,
@@ -16129,7 +16129,7 @@
           "updated_at": "2026-05-18T17:17:09.836Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=rVKOXmfizA0RbMWT2iIwG_G0pBOueu05",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=rVKOXmfizA0RbMWT2iIwG_G0pBOueu05",
           "telegram_user_id": "5615423008",
           "telegram_chat_id": "5615423008",
           "telegram_username": null,
@@ -16158,7 +16158,7 @@
           "updated_at": "2026-05-19T04:40:45.792Z",
           "preferred_channel": "telegram",
           "telegram_token": "snCWoctVt85tvZr3lWLUMeSNpZUp__o-",
-          "telegram_url": "https://t.me/PvpTetris_bot?start=snCWoctVt85tvZr3lWLUMeSNpZUp__o-",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=snCWoctVt85tvZr3lWLUMeSNpZUp__o-",
           "telegram_user_id": null,
           "telegram_chat_id": null,
           "telegram_username": null,
@@ -16187,7 +16187,7 @@
           "updated_at": "2026-05-18T19:22:31.485Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=tnPV5B7jSksFbfSWD5qjv0_AMX57Re_q",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=tnPV5B7jSksFbfSWD5qjv0_AMX57Re_q",
           "telegram_user_id": "832261115",
           "telegram_chat_id": "832261115",
           "telegram_username": null,
@@ -16245,7 +16245,7 @@
           "updated_at": "2026-05-19T04:40:48.883Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=X3IqrRezolX--1lkhzUnUjtAMc_TzJKx",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=X3IqrRezolX--1lkhzUnUjtAMc_TzJKx",
           "telegram_user_id": "5615423008",
           "telegram_chat_id": "5615423008",
           "telegram_username": null,
@@ -16274,7 +16274,7 @@
           "updated_at": "2026-05-19T04:40:49.488Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=dSdgeo2CGlV4LQdqAO3nF7ytUylRdZu-",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=dSdgeo2CGlV4LQdqAO3nF7ytUylRdZu-",
           "telegram_user_id": "5615423008",
           "telegram_chat_id": "5615423008",
           "telegram_username": null,
@@ -16303,7 +16303,7 @@
           "updated_at": "2026-05-19T05:23:34.380Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=miq-DteJtig2gco7HiQGkM5aEHDshnBv",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=miq-DteJtig2gco7HiQGkM5aEHDshnBv",
           "telegram_user_id": "1399082164",
           "telegram_chat_id": "1399082164",
           "telegram_username": "werdyaaan",
@@ -16332,7 +16332,7 @@
           "updated_at": "2026-05-19T04:40:50.085Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=YU5P-KTM5oSIX4DvgopQjOZFqT1FF6eJ",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=YU5P-KTM5oSIX4DvgopQjOZFqT1FF6eJ",
           "telegram_user_id": "5615423008",
           "telegram_chat_id": "5615423008",
           "telegram_username": null,
@@ -16361,7 +16361,7 @@
           "updated_at": "2026-05-19T05:16:16.673Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=A4oiQOB7SlTDK7GYfkjHvsqAvlY35Bkb",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=A4oiQOB7SlTDK7GYfkjHvsqAvlY35Bkb",
           "telegram_user_id": "5615423008",
           "telegram_chat_id": "5615423008",
           "telegram_username": null,
@@ -16390,7 +16390,7 @@
           "updated_at": "2026-05-19T05:27:43.042Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=CJV2n1vQ1V4yRoiI9OBM7S8L4ZXfKBAK",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=CJV2n1vQ1V4yRoiI9OBM7S8L4ZXfKBAK",
           "telegram_user_id": "1399082164",
           "telegram_chat_id": "1399082164",
           "telegram_username": "werdyaaan",
@@ -16419,7 +16419,7 @@
           "updated_at": "2026-05-19T05:22:10.875Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=wu6wFn3OHE5V2UqJjxkkOsJXkpt8VOZ4",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=wu6wFn3OHE5V2UqJjxkkOsJXkpt8VOZ4",
           "telegram_user_id": "1399082164",
           "telegram_chat_id": "1399082164",
           "telegram_username": "werdyaaan",
@@ -16448,7 +16448,7 @@
           "updated_at": "2026-05-19T05:19:24.784Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=b_KiVO6Ywd_CGGiyWzjRrfH19I6zHdrg",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=b_KiVO6Ywd_CGGiyWzjRrfH19I6zHdrg",
           "telegram_user_id": "1399082164",
           "telegram_chat_id": "1399082164",
           "telegram_username": "werdyaaan",
@@ -16477,7 +16477,7 @@
           "updated_at": "2026-05-19T18:06:46.295Z",
           "preferred_channel": "telegram",
           "telegram_token": null,
-          "telegram_url": "https://t.me/PvpTetris_bot?start=IOV0HtIdt6eM9VW3T3fk__ymrnd6-EAz",
+          "telegram_url": "https://t.me/PvpBlocks_bot?start=IOV0HtIdt6eM9VW3T3fk__ymrnd6-EAz",
           "telegram_user_id": "7874687357",
           "telegram_chat_id": "7874687357",
           "telegram_username": "Alisa88_02",

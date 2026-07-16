@@ -1,10 +1,10 @@
 {
   "auth": {
     "seo": {
-      "loginTitle": "Вход - PVP Tetris",
-      "loginDescription": "Войдите в аккаунт PVP Tetris, чтобы играть матчи, отслеживать рейтинг и управлять профилем.",
-      "registerTitle": "Регистрация - PVP Tetris",
-      "registerDescription": "Создайте аккаунт PVP Tetris, чтобы участвовать в матчах, сохранять прогресс и подниматься в рейтинге."
+      "loginTitle": "Вход - PVP Blocks",
+      "loginDescription": "Войдите в аккаунт PVP Blocks, чтобы играть матчи, отслеживать рейтинг и управлять профилем.",
+      "registerTitle": "Регистрация - PVP Blocks",
+      "registerDescription": "Создайте аккаунт PVP Blocks, чтобы участвовать в матчах, сохранять прогресс и подниматься в рейтинге."
     },
     "oauth": {
       "loginWith": "Или войти через",
@@ -36,7 +36,7 @@
     },
     "register": {
       "title": "КИБЕР-РЕГИСТРАЦИЯ",
-      "subtitle": "Присоединяйся к элите PvP Tetris",
+      "subtitle": "Присоединяйся к элите PvP Blocks",
       "submit": "СОЗДАТЬ АККАУНТ",
       "submitting": "ЗАГРУЗКА...",
       "passwordMismatch": "Пароли не совпадают",

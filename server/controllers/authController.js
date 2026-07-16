@@ -57,7 +57,7 @@ export const register = asyncHandler(async (req, res) => {
     publishActivityEvent({
         type: 'registered',
         actor: user.username || 'Новый игрок',
-        detail: 'присоединился к PVP Tetris',
+        detail: 'присоединился к PVP Blocks',
         metadata: {
             userId: user.id,
         },

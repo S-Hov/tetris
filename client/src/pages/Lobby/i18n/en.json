@@ -54,10 +54,10 @@
     },
     "share": {
       "label": "Share room",
-      "title": "PvP Tetris room",
-      "messageTitle": "Join my PvP Tetris room",
+      "title": "PvP Blocks room",
+      "messageTitle": "Join my PvP Blocks room",
       "messageMode": "Mode: {{mode}}",
-      "emailSubject": "PvP Tetris room invite",
+      "emailSubject": "PvP Blocks room invite",
       "native": "Share",
       "telegram": "Telegram",
       "whatsapp": "WhatsApp",

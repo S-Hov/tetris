@@ -7,7 +7,7 @@ import { routes } from './routes.js'
 import { LoginPage } from '@/pages/Login/LoginPage.jsx'
 import { NotFoundPage } from '@/pages/NotFound/NotFoundPage.jsx'
 
-const APP_TITLE = 'PVP Tetris Admin'
+const APP_TITLE = 'PVP Blocks Admin'
 
 export function AppRouter() {
   return (

@@ -14,7 +14,7 @@ const RatingHero = ({ currentLanguage, playersCount, totalGames }) => {
         <section className="rating-hero">
             <GlowEffect>
                 <div className="rating-hero-main">
-                    <span className="rating-eyebrow">PvP Tetris</span>
+                    <span className="rating-eyebrow">PvP Blocks</span>
 
                     <div className="rating-hero-header">
                         <h1 className="glow-text">{t('rating.hero.title')}</h1>

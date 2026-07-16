@@ -1,10 +1,10 @@
 {
   "auth": {
     "seo": {
-      "loginTitle": "Login - PVP Tetris",
-      "loginDescription": "Sign in to your PVP Tetris account to play matches, track rating and manage your profile.",
-      "registerTitle": "Registration - PVP Tetris",
-      "registerDescription": "Create a PVP Tetris account to join matches, save progress and climb the rating."
+      "loginTitle": "Login - PVP Blocks",
+      "loginDescription": "Sign in to your PVP Blocks account to play matches, track rating and manage your profile.",
+      "registerTitle": "Registration - PVP Blocks",
+      "registerDescription": "Create a PVP Blocks account to join matches, save progress and climb the rating."
     },
     "oauth": {
       "loginWith": "Or sign in with",
@@ -36,7 +36,7 @@
     },
     "register": {
       "title": "CYBER REGISTRATION",
-      "subtitle": "Join the PvP Tetris elite",
+      "subtitle": "Join the PvP BLocks elite",
       "submit": "CREATE ACCOUNT",
       "submitting": "LOADING...",
       "passwordMismatch": "Passwords do not match",

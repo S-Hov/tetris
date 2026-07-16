@@ -54,10 +54,10 @@
     },
     "share": {
       "label": "Поделиться комнатой",
-      "title": "Комната PvP Tetris",
-      "messageTitle": "Залетай в мою комнату PvP Tetris",
+      "title": "Комната PvP Blocks",
+      "messageTitle": "Залетай в мою комнату PvP Blocks",
       "messageMode": "Режим: {{mode}}",
-      "emailSubject": "Приглашение в комнату PvP Tetris",
+      "emailSubject": "Приглашение в комнату PvP Blocks",
       "native": "Поделиться",
       "telegram": "Telegram",
       "whatsapp": "WhatsApp",

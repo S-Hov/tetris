@@ -2,9 +2,9 @@
   "about": {
     "hero": {
       "kicker": "About the project",
-      "title": "PvP Tetris is more than just tetris.",
+      "title": "PvP Blocks is more than just a block game.",
       "lead": "It is a reaction-speed PvP arena.",
-      "description": "We combined classic Tetris gameplay with fast PvP battles, unique mechanics and effects, so every match feels unpredictable and exciting.",
+      "description": "We combined classic falling-block gameplay with fast PvP battles, unique mechanics and effects, so every match feels unpredictable and exciting.",
       "play": "Play now",
       "support": "Support"
     },
@@ -65,7 +65,7 @@
     },
     "dev": {
       "kicker": "Who builds the game",
-      "title": "One developer. One idea. Make tetris feel adrenaline-fueled again.",
+      "title": "One developer. One idea. Make block games feel adrenaline-fueled again.",
       "description": "The project is built by a student and indie developer. I am creating this arena alone, with love for the game and the community. Thank you for being with us!",
       "button": "Learn more"
     },

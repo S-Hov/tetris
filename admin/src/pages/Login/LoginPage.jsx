@@ -41,7 +41,7 @@ export function LoginPage() {
         <div className="login-card__brand">
           <span>T</span>
           <div>
-            <strong>PVP Tetris</strong>
+            <strong>PVP Blocks</strong>
             <small>Admin Console</small>
           </div>
         </div>

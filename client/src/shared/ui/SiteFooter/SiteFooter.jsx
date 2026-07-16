@@ -25,7 +25,7 @@ const SiteFooter = () => {
         <footer className="site-footer">
             <div className="container site-footer__container">
                 <div className="site-footer__brand">
-                    <strong>PVP Tetris</strong>
+                    <strong>PVP Blocks</strong>
                     <span>{t('siteFooter.tagline')}</span>
                 
                 </div>

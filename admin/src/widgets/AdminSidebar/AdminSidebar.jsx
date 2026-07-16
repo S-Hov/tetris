@@ -6,9 +6,9 @@ import './AdminSidebar.css'
 export function AdminSidebar() {
   return (
     <aside className="admin-sidebar" aria-label="Админ-навигация">
-      <NavLink className="admin-sidebar__brand" to="/dashboard" title="PVP Tetris Admin">
-        <img className='admin-sidebar__mark' src="https://www.pvp-tetris.online/assets/logo-CsS2scSw.png" alt="Logo" />
-        <span className="admin-sidebar__brand-text">PVP Tetris</span>
+      <NavLink className="admin-sidebar__brand" to="/dashboard" title="PVP Blocks Admin">
+        <img className='admin-sidebar__mark' src="https://www.pvp-blocks.online/assets/logo-CsS2scSw.png" alt="Logo" />
+        <span className="admin-sidebar__brand-text">PVP Blocks</span>
       </NavLink>
 
       <nav className="admin-sidebar__nav">

@@ -17,15 +17,15 @@ export const faqItems = [
 export const contactItems = [
     {
         titleKey: 'support.contacts.telegram',
-        text: '@pvptetris_support_bot',
+        text: '@pvpblocks_support_bot',
         icon: 'fa-brands fa-telegram',
-        href: 'https://t.me/pvptetris_support_bot',
+        href: 'https://t.me/pvpblocks_support_bot',
     },
     {
         titleKey: 'support.contacts.email',
-        text: 'support.pvptetris@gmail.com',
+        text: 'support.pvpblocks@gmail.com',
         icon: 'fa-solid fa-envelope',
-        href: 'mailto:support.pvptetris@gmail.com',
+        href: 'mailto:support.pvpblocks@gmail.com',
     },
 ]
 

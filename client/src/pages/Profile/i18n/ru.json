@@ -1,10 +1,10 @@
 {
   "profile": {
     "seo": {
-      "title": "Личный кабинет - PVP Tetris",
-      "description": "Откройте личный кабинет PVP Tetris: ранг, MMR, история матчей, быстрые настройки и статус аккаунта.",
-      "ogTitle": "Личный кабинет PVP Tetris",
-      "ogDescription": "Следите за сезонным прогрессом, победами, винрейтом, рангом и последними матчами в профиле PVP Tetris."
+      "title": "Личный кабинет - PVP Blocks",
+      "description": "Откройте личный кабинет PVP Blocks: ранг, MMR, история матчей, быстрые настройки и статус аккаунта.",
+      "ogTitle": "Личный кабинет PVP Blocks",
+      "ogDescription": "Следите за сезонным прогрессом, победами, винрейтом, рангом и последними матчами в профиле PVP Blocks."
     },
     "common": {
       "playerFallback": "Игрок",
@@ -80,8 +80,8 @@
       "logout": "Выйти"
     },
     "public": {
-      "seoTitle": "{{username}} — профиль игрока PVP Tetris",
-      "seoDescription": "Ранг, статистика и последние матчи игрока {{username}} в PVP Tetris.",
+      "seoTitle": "{{username}} — профиль игрока PVP Blocks",
+      "seoDescription": "Ранг, статистика и последние матчи игрока {{username}} в PVP Blocks.",
       "createdAt": "Дата регистрации",
       "loading": "Загружаем профиль",
       "loadingText": "Собираем статистику и последние матчи игрока.",

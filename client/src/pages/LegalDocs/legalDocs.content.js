@@ -3,7 +3,7 @@ export const LEGAL_DOCUMENTS = {
         updatedAt: '2026-07-01',
         ru: {
             title: 'Политика использования cookie',
-            lead: 'Настоящая Политика объясняет, какие cookie и похожие технологии использует PVP Tetris, зачем они нужны и как пользователь может управлять ими.',
+            lead: 'Настоящая Политика объясняет, какие cookie и похожие технологии использует PVP Blocks, зачем они нужны и как пользователь может управлять ими.',
             sections: [
                 {
                     title: '1. Что такое cookie',
@@ -64,7 +64,7 @@ export const LEGAL_DOCUMENTS = {
         },
         en: {
             title: 'Cookie Policy',
-            lead: 'This Policy explains which cookies and similar technologies PVP Tetris uses, why they are needed, and how users can manage them.',
+            lead: 'This Policy explains which cookies and similar technologies PVP Blocks uses, why they are needed, and how users can manage them.',
             sections: [
                 {
                     title: '1. What cookies are',
@@ -128,12 +128,12 @@ export const LEGAL_DOCUMENTS = {
         updatedAt: '2026-07-01',
         ru: {
             title: 'Пользовательское соглашение',
-            lead: 'Настоящее Соглашение регулирует использование сайта и игрового сервиса PVP Tetris, включая регистрацию, участие в матчах, общение с поддержкой и использование игровых возможностей.',
+            lead: 'Настоящее Соглашение регулирует использование сайта и игрового сервиса PVP Blocks, включая регистрацию, участие в матчах, общение с поддержкой и использование игровых возможностей.',
             sections: [
                 {
                     title: '1. Общие положения',
                     paragraphs: [
-                        'Используя PVP Tetris, пользователь подтверждает, что ознакомился с настоящим Соглашением, Политикой конфиденциальности и Политикой использования cookie и принимает их условия.',
+                        'Используя PVP Blocks, пользователь подтверждает, что ознакомился с настоящим Соглашением, Политикой конфиденциальности и Политикой использования cookie и принимает их условия.',
                         'Если пользователь не согласен с условиями, он должен прекратить использование сайта и игровых функций.',
                     ],
                 },
@@ -147,7 +147,7 @@ export const LEGAL_DOCUMENTS = {
                 {
                     title: '3. Игровой сервис',
                     paragraphs: [
-                        'PVP Tetris предоставляет доступ к игровым режимам, матчмейкингу, рейтингу, истории матчей, настройкам управления, эффектам и другим игровым функциям.',
+                        'PVP Blocks предоставляет доступ к игровым режимам, матчмейкингу, рейтингу, истории матчей, настройкам управления, эффектам и другим игровым функциям.',
                         'Администрация вправе изменять игровые правила, баланс эффектов, доступные режимы, интерфейс и технические характеристики сервиса, если такие изменения не нарушают обязательные права пользователя.',
                     ],
                 },
@@ -189,12 +189,12 @@ export const LEGAL_DOCUMENTS = {
         },
         en: {
             title: 'Terms of Use',
-            lead: 'These Terms govern the use of the PVP Tetris website and game service, including registration, participation in matches, support requests, and game features.',
+            lead: 'These Terms govern the use of the PVP Blocks website and game service, including registration, participation in matches, support requests, and game features.',
             sections: [
                 {
                     title: '1. General provisions',
                     paragraphs: [
-                        'By using PVP Tetris, the user confirms that they have read and accepted these Terms, the Privacy Policy, and the Cookie Policy.',
+                        'By using PVP Blocks, the user confirms that they have read and accepted these Terms, the Privacy Policy, and the Cookie Policy.',
                         'If the user does not agree with the terms, they must stop using the website and game functions.',
                     ],
                 },
@@ -208,7 +208,7 @@ export const LEGAL_DOCUMENTS = {
                 {
                     title: '3. Game service',
                     paragraphs: [
-                        'PVP Tetris provides access to game modes, matchmaking, rating, match history, control settings, effects, and other game functions.',
+                        'PVP Blocks provides access to game modes, matchmaking, rating, match history, control settings, effects, and other game functions.',
                         'The administration may change game rules, effect balance, available modes, interface, and technical characteristics of the service, provided that such changes do not violate mandatory user rights.',
                     ],
                 },
@@ -253,12 +253,12 @@ export const LEGAL_DOCUMENTS = {
         updatedAt: '2026-07-01',
         ru: {
             title: 'Политика конфиденциальности',
-            lead: 'Настоящая Политика описывает, какие персональные данные обрабатываются в PVP Tetris, для каких целей, на каких основаниях и какие права есть у пользователя.',
+            lead: 'Настоящая Политика описывает, какие персональные данные обрабатываются в PVP Blocks, для каких целей, на каких основаниях и какие права есть у пользователя.',
             sections: [
                 {
                     title: '1. Кто обрабатывает данные',
                     paragraphs: [
-                        'Оператором персональных данных является администрация сервиса PVP Tetris, которая определяет цели и способы обработки данных, необходимых для работы сайта и игрового сервиса.',
+                        'Оператором персональных данных является администрация сервиса PVP Blocks, которая определяет цели и способы обработки данных, необходимых для работы сайта и игрового сервиса.',
                         'Запросы по вопросам персональных данных можно направлять через раздел поддержки сайта.',
                     ],
                 },
@@ -322,12 +322,12 @@ export const LEGAL_DOCUMENTS = {
         },
         en: {
             title: 'Privacy Policy',
-            lead: 'This Policy describes which personal data is processed in PVP Tetris, for what purposes, on what legal bases, and what rights users have.',
+            lead: 'This Policy describes which personal data is processed in PVP Blocks, for what purposes, on what legal bases, and what rights users have.',
             sections: [
                 {
                     title: '1. Who processes data',
                     paragraphs: [
-                        'The personal data controller is the administration of the PVP Tetris service, which determines the purposes and means of processing data necessary for the website and game service.',
+                        'The personal data controller is the administration of the PVP Blocks service, which determines the purposes and means of processing data necessary for the website and game service.',
                         'Requests concerning personal data may be submitted through the support section of the website.',
                     ],
                 },

@@ -1,7 +1,7 @@
 {
   "inventory": {
-    "seoTitle": "Inventory — PVP Tetris",
-    "seoDescription": "Skins and cosmetic items in your PVP Tetris account.",
+    "seoTitle": "Inventory — PVP Blocks",
+    "seoDescription": "Skins and cosmetic items in your PVP Blocks account.",
     "eyebrow": "Player cosmetics",
     "title": "Inventory",
     "description": "Your account's available skins are collected here. The Classic skin is granted to every player and equipped by default.",
@@ -19,7 +19,7 @@
       "standard": "Standard pieces · {{count}}",
       "standardDescription": "The core piece set available across all game modes.",
       "special": "Special pieces · {{count}}",
-      "specialDescription": "Non-standard pieces designed for PVP Tetris modes.",
+      "specialDescription": "Non-standard pieces designed for PVP Blocks modes.",
       "receivedFor": "Received for",
       "select": "Select pack",
       "selecting": "Selecting…",

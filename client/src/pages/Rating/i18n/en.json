@@ -1,8 +1,8 @@
 {
   "rating": {
     "seo": {
-      "title": "Rating - PVP Tetris",
-      "description": "View the PVP Tetris player rating: rank points, wins, win rate, MMR and solo records."
+      "title": "Rating - PVP Blocks",
+      "description": "View the PVP Blocks player rating: rank points, wins, win rate, MMR and solo records."
     },
     "sort": {
       "rating": "Rank points",

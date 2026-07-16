@@ -2,7 +2,7 @@
   "effectsPage": {
     "hero": {
       "eyebrow": "PvP effects",
-      "title": "Tetris where every cleared line can become an attack",
+      "title": "Block battles where every cleared line can become an attack",
       "description": "In effect modes, players build up energy and choose debuffs for the opponent: speed boosts, board blackout, scrambled controls, and other tactical disruptions.",
       "playButton": "Play with effects"
     },

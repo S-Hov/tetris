@@ -24,7 +24,7 @@ const LegalDocsPage = () => {
 
     useEffect(() => {
         if (content?.title) {
-            document.title = `${content.title} | PVP Tetris`
+            document.title = `${content.title} | PVP Blocks`
         }
     }, [content?.title])
 

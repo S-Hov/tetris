@@ -22,7 +22,7 @@ const smtpRequireTls = process.env.EMAIL_REQUIRE_TLS
     : !smtpSecure
 const emailProvider = (process.env.EMAIL_PROVIDER || '').toLowerCase()
     || (process.env.RESEND_API_KEY ? 'resend' : process.env.BREVO_API_KEY ? 'brevo' : 'smtp')
-const emailFromName = process.env.EMAIL_FROM_NAME || 'PVP Tetris'
+const emailFromName = process.env.EMAIL_FROM_NAME || 'PVP Blocks'
 const emailFromAddress = extractEmailAddress(process.env.EMAIL_FROM || process.env.EMAIL_USER)
 const emailFrom = process.env.EMAIL_FROM?.includes('<')
     ? process.env.EMAIL_FROM
@@ -127,7 +127,7 @@ export const sendVerificationEmail = async (to, code) => {
 export const sendRegistrationVerificationEmail = async (to, code) => {
     await sendEmail({
         to,
-        subject: 'Регистрация в PVP Tetris',
+        subject: 'Регистрация в PVP Blocks',
         html: createRegistrationVerificationEmailTemplate(code),
     })
 }
@@ -135,7 +135,7 @@ export const sendRegistrationVerificationEmail = async (to, code) => {
 export const sendTemporaryPasswordEmail = async (to, password) => {
     await sendEmail({
         to,
-        subject: 'Новый пароль PVP Tetris',
+        subject: 'Новый пароль PVP Blocks',
         html: createTemporaryPasswordEmailTemplate(password),
     })
 }

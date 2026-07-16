@@ -28,7 +28,7 @@ export const applyIncomingEffect = (state, incomingEffect, options = {}) => {
     const implementation = getEffectImplementation(effectKey)
 
     if (!effectKey || !implementation) {
-        console.warn(`Unsupported Tetris effect ignored: ${effectKey || 'unknown'}`)
+        console.warn(`Unsupported game effect ignored: ${effectKey || 'unknown'}`)
         return state
     }
 

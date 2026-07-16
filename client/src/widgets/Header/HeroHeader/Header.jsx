@@ -82,7 +82,7 @@ export default function Header() {
                 <div className="glow-line" />
             </header>
             <nav className="mobile-bottom-nav" aria-label={t('header.mobileNavigation')}>
-                <Link to={homePath} className="mobile-bottom-nav__brand" aria-label="PVP Tetris">
+                <Link to={homePath} className="mobile-bottom-nav__brand" aria-label="PVP Blocks">
                     <img src={mobileLogo} alt="" />
                 </Link>
                 <div className="mobile-bottom-nav__pages">

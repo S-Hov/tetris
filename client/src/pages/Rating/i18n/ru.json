@@ -1,8 +1,8 @@
 {
   "rating": {
     "seo": {
-      "title": "Рейтинг - PVP Tetris",
-      "description": "Смотрите рейтинг игроков PVP Tetris: очки ранга, победы, win rate, MMR и solo рекорды."
+      "title": "Рейтинг - PVP Blocks",
+      "description": "Смотрите рейтинг игроков PVP Blocks: очки ранга, победы, win rate, MMR и solo рекорды."
     },
     "sort": {
       "rating": "Очки ранга",

@@ -1,4 +1,4 @@
-# Архитектура PVP Tetris
+# Архитектура PVP Blocks
 
 Документ описывает текущее устройство проекта по коду. Это рабочая карта для
 разработчика: где искать слой, какие приложения есть, как связаны REST, Socket.IO,
@@ -12,14 +12,14 @@
 | --- | --- | --- |
 | Public React app | `client/src` | Сайт, страницы, профиль, поддержка, рейтинг, лобби, матч |
 | Admin React app | `admin/src` | Админ-панель, dashboard, таблицы ресурсов, редакторы, контроль БД |
-| Tetris feature | `client/src/features/tetris` | Игровая модель, цикл, управление, эффекты, UI матча |
+| Game feature | `client/src/features/tetris` | Игровая модель, цикл, управление, эффекты, UI матча |
 | Shared frontend | `client/src/shared`, `admin/src/shared` | Auth context, API-клиенты, socket client, общие компоненты |
 | Express API | `server/routes`, `server/controllers`, `server/services` | REST-запросы: auth, profile, matches, leaderboard, support, admin |
 | Socket.IO API | `server/sockets` | Комнаты, matchmaking, party, live-синхронизация, support realtime |
 | PostgreSQL | `server/migrations`, `server/repositories`, `server/db` | Пользователи, матчи, рейтинг, support/donations, справочники, аналитика |
 
 Главная идея: сервер отвечает за идентичность игрока, комнаты, matchmaking,
-результаты, рейтинг и данные админки. Клиент считает Tetris-состояние локально,
+результаты, рейтинг и данные админки. Клиент считает игровое состояние локально,
 а сервер через сокеты синхронизирует снапшоты между игроками и сохраняет итог.
 
 ## 2. Запуск и окружение
@@ -166,7 +166,7 @@ donations, audit и migrations.
 | Solo mock-дебаффы | `useSoloDebuffTimer` |
 | UI поля и панелей | `features/tetris/ui/*` |
 
-### Tetris engine
+### Game engine
 
 `client/src/features/tetris/model/tetrisEngine.js` - центр игровой логики. Он
 не занимается DOM и сокетами, а принимает state и возвращает следующий state.
@@ -407,7 +407,7 @@ handshake.
 
 1. Пользователь выбирает solo.
 2. `GamePage` запускает `MatchPage` в solo-режиме.
-3. Socket sync выключен, Tetris считается локально.
+3. Socket sync выключен, состояние игры считается локально.
 4. Если пользователь авторизован, результат отправляется в
    `/api/matches/solo/results`.
 
@@ -467,7 +467,7 @@ handshake.
 | Место | Почему важно |
 | --- | --- |
 | `roomStore`, `queue`, `parties` в памяти | Перезапуск сервера сбрасывает активные матчи и поиск |
-| Клиент сам считает игру | Сервер не валидирует честность Tetris state |
+| Клиент сам считает игру | Сервер не валидирует честность игрового state |
 | Socket auth для guest и registered смешан | Нужно внимательно различать ranked и private сценарии |
 | Public UI показывает будущие режимы | UI может обещать больше, чем backend реально поддерживает |
 | Uploads локальные | Нужна дисциплина синхронизации/хранилища для production |
@@ -482,7 +482,7 @@ handshake.
 2. REST backend: `server.js`, routes, controllers, services, repositories.
 3. Socket session: `shared/api/socket`, `socketAuth.js`, `sockets/index.js`.
 4. Lobby и matchmaking: `lobby.socket.js`, `matchmaking.socket.js`, `roomStore.js`.
-5. Tetris engine: `tetrisEngine.js` и соседние model-файлы.
+5. Game engine: `tetrisEngine.js` и соседние model-файлы.
 6. Match orchestration: `MatchPage`, `useTetrisGameLoop`, `useMatchSocketSync`.
 7. Admin resources: `adminResources.js`, `AdminResourcePage`, `adminRepository`.
 8. Persistence/rating/support: `matchRepository`, `rankRepository`,

@@ -1,4 +1,4 @@
-const EMAIL_APP_NAME = process.env.APP_NAME || 'PVP Tetris'
+const EMAIL_APP_NAME = process.env.APP_NAME || 'PVP Blocks'
 
 export const createEmailLayout = ({
     title,
@@ -43,7 +43,7 @@ export const createEmailLayout = ({
 
 export const createVerificationEmailTemplate = (code) => createEmailLayout({
     title: 'Подтверждение почты',
-    eyebrow: 'PVP Tetris',
+    eyebrow: 'PVP Blocks',
     intro: 'Для завершения действия используйте код подтверждения ниже.',
     preheader: `Код подтверждения: ${code}`,
     footerNote: 'Если вы не запрашивали этот код, просто проигнорируйте письмо.',
@@ -57,10 +57,10 @@ export const createVerificationEmailTemplate = (code) => createEmailLayout({
 
 export const createRegistrationVerificationEmailTemplate = (code) => createEmailLayout({
     title: 'Регистрация почти завершена',
-    eyebrow: 'PVP Tetris',
-    intro: 'Спасибо за регистрацию в PVP Tetris. Аккаунт успешно создан, осталось подтвердить почту кодом ниже.',
+    eyebrow: 'PVP Blocks',
+    intro: 'Спасибо за регистрацию в PVP Blocks. Аккаунт успешно создан, осталось подтвердить почту кодом ниже.',
     preheader: `Код подтверждения регистрации: ${code}`,
-    footerNote: 'Если вы не регистрировались в PVP Tetris, просто проигнорируйте это письмо.',
+    footerNote: 'Если вы не регистрировались в PVP Blocks, просто проигнорируйте это письмо.',
     bodyHtml: `
         <div style="margin:0 0 24px;padding:20px 24px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;text-align:center;">
             <span style="font-family:Menlo,Monaco,Consolas,monospace;font-size:40px;font-weight:700;letter-spacing:8px;color:#1a3a4a;">${escapeHtml(code)}</span>
@@ -82,7 +82,7 @@ export const createSupportRequestReceivedEmailTemplate = ({
 
     return createEmailLayout({
         title: `Обращение #${ticketId} получено`,
-        eyebrow: 'Поддержка PVP Tetris',
+        eyebrow: 'Поддержка PVP Blocks',
         intro: `${contactName || 'Здравствуйте'}! Спасибо, что написали нам. ${channelText}`,
         preheader: `Мы получили обращение #${ticketId}`,
         footerNote: isTelegram
@@ -100,9 +100,9 @@ export const createSupportRequestReceivedEmailTemplate = ({
 
 export const createTemporaryPasswordEmailTemplate = (password) => createEmailLayout({
     title: 'Новый временный пароль',
-    eyebrow: 'PVP Tetris',
+    eyebrow: 'PVP Blocks',
     intro: 'Мы создали новый временный пароль для вашего аккаунта. После входа обязательно смените его в профиле.',
-    preheader: 'Новый временный пароль для входа в PVP Tetris',
+    preheader: 'Новый временный пароль для входа в PVP Blocks',
     footerNote: 'Если вы не запрашивали восстановление доступа, войдите в аккаунт и смените пароль.',
     bodyHtml: `
         <div style="margin:0 0 24px;padding:20px 24px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;text-align:center;">
@@ -117,7 +117,7 @@ export const createSupportReplyEmailTemplate = ({
     replyText,
 }) => createEmailLayout({
     title: `Ответ по обращению #${ticketId}`,
-    eyebrow: 'Поддержка PVP Tetris',
+    eyebrow: 'Поддержка PVP Blocks',
     intro: `${contactName || 'Здравствуйте'}! Мы получили ваше обращение и отправляем ответ поддержки ниже.`,
     preheader: `Ответ поддержки по обращению #${ticketId}`,
     footerNote: 'Вы можете ответить прямо на это письмо, и сообщение попадёт в поддержку.',
