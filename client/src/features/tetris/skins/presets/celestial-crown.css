@@ -1,0 +1,29 @@
+:is(.tetris-skin--celestial-crown, .inventory-skin--celestial-crown) .filled {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid rgba(255, 247, 194, 0.92);
+    background: linear-gradient(145deg, #fff1a8, #8c347b);
+    box-shadow: inset 1px 1px 4px rgba(255, 252, 225, 0.45), inset -2px -2px 5px rgba(0, 0, 0, 0.3), 0 0 19px rgba(255, 216, 107, 0.62);
+}
+
+:is(.tetris-skin--celestial-crown, .inventory-skin--celestial-crown) .skin-cell-layer--primary {
+    inset: -35%;
+    background: conic-gradient(#ffdc73, #ff72c7, #8af5ff, #c693ff, #ffdc73);
+    mix-blend-mode: screen;
+    opacity: 0.72;
+    animation: skin-crown-orbit 4.5s linear infinite;
+}
+
+:is(.tetris-skin--celestial-crown, .inventory-skin--celestial-crown) .skin-cell-layer--secondary {
+    inset: 18%;
+    border: 1px solid rgba(255, 255, 235, 0.9);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), transparent 42%), radial-gradient(circle at 50% 55%, rgba(255, 246, 168, 0.9), transparent 58%);
+    box-shadow: 0 0 7px #fff5a5, inset 0 0 5px rgba(255, 255, 255, 0.9);
+    transform: rotate(45deg);
+    animation: skin-crown-pulse 1.7s ease-in-out infinite alternate;
+}
+
+@keyframes skin-crown-orbit { to { transform: rotate(360deg); } }
+@keyframes skin-crown-pulse { to { transform: rotate(45deg) scale(0.78); filter: brightness(1.35); } }
+@media (prefers-reduced-motion: reduce) { :is(.tetris-skin--celestial-crown, .inventory-skin--celestial-crown) .skin-cell-layer { animation: none; } }

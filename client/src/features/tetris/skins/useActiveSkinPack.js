@@ -2,26 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { cosmeticsAPI } from '@/shared/api/cosmetics/index.js'
 import { useAuth } from '@/shared/hooks/useAuth.js'
-
-const AVAILABLE_SKIN_PRESETS = new Set([
-    'default',
-    'depth-core',
-    'friend-glow',
-    'friend-glow-color',
-    'stone-garden',
-    'night-bloom',
-    'citrus-arcade',
-    'confetti-circuit',
-    'reed-garden',
-    'nebula-forge',
-    'dragon-vault',
-    'celestial-crown',
-])
-
-const normalizeSkinPreset = (value) => {
-    const preset = String(value || 'default').replaceAll('_', '-').toLowerCase()
-    return AVAILABLE_SKIN_PRESETS.has(preset) ? preset : 'default'
-}
+import { loadSkinPreset } from './skinPresetLoader.js'
 
 export const useActiveSkinPack = () => {
     const { isAuth, isLoading, user } = useAuth()
@@ -35,13 +16,17 @@ export const useActiveSkinPack = () => {
         const controller = new AbortController()
 
         cosmeticsAPI.getLoadout({ signal: controller.signal })
-            .then(({ loadout }) => {
+            .then(async ({ loadout }) => {
                 const preset = loadout?.manifest?.data?.preset
                     || loadout?.item?.metadata?.cssPreset
                     || loadout?.item?.key
 
+                const loadedPreset = await loadSkinPreset(preset)
+
+                if (controller.signal.aborted) return
+
                 setLoadedSkin({
-                    preset: normalizeSkinPreset(preset),
+                    preset: loadedPreset,
                     userId: user?.id,
                 })
             })
@@ -58,7 +43,3 @@ export const useActiveSkinPack = () => {
 
     return loadedSkin.preset
 }
-
-export const getTetrisSkinClassName = (skinPreset) => (
-    `tetris-skin--${normalizeSkinPreset(skinPreset)}`
-)

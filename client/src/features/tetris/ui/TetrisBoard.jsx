@@ -1,9 +1,8 @@
 import { createBoard } from '../model/createBoard.js'
-import { getTetrisSkinClassName } from '../skins/useActiveSkinPack.js'
+import { getTetrisSkinClassName } from '../skins/skinPresetLoader.js'
 import SkinCellLayers from '../skins/SkinCellLayers.jsx'
 
 import './TetrisBoard.css'
-import '../skins/skinPresets.css'
 
 const shouldHideCell = (rowIndex, cellIndex, settings) => (
     ((rowIndex * 17 + cellIndex * 31) % settings.hiddenModulo) < settings.hiddenThreshold

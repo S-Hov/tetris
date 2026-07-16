@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next'
 import { PIECES } from '@/features/tetris/model/pieces.js'
 import { SPECIAL_PIECES } from '@/features/tetris/model/specialPieces.js'
 import SkinCellLayers from '@/features/tetris/skins/SkinCellLayers.jsx'
+import { loadSkinPresets, normalizeSkinPreset } from '@/features/tetris/skins/skinPresetLoader.js'
 import { cosmeticsAPI } from '@/shared/api/cosmetics'
 import { useAuth } from '@/shared/hooks/useAuth.js'
 import ProfileSideNav from '@/widgets/ProfileSideNav'
 import notify from '@/utils/Notifications'
 
 import '@/features/tetris/ui/TetrisBoard.css'
-import '@/features/tetris/skins/skinPresets.css'
 import './InventoryPage.css'
 
 const STANDARD_PIECES = Object.values(PIECES)
@@ -42,8 +42,17 @@ const InventoryPage = () => {
                         : Promise.resolve({ items: [] }),
                 ])
 
-                setItems(Array.isArray(inventoryResponse.items) ? inventoryResponse.items : [])
-                setCatalogItems(Array.isArray(catalogResponse.items) ? catalogResponse.items : [])
+                const inventoryItems = Array.isArray(inventoryResponse.items) ? inventoryResponse.items : []
+                const adminCatalogItems = Array.isArray(catalogResponse.items) ? catalogResponse.items : []
+
+                await loadSkinPresets(
+                    [...inventoryItems, ...adminCatalogItems].map(getInventorySkinPreset)
+                )
+
+                if (controller.signal.aborted) return
+
+                setItems(inventoryItems)
+                setCatalogItems(adminCatalogItems)
                 setStatus('ready')
             } catch (error) {
                 if (error?.name !== 'AbortError') {
@@ -420,7 +429,7 @@ const getLocalizedItem = (item, isRussian) => ({
     description: isRussian ? item.descriptionRu || item.description : item.description,
 })
 
-const getSkinClassName = (skinKey) => `inventory-skin--${String(skinKey || 'default').replaceAll('_', '-')}`
+const getSkinClassName = (skinKey) => `inventory-skin--${normalizeSkinPreset(skinKey)}`
 
 const getInventorySkinPreset = (inventoryItem) => (
     inventoryItem?.manifest?.data?.preset

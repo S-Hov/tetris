@@ -1,0 +1,24 @@
+:is(.tetris-skin--reed-garden, .inventory-skin--reed-garden) .filled {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid rgba(199, 242, 164, 0.58);
+    background: linear-gradient(145deg, #164b4b, #071f2b);
+    box-shadow: inset 1px 1px 4px rgba(199, 242, 164, 0.38), inset -2px -2px 5px rgba(0, 0, 0, 0.3), 0 0 11px rgba(101, 214, 167, 0.55);
+}
+
+:is(.tetris-skin--reed-garden, .inventory-skin--reed-garden) .skin-cell-layer--primary {
+    background:
+        linear-gradient(82deg, transparent 21%, #80c878 23% 27%, transparent 29%),
+        linear-gradient(96deg, transparent 48%, #b7d66d 50% 54%, transparent 56%),
+        linear-gradient(76deg, transparent 70%, #5fad75 72% 76%, transparent 78%);
+    transform-origin: bottom;
+    animation: skin-reeds-sway 2.8s ease-in-out infinite alternate;
+}
+
+:is(.tetris-skin--reed-garden, .inventory-skin--reed-garden) .skin-cell-layer--secondary {
+    background: radial-gradient(ellipse at 28% 45%, #d7a95c 0 9%, transparent 11%), radial-gradient(ellipse at 55% 30%, #e0bd6b 0 8%, transparent 10%), linear-gradient(to top, rgba(120, 229, 178, 0.28), transparent 62%);
+}
+
+@keyframes skin-reeds-sway { to { transform: skewX(7deg); } }
+@media (prefers-reduced-motion: reduce) { :is(.tetris-skin--reed-garden, .inventory-skin--reed-garden) .skin-cell-layer { animation: none; } }

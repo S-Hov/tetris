@@ -1,6 +1,5 @@
-import { getTetrisSkinClassName } from '../skins/useActiveSkinPack.js'
+import { getTetrisSkinClassName } from '../skins/skinPresetLoader.js'
 import SkinCellLayers from '../skins/SkinCellLayers.jsx'
-import '../skins/skinPresets.css'
 
 const NextPiecePanel = ({ hidden = false, nextPiece, skinPreset = 'default' }) => {
     return (

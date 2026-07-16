@@ -438,6 +438,18 @@ client/src/features/tetris/skins/
 
 Для гостя или игрока без скина возвращает дефолтный manifest.
 
+### Динамическая загрузка CSS-presets
+
+Каждый CSS-preset хранится в отдельном файле `skins/presets/<preset>.css` и подключается
+через статическую whitelist-карту `skinPresetLoader.js`. Сервер возвращает только идентификатор
+preset, а клиент никогда не импортирует произвольный URL или путь из manifest.
+
+- в матче загружается только активный preset;
+- в обычном инвентаре загружаются presets предметов, возвращённых сервером;
+- в админском инвентаре загружаются presets защищённого серверного каталога;
+- повторные imports кешируются на время сессии;
+- неизвестный preset безопасно заменяется на `default`.
+
 ### `SkinnedTetrisCell`
 
 Единый компонент клетки. Он получает:
@@ -480,6 +492,8 @@ client/src/features/tetris/skins/
 | `GET` | `/api/me/inventory/cosmetics` | required | Инвентарь косметики пользователя |
 | `GET` | `/api/me/cosmetics/loadout` | required | Активный loadout и manifest |
 | `PUT` | `/api/me/cosmetics/loadout` | required | Экипировать предмет |
+| `GET` | `/api/me/cosmetics/catalog` | admin | Защищённый полный каталог для тестирования |
+| `PUT` | `/api/me/cosmetics/admin-preview` | admin | Временно применить catalog item без выдачи |
 
 Для магазина позже:
 

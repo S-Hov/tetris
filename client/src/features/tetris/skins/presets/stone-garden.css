@@ -1,0 +1,9 @@
+:is(.tetris-skin--stone-garden, .inventory-skin--stone-garden) .filled { background: #7b7370; }
+:is(.tetris-skin--stone-garden, .inventory-skin--stone-garden) .cell--I.filled { background: #77858a; }
+:is(.tetris-skin--stone-garden, .inventory-skin--stone-garden) .cell--O.filled { background: #a18e72; }
+:is(.tetris-skin--stone-garden, .inventory-skin--stone-garden) .cell--T.filled { background: #847286; }
+:is(.tetris-skin--stone-garden, .inventory-skin--stone-garden) .cell--L.filled { background: #8d7868; }
+:is(.tetris-skin--stone-garden, .inventory-skin--stone-garden) .cell--U.filled { background: #718071; }
+:is(.tetris-skin--stone-garden, .inventory-skin--stone-garden) .cell--Z.filled { background: #8f6f74; }
+:is(.tetris-skin--stone-garden, .inventory-skin--stone-garden) .cell--P.filled { background: #67777b; }
+:is(.tetris-skin--stone-garden, .inventory-skin--stone-garden) .cell--_.filled { background: #9b8b79; }

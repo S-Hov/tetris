@@ -1,0 +1,25 @@
+:is(.tetris-skin--confetti-circuit, .inventory-skin--confetti-circuit) .filled {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid rgba(255, 156, 230, 0.58);
+    background: linear-gradient(145deg, #3d2a70, #171630);
+    box-shadow: inset 1px 1px 4px rgba(255, 156, 230, 0.38), inset -2px -2px 5px rgba(0, 0, 0, 0.3), 0 0 10px rgba(115, 251, 211, 0.55);
+}
+
+:is(.tetris-skin--confetti-circuit, .inventory-skin--confetti-circuit) .skin-cell-layer--primary {
+    background:
+        radial-gradient(circle at 22% 28%, #ffe66d 0 8%, transparent 10%),
+        radial-gradient(circle at 72% 25%, #69f0d1 0 7%, transparent 9%),
+        radial-gradient(circle at 68% 74%, #ff71ce 0 8%, transparent 10%),
+        radial-gradient(circle at 28% 72%, #8ea7ff 0 6%, transparent 8%);
+    animation: skin-confetti-drift 3s ease-in-out infinite alternate;
+}
+
+:is(.tetris-skin--confetti-circuit, .inventory-skin--confetti-circuit) .skin-cell-layer--secondary {
+    inset: 8%;
+    border: 1px dashed rgba(255, 255, 255, 0.55);
+}
+
+@keyframes skin-confetti-drift { to { transform: rotate(12deg) scale(1.12); } }
+@media (prefers-reduced-motion: reduce) { :is(.tetris-skin--confetti-circuit, .inventory-skin--confetti-circuit) .skin-cell-layer { animation: none; } }

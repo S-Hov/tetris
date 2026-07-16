@@ -1,0 +1,13 @@
+.skin-cell-layer {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.skin-cell-layer--secondary {
+    z-index: 2;
+}

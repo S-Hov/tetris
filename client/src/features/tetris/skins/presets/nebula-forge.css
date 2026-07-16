@@ -1,0 +1,24 @@
+:is(.tetris-skin--nebula-forge, .inventory-skin--nebula-forge) .filled {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid rgba(199, 184, 255, 0.58);
+    background: linear-gradient(145deg, #5b2188, #071a3a);
+    box-shadow: inset 1px 1px 4px rgba(199, 184, 255, 0.38), inset -2px -2px 5px rgba(0, 0, 0, 0.3), 0 0 14px rgba(157, 92, 255, 0.55);
+}
+
+:is(.tetris-skin--nebula-forge, .inventory-skin--nebula-forge) .skin-cell-layer--primary {
+    inset: -45%;
+    background: conic-gradient(from 20deg, transparent, rgba(71, 233, 255, 0.7), transparent 24%, rgba(255, 83, 191, 0.62), transparent 58%);
+    filter: blur(2px);
+    animation: skin-nebula-spin 7s linear infinite;
+}
+
+:is(.tetris-skin--nebula-forge, .inventory-skin--nebula-forge) .skin-cell-layer--secondary {
+    background: radial-gradient(circle at 20% 25%, #fff 0 3%, transparent 5%), radial-gradient(circle at 74% 32%, #d6fcff 0 2%, transparent 4%), radial-gradient(circle at 58% 77%, #fff4c2 0 3%, transparent 5%), radial-gradient(circle at 30% 68%, #bfe5ff 0 2%, transparent 4%);
+    animation: skin-stars-pulse 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes skin-nebula-spin { to { transform: rotate(360deg); } }
+@keyframes skin-stars-pulse { to { opacity: 0.45; filter: brightness(1.8); } }
+@media (prefers-reduced-motion: reduce) { :is(.tetris-skin--nebula-forge, .inventory-skin--nebula-forge) .skin-cell-layer { animation: none; } }
