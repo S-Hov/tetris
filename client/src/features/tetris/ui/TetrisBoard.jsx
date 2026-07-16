@@ -1,5 +1,6 @@
 import { createBoard } from '../model/createBoard.js'
 import { getTetrisSkinClassName } from '../skins/useActiveSkinPack.js'
+import SkinCellLayers from '../skins/SkinCellLayers.jsx'
 
 import './TetrisBoard.css'
 import '../skins/skinPresets.css'
@@ -52,7 +53,9 @@ const TetrisBoard = ({
                                 : '',
                             clearingRows.includes(rowIndex) ? 'clearing' : '',
                         ].filter(Boolean).join(' ')}
-                    />
+                    >
+                        {cell?.variant === 'filled' ? <SkinCellLayers /> : null}
+                    </div>
                 ))
             )}
         </div>

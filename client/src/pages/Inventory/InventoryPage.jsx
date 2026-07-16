@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { PIECES } from '@/features/tetris/model/pieces.js'
 import { SPECIAL_PIECES } from '@/features/tetris/model/specialPieces.js'
+import SkinCellLayers from '@/features/tetris/skins/SkinCellLayers.jsx'
 import { cosmeticsAPI } from '@/shared/api/cosmetics'
 import ProfileSideNav from '@/widgets/ProfileSideNav'
 import notify from '@/utils/Notifications'
@@ -145,7 +146,7 @@ const InventoryPage = () => {
 
                                 return (
                                     <article
-                                        className={`inventory-card ${inventoryItem.isEquipped ? 'inventory-card--active' : ''}`}
+                                        className={`inventory-card inventory-card--rarity-${item.rarity || 'common'} ${inventoryItem.isEquipped ? 'inventory-card--active' : ''}`}
                                         key={inventoryItem.inventoryId}
                                     >
                                         <button
@@ -325,7 +326,11 @@ const PieceShape = ({ compact = false, piece, skinKey }) => (
     >
         {piece.shape.flatMap((row, rowIndex) => row.map((cell, columnIndex) => (
             cell
-                ? <span className={`tetris-cell cell--${piece.type} filled inventory-piece-shape__cell`} key={`${rowIndex}-${columnIndex}`} />
+                ? (
+                    <span className={`tetris-cell cell--${piece.type} filled inventory-piece-shape__cell`} key={`${rowIndex}-${columnIndex}`}>
+                        <SkinCellLayers />
+                    </span>
+                )
                 : <span className="inventory-piece-shape__cell inventory-piece-shape__cell--empty" key={`${rowIndex}-${columnIndex}`} />
         )))}
     </div>
@@ -354,6 +359,12 @@ const getAcquisitionReason = (inventoryItem, t) => {
         'five-friends-reward': 'inventory.acquisition.fiveFriends',
         'ten-friends-reward': 'inventory.acquisition.tenFriends',
         'first-match-reward': 'inventory.acquisition.firstMatch',
+        'five-matches-reward': 'inventory.acquisition.fiveMatches',
+        'ten-matches-reward': 'inventory.acquisition.tenMatches',
+        'hundred-matches-reward': 'inventory.acquisition.hundredMatches',
+        'thousand-matches-reward': 'inventory.acquisition.thousandMatches',
+        'five-thousand-matches-reward': 'inventory.acquisition.fiveThousandMatches',
+        'ten-thousand-matches-reward': 'inventory.acquisition.tenThousandMatches',
     }
     const sourceKey = reasonBySourceRef[inventoryItem.sourceRef]
 

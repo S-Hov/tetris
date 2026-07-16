@@ -567,16 +567,7 @@ export const createSoloRecordMatchRepo = async ({ userId, username, stats }) => 
         )
         const previousRecord = Number(matchesRecordResult.rows[0]?.record) || 0
 
-        if (score <= previousRecord) {
-            await client.query('COMMIT')
-
-            return {
-                saved: false,
-                previousRecord,
-                record: previousRecord,
-                matchId: null,
-            }
-        }
+        const isNewRecord = score > previousRecord
 
         const matchResult = await client.query(
             `
@@ -618,22 +609,24 @@ export const createSoloRecordMatchRepo = async ({ userId, username, stats }) => 
             [match.id, team.id, userId, `user:${userId}`, username || 'Player', score, linesCleared, levelReached]
         )
 
-        await client.query(
-            `
-            UPDATE user_rank_stats
-            SET best_solo_score = $2,
-                updated_at = NOW()
-            WHERE user_id = $1
-            `,
-            [userId, score]
-        )
+        if (isNewRecord) {
+            await client.query(
+                `
+                UPDATE user_rank_stats
+                SET best_solo_score = $2,
+                    updated_at = NOW()
+                WHERE user_id = $1
+                `,
+                [userId, score]
+            )
+        }
 
         await client.query('COMMIT')
 
         return {
-            saved: true,
+            saved: isNewRecord,
             previousRecord,
-            record: score,
+            record: Math.max(previousRecord, score),
             matchId: match.id,
         }
     } catch (error) {

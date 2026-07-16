@@ -4,7 +4,6 @@ import {
     getUserMatchesRepo,
     getUserSoloRecordRepo,
 } from '../repositories/matchRepository.js'
-import { grantCosmeticItemService } from './cosmeticsService.js'
 
 const MATCH_RESULT_MAP = {
     win: 'win',
@@ -166,14 +165,6 @@ export const submitSoloResultService = async ({ user, stats }) => {
         userId: user.id,
         username: user.username,
         stats: normalizedStats,
-    })
-
-    await grantCosmeticItemService({
-        attributes: { grantReason: 'first_match', mode: 'solo' },
-        itemKey: 'first_match_palette',
-        source: 'event',
-        sourceRef: 'first-match-reward',
-        userId: user.id,
     })
 
     return {

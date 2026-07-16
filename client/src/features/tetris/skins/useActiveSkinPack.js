@@ -10,6 +10,12 @@ const AVAILABLE_SKIN_PRESETS = new Set([
     'friend-glow-color',
     'stone-garden',
     'night-bloom',
+    'citrus-arcade',
+    'confetti-circuit',
+    'reed-garden',
+    'nebula-forge',
+    'dragon-vault',
+    'celestial-crown',
 ])
 
 const normalizeSkinPreset = (value) => {

@@ -1,4 +1,5 @@
 import { getTetrisSkinClassName } from '../skins/useActiveSkinPack.js'
+import SkinCellLayers from '../skins/SkinCellLayers.jsx'
 import '../skins/skinPresets.css'
 
 const NextPiecePanel = ({ hidden = false, nextPiece, skinPreset = 'default' }) => {
@@ -22,7 +23,9 @@ const NextPiecePanel = ({ hidden = false, nextPiece, skinPreset = 'default' }) =
                             <div
                                 key={`${rowIndex}-${cellIndex}`}
                                 className={`game-next-piece-cell ${cell ? `cell--${nextPiece.type} filled` : ''}`}
-                            />
+                            >
+                                {cell ? <SkinCellLayers /> : null}
+                            </div>
                         ))
                     )}
                 </div>
