@@ -63,7 +63,7 @@ const SandHeroAnimation = () => {
         const randInt = (min, max) => Math.floor(min + Math.random() * (max - min + 1))
         const clamp01 = (value) => Math.max(0, Math.min(1, value))
         const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - ((-2 * t + 2) ** 3) / 2)
-        const colorForCol = (col) => (col * settings.cellSize < width * 0.42 ? 1 : 2)
+        const colorForCol = (col) => (col * settings.cellSize < width * 0.4 ? 1 : 2)
         const colorValue = (colorId) => (colorId === 1 ? colors.pvp : colors.tetris)
 
         const shuffle = (array) => {
