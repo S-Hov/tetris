@@ -15,14 +15,14 @@
     "hero": {
       "title": "Hall of Legends",
       "summaryAria": "Rating statistics",
-      "playersOnline": "players online",
-      "matchesPlayed": "matches played",
+      "playersOnline": "active now",
+      "matchesPlayed": "matches in 30 days",
       "description": "The best arena players. Prove that you deserve to stand among them.",
-      "season": "Season 1"
+      "arenaRecord": "arena record"
     },
     "controls": {
       "systemAria": "Rating system",
-      "season": "Ranked season",
+      "season": "Arena rating",
       "sortAria": "Rating sorting",
       "sortLabel": "Sort by"
     },
@@ -54,8 +54,8 @@
       "ariaLabel": "First place data",
       "emptyTitle": "First place",
       "emptyText": "Data will appear after the rating loads.",
-      "leaderTitle": "Season Player",
-      "recordsTitle": "Season records",
+      "leaderTitle": "Rating leader",
+      "recordsTitle": "Arena records",
       "maxMmr": "Maximum MMR",
       "bestWins": "Best wins",
       "bestWinRate": "Best Win Rate",

@@ -366,6 +366,13 @@
     },
     {
       "method": "GET",
+      "path": "/api/analytics/public-stats",
+      "routePath": "/public-stats",
+      "mountPath": "/api/analytics",
+      "source": "routes/analytics.js"
+    },
+    {
+      "method": "GET",
       "path": "/api/authentication/:provider",
       "routePath": "/:provider",
       "mountPath": "/api/authentication",
@@ -1321,6 +1328,18 @@
     {
       "from": "controllers/analyticsController.js",
       "fromArea": "controllers",
+      "to": "services/publicStatsService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "controllers/analyticsController.js",
+      "fromArea": "controllers",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "controllers/analyticsController.js",
+      "fromArea": "controllers",
       "to": "utils/asyncHandler.js",
       "toArea": "utils"
     },
@@ -1811,6 +1830,12 @@
       "toArea": "db"
     },
     {
+      "from": "repositories/publicStatsRepository.js",
+      "fromArea": "repositories",
+      "to": "db/index.js",
+      "toArea": "db"
+    },
+    {
       "from": "repositories/rankRepository.js",
       "fromArea": "repositories",
       "to": "services/rankRules.js",
@@ -2249,6 +2274,18 @@
       "toArea": "services"
     },
     {
+      "from": "services/publicStatsService.js",
+      "fromArea": "services",
+      "to": "repositories/publicStatsRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "services/publicStatsService.js",
+      "fromArea": "services",
+      "to": "sockets/presenceStats.js",
+      "toArea": "sockets"
+    },
+    {
       "from": "services/rankRules.js",
       "fromArea": "services",
       "to": "db/index.js",
@@ -2480,6 +2517,12 @@
       "from": "sockets/index.js",
       "fromArea": "sockets",
       "to": "sockets/matchmaking.socket.js",
+      "toArea": "sockets"
+    },
+    {
+      "from": "sockets/index.js",
+      "fromArea": "sockets",
+      "to": "sockets/presenceStats.js",
       "toArea": "sockets"
     },
     {

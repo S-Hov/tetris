@@ -1,8 +1,16 @@
-import { getBaseUrl } from '../apiClient.js'
+import { apiClient, getBaseUrl } from '../apiClient.js'
 import { hasAnalyticsCookieConsent } from '@/shared/lib/cookieConsent.js'
 
 const ANALYTICS_SESSION_KEY = 'tetris.analytics-session'
 const SESSION_TTL_MS = 30 * 60 * 1000
+
+export const publicStatsAPI = {
+    get() {
+        return apiClient('/api/analytics/public-stats', {
+            method: 'GET',
+        })
+    },
+}
 
 export function getAnalyticsSessionKey() {
     if (typeof window === 'undefined') {

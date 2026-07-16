@@ -30,7 +30,7 @@
     "hero": {
       "editAria": "Open profile settings",
       "memberSince": "In game since {{date}}",
-      "season": "Season 1",
+      "season": "Arena rating",
       "statsAria": "Short statistics",
       "winRate": "Win Rate",
       "wins": "Wins",

@@ -78,6 +78,7 @@ export default {
     'MATCH.SOLO_RESULT_SKIPPED': 'Solo-результат не превысил рекорд',
 
     'LEADERBOARD.LOADED': 'Мировой рейтинг получен',
+    'ANALYTICS.PUBLIC_STATS_LOADED': 'Статистика арены получена',
     'EFFECTS.LOADED': 'Игровые эффекты загружены',
 
     'FRIENDS.LOADED': 'Друзья загружены',

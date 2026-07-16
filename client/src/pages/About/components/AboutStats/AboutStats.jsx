@@ -1,15 +1,20 @@
 import { useTranslation } from 'react-i18next'
 
 import GlowEffect from '@/shared/ui/GlowEffect'
+import usePublicStats from '@/shared/hooks/usePublicStats'
 
 import { projectStatsMeta } from './aboutStats.data.js'
 
 import './AboutStats.css'
 
 const AboutStats = () => {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
+    const { data: publicStats, isLoading } = usePublicStats()
     const projectStats = projectStatsMeta.map((stat) => ({
         ...stat,
+        value: stat.valueKey
+            ? formatStatValue(publicStats?.[stat.valueKey], i18n.language, isLoading)
+            : stat.value,
         label: t(`about.stats.items.${stat.key}`),
     }))
 
@@ -34,3 +39,9 @@ const AboutStats = () => {
 }
 
 export default AboutStats
+
+const formatStatValue = (value, language, isLoading) => (
+    isLoading || value === null || value === undefined || !Number.isFinite(Number(value))
+        ? '—'
+        : new Intl.NumberFormat(language).format(Number(value))
+)

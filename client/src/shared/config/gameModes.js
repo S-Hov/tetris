@@ -47,7 +47,7 @@ export const modeSelectionCatalog = {
         title: 'Дуэль 1 VS 1',
         subtitle: 'Сразитесь с соперником в напряжённой битве линий',
         icon: 'fas fa-fist-raised',
-        online: '1,234 игроков онлайн',
+        online: 'PvP-подбор',
         roomSupported: true,
         heroLabel: 'Режим 1 VS 1',
         availablePlayOptions: [
@@ -66,7 +66,7 @@ export const modeSelectionCatalog = {
         title: 'Командный бой 2 VS 2',
         subtitle: 'Работайте в паре, комбинируйте атаки и перехватывайте темп у другой команды.',
         icon: 'fas fa-users',
-        online: '876 игроков онлайн',
+        online: 'Командный подбор',
         roomSupported: true,
         heroLabel: 'Режим 2 VS 2',
         availablePlayOptions: [
@@ -85,7 +85,7 @@ export const modeSelectionCatalog = {
         title: 'Арена 5 VS 5',
         subtitle: 'Большой командный формат, где важны роли, тактика и согласованные атаки.',
         icon: 'fas fa-gamepad',
-        online: '642 игрока онлайн',
+        online: 'Командный режим',
         roomSupported: false,
         heroLabel: 'Режим 5 VS 5',
         availablePlayOptions: [
@@ -104,7 +104,7 @@ export const modeSelectionCatalog = {
         title: 'Blocks Royale',
         subtitle: 'Выживайте дольше остальных и прорывайтесь к финальной дуэли за первое место.',
         icon: 'fas fa-crown',
-        online: '1,908 игроков онлайн',
+        online: 'Режим в разработке',
         roomSupported: false,
         heroLabel: 'Режим Royale',
         availablePlayOptions: [

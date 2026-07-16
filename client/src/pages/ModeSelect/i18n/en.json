@@ -26,7 +26,7 @@
       "1v1": {
         "title": "Duel 1 VS 1",
         "subtitle": "Face an opponent in a tense battle of lines.",
-        "online": "1,234 players online",
+        "online": "PvP matchmaking",
         "heroLabel": "1 VS 1 Mode",
         "cardMeta": {
           "ranked": ["Affects rating", "~5-10 min"],
@@ -37,7 +37,7 @@
       "2v2": {
         "title": "Team Battle 2 VS 2",
         "subtitle": "Work as a pair, combine attacks, and seize the tempo from the other team.",
-        "online": "876 players online",
+        "online": "Team matchmaking",
         "heroLabel": "2 VS 2 Mode",
         "cardMeta": {
           "ranked": ["Affects rating", "Team matchmaking"],
@@ -48,7 +48,7 @@
       "5v5": {
         "title": "Arena 5 VS 5",
         "subtitle": "A large team format where roles, tactics, and coordinated attacks matter.",
-        "online": "642 players online",
+        "online": "Team mode",
         "heroLabel": "5 VS 5 Mode",
         "cardMeta": {
           "ranked": ["Season divisions", "Large matches"],
@@ -59,7 +59,7 @@
       "royale": {
         "title": "Blocks Royale",
         "subtitle": "Survive longer than everyone else and push into the final duel for first place.",
-        "online": "1,908 players online",
+        "online": "Mode in development",
         "heroLabel": "Royale Mode",
         "cardMeta": {
           "ranked": ["Tournament format", "20 players"],

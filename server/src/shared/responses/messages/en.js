@@ -78,6 +78,7 @@ export default {
     'MATCH.SOLO_RESULT_SKIPPED': 'Solo result did not beat the record',
 
     'LEADERBOARD.LOADED': 'Leaderboard loaded',
+    'ANALYTICS.PUBLIC_STATS_LOADED': 'Arena statistics loaded',
     'EFFECTS.LOADED': 'Game effects loaded',
 
     'FRIENDS.LOADED': 'Friends loaded',

@@ -17,9 +17,9 @@ export const faqItems = [
 export const contactItems = [
     {
         titleKey: 'support.contacts.telegram',
-        text: '@pvpblocks_support_bot',
+        text: '@PvpBlocks_bot',
         icon: 'fa-brands fa-telegram',
-        href: 'https://t.me/pvpblocks_support_bot',
+        href: 'https://t.me/PvpBlocks_bot',
     },
     {
         titleKey: 'support.contacts.email',

@@ -32,6 +32,7 @@ import {
 } from '../services/activityFeedService.js'
 import { setFriendsRealtimeIo } from '../services/friendsRealtimeService.js'
 import { setChatRealtimeIo } from '../services/chatRealtimeService.js'
+import { trackActiveSocket, untrackActiveSocket } from './presenceStats.js'
 
 const getWinnerAfterPlayerLeft = (room, removedPlayer) => {
     const players = getRoomPlayers(room)
@@ -65,6 +66,7 @@ export const registerSocketHandlers = (io) => {
         console.log('Socket connected:', socket.id, socket.data.user?.id)
         socket.data.analyticsSessionKey = socket.handshake.auth?.analyticsSessionKey || `socket:${socket.id}`
         socket.data.browserId = socket.handshake.auth?.browserId || null
+        trackActiveSocket(socket)
 
         void upsertUserSessionRepo({
             userId: socket.data.user?.id,
@@ -106,6 +108,7 @@ export const registerSocketHandlers = (io) => {
 
         socket.on('disconnect', async () => {
             console.log('Socket disconnected:', socket.id)
+            untrackActiveSocket(socket.id)
             publishPlayerActivityEvent('disconnected', { socket })
             removeSocketFromMatchmakingQueue(socket.id)
             removeSocketFromParties(io, socket.id)

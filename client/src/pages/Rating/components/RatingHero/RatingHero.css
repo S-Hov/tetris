@@ -97,6 +97,8 @@
     min-height: 92px;
     min-width: 0;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: 1.1rem 1.3rem;
     border: var(--border);
     border-radius: var(--radius-panel);
@@ -108,9 +110,17 @@
 .rating-season span {
     color: var(--text-active-color);
     font-family: var(--font-1);
-    font-size: clamp(1.45rem, 5vw, 2.5rem);
+    font-size: clamp(0.72rem, 1.5vw, 1rem);
     font-weight: 900;
     text-transform: uppercase;
+    text-shadow: var(--text-shadow);
+}
+
+.rating-season strong {
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: clamp(1.45rem, 5vw, 2.5rem);
+    line-height: 1;
     text-shadow: var(--text-shadow);
 }
 

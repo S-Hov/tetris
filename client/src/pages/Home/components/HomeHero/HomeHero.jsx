@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { getLocalizedGamePath } from '@/i18n'
 import useMediaQuery from '@/shared/hooks/useMediaQuery'
+import usePublicStats from '@/shared/hooks/usePublicStats'
 import { arenaStatsMeta } from './homeHero.data.js'
 
 import bannerBackground from './assets/bunner_bg.png'
@@ -13,12 +14,13 @@ import './HomeHero.css'
 const SandHeroAnimation = lazy(() => import('./SandHeroAnimation.jsx'))
 
 const HomeHero = () => {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const shouldRenderSandHero = useMediaQuery('(min-width: 1281px)')
+    const { data: publicStats, isLoading } = usePublicStats()
     const arenaStats = arenaStatsMeta.map((stat) => ({
         ...stat,
-        value: stat.valueKey ? t(`home.arena.stats.${stat.valueKey}`) : stat.value,
-        label: stat.key === 'season' ? '' : t(`home.arena.stats.${stat.key}`),
+        value: formatStatValue(publicStats?.[stat.key], i18n.language, isLoading),
+        label: t(`home.arena.stats.${stat.key}`),
     }))
 
     return (
@@ -70,3 +72,11 @@ const HomeHero = () => {
 }
 
 export default HomeHero
+
+const formatStatValue = (value, language, isLoading) => {
+    if (isLoading || value === null || value === undefined || !Number.isFinite(Number(value))) {
+        return '—'
+    }
+
+    return new Intl.NumberFormat(language).format(Number(value))
+}

@@ -15,14 +15,14 @@
     "hero": {
       "title": "Зал легенд",
       "summaryAria": "Статистика рейтинга",
-      "playersOnline": "игроков онлайн",
-      "matchesPlayed": "матчей сыграно",
+      "playersOnline": "активны сейчас",
+      "matchesPlayed": "матчей за 30 дней",
       "description": "Лучшие игроки арены. Докажи, что ты достоин быть среди них.",
-      "season": "Сезон 1"
+      "arenaRecord": "рекорд арены"
     },
     "controls": {
       "systemAria": "Система рейтинга",
-      "season": "Ranked season",
+      "season": "Рейтинг арены",
       "sortAria": "Сортировка рейтинга",
       "sortLabel": "Сортировать"
     },
@@ -54,8 +54,8 @@
       "ariaLabel": "Данные первого места",
       "emptyTitle": "Первое место",
       "emptyText": "Данные появятся после загрузки рейтинга.",
-      "leaderTitle": "Игрок Сезона",
-      "recordsTitle": "Рекорды сезона",
+      "leaderTitle": "Лидер рейтинга",
+      "recordsTitle": "Рекорды арены",
       "maxMmr": "Максимальный MMR",
       "bestWins": "Лучшие победы",
       "bestWinRate": "Лучший Win Rate",

@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '@/i18n'
 import { leaderboardAPI } from '@/shared/api/leaderboard'
 import { useAuth } from '@/shared/hooks/useAuth'
+import usePublicStats from '@/shared/hooks/usePublicStats'
 import PlayerStatsPanel, { buildPlayerStats } from '@/widgets/PlayerStatsPanel'
 
 import RatingBoard from './components/RatingBoard/RatingBoard.jsx'
@@ -25,6 +26,7 @@ const RatingPage = () => {
     const [players, setPlayers] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState('')
+    const { data: publicStats, isLoading: isPublicStatsLoading } = usePublicStats()
     const isSupportedLanguage = SUPPORTED_LANGUAGES.includes(lang)
     const currentLanguage = isSupportedLanguage ? lang : DEFAULT_LANGUAGE
 
@@ -73,10 +75,6 @@ const RatingPage = () => {
         return [byRank.get(2), byRank.get(1), byRank.get(3)].filter(Boolean)
     }, [topPlayers])
     const leader = topPlayers[0]
-    const totalGames = useMemo(
-        () => players.reduce((sum, player) => sum + Number(player.totalGames || 0), 0),
-        [players]
-    )
     const playerStats = useMemo(() => buildPlayerStats(user), [user])
 
     if (!isSupportedLanguage) {
@@ -97,8 +95,8 @@ const RatingPage = () => {
             <div className="container rating-container">
                 <RatingHero
                     currentLanguage={currentLanguage}
-                    playersCount={players.length}
-                    totalGames={totalGames}
+                    isLoading={isPublicStatsLoading}
+                    publicStats={publicStats}
                 />
                 <PlayerStatsPanel
                     currentLanguage={currentLanguage}

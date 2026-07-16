@@ -1,7 +1,7 @@
 {
   "seo": {
     "title": "PVP Blocks - online falling-block PvP arena",
-    "description": "Play PVP Blocks online with competitive Solo, 1v1, 2v2, 5v5 and Royale modes, player rankings and seasonal stats.",
+    "description": "Play PVP Blocks online with competitive Solo, 1v1, 2v2, 5v5 and Royale modes, player rankings and arena stats.",
     "ogTitle": "PVP Blocks - competitive arena for block-game players",
     "ogDescription": "Fight in fast PvP matches, choose your mode, climb the leaderboard and become an arena legend."
   },
@@ -9,10 +9,10 @@
     "arena": {
       "ariaLabel": "Arena statistics",
       "stats": {
-        "online": "online",
-        "matches": "matches now",
-        "queue": "players in queue",
-        "seasonValue": "Season 1"
+        "activeUsers": "active now",
+        "matchesLast30Days": "matches in 30 days",
+        "ratingPlayers": "ranked players",
+        "arenaRecord": "arena record"
       }
     },
     "hero": {
@@ -42,28 +42,28 @@
           "title": "1vs1",
           "label": "Recommended",
           "description": "A classic duel",
-          "queue": "In queue: 24 players"
+          "queue": "Casual and ranked matches"
         },
         "2v2": {
           "title": "2vs2",
           "description": "Play together as a pair",
-          "queue": "In queue: 18 teams"
+          "queue": "Team matchmaking"
         },
         "5v5": {
           "title": "5vs5",
           "description": "A large team battle",
-          "queue": "In queue: 12 teams"
+          "queue": "Large team format"
         },
         "royale": {
           "title": "Royale",
           "description": "Last player standing",
-          "queue": "In queue: 31 players"
+          "queue": "Every player for themselves"
         }
       }
     },
     "dashboard": {
-      "ariaLabel": "Season data",
-      "season": "Season 1",
+      "ariaLabel": "Rating data",
+      "season": "Arena rating",
       "leadersTitle": "Top players",
       "loadingRating": "Loading rating...",
       "emptyRating": "The rating is empty for now",
@@ -77,9 +77,9 @@
       "fallbackRank": "Bronze",
       "points": "points",
       "pointsTo": "to",
-      "maxRank": "Maximum season rank",
+      "maxRank": "Maximum rank",
       "profileButton": "Go to profile",
-      "guestText": "Guests do not have a rank. Create an account to unlock seasonal statistics and rank progress.",
+      "guestText": "Guests do not have a rank. Create an account to unlock statistics and rank progress.",
       "registerButton": "Create account"
     },
     "donation": {

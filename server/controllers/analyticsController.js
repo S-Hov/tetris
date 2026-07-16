@@ -3,9 +3,19 @@ import {
     isAnalyticsTransientDbError,
     trackPageViewRepo,
 } from '../repositories/analyticsRepository.js'
+import { getPublicStatsService } from '../services/publicStatsService.js'
+import { ok } from '../src/shared/responses/send.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 
 export const analyticsAuth = optionalAuth
+
+export const getPublicStats = asyncHandler(async (req, res) => {
+    const data = await getPublicStatsService()
+
+    return ok(res, req, 'ANALYTICS.PUBLIC_STATS_LOADED', {
+        data,
+    })
+})
 
 export const trackPageView = asyncHandler(async (req, res) => {
     let data = null
