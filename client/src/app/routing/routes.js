@@ -243,6 +243,13 @@ export const routes = [
         layout: MainLayout,
     },
     {
+        key: 'mode-select-play-type',
+        path: '/:lang/game/:mode/:playType',
+        title: ({ mode }) => getModeTitle(mode),
+        component: ModeSelectPage,
+        layout: MainLayout,
+    },
+    {
         key: 'Lobby',
         path: '/:lang/game/:mode/lobby',
         title: ({ mode }) => `Лобби: ${getModeTitle(mode)}`,

@@ -23,7 +23,7 @@ const AboutHero = ({ currentLanguage }) => {
                     <p className="about-hero__lead glow-text">{t('about.hero.lead')}</p>
                     <p>{t('about.hero.description')}</p>
                     <div className="about-hero__actions">
-                        <Link to={getLocalizedGamePath('/game/1v1', currentLanguage)} className="button about-button about-button--primary">
+                        <Link to={getLocalizedGamePath('/game/1v1/ranked', currentLanguage)} className="button about-button about-button--primary">
                             <i className="fas fa-play"></i>
                             {t('about.hero.play')}
                         </Link>

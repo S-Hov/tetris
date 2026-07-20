@@ -40,7 +40,11 @@ export const useMatchResult = ({
             }
 
             redirectTimeoutRef.current = setTimeout(() => {
-                navigate(getLocalizedGamePath(shouldReturnToLobby ? `/game/${modeKey}/lobby` : `/game/${modeKey}`), {
+                const returnPath = shouldReturnToLobby
+                    ? `/game/${modeKey}/lobby`
+                    : `/game/${modeKey}/${matchType || roomSettings?.matchType || 'casual'}`
+
+                navigate(getLocalizedGamePath(returnPath), {
                     replace: true,
                     state: shouldReturnToLobby
                         ? {

@@ -19,7 +19,7 @@ const EffectsPage = () => {
                             <p className="effects-eyebrow">{t('effectsPage.hero.eyebrow')}</p>
                             <h1>{t('effectsPage.hero.title')}</h1>
                             <p>{t('effectsPage.hero.description')}</p>
-                            <Link className="button effects-hero__button" to={getLocalizedGamePath('/game/1v1')}>
+                            <Link className="button effects-hero__button" to={getLocalizedGamePath('/game/1v1/ranked')}>
                                 <i className="fas fa-play"></i>
                                 {t('effectsPage.hero.playButton')}
                             </Link>

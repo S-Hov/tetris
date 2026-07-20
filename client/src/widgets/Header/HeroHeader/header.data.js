@@ -7,11 +7,11 @@ export const navItems = [
 ]
 
 export const modeItems = [
-    { key: 'solo', label: 'SOLO', icon: 'fas fa-user', to: '/game/solo' },
-    { key: '1v1', label: '1v1', icon: 'fas fa-fist-raised', to: '/game/1v1' },
-    { key: '2v2', label: '2v2', icon: 'fas fa-users', to: '/game/2v2' },
-    { key: '5v5', label: '5v5', icon: 'fas fa-gamepad', to: '/game/5v5' },
-    { key: 'battle', label: 'ROYALE', icon: 'fas fa-crown', to: '/game/royale' }
+    { key: 'solo', label: 'SOLO', icon: 'fas fa-user', to: '/game/solo/casual' },
+    { key: '1v1', label: '1v1', icon: 'fas fa-fist-raised', to: '/game/1v1/ranked' },
+    { key: '2v2', label: '2v2', icon: 'fas fa-users', to: '/game/2v2/ranked' },
+    { key: '5v5', label: '5v5', icon: 'fas fa-gamepad', to: '/game/5v5/ranked' },
+    { key: 'battle', label: 'ROYALE', icon: 'fas fa-crown', to: '/game/royale/ranked' }
 ]
 
 export const modeStats = {

@@ -54,7 +54,7 @@ const emitWithAck = (eventName, payload, fallbackMessage) => {
 const ModeSelectPage = () => {
     const location = useLocation()
     const navigate = useNavigate()
-    const { mode } = useParams()
+    const { mode, playType } = useParams()
     const { t, i18n } = useTranslation()
     const { isAuth, isLoading: isAuthLoading, user } = useAuth()
     const currentLanguage = getLanguageFromPathname(location.pathname) || DEFAULT_LANGUAGE
@@ -83,10 +83,6 @@ const ModeSelectPage = () => {
             .filter((option) => availablePlayOptions.includes(option.key))
             .map((option) => buildTranslatedPlayOption(option, t))
     ), [availablePlayOptions, t])
-    const [playTypeState, setPlayTypeState] = useState(() => ({
-        modeKey: modeConfig.key,
-        playType: defaultPlayType,
-    }))
     const [matchmakingState, setMatchmakingState] = useState({
         isSearching: false,
         matchType: null,
@@ -96,7 +92,7 @@ const ModeSelectPage = () => {
     })
     const [waitSeconds, setWaitSeconds] = useState(0)
     const searchingRef = useRef(false)
-    const selectedPlayType = playTypeState.modeKey === modeConfig.key ? playTypeState.playType : defaultPlayType
+    const selectedPlayType = availablePlayOptions.includes(playType) ? playType : defaultPlayType
     const selectedPlayOption = visiblePlayOptions.find((option) => option.key === selectedPlayType) || visiblePlayOptions[0]
     const isRankedSelected = selectedPlayType === MATCH_PLAY_OPTIONS.RANKED
     const isRoomSelected = selectedPlayType === MATCH_PLAY_OPTIONS.ROOM
@@ -116,6 +112,15 @@ const ModeSelectPage = () => {
             i18n.changeLanguage(currentLanguage)
         }
     }, [currentLanguage, i18n])
+
+    useEffect(() => {
+        if (playType !== selectedPlayType) {
+            navigate(`/${currentLanguage}/game/${modeConfig.key}/${selectedPlayType}`, {
+                replace: true,
+                state: location.state,
+            })
+        }
+    }, [currentLanguage, location.state, modeConfig.key, navigate, playType, selectedPlayType])
 
     const handleToggle = (key) => {
         if (matchmakingState.isSearching) {
@@ -212,10 +217,7 @@ const ModeSelectPage = () => {
     }, [])
 
     const selectPlayType = (playType) => {
-        setPlayTypeState({
-            modeKey: modeConfig.key,
-            playType,
-        })
+        navigate(getGamePath(`/game/${modeConfig.key}/${playType}`))
     }
 
     const startMatchmaking = async (matchType) => {
@@ -290,7 +292,15 @@ const ModeSelectPage = () => {
 
     const selectMode = (nextMode) => {
         if (nextMode !== modeConfig.key) {
-            navigate(getGamePath(`/game/${nextMode}`))
+            const nextModeConfig = getModeSelectionConfig(nextMode)
+            const nextDefaultPlayType = nextModeConfig.key === PLAY_MODE_KEYS.SOLO
+                ? MATCH_PLAY_OPTIONS.CASUAL
+                : MATCH_PLAY_OPTIONS.RANKED
+            const nextPlayType = nextModeConfig.availablePlayOptions.includes(selectedPlayType)
+                ? selectedPlayType
+                : nextDefaultPlayType
+
+            navigate(getGamePath(`/game/${nextModeConfig.key}/${nextPlayType}`))
         }
     }
 

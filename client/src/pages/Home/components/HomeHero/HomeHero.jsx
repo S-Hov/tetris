@@ -48,7 +48,7 @@ const HomeHero = () => {
                     <p>{t('home.hero.subtitle')}</p>
 
                     <div className="home-hero__actions">
-                        <Link to={getLocalizedGamePath('/game/solo')} className="home-primary-button">
+                        <Link to={getLocalizedGamePath('/game/solo/casual')} className="home-primary-button">
                             <i className="fas fa-play"></i>
                             {t('home.hero.playButton')}
                         </Link>

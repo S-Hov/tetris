@@ -687,7 +687,7 @@ const MatchPageGame = ({
     }
 
     const handleBackToModeSelect = () => {
-        navigate(getLocalizedGamePath('/game/solo'), {
+        navigate(getLocalizedGamePath('/game/solo/casual'), {
             state: {
                 roomSettings,
             },

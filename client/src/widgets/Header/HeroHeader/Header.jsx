@@ -28,7 +28,7 @@ export default function Header() {
         ...item,
         to: getLocalizedPath(item.to, currentLanguage),
     }))
-    const activeMode = getActiveItemKey(localizedModeItems, pathname)
+    const activeMode = getActiveModeItemKey(localizedModeItems, pathname)
     const activePage = activeMode ? null : getActiveItemKey(localizedNavItems, pathname)
     const activeModeItem = localizedModeItems.find((item) => item.key === activeMode) || localizedModeItems[0]
     const mobileModeOptions = localizedModeItems.map((item) => ({
@@ -134,6 +134,18 @@ const getActiveItemKey = (items, pathname) => {
         }
 
         return normalizedPathname === itemPath || normalizedPathname.startsWith(`${itemPath}/`)
+    })
+
+    return activeItem?.key || null
+}
+
+const getActiveModeItemKey = (items, pathname) => {
+    const normalizedPathname = normalizePath(pathname)
+    const activeItem = items.find((item) => {
+        const [, gameSegment, modeSegment] = normalizePath(item.to).split('/')
+        const modePath = `/${gameSegment}/${modeSegment}`
+
+        return normalizedPathname === modePath || normalizedPathname.startsWith(`${modePath}/`)
     })
 
     return activeItem?.key || null

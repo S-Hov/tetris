@@ -116,31 +116,31 @@ const GameSettingsSideNav = ({ t }) => (
             icon="fas fa-user"
             label={t('modeSelect.modes.solo.title')}
             meta={t('modeSelect.modes.solo.heroLabel')}
-            to={getLocalizedGamePath('/game/solo')}
+            to={getLocalizedGamePath('/game/solo/casual')}
         />
         <GameSettingsSideNavItem
             icon="fas fa-fist-raised"
             label={t('modeSelect.modes.1v1.title')}
             meta={t('modeSelect.modes.1v1.heroLabel')}
-            to={getLocalizedGamePath('/game/1v1')}
+            to={getLocalizedGamePath('/game/1v1/ranked')}
         />
         <GameSettingsSideNavItem
             icon="fas fa-users"
             label={t('modeSelect.modes.2v2.title')}
             meta={t('modeSelect.modes.2v2.heroLabel')}
-            to={getLocalizedGamePath('/game/2v2')}
+            to={getLocalizedGamePath('/game/2v2/ranked')}
         />
         <GameSettingsSideNavItem
             icon="fas fa-gamepad"
             label={t('modeSelect.modes.5v5.title')}
             meta={t('modeSelect.modes.5v5.heroLabel')}
-            to={getLocalizedGamePath('/game/5v5')}
+            to={getLocalizedGamePath('/game/5v5/ranked')}
         />
         <GameSettingsSideNavItem
             icon="fas fa-crown"
             label={t('modeSelect.modes.royale.title')}
             meta={t('modeSelect.modes.royale.heroLabel')}
-            to={getLocalizedGamePath('/game/royale')}
+            to={getLocalizedGamePath('/game/royale/ranked')}
         />
         <Link
             className="profile-sidebar__item profile-sidebar__item--active game-settings-sidebar__item"
