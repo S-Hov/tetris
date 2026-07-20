@@ -86,6 +86,13 @@
 
 .home-hero__content {
     max-width: 640px;
+
+    & .glow-text {
+        background: var(--glow-gradient-strong);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+    }
 }
 
 .home-hero h1 {

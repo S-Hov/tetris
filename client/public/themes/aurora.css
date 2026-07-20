@@ -17,6 +17,7 @@
     --text-active-color: #06141f;
     --description-color: #9cfbe7;
     --glow-gradient-lite: linear-gradient(135deg, #e26cff, #61a8ff, #4dffd9, #75f2aa);
+    --glow-gradient-strong: linear-gradient(135deg, #e26cff, #61a8ff, #4dffd9, #75f2aa);
     --elem-gradient-1: linear-gradient(160deg, rgba(77, 255, 217, 0.2), rgba(226, 108, 255, 0.18)), rgba(5, 18, 28, 0.42);
     --glass-gradient: linear-gradient(180deg, rgba(167, 255, 235, 0.08), rgba(10, 22, 34, 0.18));
     --shadow: 0 22px 46px rgba(0, 0, 0, 0.48), 0 0 34px rgba(77, 255, 217, 0.22), 0 0 38px rgba(226, 108, 255, 0.14), inset 0 1px 0 #ffffff1f;
@@ -58,6 +59,7 @@
     --text-active-color: #ffffff;
     --description-color: #315d57;
     --glow-gradient-lite: linear-gradient(135deg, #dba3ff, #86b9ff, #a7f0df, #dba3ff);
+    --glow-gradient-strong: linear-gradient(100deg, #e26cff 0%, #61a8ff 45%, #4dffd9 100%);
     --elem-gradient-1: linear-gradient(160deg, rgba(0, 143, 120, 0.18), rgba(168, 64, 216, 0.15)), rgba(255, 255, 255, 0.7);
     --glass-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(218, 250, 239, 0.52));
     --shadow: 0 20px 40px rgba(43, 101, 90, 0.2), 0 0 28px rgba(0, 143, 120, 0.17), inset 0 1px 0 rgba(255, 255, 255, 0.8);
