@@ -52,6 +52,7 @@
 .mode-select-banner {
     position: relative;
     min-height: 260px;
+    overflow: visible;
     isolation: isolate;
     background:
         linear-gradient(90deg, rgba(3, 10, 31, 0.94), rgba(8, 18, 49, 0) 48%, rgba(8, 18, 49, 0.28)),
@@ -63,6 +64,7 @@
     position: absolute;
     inset: 0;
     z-index: -1;
+    border-radius: inherit;
     background:
         radial-gradient(circle at 18% 22%, var(--turquoise-tint-medium), transparent 28%),
         linear-gradient(180deg, transparent, rgba(2, 6, 18, 0.58));
@@ -136,6 +138,28 @@
     font-size: 0.76rem;
     font-weight: 900;
     white-space: nowrap;
+}
+
+.mode-select-banner__controls {
+    width: min(100%, 280px);
+    display: grid;
+    justify-items: end;
+    gap: 12px;
+}
+
+.mode-select-banner__mode-select {
+    font-family: var(--font-1);
+    font-size: 0.78rem;
+
+    & .custom-select__trigger {
+        border-color: var(--turquoise-border-soft);
+        background: rgba(5, 17, 44, 0.86);
+        backdrop-filter: var(--medium-blur);
+    }
+
+    & .custom-select__menu {
+        z-index: 20;
+    }
 }
 
 .mode-panel__content {
@@ -604,7 +628,8 @@
     }
 
     .mode-select-online-badge,
-    .mode-select-pills {
+    .mode-select-pills,
+    .mode-select-banner__controls {
         justify-self: start;
     }
 
@@ -669,6 +694,11 @@
     .mode-select-banner__content,
     .mode-panel__content {
         padding: 18px;
+    }
+
+    .mode-select-banner__controls {
+        width: 100%;
+        justify-items: stretch;
     }
 
     .mode-setting-row,

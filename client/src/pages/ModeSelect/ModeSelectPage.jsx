@@ -14,11 +14,13 @@ import {
     defaultModeSettings,
     getModeSelectionConfig,
     MATCH_PLAY_OPTIONS,
+    modeSelectionCatalog,
     PLAY_MODE_KEYS,
     playOptionCards,
 } from '@/shared/config/gameModes.js'
 import { useAuth } from '@/shared/hooks/useAuth'
 import AppSwitch from '@/shared/ui/AppSwitch'
+import CustomSelect from '@/shared/ui/CustomSelect'
 import GlowEffect from '@/shared/ui/GlowEffect'
 import PlayerStatsPanel, { buildPlayerStats } from '@/widgets/PlayerStatsPanel'
 import '@/widgets/ProfileSideNav/ProfileSideNav.css'
@@ -59,6 +61,13 @@ const ModeSelectPage = () => {
     const [guestNickname, setGuestNickname] = useState(() => getStoredGuestSession()?.nickname || '')
     const modeConfig = useMemo(() => getModeSelectionConfig(mode), [mode])
     const translatedModeConfig = useMemo(() => buildTranslatedModeConfig(modeConfig, t), [modeConfig, t])
+    const modeSelectOptions = useMemo(() => (
+        Object.values(modeSelectionCatalog).map((item) => ({
+            value: item.key,
+            label: t(`modeSelect.modes.${item.key}.title`, { defaultValue: item.title }),
+            icon: item.icon,
+        }))
+    ), [t])
     const playerStats = useMemo(() => buildPlayerStats(user), [user])
     const isSoloMode = modeConfig.key === PLAY_MODE_KEYS.SOLO
     const hasTeams = teamModeKeys.has(modeConfig.key)
@@ -279,6 +288,12 @@ const ModeSelectPage = () => {
 
     const getGamePath = (path) => `/${currentLanguage}${path}`
 
+    const selectMode = (nextMode) => {
+        if (nextMode !== modeConfig.key) {
+            navigate(getGamePath(`/game/${nextMode}`))
+        }
+    }
+
     const openSoloGame = () => {
         navigate(getGamePath('/game/solo/play'), {
             state: {
@@ -379,8 +394,11 @@ const ModeSelectPage = () => {
                 <div className="mode-select-content profile-layout-content">
                     <ModeHeroBanner
                         banner={modeBannerByKey[modeConfig.key]}
+                        disabled={matchmakingState.isSearching}
                         modeConfig={translatedModeConfig}
+                        modeOptions={modeSelectOptions}
                         selectedPlayOption={selectedPlayOption}
+                        onModeChange={selectMode}
                     />
 
                     {!user && !isSoloMode && (
@@ -505,7 +523,7 @@ const ModePlayTypeNav = ({
     </aside>
 )
 
-const ModeHeroBanner = ({ banner, modeConfig, selectedPlayOption }) => (
+const ModeHeroBanner = ({ banner, disabled, modeConfig, modeOptions, selectedPlayOption, onModeChange }) => (
     <section className="mode-select-banner" style={{ '--mode-banner-image': `url(${banner})` }}>
         <GlowEffect>
             <div className="glow-effect mode-select-banner__content">
@@ -518,9 +536,18 @@ const ModeHeroBanner = ({ banner, modeConfig, selectedPlayOption }) => (
                     <p>{modeConfig.subtitle}</p>
                 </div>
 
-                <div className="mode-select-online-badge">
-                    <i className="fas fa-globe"></i>
-                    {modeConfig.online}
+                <div className="mode-select-banner__controls">
+                    <CustomSelect
+                        className="mode-select-banner__mode-select"
+                        disabled={disabled}
+                        options={modeOptions}
+                        value={modeConfig.key}
+                        onChange={onModeChange}
+                    />
+                    <div className="mode-select-online-badge">
+                        <i className="fas fa-globe"></i>
+                        {modeConfig.online}
+                    </div>
                 </div>
             </div>
         </GlowEffect>
