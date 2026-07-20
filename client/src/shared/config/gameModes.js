@@ -34,7 +34,7 @@ export const modeSelectionCatalog = {
         settingsCopy: {
             abilities: {
                 title: 'Подлянки от игры',
-                description: 'Макет будущего режима: игра иногда будет накладывать эффекты на игрока.',
+                description: 'Игра иногда будет накладывать эффекты на игрока.',
             },
             specialBlocks: {
                 title: 'Нестандартные блоки',

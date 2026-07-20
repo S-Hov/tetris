@@ -15,7 +15,7 @@
         "settings": {
           "abilities": {
             "title": "Game tricks",
-            "description": "A preview of the future mode: the game may occasionally apply effects to the player."
+            "description": "The game may occasionally apply effects to the player."
           },
           "specialBlocks": {
             "title": "Special blocks",
