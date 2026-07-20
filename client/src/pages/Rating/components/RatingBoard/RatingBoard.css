@@ -89,10 +89,13 @@
 }
 
 .rating-table td {
+    height: 62px;
     padding: 0.8rem 0.75rem;
     border-bottom: 1px solid rgba(107, 146, 255, 0.12);
     color: rgba(225, 238, 255, 0.78);
     font-weight: 600;
+    line-height: 1.25;
+    vertical-align: middle;
     transition: var(--transition);
 }
 
@@ -147,6 +150,8 @@
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
+    min-height: 28px;
+    line-height: 1.2;
     white-space: nowrap;
 }
 

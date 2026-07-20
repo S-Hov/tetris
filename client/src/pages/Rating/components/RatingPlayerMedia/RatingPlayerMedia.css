@@ -31,21 +31,32 @@
 
 .rating-rank-tier-image {
     width: 28px;
-    aspect-ratio: 1;
+    height: 28px;
+    flex: 0 0 28px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
 
 .rating-rank-tier-image img {
+    display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    max-width: 28px;
+    max-height: 28px;
+    object-fit: contain;
 }
 
 .rating-rank-tier-image--pill {
     width: 18px;
+    height: 18px;
+    flex-basis: 18px;
     background: transparent;
+}
+
+.rating-rank-tier-image--pill img {
+    max-width: 18px;
+    max-height: 18px;
 }
 
 .rating-tier-pill {

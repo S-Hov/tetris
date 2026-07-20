@@ -36,8 +36,10 @@ const PodiumCard = ({ player, currentLanguage }) => {
         <PlayerActionTrigger asChild player={player}>
             <article
                 className={`rating-podium-card rating-podium-card--rank-${player.rank} rating-podium-card--${config.accent}`}
-                style={{ backgroundImage: `url(${config.bg})` }}
             >
+                <span className="rating-podium-place" aria-label={`#${player.rank}`}>
+                    {player.rank}
+                </span>
                 <RatingAvatar player={player} />
                 <h2>{player.username}</h2>
                 <span className="rating-player-country">{player.country || DEFAULT_COUNTRY_LABEL}</span>
