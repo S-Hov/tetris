@@ -51,6 +51,7 @@
 
 .mode-select-banner {
     position: relative;
+    z-index: 1;
     min-height: 260px;
     overflow: visible;
     isolation: isolate;
