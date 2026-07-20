@@ -78,16 +78,6 @@
     backdrop-filter: var(--medium-blur);
 }
 
-.home-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-        radial-gradient(circle at 35% 32%, rgba(169, 57, 255, 0.24), transparent 30%),
-        linear-gradient(180deg, transparent 72%, rgba(2, 5, 19, 0.9));
-}
-
 .home-hero__content,
 .home-hero__preview {
     position: relative;
@@ -251,6 +241,7 @@
     .home-hero {
         min-height: 0;
         padding: 42px 24px 30px;
+        background: none;
     }
 }
 

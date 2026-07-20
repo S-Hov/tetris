@@ -122,7 +122,7 @@
 
     .mobile-bottom-nav__ping {
         position: absolute;
-        right: 0;
+        left: 0;
         bottom: calc(100% + 0.45rem);
         width: auto;
         min-height: 34px;

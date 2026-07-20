@@ -125,7 +125,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-top: auto;
+    margin-top: 20px;
     padding: 0 20px;
     border: 1px solid rgba(64, 166, 255, 0.36);
     border-radius: var(--radius-panel);

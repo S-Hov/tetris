@@ -24,7 +24,7 @@ const EffectsLabSection = () => {
 
                 <h2 id="effects-lab-title">
                     <span>{t('home.effectsLab.title')}</span>
-                    <strong>{t('home.effectsLab.titleHighlight')}</strong>
+                    <strong className='glow-text'>{t('home.effectsLab.titleHighlight')}</strong>
                 </h2>
 
                 <p className="effects-lab-section__description">
