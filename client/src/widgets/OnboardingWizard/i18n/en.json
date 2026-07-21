@@ -26,23 +26,73 @@
     "openSecurity": "Open security",
     "tutorial": {
       "0": {
-        "title": "Main navigation",
-        "description": "The main site sections are in the top menu. On compact screens, open them with the menu button.",
-        "hint": "Start a game and choose a mode from the home page.",
-        "icon": "fas fa-compass"
+        "title": "Main site navigation",
+        "imageAlt": "Website header with the main navigation",
+        "description": "The site header is the main way to move between sections. Use it to open key pages and quickly switch to a game mode.",
+        "details": [
+          "On smaller screens, header links are available through the menu button.",
+          "The language switcher is also in the header and remains available on every main page."
+        ]
       },
       "1": {
-        "title": "Quick settings",
-        "description": "Language, theme, and effects apply immediately. You can change them again at any time without losing your setup.",
-        "hint": "Find every option under General in your account settings.",
-        "icon": "fas fa-sliders"
+        "title": "Game page and mode selection",
+        "imageAlt": "Game page with game type and mode selection",
+        "description": "The game page is split by purpose: choose how to start on the left and select the actual game format on the right.",
+        "details": [
+          "On the left, choose a ranked or casual game, create a room, or open settings.",
+          "On the right, switch between one-versus-one, two-versus-two, and other available formats.",
+          "You can also change the game format through the game navigation in the site header."
+        ]
       },
       "2": {
-        "title": "Profile and support",
-        "description": "Your profile contains game stats and data, while Support can help with questions about the site.",
-        "hint": "Everything is ready — choose a mode and start a match.",
-        "icon": "fas fa-gamepad"
-      }
+        "title": "Game settings",
+        "imageAlt": "Effects and special blocks toggles in game settings",
+        "description": "The game settings page has two important toggles: effects and special blocks. Both can significantly change a match.",
+        "details": [
+          "Effects are super abilities. Fill your energy during a match, choose an available ability, and use it against an opponent.",
+          "Special blocks add pieces that are not found in the classic game and make matches less predictable.",
+          "Turn either option off when you prefer more familiar rules."
+        ]
+      },
+      "3": {
+        "title": "Profile and personal account",
+        "imageAlt": "Profile page with the left navigation panel",
+        "description": "Your profile appearance changes with your rank. Most personal account actions are available through the left navigation panel.",
+        "details": [
+          "Profile is the main page with player information and statistics.",
+          "Inventory stores block and game board skins.",
+          "Matches contains your match history and detailed analysis.",
+          "Friends opens social features, while Settings lets you manage your account and interface."
+        ]
+      },
+      "4": {
+        "title": "Player chat",
+        "imageAlt": "Player chat open in the lower-left corner of the site",
+        "description": "Registered users can open the chat from the lower-left corner of the interface and talk to other players without leaving the site.",
+        "details": [
+          "The chat button remains available during normal site navigation.",
+          "You need to sign in to a registered account to participate."
+        ]
+      },
+      "5": {
+        "title": "Friends and social panel",
+        "imageAlt": "Friends panel on the right side of the site",
+        "description": "The social panel on the right is used to manage friends. It gives quick access to available users and social interactions.",
+        "details": [
+          "Select a user to open every action currently available for them.",
+          "Available actions depend on the user's status and your current relationship."
+        ]
+      },
+      "6": {
+        "title": "User support",
+        "imageAlt": "User support request form",
+        "description": "The site includes a complete support system. Send us a request whenever you have a question, an idea, or a bug to report.",
+        "details": [
+          "Choose a category, describe the situation, and add an attachment when useful.",
+          "Registered users can track their requests and responses from the team."
+        ]
+      },
+      "openSupport": "Open support form"
     }
   }
 }

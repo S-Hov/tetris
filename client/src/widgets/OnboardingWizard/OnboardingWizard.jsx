@@ -25,10 +25,28 @@ import {
 import { THEME_PALETTE_OPTIONS } from '@/shared/lib/theme/theme.js'
 import { getLocalizedPath } from '@/i18n'
 
+import tutorialChatImage from './assets/tutorial/chat.png'
+import tutorialFriendsImage from './assets/tutorial/friends.png'
+import tutorialGamePageImage from './assets/tutorial/game-page.png'
+import tutorialGameSettingsImage from './assets/tutorial/game-settings.png'
+import tutorialHeaderImage from './assets/tutorial/header.png'
+import tutorialProfileImage from './assets/tutorial/profile.png'
+import tutorialSupportImage from './assets/tutorial/support.png'
+
 import './OnboardingWizard.css'
 
 const SETUP_STEP_COUNT = 3
-const TUTORIAL_STEP_COUNT = 3
+const MOBILE_TUTORIAL_MEDIA_QUERY = '(max-width: 720px)'
+const TUTORIAL_IMAGES = [
+    tutorialHeaderImage,
+    tutorialGamePageImage,
+    tutorialGameSettingsImage,
+    tutorialProfileImage,
+    tutorialChatImage,
+    tutorialFriendsImage,
+    tutorialSupportImage,
+]
+const TUTORIAL_STEP_COUNT = TUTORIAL_IMAGES.length
 const RADIUS_UNIT_OPTIONS = [
     { value: RADIUS_UNITS.PX, label: 'px' },
     { value: RADIUS_UNITS.PERCENT, label: '%' },
@@ -41,6 +59,7 @@ const OnboardingWizard = () => {
     const [stage, setStage] = useState(getInitialOnboardingStage)
     const [setupStep, setSetupStep] = useState(0)
     const [tutorialStep, setTutorialStep] = useState(0)
+    const [isMobileTutorialViewport, setIsMobileTutorialViewport] = useState(getIsMobileTutorialViewport)
     const closeButtonRef = useRef(null)
 
     const { accentColor, setAccentColor } = useAccentColor()
@@ -50,7 +69,23 @@ const OnboardingWizard = () => {
     const { isDarkTheme, setThemePalette, themePalette, toggleTheme } = useTheme()
 
     useEffect(() => {
-        if (stage === ONBOARDING_STAGES.CLOSED) {
+        if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+            return undefined
+        }
+
+        const mediaQuery = window.matchMedia(MOBILE_TUTORIAL_MEDIA_QUERY)
+        const handleViewportChange = (event) => setIsMobileTutorialViewport(event.matches)
+
+        mediaQuery.addEventListener('change', handleViewportChange)
+
+        return () => mediaQuery.removeEventListener('change', handleViewportChange)
+    }, [])
+
+    useEffect(() => {
+        if (
+            stage === ONBOARDING_STAGES.CLOSED ||
+            (stage === ONBOARDING_STAGES.TUTORIAL && isMobileTutorialViewport)
+        ) {
             return undefined
         }
 
@@ -61,9 +96,12 @@ const OnboardingWizard = () => {
         return () => {
             document.body.style.overflow = previousOverflow
         }
-    }, [stage])
+    }, [isMobileTutorialViewport, stage])
 
-    if (stage === ONBOARDING_STAGES.CLOSED) {
+    if (
+        stage === ONBOARDING_STAGES.CLOSED ||
+        (stage === ONBOARDING_STAGES.TUTORIAL && isMobileTutorialViewport)
+    ) {
         return null
     }
 
@@ -97,6 +135,12 @@ const OnboardingWizard = () => {
         completeOnboardingTutorial()
         setStage(ONBOARDING_STAGES.CLOSED)
         navigate(getLocalizedPath(isAuth ? '/account-settings/security' : '/register'))
+    }
+
+    const handleSupportAction = () => {
+        completeOnboardingTutorial()
+        setStage(ONBOARDING_STAGES.CLOSED)
+        navigate(getLocalizedPath('/support'))
     }
 
     const activeStep = stage === ONBOARDING_STAGES.SETUP ? setupStep : tutorialStep
@@ -180,7 +224,11 @@ const OnboardingWizard = () => {
                     </>
                 ) : (
                     <>
-                        <TutorialStep step={tutorialStep} t={t} />
+                        <TutorialStep
+                            onSupportAction={handleSupportAction}
+                            step={tutorialStep}
+                            t={t}
+                        />
                         <WizardFooter
                             activeStep={tutorialStep}
                             nextLabel={tutorialStep === TUTORIAL_STEP_COUNT - 1 ? t('onboarding.finish') : t('onboarding.next')}
@@ -197,6 +245,12 @@ const OnboardingWizard = () => {
         </div>
     )
 }
+
+const getIsMobileTutorialViewport = () => (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia(MOBILE_TUTORIAL_MEDIA_QUERY).matches
+)
 
 const SetupStep = ({ step, ...props }) => {
     if (step === 0) {
@@ -395,19 +449,38 @@ const SecurityStep = ({ isAuth, onSecurityAction, t }) => (
     </div>
 )
 
-const TutorialStep = ({ step, t }) => (
-    <div className="onboarding__content onboarding-tutorial">
-        <div className="onboarding-tutorial__visual" aria-hidden="true">
-            <i className={t(`onboarding.tutorial.${step}.icon`)} />
-            <span>{step + 1}</span>
+const TutorialStep = ({ onSupportAction, step, t }) => {
+    const details = t(`onboarding.tutorial.${step}.details`, { returnObjects: true })
+    const detailItems = Array.isArray(details) ? details : []
+    const isSupportStep = step === TUTORIAL_STEP_COUNT - 1
+
+    return (
+        <div className="onboarding__content onboarding-tutorial">
+            <figure className={`onboarding-tutorial__media onboarding-tutorial__media--${step}`}>
+                <img
+                    alt={t(`onboarding.tutorial.${step}.imageAlt`)}
+                    src={TUTORIAL_IMAGES[step]}
+                />
+            </figure>
+            <div className="onboarding-tutorial__copy">
+                <p>{t(`onboarding.tutorial.${step}.description`)}</p>
+                {detailItems.length > 0 && (
+                    <ul>
+                        {detailItems.map((detail) => (
+                            <li key={detail}>{detail}</li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+            {isSupportStep && (
+                <button type="button" className="onboarding-tutorial__support" onClick={onSupportAction}>
+                    <i className="fas fa-headset" aria-hidden="true" />
+                    {t('onboarding.tutorial.openSupport')}
+                </button>
+            )}
         </div>
-        <p>{t(`onboarding.tutorial.${step}.description`)}</p>
-        <div className="onboarding-tutorial__hint">
-            <i className="fas fa-lightbulb" aria-hidden="true" />
-            <span>{t(`onboarding.tutorial.${step}.hint`)}</span>
-        </div>
-    </div>
-)
+    )
+}
 
 const LanguageSetting = ({ t }) => (
     <GlowPanel>
@@ -469,7 +542,10 @@ const WizardFooter = ({
         <button type="button" className="onboarding__skip" onClick={onDismiss}>
             {t('onboarding.hide')}
         </button>
-        <div className="onboarding__step-buttons" aria-label={t('onboarding.stepsAria')}>
+        <div
+            className={`onboarding__step-buttons ${stepCount > SETUP_STEP_COUNT ? 'onboarding__step-buttons--compact' : ''}`}
+            aria-label={t('onboarding.stepsAria')}
+        >
             {Array.from({ length: stepCount }, (_, index) => (
                 <button
                     key={index}

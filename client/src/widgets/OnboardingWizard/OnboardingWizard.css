@@ -121,6 +121,10 @@
     background: color-mix(in srgb, var(--elem-bg) 78%, transparent);
     color: var(--text-color-1);
     text-align: left;
+
+    &:has(.interface-language-select.onboarding-language) {
+        justify-content: space-between;
+    }
 }
 
 .onboarding-glow-panel {
@@ -383,8 +387,7 @@ button.onboarding-setting{
     background: color-mix(in srgb, var(--elem-bg) 48%, transparent);
 }
 
-.onboarding-security__icon,
-.onboarding-tutorial__visual {
+.onboarding-security__icon {
     position: relative;
     width: 112px;
     aspect-ratio: 1;
@@ -448,41 +451,106 @@ button.onboarding-setting{
 }
 
 .onboarding-tutorial {
-    gap: 1.2rem;
+    align-content: start;
+    gap: 1rem;
 }
 
-.onboarding-tutorial__visual span {
-    position: absolute;
-    right: -8px;
-    bottom: -8px;
-    width: 34px;
-    aspect-ratio: 1;
+.onboarding-tutorial__media {
+    width: 100%;
+    min-height: 150px;
+    max-height: min(38vh, 360px);
     display: grid;
     place-items: center;
-    border: 2px solid var(--elem-bg);
-    border-radius: 50%;
-    background: var(--turquoise);
-    color: #041013;
-    font: 900 0.8rem var(--font-1);
-}
-
-.onboarding-tutorial__hint {
-    max-width: 620px;
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-    padding: 0.85rem 1rem;
+    overflow: hidden;
+    margin: 0;
+    padding: 0.65rem;
     border: var(--border);
     border-radius: var(--radius-card-1);
-    background: var(--turquoise-tint-soft);
-    color: var(--text-color-1);
-    font-size: 0.82rem;
-    line-height: 1.45;
+    background:
+        linear-gradient(135deg, var(--turquoise-tint-soft), rgba(255, 0, 255, 0.05)),
+        color-mix(in srgb, var(--elem-bg) 82%, transparent);
+    box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.2);
+}
+
+.onboarding-tutorial__media img {
+    width: 100%;
+    height: 100%;
+    max-height: calc(min(38vh, 360px) - 1.3rem);
+    display: block;
+    object-fit: contain;
+    border-radius: calc(var(--radius-card-1) - 5px);
+}
+
+.onboarding-tutorial__media--0 {
+    min-height: 130px;
+}
+
+.onboarding-tutorial__copy {
+    width: min(760px, 100%);
+    display: grid;
+    gap: 0.75rem;
+    padding: 0 0.25rem;
     text-align: left;
 }
 
-.onboarding-tutorial__hint i {
-    color: var(--yellow);
+.onboarding-tutorial__copy > p {
+    margin: 0;
+    color: var(--text-color-1);
+    font-size: 0.94rem;
+    line-height: 1.6;
+}
+
+.onboarding-tutorial__copy ul {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.onboarding-tutorial__copy li {
+    position: relative;
+    padding-left: 1.15rem;
+    color: var(--text-color);
+    font-size: 0.84rem;
+    line-height: 1.5;
+}
+
+.onboarding-tutorial__copy li::before {
+    content: '';
+    position: absolute;
+    top: 0.58em;
+    left: 0;
+    width: 6px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--turquoise);
+    box-shadow: 0 0 9px var(--turquoise-glow-intense);
+}
+
+.onboarding-tutorial__support {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 44px;
+    padding: 0 1rem;
+    border: 1px solid var(--turquoise-border-strong);
+    border-radius: var(--radius-card-1);
+    background: var(--turquoise-tint-medium);
+    box-shadow: var(--lite-shadow);
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: 0.76rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.onboarding-tutorial__support:hover,
+.onboarding-tutorial__support:focus-visible {
+    transform: translateY(-2px);
+    border-color: var(--turquoise-glow-strong);
+    outline: none;
 }
 
 .onboarding__footer {
@@ -577,6 +645,15 @@ button.onboarding-setting{
     outline: none;
 }
 
+.onboarding__step-buttons--compact {
+    gap: 0.32rem;
+}
+
+.onboarding__step-buttons--compact button {
+    width: 26px;
+    font-size: 0.64rem;
+}
+
 @media (max-width: 720px) {
     .onboarding {
         padding: 0;
@@ -635,12 +712,27 @@ button.onboarding-setting{
     }
 
     .onboarding__footer {
+        grid-template-columns: 1fr;
         gap: 0.6rem;
+    }
+
+    .onboarding__step-buttons,
+    .onboarding__actions {
+        justify-content: center;
     }
 
     .onboarding__actions button {
         padding: 0 0.65rem;
         font-size: 0.66rem;
+    }
+
+    .onboarding-tutorial__media {
+        min-height: 120px;
+        max-height: 280px;
+    }
+
+    .onboarding-tutorial__media img {
+        max-height: calc(280px - 1.3rem);
     }
 }
 

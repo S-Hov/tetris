@@ -38,7 +38,7 @@ const CookieConsentBanner = () => {
             <div className="cookie-consent-banner__body">
                 <div className="cookie-consent-banner__content">
                     <span className="cookie-consent-banner__icon" aria-hidden="true">
-                        <i class="fa-solid fa-cookie-bite"></i>
+                        <i className="fa-solid fa-cookie-bite"></i>
                     </span>
                     <div className="cookie-consent-banner__text">
                         <strong>{t('cookieConsentBanner.title')}</strong>
