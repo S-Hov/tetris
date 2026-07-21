@@ -35,7 +35,7 @@ const GeneralSettingsSection = ({
         <GlowEffect>
             <div className="glow-effect account-general-settings">
                 <div className="account-section-title">
-                    <i class="fa-solid fa-bars-staggered"></i>
+                    <i className="fa-solid fa-bars-staggered"></i>
                     {t('accountSettings.general.title')}
                 </div>
 

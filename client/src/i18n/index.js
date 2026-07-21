@@ -44,6 +44,8 @@ import cookieConsentBannerEn from '../widgets/CookieConsentBanner/i18n/en.json'
 import cookieConsentBannerRu from '../widgets/CookieConsentBanner/i18n/ru.json'
 import simpleHeaderEn from '../widgets/Header/SimpleHeader/i18n/en.json'
 import simpleHeaderRu from '../widgets/Header/SimpleHeader/i18n/ru.json'
+import onboardingEn from '../widgets/OnboardingWizard/i18n/en.json'
+import onboardingRu from '../widgets/OnboardingWizard/i18n/ru.json'
 
 export { DEFAULT_LANGUAGE, LANGUAGES, SUPPORTED_LANGUAGES } from './languages'
 
@@ -107,8 +109,8 @@ i18n
     .use(initReactI18next)
     .init({
         resources: {
-            ru: { translation: { ...homeRu, ...profileRu, ...inventoryRu, ...aboutRu, ...effectsRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...friendsRu, ...matchesRu, ...lobbyRu, ...legalDocsRu, ...modeSelectRu, ...supportRequestsRu, ...teamQueueRu, ...authRu, ...emailVerificationRu, ...siteFooterRu, ...cookieConsentBannerRu, ...simpleHeaderRu } },
-            en: { translation: { ...homeEn, ...profileEn, ...inventoryEn, ...aboutEn, ...effectsEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...friendsEn, ...matchesEn, ...lobbyEn, ...legalDocsEn, ...modeSelectEn, ...supportRequestsEn, ...teamQueueEn, ...authEn, ...emailVerificationEn, ...siteFooterEn, ...cookieConsentBannerEn, ...simpleHeaderEn } },
+            ru: { translation: { ...homeRu, ...profileRu, ...inventoryRu, ...aboutRu, ...effectsRu, ...ratingRu, ...supportRu, ...gameControlsRu, ...accountSettingsRu, ...friendsRu, ...matchesRu, ...lobbyRu, ...legalDocsRu, ...modeSelectRu, ...supportRequestsRu, ...teamQueueRu, ...authRu, ...emailVerificationRu, ...siteFooterRu, ...cookieConsentBannerRu, ...simpleHeaderRu, ...onboardingRu } },
+            en: { translation: { ...homeEn, ...profileEn, ...inventoryEn, ...aboutEn, ...effectsEn, ...ratingEn, ...supportEn, ...gameControlsEn, ...accountSettingsEn, ...friendsEn, ...matchesEn, ...lobbyEn, ...legalDocsEn, ...modeSelectEn, ...supportRequestsEn, ...teamQueueEn, ...authEn, ...emailVerificationEn, ...siteFooterEn, ...cookieConsentBannerEn, ...simpleHeaderEn, ...onboardingEn } },
         },
         lng: getLanguageFromPathname(typeof window !== 'undefined' ? window.location.pathname : ''),
         fallbackLng: DEFAULT_LANGUAGE,

@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast'
 import useAppSocketSession from '@/shared/hooks/useAppSocketSession.js'
 import RoomInviteModal from '@/widgets/RoomInviteModal'
 import CookieConsentBanner from '@/widgets/CookieConsentBanner'
+import OnboardingWizard from '@/widgets/OnboardingWizard'
 import { UserActionsProvider } from '@/shared/context/UserActionsContext.jsx'
 
 const App = () => {
@@ -25,6 +26,7 @@ const App = () => {
         <AppRouter />
         <RoomInviteModal />
         <CookieConsentBanner />
+        <OnboardingWizard />
       </UserActionsProvider>
     </>
   )

@@ -1,0 +1,48 @@
+{
+  "onboarding": {
+    "progressAria": "Setup progress",
+    "setupEyebrow": "Setup wizard · step {{current}} of {{total}}",
+    "tutorialEyebrow": "Quick tutorial · step {{current}} of {{total}}",
+    "hide": "Hide",
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish",
+    "startTutorial": "Start tutorial",
+    "stepsAria": "Wizard steps",
+    "goToStep": "Go to step {{step}}",
+    "steps": {
+      "0": { "title": "Make the appearance yours" },
+      "1": { "title": "Set up a comfortable interface" },
+      "2": { "title": "Protect your game progress" }
+    },
+    "appearanceBlockTitle": "Appearance",
+    "interfaceBlockTitle": "Interface",
+    "securityEyebrow": "Security and progress",
+    "securityTitle": "Create a personal account",
+    "securityDescription": "An account lets you manage security and save your progress, match statistics, and game settings.",
+    "securityAuthTitle": "Your account is already connected",
+    "securityAuthDescription": "Manage your password, sign-in methods, and login history in the security section of your account.",
+    "register": "Register",
+    "openSecurity": "Open security",
+    "tutorial": {
+      "0": {
+        "title": "Main navigation",
+        "description": "The main site sections are in the top menu. On compact screens, open them with the menu button.",
+        "hint": "Start a game and choose a mode from the home page.",
+        "icon": "fas fa-compass"
+      },
+      "1": {
+        "title": "Quick settings",
+        "description": "Language, theme, and effects apply immediately. You can change them again at any time without losing your setup.",
+        "hint": "Find every option under General in your account settings.",
+        "icon": "fas fa-sliders"
+      },
+      "2": {
+        "title": "Profile and support",
+        "description": "Your profile contains game stats and data, while Support can help with questions about the site.",
+        "hint": "Everything is ready — choose a mode and start a match.",
+        "icon": "fas fa-gamepad"
+      }
+    }
+  }
+}
