@@ -41,9 +41,17 @@ export const useInterfaceBlur = () => {
         })
     }
 
+    const toggleBlur = () => {
+        setBlurSettings({
+            ...blurSettings,
+            enabled: !blurSettings.enabled,
+        })
+    }
+
     return {
         blurSettings,
         setBlurSetting,
         setBlurSettings,
+        toggleBlur,
     }
 }

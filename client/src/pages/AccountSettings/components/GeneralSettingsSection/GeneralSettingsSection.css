@@ -277,6 +277,19 @@
 .account-blur-settings__grid {
     display: grid;
     gap: 0.85rem;
+    transition: opacity 0.2s ease;
+}
+
+.account-blur-settings__grid.is-disabled {
+    opacity: 0.45;
+}
+
+.account-blur-settings__grid.is-disabled .account-blur-control {
+    cursor: not-allowed;
+}
+
+.account-blur-settings__grid.is-disabled input[type="range"] {
+    cursor: not-allowed;
 }
 
 .account-blur-control,

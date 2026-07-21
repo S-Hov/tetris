@@ -39,7 +39,7 @@ const AccountSettingsPage = () => {
     const avatarInputRef = useRef(null)
     const { checkAuth, logout, setUser, user } = useAuth()
     const { accentColor, setAccentColor } = useAccentColor()
-    const { blurSettings, setBlurSetting } = useInterfaceBlur()
+    const { blurSettings, setBlurSetting, toggleBlur } = useInterfaceBlur()
     const { isGlowEffectEnabled, toggleGlowEffect } = useGlowEffect()
     const { radiusSettings, setRadiusSetting } = useInterfaceRadius()
     const { isDarkTheme, setThemePalette, themePalette, toggleTheme } = useTheme()
@@ -313,6 +313,7 @@ const AccountSettingsPage = () => {
                             isGlowEffectEnabled={isGlowEffectEnabled}
                             onAccentColorChange={setAccentColor}
                             onBlurSettingChange={setBlurSetting}
+                            onBlurToggle={toggleBlur}
                             onGlowEffectToggle={toggleGlowEffect}
                             onThemePaletteChange={setThemePalette}
                             onRadiusSettingChange={setRadiusSetting}

@@ -105,10 +105,12 @@
       "radiusUnitAria": "{{name}} radius unit",
       "blurTitle": "Blur",
       "blurDescription": "Changes glass panel blur strength",
+      "blurToggleTitle": "Interface blur",
+      "blurToggleDescription": "Turn off blur to reduce the load on low-end devices and minimize lag.",
       "blurLabels": {
-        "easy": "Easy",
-        "medium": "Medium",
-        "hard": "Hard"
+        "easy": "Level one blur",
+        "medium": "Level two blur",
+        "hard": "Level three blur"
       },
       "blurValueAria": "{{name}} blur value",
       "accentTitle": "Accent color",

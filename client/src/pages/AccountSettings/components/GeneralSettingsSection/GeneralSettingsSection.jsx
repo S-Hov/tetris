@@ -22,6 +22,7 @@ const GeneralSettingsSection = ({
     isGlowEffectEnabled,
     onAccentColorChange,
     onBlurSettingChange,
+    onBlurToggle,
     onGlowEffectToggle,
     onThemePaletteChange,
     onRadiusSettingChange,
@@ -196,7 +197,22 @@ const GeneralSettingsSection = ({
                             <strong>{t('accountSettings.general.blurTitle')}</strong>
                             <small>{t('accountSettings.general.blurDescription')}</small>
                         </div>
-                        <div className="account-blur-settings__grid">
+                        <button
+                            type="button"
+                            className="account-theme-toggle account-blur-toggle"
+                            aria-pressed={blurSettings.enabled}
+                            onClick={onBlurToggle}
+                        >
+                            <span>
+                                <strong>{t('accountSettings.general.blurToggleTitle')}</strong>
+                                <small>{t('accountSettings.general.blurToggleDescription')}</small>
+                            </span>
+                            <AppSwitch checked={blurSettings.enabled} />
+                        </button>
+                        <div
+                            className={`account-blur-settings__grid ${blurSettings.enabled ? '' : 'is-disabled'}`}
+                            aria-disabled={!blurSettings.enabled}
+                        >
                             {BLUR_VARIABLES.map((variable) => (
                                 <label className="account-blur-control" key={variable.key}>
                                     <span>{t(`accountSettings.general.blurLabels.${variable.key}`)}</span>
@@ -211,6 +227,7 @@ const GeneralSettingsSection = ({
                                             step="1"
                                             type="range"
                                             value={blurSettings[variable.key]}
+                                            disabled={!blurSettings.enabled}
                                         />
                                         <output>{blurSettings[variable.key]}</output>
                                     </div>

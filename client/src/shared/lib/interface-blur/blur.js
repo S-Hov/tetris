@@ -36,7 +36,7 @@ const normalizeValue = (value, fallbackValue = 0) => {
 export const getDefaultInterfaceBlurSettings = () => BLUR_VARIABLES.reduce((settings, variable) => ({
     ...settings,
     [variable.key]: variable.defaultValue,
-}), {})
+}), { enabled: true })
 
 export const normalizeInterfaceBlurSettings = (settings) => {
     const defaults = getDefaultInterfaceBlurSettings()
@@ -45,7 +45,9 @@ export const normalizeInterfaceBlurSettings = (settings) => {
     return BLUR_VARIABLES.reduce((normalizedSettings, variable) => ({
         ...normalizedSettings,
         [variable.key]: normalizeValue(source[variable.key], defaults[variable.key]),
-    }), {})
+    }), {
+        enabled: typeof source.enabled === 'boolean' ? source.enabled : defaults.enabled,
+    })
 }
 
 export const getStoredInterfaceBlurSettings = () => {
@@ -70,7 +72,8 @@ export const applyInterfaceBlurSettings = (settings) => {
 
     if (typeof document !== 'undefined') {
         BLUR_VARIABLES.forEach((variable) => {
-            document.documentElement.style.setProperty(variable.cssVariable, `blur(${nextSettings[variable.key]}px)`)
+            const blurValue = nextSettings.enabled ? nextSettings[variable.key] : 0
+            document.documentElement.style.setProperty(variable.cssVariable, `blur(${blurValue}px)`)
         })
     }
 
