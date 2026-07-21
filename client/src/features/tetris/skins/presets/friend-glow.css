@@ -3,7 +3,7 @@
     overflow: hidden;
     isolation: isolate;
     border: 0;
-    background: linear-gradient(145deg, #71808c, #394957);
+    background: linear-gradient(145deg, #71808c, #1a3246)!important;
     box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.12), 0 0 9px rgba(0, 246, 255, 0.34);
 }
 
@@ -26,13 +26,6 @@
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-}
-
-:is(.tetris-skin--friend-glow, .inventory-skin--friend-glow) .filled::after {
-    z-index: 1;
-    inset: 15%;
-    border-radius: 12%;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(2, 5, 14, 0.28));
 }
 
 .inventory-card__preview.inventory-skin--friend-glow {
