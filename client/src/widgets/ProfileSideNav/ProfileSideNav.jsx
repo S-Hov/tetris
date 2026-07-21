@@ -1,7 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { getLanguageFromPathname, getLocalizedPath, stripLanguageFromPathname } from '@/i18n'
-import activeMenuBorder from '@/pages/Profile/assets/menu/active_border.png'
 import './ProfileSideNav.css'
 
 const PROFILE_NAV_ITEMS = [
@@ -20,7 +19,7 @@ const ProfileSideNav = () => {
     const profilePath = `/${lang}/profile`
 
     return (
-        <aside className="profile-sidebar" style={{ '--profile-menu-active-border': `url(${activeMenuBorder})` }} aria-label={t('profile.sideNav.ariaLabel')}>
+        <aside className="profile-sidebar" aria-label={t('profile.sideNav.ariaLabel')}>
             {PROFILE_NAV_ITEMS.map((item) => (
                 <Link
                     key={item.key}
