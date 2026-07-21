@@ -20,10 +20,17 @@
         radial-gradient(circle at 72% 24%, rgba(247, 225, 255, 0.8) 0 5%, transparent 7%),
         radial-gradient(circle at 25% 72%, rgba(157, 218, 221, 0.42) 0 7%, transparent 9%),
         linear-gradient(145deg, rgba(255, 255, 255, 0.13), transparent 48%);
+    animation: skin-confetti-drift 3s ease-in-out infinite alternate;
 }
 
 :is(.tetris-skin--night-bloom, .inventory-skin--night-bloom) .skin-cell-layer--secondary {
     inset: 18%;
     border: 1px solid rgba(236, 193, 238, 0.24);
     border-radius: 50% 50% 42% 58%;
+}
+
+@keyframes skin-confetti-drift {
+    to {
+        transform: rotate(120deg);
+    }
 }
