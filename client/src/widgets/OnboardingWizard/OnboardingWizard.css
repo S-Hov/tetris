@@ -109,6 +109,150 @@
     scrollbar-color: var(--turquoise-border) transparent;
 }
 
+.onboarding-intro {
+    min-height: 500px;
+    align-content: center;
+    justify-items: center;
+    gap: 1.25rem;
+    text-align: center;
+}
+
+.onboarding-intro__brand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--turquoise-border-soft);
+    border-radius: var(--radius-card-1);
+    background: color-mix(in srgb, var(--elem-bg) 58%, transparent);
+    box-shadow: var(--lite-shadow);
+}
+
+.onboarding-intro__brand > img {
+    width: clamp(58px, 7vw, 78px);
+    aspect-ratio: 1;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px var(--turquoise)) drop-shadow(0 0 18px rgba(255, 0, 255, 0.55));
+}
+
+.onboarding-intro__brand > div {
+    display: grid;
+    justify-items: start;
+    gap: 0.25rem;
+}
+
+.onboarding-intro__brand strong {
+    font-family: var(--font-1);
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.onboarding-intro__brand span {
+    color: var(--text-color);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.onboarding-intro__copy {
+    width: min(660px, 100%);
+    display: grid;
+    gap: 0.85rem;
+}
+
+.onboarding-intro__copy h3 {
+    margin: 0;
+    color: var(--text-active-color);
+    font-family: var(--font-1);
+    font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+}
+
+.onboarding-intro__copy > p {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 0.94rem;
+    line-height: 1.65;
+}
+
+.onboarding-intro__copy ul {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.onboarding-intro__copy li {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 0.55rem;
+    padding: 0.85rem;
+    border: var(--border);
+    border-radius: var(--radius-card-1);
+    background: color-mix(in srgb, var(--elem-bg) 70%, transparent);
+    color: var(--text-color);
+    font-size: 0.78rem;
+    line-height: 1.45;
+}
+
+.onboarding-intro__copy li i {
+    color: var(--turquoise);
+    font-size: 1.15rem;
+    text-shadow: var(--text-shadow);
+}
+
+.onboarding-intro__copy small {
+    color: var(--turquoise-lite);
+    font-size: 0.78rem;
+}
+
+.onboarding-intro__actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+}
+
+.onboarding-intro__actions button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0 1rem;
+    border: var(--border);
+    border-radius: var(--radius-card-1);
+    background: var(--input-bg);
+    color: var(--text-color);
+    font-family: var(--font-1);
+    font-size: 0.74rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.onboarding-intro__actions button.is-primary {
+    border-color: var(--turquoise-border-strong);
+    background: var(--turquoise-tint-medium);
+    color: var(--text-active-color);
+    box-shadow: var(--lite-shadow);
+}
+
+.onboarding-intro__actions button:hover,
+.onboarding-intro__actions button:focus-visible {
+    border-color: var(--turquoise-glow-strong);
+    color: var(--text-active-color);
+    outline: none;
+    transform: translateY(-2px);
+}
+
 .onboarding-setting {
     width: 100%;
     display: flex;
@@ -691,6 +835,14 @@ button.onboarding-setting{
     .onboarding__step-buttons {
         justify-content: start;
     }
+
+    .onboarding-intro {
+        min-height: 0;
+    }
+
+    .onboarding-intro__copy ul {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 480px) {
@@ -733,6 +885,15 @@ button.onboarding-setting{
 
     .onboarding-tutorial__media img {
         max-height: calc(280px - 1.3rem);
+    }
+
+    .onboarding-intro__actions {
+        width: 100%;
+        display: grid;
+    }
+
+    .onboarding-intro__actions button {
+        width: 100%;
     }
 }
 

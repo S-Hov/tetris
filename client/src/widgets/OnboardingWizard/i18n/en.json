@@ -1,6 +1,18 @@
 {
   "onboarding": {
     "progressAria": "Setup progress",
+    "welcomeEyebrow": "First launch",
+    "welcomeTitle": "Welcome to PVP Blocks",
+    "welcomeHeading": "Let's get everything ready for your first game",
+    "welcomeDescription": "A short setup wizard will help you choose the main appearance and interface options. It only takes a few minutes and makes your first experience with the project clearer.",
+    "welcomeFeatures": {
+      "appearance": "Choose a theme, color palette, and accent color.",
+      "interface": "Set up scale, effects, rounding, and blur.",
+      "security": "Learn how to save progress and protect your account."
+    },
+    "welcomeNote": "You can change every option later in your personal account.",
+    "startSetup": "Start setup",
+    "skipSetup": "Skip setup",
     "setupEyebrow": "Setup wizard · step {{current}} of {{total}}",
     "tutorialEyebrow": "Quick tutorial · step {{current}} of {{total}}",
     "hide": "Hide",

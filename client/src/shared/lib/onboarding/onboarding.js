@@ -2,6 +2,7 @@ export const ONBOARDING_STORAGE_KEY = 'pvpBlocksOnboarding'
 export const ONBOARDING_VERSION = 1
 
 export const ONBOARDING_STAGES = {
+    INTRO: 'intro',
     SETUP: 'setup',
     TUTORIAL: 'tutorial',
     CLOSED: 'closed',
@@ -31,7 +32,7 @@ export const getInitialOnboardingStage = () => {
     const state = getOnboardingState()
 
     if (!state) {
-        return ONBOARDING_STAGES.SETUP
+        return ONBOARDING_STAGES.INTRO
     }
 
     if (state.status === 'completed' && !state.tutorialCompleted) {

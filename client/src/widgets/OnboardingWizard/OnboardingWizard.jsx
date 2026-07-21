@@ -32,6 +32,7 @@ import tutorialGameSettingsImage from './assets/tutorial/game-settings.png'
 import tutorialHeaderImage from './assets/tutorial/header.png'
 import tutorialProfileImage from './assets/tutorial/profile.png'
 import tutorialSupportImage from './assets/tutorial/support.png'
+import projectLogo from '@/widgets/Header/assets/logo.png'
 
 import './OnboardingWizard.css'
 
@@ -143,9 +144,11 @@ const OnboardingWizard = () => {
         navigate(getLocalizedPath('/support'))
     }
 
-    const activeStep = stage === ONBOARDING_STAGES.SETUP ? setupStep : tutorialStep
-    const stepCount = stage === ONBOARDING_STAGES.SETUP ? SETUP_STEP_COUNT : TUTORIAL_STEP_COUNT
-    const progress = ((activeStep + 1) / stepCount) * 100
+    const isIntroStage = stage === ONBOARDING_STAGES.INTRO
+    const isSetupStage = stage === ONBOARDING_STAGES.SETUP
+    const activeStep = isSetupStage ? setupStep : tutorialStep
+    const stepCount = stage === ONBOARDING_STAGES.TUTORIAL ? TUTORIAL_STEP_COUNT : SETUP_STEP_COUNT
+    const progress = isIntroStage ? 0 : ((activeStep + 1) / stepCount) * 100
 
     return (
         <div className="onboarding" role="presentation">
@@ -159,9 +162,9 @@ const OnboardingWizard = () => {
                     className="onboarding__progress"
                     role="progressbar"
                     aria-label={t('onboarding.progressAria')}
-                    aria-valuemin="1"
+                    aria-valuemin={isIntroStage ? 0 : 1}
                     aria-valuemax={stepCount}
-                    aria-valuenow={activeStep + 1}
+                    aria-valuenow={isIntroStage ? 0 : activeStep + 1}
                 >
                     <span style={{ width: `${progress}%` }} />
                 </div>
@@ -169,12 +172,16 @@ const OnboardingWizard = () => {
                 <header className="onboarding__header">
                     <div>
                         <span className="onboarding__eyebrow">
-                            {stage === ONBOARDING_STAGES.SETUP
+                            {isIntroStage
+                                ? t('onboarding.welcomeEyebrow')
+                                : isSetupStage
                                 ? t('onboarding.setupEyebrow', { current: activeStep + 1, total: stepCount })
                                 : t('onboarding.tutorialEyebrow', { current: activeStep + 1, total: stepCount })}
                         </span>
                         <h2 id="onboarding-title">
-                            {stage === ONBOARDING_STAGES.SETUP
+                            {isIntroStage
+                                ? t('onboarding.welcomeTitle')
+                                : isSetupStage
                                 ? t(`onboarding.steps.${setupStep}.title`)
                                 : t(`onboarding.tutorial.${tutorialStep}.title`)}
                         </h2>
@@ -190,7 +197,13 @@ const OnboardingWizard = () => {
                     </button>
                 </header>
 
-                {stage === ONBOARDING_STAGES.SETUP ? (
+                {isIntroStage ? (
+                    <IntroStep
+                        onSkip={handleDismiss}
+                        onStart={() => setStage(ONBOARDING_STAGES.SETUP)}
+                        t={t}
+                    />
+                ) : isSetupStage ? (
                     <>
                         <SetupStep
                             accentColor={accentColor}
@@ -250,6 +263,46 @@ const getIsMobileTutorialViewport = () => (
     typeof window !== 'undefined' &&
     typeof window.matchMedia === 'function' &&
     window.matchMedia(MOBILE_TUTORIAL_MEDIA_QUERY).matches
+)
+
+const IntroStep = ({ onSkip, onStart, t }) => (
+    <div className="onboarding__content onboarding-intro">
+        <div className="onboarding-intro__brand" aria-label="PVP Blocks Battle Arena">
+            <img src={projectLogo} alt="PVP Blocks" />
+            <div>
+                <strong className="glow-text">PVP BLOCKS</strong>
+                <span>BATTLE ARENA</span>
+            </div>
+        </div>
+        <div className="onboarding-intro__copy">
+            <h3>{t('onboarding.welcomeHeading')}</h3>
+            <p>{t('onboarding.welcomeDescription')}</p>
+            <ul>
+                <li>
+                    <i className="fas fa-palette" aria-hidden="true" />
+                    <span>{t('onboarding.welcomeFeatures.appearance')}</span>
+                </li>
+                <li>
+                    <i className="fas fa-sliders" aria-hidden="true" />
+                    <span>{t('onboarding.welcomeFeatures.interface')}</span>
+                </li>
+                <li>
+                    <i className="fas fa-shield-halved" aria-hidden="true" />
+                    <span>{t('onboarding.welcomeFeatures.security')}</span>
+                </li>
+            </ul>
+            <small>{t('onboarding.welcomeNote')}</small>
+        </div>
+        <div className="onboarding-intro__actions">
+            <button type="button" onClick={onSkip}>
+                {t('onboarding.skipSetup')}
+            </button>
+            <button type="button" className="is-primary" onClick={onStart}>
+                {t('onboarding.startSetup')}
+                <i className="fas fa-arrow-right" aria-hidden="true" />
+            </button>
+        </div>
+    </div>
 )
 
 const SetupStep = ({ step, ...props }) => {
