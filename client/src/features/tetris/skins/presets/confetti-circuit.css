@@ -21,5 +21,14 @@
     border: 1px dashed rgba(255, 255, 255, 0.55);
 }
 
-@keyframes skin-confetti-drift { to { transform: rotate(12deg) scale(1.12); } }
-@media (prefers-reduced-motion: reduce) { :is(.tetris-skin--confetti-circuit, .inventory-skin--confetti-circuit) .skin-cell-layer { animation: none; } }
+@keyframes skin-confetti-drift {
+    to {
+        transform: rotate(40deg) scale(1.2);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :is(.tetris-skin--confetti-circuit, .inventory-skin--confetti-circuit) .skin-cell-layer {
+        animation: none;
+    }
+}
