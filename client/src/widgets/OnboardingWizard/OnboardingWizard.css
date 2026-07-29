@@ -56,7 +56,7 @@
     border-bottom: var(--border);
 }
 
-.onboarding__header > div {
+.onboarding__header>div {
     min-width: 0;
 }
 
@@ -129,14 +129,14 @@
     box-shadow: var(--lite-shadow);
 }
 
-.onboarding-intro__brand > img {
+.onboarding-intro__brand>img {
     width: clamp(58px, 7vw, 78px);
     aspect-ratio: 1;
     object-fit: contain;
     filter: drop-shadow(0 0 10px var(--turquoise)) drop-shadow(0 0 18px rgba(255, 0, 255, 0.55));
 }
 
-.onboarding-intro__brand > div {
+.onboarding-intro__brand>div {
     display: grid;
     justify-items: start;
     gap: 0.25rem;
@@ -172,7 +172,7 @@
     font-size: clamp(1.1rem, 2.5vw, 1.45rem);
 }
 
-.onboarding-intro__copy > p {
+.onboarding-intro__copy>p {
     margin: 0;
     color: var(--text-color);
     font-size: 0.94rem;
@@ -277,12 +277,12 @@
     border-radius: var(--radius-card-1);
 }
 
-.onboarding-glow-panel > .onboarding-setting,
-.onboarding-glow-panel > .onboarding-block {
+.onboarding-glow-panel>.onboarding-setting,
+.onboarding-glow-panel>.onboarding-block {
     height: 100%;
 }
 
-button.onboarding-setting{
+button.onboarding-setting {
     justify-content: space-between;
 }
 
@@ -336,13 +336,13 @@ button.onboarding-setting{
     background: color-mix(in srgb, var(--elem-bg) 48%, transparent);
 }
 
-.onboarding-block > header {
+.onboarding-block>header {
     display: flex;
     align-items: center;
     gap: 0.65rem;
 }
 
-.onboarding-block > header i {
+.onboarding-block>header i {
     width: 34px;
     aspect-ratio: 1;
     display: inline-grid;
@@ -353,13 +353,13 @@ button.onboarding-setting{
     color: var(--turquoise);
 }
 
-.onboarding-block > header h3 {
+.onboarding-block>header h3 {
     margin: 0;
     font-family: var(--font-1);
     font-size: 1rem;
 }
 
-.onboarding-block > div {
+.onboarding-block>div {
     display: grid;
     gap: 0.8rem;
 }
@@ -394,7 +394,7 @@ button.onboarding-setting{
     outline: none;
 }
 
-.onboarding-palettes button > span {
+.onboarding-palettes button>span {
     display: flex;
     gap: 0.2rem;
 }
@@ -454,20 +454,20 @@ button.onboarding-setting{
     gap: 0.65rem;
 }
 
-.onboarding-radius-grid > label,
-.onboarding-blur-grid > label {
+.onboarding-radius-grid>label,
+.onboarding-blur-grid>label {
     min-width: 0;
     display: grid;
     gap: 0.45rem;
 }
 
-.onboarding-radius-grid > label > span,
-.onboarding-blur-grid > label > span {
+.onboarding-radius-grid>label>span,
+.onboarding-blur-grid>label>span {
     color: var(--text-color);
     font-size: 0.78rem;
 }
 
-.onboarding-radius-grid > label > div {
+.onboarding-radius-grid>label>div {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 74px;
     gap: 0.4rem;
@@ -497,7 +497,7 @@ button.onboarding-setting{
     opacity: 0.45;
 }
 
-.onboarding-blur-grid > label > div {
+.onboarding-blur-grid>label>div {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 42px;
     align-items: center;
@@ -505,6 +505,29 @@ button.onboarding-setting{
 }
 
 .onboarding-blur-grid input {
+    width: 100%;
+    min-width: 0;
+    accent-color: var(--turquoise);
+}
+
+.onboarding-shadow-control {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.onboarding-shadow-control>span {
+    color: var(--text-color);
+    font-size: 0.78rem;
+}
+
+.onboarding-shadow-control>div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 54px;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.onboarding-shadow-control input {
     width: 100%;
     min-width: 0;
     accent-color: var(--turquoise);
@@ -545,7 +568,7 @@ button.onboarding-setting{
     font-size: 2.7rem;
 }
 
-.onboarding-security__panel > span {
+.onboarding-security__panel>span {
     color: var(--turquoise);
     font-family: var(--font-1);
     font-size: 0.72rem;
@@ -562,7 +585,7 @@ button.onboarding-setting{
 }
 
 .onboarding-security__panel p,
-.onboarding-tutorial > p {
+.onboarding-tutorial>p {
     max-width: 620px;
     margin: 0;
     color: var(--text-color);
@@ -637,7 +660,7 @@ button.onboarding-setting{
     text-align: left;
 }
 
-.onboarding-tutorial__copy > p {
+.onboarding-tutorial__copy>p {
     margin: 0;
     color: var(--text-color-1);
     font-size: 0.94rem;
@@ -801,11 +824,14 @@ button.onboarding-setting{
 @media (max-width: 720px) {
     .onboarding {
         padding: 0;
+        min-height: 100dvh;
+        place-items: stretch;
     }
 
     .onboarding__dialog {
         width: 100%;
         height: 100dvh;
+        min-height: 100svh;
         max-height: none;
         border: 0;
         border-radius: 0;
@@ -816,6 +842,14 @@ button.onboarding-setting{
     .onboarding__footer {
         padding-right: 1rem;
         padding-left: 1rem;
+    }
+
+    .onboarding__header {
+        padding-top: max(1rem, env(safe-area-inset-top));
+    }
+
+    .onboarding__footer {
+        padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
     }
 
     .onboarding-palettes,
@@ -838,6 +872,7 @@ button.onboarding-setting{
 
     .onboarding-intro {
         min-height: 0;
+        align-content: start;
     }
 
     .onboarding-intro__copy ul {
@@ -863,16 +898,6 @@ button.onboarding-setting{
         justify-content: space-between;
     }
 
-    .onboarding__footer {
-        grid-template-columns: 1fr;
-        gap: 0.6rem;
-    }
-
-    .onboarding__step-buttons,
-    .onboarding__actions {
-        justify-content: center;
-    }
-
     .onboarding__actions button {
         padding: 0 0.65rem;
         font-size: 0.66rem;
@@ -886,18 +911,17 @@ button.onboarding-setting{
     .onboarding-tutorial__media img {
         max-height: calc(280px - 1.3rem);
     }
+}
 
+@media (max-width: 330px) {
     .onboarding-intro__actions {
         width: 100%;
         display: grid;
     }
-
-    .onboarding-intro__actions button {
-        width: 100%;
-    }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     .onboarding *,
     .onboarding *::before,
     .onboarding *::after {

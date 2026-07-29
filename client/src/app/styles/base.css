@@ -13,6 +13,13 @@ body {
     color: var(--text-color);
 }
 
+:root[data-interface-shadow='off'] *,
+:root[data-interface-shadow='off'] *::before,
+:root[data-interface-shadow='off'] *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
 #root {
     display: flex;
     flex-direction: column;

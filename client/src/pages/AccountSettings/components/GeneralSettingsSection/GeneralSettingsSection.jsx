@@ -6,6 +6,11 @@ import InterfaceLanguageSelect from '@/shared/ui/InterfaceLanguageSelect'
 import InterfaceScaleControl from '@/shared/ui/InterfaceScaleControl'
 import { BLUR_VARIABLES } from '@/shared/lib/interface-blur/blur.js'
 import { RADIUS_UNITS, RADIUS_VARIABLES } from '@/shared/lib/interface-radius/radius.js'
+import {
+    INTERFACE_SHADOW_MAX,
+    INTERFACE_SHADOW_MIN,
+    INTERFACE_SHADOW_STEP,
+} from '@/shared/lib/interface-shadow/shadow.js'
 import { THEME_PALETTE_OPTIONS } from '@/shared/lib/theme/theme.js'
 
 import './GeneralSettingsSection.css'
@@ -26,8 +31,10 @@ const GeneralSettingsSection = ({
     onGlowEffectToggle,
     onThemePaletteChange,
     onRadiusSettingChange,
+    onShadowIntensityChange,
     onThemeToggle,
     radiusSettings,
+    shadowIntensity,
     t,
     themePalette,
 }) => (
@@ -152,6 +159,28 @@ const GeneralSettingsSection = ({
                         </span>
                         <AppSwitch checked={isGlowEffectEnabled} />
                     </button>
+
+                    <div className="account-radius-settings account-shadow-settings">
+                        <div className="account-radius-settings__head">
+                            <strong>{t('accountSettings.general.shadowIntensityTitle')}</strong>
+                            <small>{t('accountSettings.general.shadowIntensityDescription')}</small>
+                        </div>
+                        <label className="account-blur-control">
+                            <span>{t('accountSettings.general.shadowIntensityLabel')}</span>
+                            <div className="account-blur-control__inputs">
+                                <input
+                                    aria-label={t('accountSettings.general.shadowIntensityAria')}
+                                    max={INTERFACE_SHADOW_MAX}
+                                    min={INTERFACE_SHADOW_MIN}
+                                    onChange={(event) => onShadowIntensityChange(event.target.value)}
+                                    step={INTERFACE_SHADOW_STEP}
+                                    type="range"
+                                    value={shadowIntensity}
+                                />
+                                <output>{shadowIntensity}%</output>
+                            </div>
+                        </label>
+                    </div>
 
                     <div className="account-radius-settings">
                         <div className="account-radius-settings__head">

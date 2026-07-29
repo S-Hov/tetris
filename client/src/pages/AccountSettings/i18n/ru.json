@@ -92,8 +92,12 @@
         "ember": "Эмбер",
         "matrix": "Матрица"
       },
-      "glowTitle": "Glow Effect",
-      "glowDescription": "Включает и выключает свечение карточек при движении курсора",
+      "glowTitle": "Интерактивное свечение",
+      "glowDescription": "Включает и выключает подсветку карточек при движении курсора",
+      "shadowIntensityTitle": "Интенсивность свечения",
+      "shadowIntensityDescription": "Регулирует яркость теней и свечения интерфейса. Установите 0%, чтобы полностью отключить эффект.",
+      "shadowIntensityLabel": "Яркость",
+      "shadowIntensityAria": "Интенсивность свечения интерфейса",
       "radiusTitle": "Управление закруглением",
       "radiusDescription": "Меняет CSS-переменные радиуса элементов интерфейса",
       "radiusLabels": {

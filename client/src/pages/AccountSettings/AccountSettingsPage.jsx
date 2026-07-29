@@ -8,6 +8,7 @@ import { useAuth } from '@/shared/hooks/useAuth'
 import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 import { useInterfaceBlur } from '@/shared/hooks/useInterfaceBlur.js'
 import { useInterfaceRadius } from '@/shared/hooks/useInterfaceRadius.js'
+import { useInterfaceShadow } from '@/shared/hooks/useInterfaceShadow.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
 import NavigationTabs from '@/shared/ui/NavigationTabs'
 import { getLocalizedPath } from '@/i18n'
@@ -42,6 +43,7 @@ const AccountSettingsPage = () => {
     const { blurSettings, setBlurSetting, toggleBlur } = useInterfaceBlur()
     const { isGlowEffectEnabled, toggleGlowEffect } = useGlowEffect()
     const { radiusSettings, setRadiusSetting } = useInterfaceRadius()
+    const { shadowIntensity, setShadowIntensity } = useInterfaceShadow()
     const { isDarkTheme, setThemePalette, themePalette, toggleTheme } = useTheme()
     const [profileForm, setProfileForm] = useState({ username: '' })
     const [avatarFile, setAvatarFile] = useState(null)
@@ -317,8 +319,10 @@ const AccountSettingsPage = () => {
                             onGlowEffectToggle={toggleGlowEffect}
                             onThemePaletteChange={setThemePalette}
                             onRadiusSettingChange={setRadiusSetting}
+                            onShadowIntensityChange={setShadowIntensity}
                             onThemeToggle={toggleTheme}
                             radiusSettings={radiusSettings}
+                            shadowIntensity={shadowIntensity}
                             t={t}
                             themePalette={themePalette}
                         />

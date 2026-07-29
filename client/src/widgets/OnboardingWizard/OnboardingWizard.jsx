@@ -12,9 +12,15 @@ import { useAuth } from '@/shared/hooks/useAuth'
 import { useGlowEffect } from '@/shared/hooks/useGlowEffect.js'
 import { useInterfaceBlur } from '@/shared/hooks/useInterfaceBlur.js'
 import { useInterfaceRadius } from '@/shared/hooks/useInterfaceRadius.js'
+import { useInterfaceShadow } from '@/shared/hooks/useInterfaceShadow.js'
 import { useTheme } from '@/shared/hooks/useTheme.js'
 import { BLUR_VARIABLES } from '@/shared/lib/interface-blur/blur.js'
 import { RADIUS_UNITS, RADIUS_VARIABLES } from '@/shared/lib/interface-radius/radius.js'
+import {
+    INTERFACE_SHADOW_MAX,
+    INTERFACE_SHADOW_MIN,
+    INTERFACE_SHADOW_STEP,
+} from '@/shared/lib/interface-shadow/shadow.js'
 import {
     ONBOARDING_STAGES,
     completeOnboardingSetup,
@@ -67,6 +73,7 @@ const OnboardingWizard = () => {
     const { blurSettings, setBlurSetting, toggleBlur } = useInterfaceBlur()
     const { isGlowEffectEnabled, toggleGlowEffect } = useGlowEffect()
     const { radiusSettings, setRadiusSetting } = useInterfaceRadius()
+    const { shadowIntensity, setShadowIntensity } = useInterfaceShadow()
     const { isDarkTheme, setThemePalette, themePalette, toggleTheme } = useTheme()
 
     useEffect(() => {
@@ -216,10 +223,12 @@ const OnboardingWizard = () => {
                             onBlurToggle={toggleBlur}
                             onGlowEffectToggle={toggleGlowEffect}
                             onRadiusSettingChange={setRadiusSetting}
+                            onShadowIntensityChange={setShadowIntensity}
                             onSecurityAction={handleSecurityAction}
                             onThemePaletteChange={setThemePalette}
                             onThemeToggle={toggleTheme}
                             radiusSettings={radiusSettings}
+                            shadowIntensity={shadowIntensity}
                             step={setupStep}
                             t={t}
                             themePalette={themePalette}
@@ -390,7 +399,9 @@ const InterfaceStep = ({
     onBlurToggle,
     onGlowEffectToggle,
     onRadiusSettingChange,
+    onShadowIntensityChange,
     radiusSettings,
+    shadowIntensity,
     t,
 }) => (
     <div className="onboarding__content">
@@ -412,6 +423,29 @@ const InterfaceStep = ({
                 onToggle={onGlowEffectToggle}
                 title={t('accountSettings.general.glowTitle')}
             />
+            <GlowPanel>
+                <div className="glow-effect onboarding-setting onboarding-setting--stacked">
+                    <SettingCopy
+                        description={t('accountSettings.general.shadowIntensityDescription')}
+                        title={t('accountSettings.general.shadowIntensityTitle')}
+                    />
+                    <label className="onboarding-shadow-control">
+                        <span>{t('accountSettings.general.shadowIntensityLabel')}</span>
+                        <div>
+                            <input
+                                aria-label={t('accountSettings.general.shadowIntensityAria')}
+                                max={INTERFACE_SHADOW_MAX}
+                                min={INTERFACE_SHADOW_MIN}
+                                onChange={(event) => onShadowIntensityChange(event.target.value)}
+                                step={INTERFACE_SHADOW_STEP}
+                                type="range"
+                                value={shadowIntensity}
+                            />
+                            <output>{shadowIntensity}%</output>
+                        </div>
+                    </label>
+                </div>
+            </GlowPanel>
             <GlowPanel>
                 <div className="glow-effect onboarding-setting onboarding-setting--stacked">
                     <SettingCopy

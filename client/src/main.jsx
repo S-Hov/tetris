@@ -17,6 +17,7 @@ import { initGlowEffect } from './shared/lib/glow-effect/glowEffect.js'
 import { initInterfaceBlurSettings } from './shared/lib/interface-blur/blur.js'
 import { initInterfaceRadiusSettings } from './shared/lib/interface-radius/radius.js'
 import { initInterfaceScale } from './shared/lib/interface-scale/scale.js'
+import { initInterfaceShadowIntensity } from './shared/lib/interface-shadow/shadow.js'
 import { initTheme } from './shared/lib/theme/theme.js'
 
 initTheme()
@@ -24,6 +25,7 @@ initGlowEffect()
 initInterfaceRadiusSettings()
 initInterfaceBlurSettings()
 initInterfaceScale()
+initInterfaceShadowIntensity()
 initAccentColor()
 
 ReactDOM.createRoot(document.getElementById('root')).render(

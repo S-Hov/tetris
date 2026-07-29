@@ -92,8 +92,12 @@
         "ember": "Ember",
         "matrix": "Matrix"
       },
-      "glowTitle": "Glow Effect",
-      "glowDescription": "Turns card glow on and off while the cursor moves",
+      "glowTitle": "Interactive glow",
+      "glowDescription": "Turns card highlighting on and off while the cursor moves",
+      "shadowIntensityTitle": "Glow intensity",
+      "shadowIntensityDescription": "Adjusts the brightness of interface shadows and glow. Set it to 0% to disable the effect completely.",
+      "shadowIntensityLabel": "Brightness",
+      "shadowIntensityAria": "Interface glow intensity",
       "radiusTitle": "Rounding control",
       "radiusDescription": "Changes interface corner radius variables",
       "radiusLabels": {

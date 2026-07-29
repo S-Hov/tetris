@@ -332,6 +332,10 @@
     font-size: 0.82rem;
 }
 
+.account-shadow-settings .account-blur-control__inputs {
+    grid-template-columns: minmax(0, 1fr) 54px;
+}
+
 .account-accent-control__inputs {
     display: grid;
     grid-template-columns: 56px minmax(0, 150px);
