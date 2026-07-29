@@ -4,8 +4,9 @@ import cors from 'cors'
 import passport, { configurePassport } from '../../config/passport.js'
 
 import { serveUploadedAsset } from '../../controllers/uploadsController.js'
-import { errorHandler } from '../../middleware/errorHandler.js'
-import { logger as requestLogger } from '../../middleware/logger.js'
+import { createErrorHandler } from '../shared/presentation/http/errorHandler.js'
+import { requestContext } from '../shared/presentation/http/requestContext.js'
+import { createRequestLogger } from '../shared/presentation/http/requestLogger.js'
 import { registerLegacyHttpModules } from './registerModules.js'
 
 const createCorsOriginGuard = (allowedOrigins) => (origin, callback) => {
@@ -20,11 +21,16 @@ const createCorsOriginGuard = (allowedOrigins) => (origin, callback) => {
 export const createApp = ({
     allowedOrigins,
     uploadsPath,
+    nodeEnv = 'development',
+} = {}, {
+    logger = console,
 } = {}) => {
     const app = express()
     const origins = Array.isArray(allowedOrigins) ? allowedOrigins : []
 
     app.set('trust proxy', 1)
+    app.use(requestContext)
+    app.use(createRequestLogger({ logger }))
     app.use(cors({
         origin: createCorsOriginGuard(origins),
         credentials: true,
@@ -34,14 +40,16 @@ export const createApp = ({
 
     configurePassport()
     app.use(passport.initialize())
-    app.use(requestLogger)
     app.use('/uploads', express.static(uploadsPath, {
         maxAge: '7d',
     }))
     app.get(/^\/uploads\/.+/, serveUploadedAsset)
 
     registerLegacyHttpModules(app)
-    app.use(errorHandler)
+    app.use(createErrorHandler({
+        logger,
+        includeStack: nodeEnv !== 'production',
+    }))
 
     return app
 }

@@ -16,10 +16,14 @@
 | --- | --- | --- |
 | 1. Защитная сетка и инвентаризация | Завершена | Зафиксированы внешние контракты и legacy import graph |
 | 2. Новый bootstrap и composition root | Завершена | Сервер запускается через `src/main.js`, legacy API подключён адаптерами |
-| 3. Shared foundation | Следующая | Ещё не начата |
+| 3. Shared foundation | Завершена | Добавлены config validation, request context, application errors, database adapter, structured logger и import boundaries |
+| 4. Модуль `identity` | Следующая | Ещё не начата |
 
 Подробный отчёт по фазе 2 находится в
 `docs/backend-phase-2-bootstrap-ru.md`.
+
+Подробный отчёт по фазе 3 находится в
+`docs/backend-phase-3-shared-foundation-ru.md`.
 
 Принятое архитектурное решение:
 

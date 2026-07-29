@@ -107,5 +107,7 @@ export default {
     'COMMON.UNAUTHORIZED': 'Authorization required',
     'COMMON.FORBIDDEN': 'Access denied',
     'COMMON.NOT_FOUND': 'Resource not found',
+    'COMMON.CONFLICT': 'State conflict',
+    'COMMON.VALIDATION_ERROR': 'Validation failed',
     'COMMON.INTERNAL_ERROR': 'Internal server error',
 }

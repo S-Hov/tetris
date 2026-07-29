@@ -91,6 +91,7 @@ test('new runtime serves the legacy guest auth contract and shuts down cleanly',
 
     assert.equal(response.status, 200)
     assert.equal(response.headers.get('access-control-allow-origin'), 'http://contract.test')
+    assert.match(response.headers.get('x-request-id'), /^[0-9a-f-]{36}$/)
     assert.deepEqual(payload, {
         success: true,
         code: 'AUTH.GUEST_SESSION',

@@ -1,35 +1,19 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { pool } from '../../db/index.js'
 import { syncLocalUploadsToDatabase } from '../../services/uploadedAssetService.js'
 import { warmActiveEffectCache } from '../../sockets/game.handlers.js'
+import { DEFAULT_ALLOWED_ORIGINS, parseAllowedOrigins } from '../config/cors.js'
+import { createConfig } from '../config/env.js'
+import { pool } from '../shared/infrastructure/database/pool.js'
+import { logger as defaultLogger } from '../shared/infrastructure/logging/logger.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const defaultServerRoot = path.resolve(path.dirname(__filename), '..', '..')
 
-export const DEFAULT_ALLOWED_ORIGINS = Object.freeze([
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://localhost:5174',
-    'http://127.0.0.1:5174',
-    'http://localhost:5175',
-    'http://127.0.0.1:5175',
-    'https://pvp-blocks.online',
-    'https://www.pvp-blocks.online',
-    'https://admin.pvp-blocks.online',
-])
+export { DEFAULT_ALLOWED_ORIGINS }
 
-export const resolveAllowedOrigins = (value) => {
-    const configuredOrigins = String(value || '')
-        .split(',')
-        .map((origin) => origin.trim())
-        .filter(Boolean)
-
-    return configuredOrigins.length > 0
-        ? configuredOrigins
-        : [...DEFAULT_ALLOWED_ORIGINS]
-}
+export const resolveAllowedOrigins = parseAllowedOrigins
 
 export const resolvePort = (value, fallback = 8880) => {
     if (value === undefined || value === null || String(value).trim() === '') {
@@ -45,7 +29,7 @@ export const resolvePort = (value, fallback = 8880) => {
 
 export const createContainer = ({
     env = process.env,
-    logger = console,
+    logger = defaultLogger,
     serverRoot = defaultServerRoot,
     syncUploads = syncLocalUploadsToDatabase,
     closeDatabase = () => pool.end(),
@@ -55,17 +39,19 @@ export const createContainer = ({
             run: warmActiveEffectCache,
         },
     ],
-} = {}) => ({
-    config: {
-        appName: env.APP_NAME || 'App',
-        port: resolvePort(env.PORT),
-        allowedOrigins: resolveAllowedOrigins(env.CORS_ORIGINS),
-        uploadsPath: path.join(serverRoot, 'uploads'),
-    },
-    logger,
-    services: {
-        syncUploads,
-        closeDatabase,
-        startupTasks,
-    },
-})
+} = {}) => {
+    const config = createConfig(env)
+
+    return {
+        config: {
+            ...config,
+            uploadsPath: path.join(serverRoot, 'uploads'),
+        },
+        logger,
+        services: {
+            syncUploads,
+            closeDatabase,
+            startupTasks,
+        },
+    }
+}

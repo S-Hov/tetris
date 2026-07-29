@@ -1,3 +1,2 @@
-export const asyncHandler = (fn) => (req, res, next) => {
-    Promise.resolve(fn(req, res, next)).catch(next)
-}
+// Temporary phase 3 compatibility adapter.
+export { asyncHandler } from '../src/shared/presentation/http/asyncHandler.js'

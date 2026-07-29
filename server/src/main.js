@@ -10,7 +10,7 @@ installProcessSignalHandlers(runtime)
 try {
     await runtime.start()
 } catch (error) {
-    console.error('Server startup failed:', error)
+    runtime.container.logger.error('server_startup_failed', { error })
     process.exitCode = 1
     await runtime.stop({ reason: 'startup_error' })
 }

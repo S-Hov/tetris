@@ -107,5 +107,7 @@ export default {
     'COMMON.UNAUTHORIZED': 'Необходима авторизация',
     'COMMON.FORBIDDEN': 'Доступ запрещён',
     'COMMON.NOT_FOUND': 'Ресурс не найден',
+    'COMMON.CONFLICT': 'Конфликт состояния',
+    'COMMON.VALIDATION_ERROR': 'Ошибка проверки данных',
     'COMMON.INTERNAL_ERROR': 'Внутренняя ошибка сервера',
 }

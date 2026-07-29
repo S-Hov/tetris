@@ -1686,6 +1686,12 @@
       "toArea": "utils"
     },
     {
+      "from": "db/index.js",
+      "fromArea": "db",
+      "to": "src/shared/infrastructure/database/pool.js",
+      "toArea": "shared"
+    },
+    {
       "from": "helpers/error.helper.js",
       "fromArea": "helpers",
       "to": "src/shared/responses/errors.js",
@@ -1718,7 +1724,19 @@
     {
       "from": "middleware/errorHandler.js",
       "fromArea": "middleware",
-      "to": "src/shared/responses/send.js",
+      "to": "src/shared/presentation/http/errorHandler.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "middleware/logger.js",
+      "fromArea": "middleware",
+      "to": "src/shared/infrastructure/logging/logger.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "middleware/logger.js",
+      "fromArea": "middleware",
+      "to": "src/shared/presentation/http/requestLogger.js",
       "toArea": "shared"
     },
     {
@@ -2660,26 +2678,26 @@
     {
       "from": "src/app/createApp.js",
       "fromArea": "src",
-      "to": "middleware/errorHandler.js",
-      "toArea": "middleware"
-    },
-    {
-      "from": "src/app/createApp.js",
-      "fromArea": "src",
-      "to": "middleware/logger.js",
-      "toArea": "middleware"
-    },
-    {
-      "from": "src/app/createApp.js",
-      "fromArea": "src",
       "to": "src/app/registerModules.js",
       "toArea": "src"
     },
     {
-      "from": "src/app/createContainer.js",
+      "from": "src/app/createApp.js",
       "fromArea": "src",
-      "to": "db/index.js",
-      "toArea": "db"
+      "to": "src/shared/presentation/http/errorHandler.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/app/createApp.js",
+      "fromArea": "src",
+      "to": "src/shared/presentation/http/requestContext.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/app/createApp.js",
+      "fromArea": "src",
+      "to": "src/shared/presentation/http/requestLogger.js",
+      "toArea": "shared"
     },
     {
       "from": "src/app/createContainer.js",
@@ -2692,6 +2710,30 @@
       "fromArea": "src",
       "to": "sockets/game.handlers.js",
       "toArea": "sockets"
+    },
+    {
+      "from": "src/app/createContainer.js",
+      "fromArea": "src",
+      "to": "src/config/cors.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/createContainer.js",
+      "fromArea": "src",
+      "to": "src/config/env.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/createContainer.js",
+      "fromArea": "src",
+      "to": "src/shared/infrastructure/database/pool.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/app/createContainer.js",
+      "fromArea": "src",
+      "to": "src/shared/infrastructure/logging/logger.js",
+      "toArea": "shared"
     },
     {
       "from": "src/app/createSocketServer.js",
@@ -2790,6 +2832,12 @@
       "toArea": "sockets"
     },
     {
+      "from": "src/config/env.js",
+      "fromArea": "src",
+      "to": "src/config/cors.js",
+      "toArea": "src"
+    },
+    {
       "from": "src/main.js",
       "fromArea": "src",
       "to": "src/app/bootstrap.js",
@@ -2802,10 +2850,46 @@
       "toArea": "src"
     },
     {
+      "from": "src/shared/infrastructure/database/pool.js",
+      "fromArea": "shared",
+      "to": "src/config/env.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/shared/infrastructure/database/pool.js",
+      "fromArea": "shared",
+      "to": "src/shared/infrastructure/logging/logger.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/shared/infrastructure/logging/logger.js",
+      "fromArea": "shared",
+      "to": "src/shared/presentation/http/requestContext.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/shared/presentation/http/errorHandler.js",
+      "fromArea": "shared",
+      "to": "src/shared/presentation/http/mapHttpError.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/shared/presentation/http/errorHandler.js",
+      "fromArea": "shared",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/shared/presentation/http/mapHttpError.js",
+      "fromArea": "shared",
+      "to": "src/shared/application/errors/ApplicationError.js",
+      "toArea": "shared"
+    },
+    {
       "from": "src/shared/responses/errors.js",
       "fromArea": "shared",
-      "to": "utils/ApiError.js",
-      "toArea": "utils"
+      "to": "src/shared/application/errors/ApplicationError.js",
+      "toArea": "shared"
     },
     {
       "from": "src/shared/responses/messages/index.js",
@@ -2829,6 +2913,18 @@
       "from": "src/shared/responses/success.js",
       "fromArea": "shared",
       "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "utils/ApiError.js",
+      "fromArea": "utils",
+      "to": "src/shared/application/errors/ApplicationError.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "utils/asyncHandler.js",
+      "fromArea": "utils",
+      "to": "src/shared/presentation/http/asyncHandler.js",
       "toArea": "shared"
     },
     {

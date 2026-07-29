@@ -7,7 +7,9 @@ import { createSocketServer } from './createSocketServer.js'
 export const createServerRuntime = ({
     container = createContainer(),
 } = {}) => {
-    const app = createApp(container.config)
+    const app = createApp(container.config, {
+        logger: container.logger,
+    })
     const httpServer = createHttpServer({ app })
     const io = createSocketServer({
         httpServer,
