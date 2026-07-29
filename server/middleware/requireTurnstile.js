@@ -1,10 +1,11 @@
-import { verifyTurnstile, turnstileErrorResponse } from '../utils/turnstile.js'
+import { verifyTurnstile } from '../utils/turnstile.js'
+import { fail } from '../src/shared/responses/send.js'
 
 export const requireTurnstile = async (req, res, next) => {
-    const isValid = await verifyTurnstile(req.body?.turnstileToken, req.ip)
+    const valid = await verifyTurnstile(req.body?.turnstileToken, req.ip)
 
-    if (!isValid) {
-        return turnstileErrorResponse(res)
+    if (!valid) {
+        return fail(res, req, 'AUTH.TURNSTILE_FAILED', { status: 403 })
     }
 
     next()

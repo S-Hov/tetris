@@ -1,41 +1,48 @@
-import {
-    createAuthLogService,
-    getUserService,
-    getVerificationMetaService,
-    changeUnverifiedEmailService,
-    completePasswordResetService,
-    ensurePendingVerificationService,
-    getPasswordResetMetaService,
-    loginUserService,
-    registerUserService,
-    requestPasswordResetService,
-    resendVerificationCodeService,
-    updateUserPasswordService,
-    updateUserAvatarService,
-    updateUserProfileService,
-    verifyEmailService,
-    loginConfirmationService,
-} from "../services/authService.js"
-import {
-    setInitialPasswordService,
-} from '../services/oauthService.js'
-import { asyncHandler } from "../utils/asyncHandler.js"
+import { identityApplication } from '../../application/identityApplication.js'
+import { asyncHandler } from '../../../../shared/presentation/http/asyncHandler.js'
 import bcrypt from "bcrypt"
 import {
+    identityPresentationPorts,
+} from '../identityPresentationPorts.js'
+import { getAuthCookieOptions, setAuthCookie } from './sessionCookies.js'
+import { loginAttemptPolicy } from '../../application/loginAttemptPolicy.js'
+import { ok, fail } from '../../../../shared/responses/send.js'
+import { forbidden } from '../../../../shared/responses/errors.js'
+import { logger } from '../../../../shared/infrastructure/logging/logger.js'
+
+const {
+    changeUnverifiedEmail: changeUnverifiedEmailService,
+    completePasswordReset: completePasswordResetService,
+    confirmLogin: loginConfirmationService,
+    createAuthLog: createAuthLogService,
+    ensurePendingVerification: ensurePendingVerificationService,
+    findPasswordLoginUser: loginUserService,
+    getPasswordResetMeta: getPasswordResetMetaService,
+    getSessionUser: getIdentitySessionUser,
+    getVerificationMeta: getVerificationMetaService,
+    registerUser: registerUserService,
+    requestPasswordReset: requestPasswordResetService,
+    resendVerificationCode: resendVerificationCodeService,
+    setInitialPassword: setInitialPasswordService,
+    updatePassword: updateUserPasswordService,
+    verifyEmail: verifyEmailService,
+} = identityApplication
+
+const {
+    publishActivity: publishActivityEvent,
     sendRegistrationVerificationEmail,
     sendTemporaryPasswordEmail,
     sendVerificationEmail,
-} from "../services/emailService.js"
-import { getAuthCookieOptions, setAuthCookie } from "../utils/authCookie.js"
-import { verifyTurnstile, turnstileErrorResponse } from "../utils/turnstile.js"
-import {
-    clearLoginFailures,
-    recordLoginFailure,
-    requiresLoginTurnstile,
-} from "../utils/loginTurnstile.js"
-import { ok, fail } from "../src/shared/responses/send.js"
-import { forbidden } from "../helpers/error.helper.js"
-import { publishActivityEvent } from "../services/activityFeedService.js"
+    verifyTurnstile,
+} = identityPresentationPorts
+
+const requiresLoginTurnstile = (...args) => loginAttemptPolicy.requiresTurnstile(...args)
+const recordLoginFailure = (...args) => loginAttemptPolicy.recordFailure(...args)
+const clearLoginFailures = (...args) => loginAttemptPolicy.clear(...args)
+
+const turnstileErrorResponse = (res, req) => fail(res, req, 'AUTH.TURNSTILE_FAILED', {
+    status: 403,
+})
 
 const getRequestMeta = (req) => ({
     ipAddress: req.ip || req.socket?.remoteAddress || null,
@@ -43,7 +50,7 @@ const getRequestMeta = (req) => ({
 })
 
 export const register = asyncHandler(async (req, res) => {
-    console.log('запрос на регистрацию')
+    logger.info('identity_registration_requested')
     const { username, email, password } = req.body
 
     const { user, verificationCode } = await registerUserService(username, email, password)
@@ -65,9 +72,9 @@ export const register = asyncHandler(async (req, res) => {
 
     try {
         await sendRegistrationVerificationEmail(user.email, verificationCode)
-        console.log('письмо отправлено')
+        logger.info('identity_verification_email_sent', { userId: user.id })
     } catch (error) {
-        console.error('Email send error:', error)
+        logger.error('identity_verification_email_failed', { error, userId: user.id })
     }
 
     return ok(res, req, 'AUTH.REGISTERED', {
@@ -187,7 +194,7 @@ export const getMe = asyncHandler(async (req, res) => {
 
     const userId = req.user.id
 
-    const user = await getUserService(userId)
+    const user = await getIdentitySessionUser(userId)
 
     return ok(res, req, 'AUTH.USER_LOADED', {
         data: {
@@ -198,7 +205,7 @@ export const getMe = asyncHandler(async (req, res) => {
 })
 
 export const updateMe = asyncHandler(async (req, res) => {
-    const user = await updateUserProfileService({
+    const user = await identityApplication.updateProfile({
         userId: req.user.id,
         username: req.body.username,
     })
@@ -211,7 +218,7 @@ export const updateMe = asyncHandler(async (req, res) => {
 })
 
 export const updateAvatar = asyncHandler(async (req, res) => {
-    const user = await updateUserAvatarService({
+    const user = await identityApplication.updateAvatar({
         userId: req.user.id,
         contentType: req.get('content-type'),
         buffer: req.body,
@@ -274,7 +281,7 @@ export const logout = (req, res) => {
             eventType: 'logout',
             ...requestMeta,
         }).catch((error) => {
-            console.error('Auth log error:', error)
+            logger.error('identity_auth_log_failed', { error, userId: req.user.id })
         })
     }
 

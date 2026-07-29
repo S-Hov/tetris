@@ -1,14 +1,20 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import jwt from 'jsonwebtoken'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-import { checkAuth, checkNotAuth, optionalAuth } from '../middleware/checkAuth.js'
+import { checkAuth, checkNotAuth, optionalAuth } from '../src/modules/identity/index.js'
 import {
     loginSchema,
     registerSchema,
     updatePasswordSchema,
     verifyEmailSchema,
-} from '../validations/auth.validation.js'
+} from '../src/modules/identity/presentation/http/identity.schemas.js'
+import { collectArchitectureInventory } from '../scripts/lib/architectureInventory.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const serverRoot = path.resolve(path.dirname(__filename), '..')
 
 const JWT_SECRET = 'phase-1-characterization-secret'
 
@@ -105,4 +111,35 @@ test('auth schemas preserve registration, login, password and verification rules
     }).success, true)
     assert.equal(verifyEmailSchema.safeParse({ code: ' 123456 ' }).success, true)
     assert.equal(verifyEmailSchema.safeParse({ code: '12ab' }).success, false)
+})
+
+test('identity migration preserves every authentication and account-settings URL', async () => {
+    const inventory = await collectArchitectureInventory(serverRoot)
+    const routes = new Set(inventory.rest.map(({ method, path: routePath }) => `${method} ${routePath}`))
+
+    for (const contract of [
+        'POST /api/identity/register',
+        'POST /api/identity/login',
+        'POST /api/identity/password/login',
+        'GET /api/identity/me',
+        'PATCH /api/identity/me/password',
+        'POST /api/identity/password/set',
+        'POST /api/identity/logout',
+        'GET /api/identity/oauth/:provider',
+        'GET /api/authentication/:provider/callback',
+        'POST /api/identity/verify-email/:email',
+        'POST /api/identity/change-unverified-email',
+        'POST /api/identity/resend-verification-email',
+        'GET /api/identity/verification-time/:email',
+        'POST /api/identity/password-reset',
+        'GET /api/identity/password-reset/verification-time/:email',
+        'POST /api/identity/password-reset/verify/:email',
+        'GET /api/identity/connections',
+        'POST /api/identity/connections/:provider/link',
+        'DELETE /api/identity/connections/:provider/unlink',
+        'PATCH /api/identity/account/email',
+        'GET /api/identity/account/login-history',
+    ]) {
+        assert.ok(routes.has(contract), `Missing identity contract: ${contract}`)
+    }
 })

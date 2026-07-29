@@ -13,7 +13,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "node --test src/features/tetris/effects/effects.test.js"
+    "test": "node --test src/features/tetris/effects/effects.test.js src/shared/api/identityRoutes.test.js"
   },
   "dependencies": {
     "framer-motion": "^12.40.0",

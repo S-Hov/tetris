@@ -6,7 +6,7 @@ import {
     getConversationMessages,
     markConversationRead,
 } from '../controllers/chatController.js'
-import { checkAuth } from '../middleware/checkAuth.js'
+import { checkAuth } from '../src/modules/identity/index.js'
 
 const chatRouter = express.Router()
 

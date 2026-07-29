@@ -1,4 +1,4 @@
-import { optionalAuth } from '../middleware/checkAuth.js'
+import { optionalAuth } from '../src/modules/identity/index.js'
 import {
     isAnalyticsTransientDbError,
     trackPageViewRepo,

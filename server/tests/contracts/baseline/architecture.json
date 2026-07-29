@@ -373,129 +373,10 @@
     },
     {
       "method": "GET",
-      "path": "/api/authentication/:provider",
-      "routePath": "/:provider",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "GET",
       "path": "/api/authentication/:provider/callback",
       "routePath": "/:provider/callback",
       "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "POST",
-      "path": "/api/authentication/change-unverified-email",
-      "routePath": "/change-unverified-email",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "POST",
-      "path": "/api/authentication/login",
-      "routePath": "/login",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "POST",
-      "path": "/api/authentication/logout",
-      "routePath": "/logout",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "GET",
-      "path": "/api/authentication/me",
-      "routePath": "/me",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/authentication/me",
-      "routePath": "/me",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "PUT",
-      "path": "/api/authentication/me/avatar",
-      "routePath": "/me/avatar",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/authentication/me/password",
-      "routePath": "/me/password",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "POST",
-      "path": "/api/authentication/password-reset",
-      "routePath": "/password-reset",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "GET",
-      "path": "/api/authentication/password-reset/verification-time/:email",
-      "routePath": "/password-reset/verification-time/:email",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "POST",
-      "path": "/api/authentication/password-reset/verify/:email",
-      "routePath": "/password-reset/verify/:email",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "POST",
-      "path": "/api/authentication/password/login",
-      "routePath": "/password/login",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "POST",
-      "path": "/api/authentication/password/set",
-      "routePath": "/password/set",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "POST",
-      "path": "/api/authentication/register",
-      "routePath": "/register",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "POST",
-      "path": "/api/authentication/resend-verification-email",
-      "routePath": "/resend-verification-email",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "GET",
-      "path": "/api/authentication/verification-time/:email",
-      "routePath": "/verification-time/:email",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
-    },
-    {
-      "method": "POST",
-      "path": "/api/authentication/verify-email/:email",
-      "routePath": "/verify-email/:email",
-      "mountPath": "/api/authentication",
-      "source": "routes/auth.js"
+      "source": "src/modules/identity/presentation/http/oauthCallback.routes.js"
     },
     {
       "method": "GET",
@@ -575,6 +456,160 @@
       "source": "routes/friends.js"
     },
     {
+      "method": "PATCH",
+      "path": "/api/identity/account/email",
+      "routePath": "/account/email",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/identity/account/login-history",
+      "routePath": "/account/login-history",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity/change-unverified-email",
+      "routePath": "/change-unverified-email",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/identity/connections",
+      "routePath": "/connections",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity/connections/:provider/link",
+      "routePath": "/connections/:provider/link",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/identity/connections/:provider/unlink",
+      "routePath": "/connections/:provider/unlink",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity/login",
+      "routePath": "/login",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity/logout",
+      "routePath": "/logout",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/identity/me",
+      "routePath": "/me",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/identity/me",
+      "routePath": "/me",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/identity/me/avatar",
+      "routePath": "/me/avatar",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/identity/me/password",
+      "routePath": "/me/password",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/identity/oauth/:provider",
+      "routePath": "/oauth/:provider",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity/password-reset",
+      "routePath": "/password-reset",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/identity/password-reset/verification-time/:email",
+      "routePath": "/password-reset/verification-time/:email",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity/password-reset/verify/:email",
+      "routePath": "/password-reset/verify/:email",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity/password/login",
+      "routePath": "/password/login",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity/password/set",
+      "routePath": "/password/set",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity/register",
+      "routePath": "/register",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity/resend-verification-email",
+      "routePath": "/resend-verification-email",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/api/identity/verification-time/:email",
+      "routePath": "/verification-time/:email",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity/verify-email/:email",
+      "routePath": "/verify-email/:email",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
       "method": "GET",
       "path": "/api/leaderboard",
       "routePath": "/",
@@ -650,41 +685,6 @@
       "routePath": "/inventory/cosmetics/:inventoryItemId/viewed",
       "mountPath": "/api/me",
       "source": "routes/me.js"
-    },
-    {
-      "method": "PATCH",
-      "path": "/api/settings/account/email",
-      "routePath": "/account/email",
-      "mountPath": "/api/settings",
-      "source": "routes/settings.js"
-    },
-    {
-      "method": "GET",
-      "path": "/api/settings/account/login-history",
-      "routePath": "/account/login-history",
-      "mountPath": "/api/settings",
-      "source": "routes/settings.js"
-    },
-    {
-      "method": "GET",
-      "path": "/api/settings/connections",
-      "routePath": "/connections",
-      "mountPath": "/api/settings",
-      "source": "routes/settings.js"
-    },
-    {
-      "method": "POST",
-      "path": "/api/settings/connections/:provider/link",
-      "routePath": "/connections/:provider/link",
-      "mountPath": "/api/settings",
-      "source": "routes/settings.js"
-    },
-    {
-      "method": "DELETE",
-      "path": "/api/settings/connections/:provider/unlink",
-      "routePath": "/connections/:provider/unlink",
-      "mountPath": "/api/settings",
-      "source": "routes/settings.js"
     },
     {
       "method": "GET",
@@ -1256,8 +1256,8 @@
     {
       "from": "config/passport.js",
       "fromArea": "config",
-      "to": "config/oauthProviders.js",
-      "toArea": "config"
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
     },
     {
       "from": "controllers/adminController.js",
@@ -1286,12 +1286,6 @@
     {
       "from": "controllers/adminController.js",
       "fromArea": "controllers",
-      "to": "services/authService.js",
-      "toArea": "services"
-    },
-    {
-      "from": "controllers/adminController.js",
-      "fromArea": "controllers",
       "to": "services/migrationService.js",
       "toArea": "services"
     },
@@ -1310,14 +1304,14 @@
     {
       "from": "controllers/adminController.js",
       "fromArea": "controllers",
-      "to": "utils/asyncHandler.js",
-      "toArea": "utils"
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
     },
     {
-      "from": "controllers/analyticsController.js",
+      "from": "controllers/adminController.js",
       "fromArea": "controllers",
-      "to": "middleware/checkAuth.js",
-      "toArea": "middleware"
+      "to": "utils/asyncHandler.js",
+      "toArea": "utils"
     },
     {
       "from": "controllers/analyticsController.js",
@@ -1334,6 +1328,12 @@
     {
       "from": "controllers/analyticsController.js",
       "fromArea": "controllers",
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
+    },
+    {
+      "from": "controllers/analyticsController.js",
+      "fromArea": "controllers",
       "to": "src/shared/responses/send.js",
       "toArea": "shared"
     },
@@ -1341,66 +1341,6 @@
       "from": "controllers/analyticsController.js",
       "fromArea": "controllers",
       "to": "utils/asyncHandler.js",
-      "toArea": "utils"
-    },
-    {
-      "from": "controllers/authController.js",
-      "fromArea": "controllers",
-      "to": "helpers/error.helper.js",
-      "toArea": "helpers"
-    },
-    {
-      "from": "controllers/authController.js",
-      "fromArea": "controllers",
-      "to": "services/activityFeedService.js",
-      "toArea": "services"
-    },
-    {
-      "from": "controllers/authController.js",
-      "fromArea": "controllers",
-      "to": "services/authService.js",
-      "toArea": "services"
-    },
-    {
-      "from": "controllers/authController.js",
-      "fromArea": "controllers",
-      "to": "services/emailService.js",
-      "toArea": "services"
-    },
-    {
-      "from": "controllers/authController.js",
-      "fromArea": "controllers",
-      "to": "services/oauthService.js",
-      "toArea": "services"
-    },
-    {
-      "from": "controllers/authController.js",
-      "fromArea": "controllers",
-      "to": "src/shared/responses/send.js",
-      "toArea": "shared"
-    },
-    {
-      "from": "controllers/authController.js",
-      "fromArea": "controllers",
-      "to": "utils/asyncHandler.js",
-      "toArea": "utils"
-    },
-    {
-      "from": "controllers/authController.js",
-      "fromArea": "controllers",
-      "to": "utils/authCookie.js",
-      "toArea": "utils"
-    },
-    {
-      "from": "controllers/authController.js",
-      "fromArea": "controllers",
-      "to": "utils/loginTurnstile.js",
-      "toArea": "utils"
-    },
-    {
-      "from": "controllers/authController.js",
-      "fromArea": "controllers",
-      "to": "utils/turnstile.js",
       "toArea": "utils"
     },
     {
@@ -1524,72 +1464,6 @@
       "toArea": "utils"
     },
     {
-      "from": "controllers/oauthController.js",
-      "fromArea": "controllers",
-      "to": "config/oauthProviders.js",
-      "toArea": "config"
-    },
-    {
-      "from": "controllers/oauthController.js",
-      "fromArea": "controllers",
-      "to": "config/passport.js",
-      "toArea": "config"
-    },
-    {
-      "from": "controllers/oauthController.js",
-      "fromArea": "controllers",
-      "to": "helpers/error.helper.js",
-      "toArea": "helpers"
-    },
-    {
-      "from": "controllers/oauthController.js",
-      "fromArea": "controllers",
-      "to": "services/authService.js",
-      "toArea": "services"
-    },
-    {
-      "from": "controllers/oauthController.js",
-      "fromArea": "controllers",
-      "to": "services/oauthService.js",
-      "toArea": "services"
-    },
-    {
-      "from": "controllers/oauthController.js",
-      "fromArea": "controllers",
-      "to": "utils/asyncHandler.js",
-      "toArea": "utils"
-    },
-    {
-      "from": "controllers/oauthController.js",
-      "fromArea": "controllers",
-      "to": "utils/authCookie.js",
-      "toArea": "utils"
-    },
-    {
-      "from": "controllers/oauthController.js",
-      "fromArea": "controllers",
-      "to": "utils/oauthState.js",
-      "toArea": "utils"
-    },
-    {
-      "from": "controllers/settingsController.js",
-      "fromArea": "controllers",
-      "to": "services/authService.js",
-      "toArea": "services"
-    },
-    {
-      "from": "controllers/settingsController.js",
-      "fromArea": "controllers",
-      "to": "services/emailService.js",
-      "toArea": "services"
-    },
-    {
-      "from": "controllers/settingsController.js",
-      "fromArea": "controllers",
-      "to": "services/oauthService.js",
-      "toArea": "services"
-    },
-    {
       "from": "controllers/settingsController.js",
       "fromArea": "controllers",
       "to": "services/privacyService.js",
@@ -1598,20 +1472,14 @@
     {
       "from": "controllers/settingsController.js",
       "fromArea": "controllers",
-      "to": "src/shared/responses/send.js",
+      "to": "src/shared/presentation/http/asyncHandler.js",
       "toArea": "shared"
     },
     {
       "from": "controllers/settingsController.js",
       "fromArea": "controllers",
-      "to": "utils/asyncHandler.js",
-      "toArea": "utils"
-    },
-    {
-      "from": "controllers/settingsController.js",
-      "fromArea": "controllers",
-      "to": "utils/authCookie.js",
-      "toArea": "utils"
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
     },
     {
       "from": "controllers/supportController.js",
@@ -1716,12 +1584,6 @@
       "toArea": "utils"
     },
     {
-      "from": "middleware/checkAuth.js",
-      "fromArea": "middleware",
-      "to": "helpers/error.helper.js",
-      "toArea": "helpers"
-    },
-    {
       "from": "middleware/errorHandler.js",
       "fromArea": "middleware",
       "to": "src/shared/presentation/http/errorHandler.js",
@@ -1737,6 +1599,12 @@
       "from": "middleware/logger.js",
       "fromArea": "middleware",
       "to": "src/shared/presentation/http/requestLogger.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "middleware/requireTurnstile.js",
+      "fromArea": "middleware",
+      "to": "src/shared/responses/send.js",
       "toArea": "shared"
     },
     {
@@ -1771,12 +1639,6 @@
     },
     {
       "from": "repositories/analyticsRepository.js",
-      "fromArea": "repositories",
-      "to": "db/index.js",
-      "toArea": "db"
-    },
-    {
-      "from": "repositories/authRepository.js",
       "fromArea": "repositories",
       "to": "db/index.js",
       "toArea": "db"
@@ -1836,12 +1698,6 @@
       "toArea": "repositories"
     },
     {
-      "from": "repositories/oauthRepository.js",
-      "fromArea": "repositories",
-      "to": "db/index.js",
-      "toArea": "db"
-    },
-    {
       "from": "repositories/privacyRepository.js",
       "fromArea": "repositories",
       "to": "db/index.js",
@@ -1892,50 +1748,14 @@
     {
       "from": "routes/admin.js",
       "fromArea": "routes",
-      "to": "middleware/checkAuth.js",
-      "toArea": "middleware"
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
     },
     {
       "from": "routes/analytics.js",
       "fromArea": "routes",
       "to": "controllers/analyticsController.js",
       "toArea": "controllers"
-    },
-    {
-      "from": "routes/auth.js",
-      "fromArea": "routes",
-      "to": "controllers/authController.js",
-      "toArea": "controllers"
-    },
-    {
-      "from": "routes/auth.js",
-      "fromArea": "routes",
-      "to": "controllers/oauthController.js",
-      "toArea": "controllers"
-    },
-    {
-      "from": "routes/auth.js",
-      "fromArea": "routes",
-      "to": "middleware/checkAuth.js",
-      "toArea": "middleware"
-    },
-    {
-      "from": "routes/auth.js",
-      "fromArea": "routes",
-      "to": "middleware/requireTurnstile.js",
-      "toArea": "middleware"
-    },
-    {
-      "from": "routes/auth.js",
-      "fromArea": "routes",
-      "to": "middleware/validateAuth.js",
-      "toArea": "middleware"
-    },
-    {
-      "from": "routes/auth.js",
-      "fromArea": "routes",
-      "to": "validations/auth.validation.js",
-      "toArea": "validations"
     },
     {
       "from": "routes/chat.js",
@@ -1946,8 +1766,8 @@
     {
       "from": "routes/chat.js",
       "fromArea": "routes",
-      "to": "middleware/checkAuth.js",
-      "toArea": "middleware"
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
     },
     {
       "from": "routes/effects.js",
@@ -1964,14 +1784,14 @@
     {
       "from": "routes/feedback.js",
       "fromArea": "routes",
-      "to": "middleware/checkAuth.js",
+      "to": "middleware/requireTurnstile.js",
       "toArea": "middleware"
     },
     {
       "from": "routes/feedback.js",
       "fromArea": "routes",
-      "to": "middleware/requireTurnstile.js",
-      "toArea": "middleware"
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
     },
     {
       "from": "routes/friends.js",
@@ -1982,8 +1802,8 @@
     {
       "from": "routes/friends.js",
       "fromArea": "routes",
-      "to": "middleware/checkAuth.js",
-      "toArea": "middleware"
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
     },
     {
       "from": "routes/leaderboard.js",
@@ -2000,8 +1820,8 @@
     {
       "from": "routes/matches.js",
       "fromArea": "routes",
-      "to": "middleware/checkAuth.js",
-      "toArea": "middleware"
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
     },
     {
       "from": "routes/me.js",
@@ -2018,14 +1838,8 @@
     {
       "from": "routes/me.js",
       "fromArea": "routes",
-      "to": "middleware/checkAuth.js",
-      "toArea": "middleware"
-    },
-    {
-      "from": "routes/settings.js",
-      "fromArea": "routes",
-      "to": "controllers/oauthController.js",
-      "toArea": "controllers"
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
     },
     {
       "from": "routes/settings.js",
@@ -2036,20 +1850,14 @@
     {
       "from": "routes/settings.js",
       "fromArea": "routes",
-      "to": "middleware/checkAuth.js",
-      "toArea": "middleware"
-    },
-    {
-      "from": "routes/settings.js",
-      "fromArea": "routes",
       "to": "middleware/validateAuth.js",
       "toArea": "middleware"
     },
     {
       "from": "routes/settings.js",
       "fromArea": "routes",
-      "to": "validations/auth.validation.js",
-      "toArea": "validations"
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
     },
     {
       "from": "routes/settings.js",
@@ -2066,14 +1874,14 @@
     {
       "from": "routes/support.js",
       "fromArea": "routes",
-      "to": "middleware/checkAuth.js",
+      "to": "middleware/requireTurnstile.js",
       "toArea": "middleware"
     },
     {
       "from": "routes/support.js",
       "fromArea": "routes",
-      "to": "middleware/requireTurnstile.js",
-      "toArea": "middleware"
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
     },
     {
       "from": "routes/telegram.js",
@@ -2090,44 +1898,14 @@
     {
       "from": "routes/users.js",
       "fromArea": "routes",
-      "to": "middleware/checkAuth.js",
-      "toArea": "middleware"
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
     },
     {
       "from": "server.js",
       "fromArea": "server.js",
       "to": "src/main.js",
       "toArea": "src"
-    },
-    {
-      "from": "services/authService.js",
-      "fromArea": "services",
-      "to": "helpers/error.helper.js",
-      "toArea": "helpers"
-    },
-    {
-      "from": "services/authService.js",
-      "fromArea": "services",
-      "to": "repositories/authRepository.js",
-      "toArea": "repositories"
-    },
-    {
-      "from": "services/authService.js",
-      "fromArea": "services",
-      "to": "repositories/helper.js",
-      "toArea": "repositories"
-    },
-    {
-      "from": "services/authService.js",
-      "fromArea": "services",
-      "to": "repositories/uploadedAssetRepository.js",
-      "toArea": "repositories"
-    },
-    {
-      "from": "services/authService.js",
-      "fromArea": "services",
-      "to": "services/rankRules.js",
-      "toArea": "services"
     },
     {
       "from": "services/chatCryptoService.js",
@@ -2238,42 +2016,6 @@
       "toArea": "db"
     },
     {
-      "from": "services/oauthService.js",
-      "fromArea": "services",
-      "to": "config/oauthProviders.js",
-      "toArea": "config"
-    },
-    {
-      "from": "services/oauthService.js",
-      "fromArea": "services",
-      "to": "helpers/error.helper.js",
-      "toArea": "helpers"
-    },
-    {
-      "from": "services/oauthService.js",
-      "fromArea": "services",
-      "to": "repositories/authRepository.js",
-      "toArea": "repositories"
-    },
-    {
-      "from": "services/oauthService.js",
-      "fromArea": "services",
-      "to": "repositories/helper.js",
-      "toArea": "repositories"
-    },
-    {
-      "from": "services/oauthService.js",
-      "fromArea": "services",
-      "to": "repositories/oauthRepository.js",
-      "toArea": "repositories"
-    },
-    {
-      "from": "services/oauthService.js",
-      "fromArea": "services",
-      "to": "services/authService.js",
-      "toArea": "services"
-    },
-    {
       "from": "services/privacyService.js",
       "fromArea": "services",
       "to": "helpers/error.helper.js",
@@ -2288,8 +2030,8 @@
     {
       "from": "services/privacyService.js",
       "fromArea": "services",
-      "to": "services/authService.js",
-      "toArea": "services"
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
     },
     {
       "from": "services/publicStatsService.js",
@@ -2618,8 +2360,8 @@
     {
       "from": "sockets/socketAuth.js",
       "fromArea": "sockets",
-      "to": "repositories/authRepository.js",
-      "toArea": "repositories"
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
     },
     {
       "from": "sockets/support.socket.js",
@@ -2744,6 +2486,24 @@
     {
       "from": "src/app/registerModules.js",
       "fromArea": "src",
+      "to": "config/passport.js",
+      "toArea": "config"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "repositories/helper.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "repositories/uploadedAssetRepository.js",
+      "toArea": "repositories"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
       "to": "routes/admin.js",
       "toArea": "routes"
     },
@@ -2751,12 +2511,6 @@
       "from": "src/app/registerModules.js",
       "fromArea": "src",
       "to": "routes/analytics.js",
-      "toArea": "routes"
-    },
-    {
-      "from": "src/app/registerModules.js",
-      "fromArea": "src",
-      "to": "routes/auth.js",
       "toArea": "routes"
     },
     {
@@ -2828,8 +2582,68 @@
     {
       "from": "src/app/registerModules.js",
       "fromArea": "src",
+      "to": "services/activityFeedService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "services/emailService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "services/rankRules.js",
+      "toArea": "services"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
       "to": "sockets/index.js",
       "toArea": "sockets"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/identityUseCases.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/oauthUseCases.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/infrastructure/identityRepository.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/infrastructure/oauthRepository.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "src/shared/infrastructure/database/pool.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/app/registerModules.js",
+      "fromArea": "src",
+      "to": "utils/turnstile.js",
+      "toArea": "utils"
     },
     {
       "from": "src/config/env.js",
@@ -2847,6 +2661,336 @@
       "from": "src/main.js",
       "fromArea": "src",
       "to": "src/app/lifecycle.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/application/identityApplication.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/createIdentityApplication.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/application/identityUseCases.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/identityPorts.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/application/identityUseCases.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/domain/passwordPolicy.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/application/identityUseCases.js",
+      "fromArea": "src",
+      "to": "src/shared/responses/errors.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/application/oauthUseCases.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/identityPorts.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/application/oauthUseCases.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/identityUseCases.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/application/oauthUseCases.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/domain/passwordPolicy.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/application/oauthUseCases.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/infrastructure/oauth/oauthProviders.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/application/oauthUseCases.js",
+      "fromArea": "src",
+      "to": "src/shared/responses/errors.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/index.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/createIdentityApplication.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/index.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/identityApplication.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/index.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/identityPorts.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/index.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/oauthState.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/index.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/domain/passwordPolicy.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/index.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/infrastructure/identityDatabase.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/index.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/infrastructure/oauth/oauthProviders.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/index.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/authMiddleware.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/index.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/identity.routes.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/index.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/oauthCallback.routes.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/index.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/sessionCookies.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/index.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/identityPresentationPorts.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/infrastructure/identityRepository.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/infrastructure/identityDatabase.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/infrastructure/oauthRepository.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/infrastructure/identityDatabase.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/authMiddleware.js",
+      "fromArea": "src",
+      "to": "src/shared/presentation/http/requestContext.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/authMiddleware.js",
+      "fromArea": "src",
+      "to": "src/shared/responses/errors.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/identityApplication.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/loginAttemptPolicy.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/sessionCookies.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/identityPresentationPorts.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.controller.js",
+      "fromArea": "src",
+      "to": "src/shared/infrastructure/logging/logger.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.controller.js",
+      "fromArea": "src",
+      "to": "src/shared/presentation/http/asyncHandler.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.controller.js",
+      "fromArea": "src",
+      "to": "src/shared/responses/errors.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.controller.js",
+      "fromArea": "src",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.routes.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/authMiddleware.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.routes.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/identity.controller.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.routes.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/identity.schemas.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.routes.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/identitySettings.controller.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.routes.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/oauth.controller.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.routes.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/identityPresentationPorts.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.routes.js",
+      "fromArea": "src",
+      "to": "src/shared/responses/errors.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.routes.js",
+      "fromArea": "src",
+      "to": "src/shared/responses/send.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identitySettings.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/identityApplication.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identitySettings.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/sessionCookies.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identitySettings.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/identityPresentationPorts.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identitySettings.controller.js",
+      "fromArea": "src",
+      "to": "src/shared/infrastructure/logging/logger.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identitySettings.controller.js",
+      "fromArea": "src",
+      "to": "src/shared/presentation/http/asyncHandler.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/oauth.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/identityApplication.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/oauth.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/oauthState.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/oauth.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/infrastructure/oauth/oauthProviders.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/oauth.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/sessionCookies.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/oauth.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/identityPresentationPorts.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/oauth.controller.js",
+      "fromArea": "src",
+      "to": "src/shared/infrastructure/logging/logger.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/oauth.controller.js",
+      "fromArea": "src",
+      "to": "src/shared/presentation/http/asyncHandler.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/oauth.controller.js",
+      "fromArea": "src",
+      "to": "src/shared/responses/errors.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/oauthCallback.routes.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/oauth.controller.js",
       "toArea": "src"
     },
     {

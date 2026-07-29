@@ -5,7 +5,11 @@ import SteamPkg from 'passport-steam'
 import YandexPkg from 'passport-yandex'
 import VKPkg from 'passport-vkontakte'
 import GitHubPkg from 'passport-github2'
-import { getOAuthCallbackUrl, getServerUrl, isOAuthProviderEnabled } from './oauthProviders.js'
+import {
+    getOAuthCallbackUrl,
+    getServerUrl,
+    isOAuthProviderEnabled,
+} from '../src/modules/identity/index.js'
 
 const { Strategy: DiscordStrategy } = DiscordPkg
 const { Strategy: SteamStrategy } = SteamPkg

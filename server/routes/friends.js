@@ -7,7 +7,7 @@ import {
     getIncomingRequests,
     respondFriendRequest,
 } from '../controllers/friendsController.js'
-import { checkAuth } from '../middleware/checkAuth.js'
+import { checkAuth } from '../src/modules/identity/index.js'
 
 const friendsRouter = express.Router()
 

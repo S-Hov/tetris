@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import { promises as fs } from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { badRequest } from '../helpers/error.helper.js'
+import { badRequest } from '../../../shared/responses/errors.js'
 import {
     checkEmailRepo,
     changePendingUserEmailRepo,
@@ -18,6 +18,7 @@ import {
     getUserByEmailRepo,
     getUserAuthByIdRepo,
     getUserRepo,
+    getSocketUserRepo,
     loginUserRepo,
     markEmailVerifiedRepo,
     updateUserPasswordRepo,
@@ -26,14 +27,18 @@ import {
     updateUserLastLoginRepo,
     updateUserProfileRepo,
     requestUserEmailChangeRepo,
-} from '../repositories/authRepository.js'
-import { getRoleByKeyRepo } from '../repositories/helper.js'
-import { getRankTier } from './rankRules.js'
-import { storeUploadedAssetRepo } from '../repositories/uploadedAssetRepository.js'
+    getRoleByKeyRepo,
+    getRankTier,
+    storeUploadedAssetRepo,
+} from './identityPorts.js'
+import {
+    isStrongPassword,
+    normalizeIdentityEmail,
+} from '../domain/passwordPolicy.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const SERVER_ROOT = path.resolve(__dirname, '..')
+const SERVER_ROOT = path.resolve(__dirname, '..', '..', '..', '..')
 const AVATAR_UPLOAD_DIR = path.join(SERVER_ROOT, 'uploads', 'avatars')
 const MAX_AVATAR_SIZE_BYTES = 2 * 1024 * 1024
 const AVATAR_TYPES = {
@@ -606,16 +611,7 @@ export const getVerificationCodeLength = () => {
     return codeLength
 }
 
-const normalizeEmail = (email) => String(email || '').trim().toLowerCase()
-
-const isStrongPassword = (password) => (
-    typeof password === 'string' &&
-    password.length >= 8 &&
-    password.length <= 16 &&
-    /[A-Z]/.test(password) &&
-    /[a-z]/.test(password) &&
-    /[0-9]/.test(password)
-)
+const normalizeEmail = normalizeIdentityEmail
 
 const createTemporaryPassword = () => {
     const lower = 'abcdefghjkmnpqrstuvwxyz'
@@ -756,4 +752,29 @@ const getRemainingSeconds = (expiresAt) => {
     }
 
     return Math.max(0, Math.ceil((expiresAtTime - Date.now()) / 1000))
+}
+
+export const getSocketUser = async (id) => getSocketUserRepo(id)
+
+// Transport-neutral names used by the public module API. Service-suffixed
+// exports above remain only for temporary legacy re-exports.
+export {
+    changeUnverifiedEmailService as changeUnverifiedEmail,
+    completePasswordResetService as completePasswordReset,
+    createAuthLogService as createAuthLog,
+    ensurePendingVerificationService as ensurePendingVerification,
+    getLoginHistoryService as getLoginHistory,
+    getPasswordResetMetaService as getPasswordResetMeta,
+    getUserService as getSessionUser,
+    updateUserProfileService as updateProfile,
+    updateUserAvatarService as updateAvatar,
+    getVerificationMetaService as getVerificationMeta,
+    loginConfirmationService as confirmLogin,
+    loginUserService as findPasswordLoginUser,
+    registerUserService as registerUser,
+    requestAccountEmailChangeService as requestAccountEmailChange,
+    requestPasswordResetService as requestPasswordReset,
+    resendVerificationCodeService as resendVerificationCode,
+    updateUserPasswordService as updatePassword,
+    verifyEmailService as verifyEmail,
 }

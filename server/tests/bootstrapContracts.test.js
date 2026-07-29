@@ -81,7 +81,7 @@ test('new runtime serves the legacy guest auth contract and shuts down cleanly',
     assert.equal(runtime.getState(), 'running')
     assert.equal((await runtime.start()).port, address.port)
 
-    const response = await fetch(`http://127.0.0.1:${address.port}/api/authentication/me`, {
+    const response = await fetch(`http://127.0.0.1:${address.port}/api/identity/me`, {
         headers: {
             Origin: 'http://contract.test',
             'x-language': 'en',

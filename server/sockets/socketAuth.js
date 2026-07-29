@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { getSocketUserRepo } from '../repositories/authRepository.js'
+import { identityApplication } from '../src/modules/identity/index.js'
 
 const GUEST_NICKNAME_MIN_LENGTH = 2
 const GUEST_NICKNAME_MAX_LENGTH = 24
@@ -78,7 +78,7 @@ export const socketAuthMiddleware = async (socket, next) => {
     if (token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            const user = await getSocketUserRepo(decoded.userId || decoded.id)
+            const user = await identityApplication.getSocketUser(decoded.userId || decoded.id)
 
             if (!user) {
                 next(new Error('User not found'))

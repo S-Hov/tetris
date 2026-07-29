@@ -7,7 +7,7 @@ import {
     getMySupportRequestMessages,
     getMySupportRequests,
 } from '../controllers/supportController.js'
-import { checkAuth, optionalAuth } from '../middleware/checkAuth.js'
+import { checkAuth, optionalAuth } from '../src/modules/identity/index.js'
 import { requireTurnstile } from '../middleware/requireTurnstile.js'
 
 const supportRouter = express.Router()

@@ -8,7 +8,7 @@ import {
     equipMySkinPack,
     markMyCosmeticViewed,
 } from '../controllers/cosmeticsController.js'
-import { checkAuth } from '../middleware/checkAuth.js'
+import { checkAuth } from '../src/modules/identity/index.js'
 import { checkAdmin } from '../middleware/checkAdmin.js'
 
 const meRouter = express.Router()

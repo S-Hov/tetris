@@ -27,9 +27,9 @@ test('critical public contracts are present in the architecture baseline', async
     const socketContracts = new Set(inventory.sockets.map(({ direction, event }) => `${direction} ${event}`))
 
     for (const contract of [
-        'POST /api/authentication/register',
-        'POST /api/authentication/login',
-        'GET /api/authentication/me',
+        'POST /api/identity/register',
+        'POST /api/identity/login',
+        'GET /api/identity/me',
         'GET /api/matches',
         'GET /api/me/inventory/cosmetics',
         'GET /api/me/cosmetics/loadout',

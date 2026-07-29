@@ -69,6 +69,13 @@ export const collectRestInventory = async (serverRoot) => {
         routerImports.set(match[1], `routes/${match[2]}`)
     }
 
+    const identityRouteFile = 'src/modules/identity/presentation/http/identity.routes.js'
+    routerImports.set('identityRouter', identityRouteFile)
+    routerImports.set(
+        'oauthCallbackRouter',
+        'src/modules/identity/presentation/http/oauthCallback.routes.js'
+    )
+
     const mountsByFile = new Map()
 
     while ((match = mountPattern.exec(registrationSource)) !== null) {
@@ -79,10 +86,15 @@ export const collectRestInventory = async (serverRoot) => {
         }
     }
 
-    const routeFiles = await walkFiles(
+    const legacyRouteFiles = await walkFiles(
         path.join(serverRoot, 'routes'),
         (filePath) => filePath.endsWith('.js')
     )
+    const identityRouteFiles = await walkFiles(
+        path.join(serverRoot, 'src', 'modules'),
+        (filePath) => filePath.endsWith('.routes.js')
+    )
+    const routeFiles = [...legacyRouteFiles, ...identityRouteFiles]
     const sources = await readSources(serverRoot, routeFiles)
     const endpoints = []
 

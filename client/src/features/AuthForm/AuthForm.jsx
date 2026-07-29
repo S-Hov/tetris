@@ -41,7 +41,7 @@ const AuthForm = ({ type = 'login' }) => {
                                             <a
                                                 key={item.provider}
                                                 className="social-icon"
-                                                href={`${getBaseUrl()}/api/authentication/${item.provider}`}
+                                                href={`${getBaseUrl()}/api/identity/oauth/${item.provider}`}
                                                 aria-label={t('auth.oauth.providerAria', { provider: item.label })}
                                                 title={t('auth.oauth.providerAria', { provider: item.label })}
                                             >

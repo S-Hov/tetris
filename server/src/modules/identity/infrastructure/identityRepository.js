@@ -1,5 +1,5 @@
-import { pool } from '../db/index.js'
 import { isIP } from 'net'
+import { identityDatabase as pool } from './identityDatabase.js'
 
 export const registerUserRepo = async (username, email, passwordHash, roleId, status = 'pending_verification') => {
     const result = await pool.query(

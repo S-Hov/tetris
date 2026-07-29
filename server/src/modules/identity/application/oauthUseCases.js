@@ -1,7 +1,10 @@
 import bcrypt from 'bcrypt'
-import { badRequest, forbidden, notFound } from '../helpers/error.helper.js'
-import { OAUTH_PROVIDER_LABELS, OAUTH_PROVIDERS, isSupportedOAuthProvider } from '../config/oauthProviders.js'
-import { getRoleByKeyRepo } from '../repositories/helper.js'
+import { badRequest, forbidden, notFound } from '../../../shared/responses/errors.js'
+import {
+    OAUTH_PROVIDER_LABELS,
+    OAUTH_PROVIDERS,
+    isSupportedOAuthProvider,
+} from '../infrastructure/oauth/oauthProviders.js'
 import {
     countUserAccountsRepo,
     deleteUserAccountRepo,
@@ -9,11 +12,13 @@ import {
     getUserConnectionsRepo,
     getUserForOAuthByIdRepo,
     linkOAuthAccountRepo,
-} from '../repositories/oauthRepository.js'
+    getRoleByKeyRepo,
+    updateUserPasswordRepo,
+} from './identityPorts.js'
 import {
     getUserService,
-} from './authService.js'
-import { updateUserPasswordRepo } from '../repositories/authRepository.js'
+} from './identityUseCases.js'
+import { isStrongPassword } from '../domain/passwordPolicy.js'
 
 const PASSWORD_RULE_MESSAGE = 'Пароль должен быть 8-16 символов, с заглавной, строчной буквой и цифрой'
 
@@ -54,15 +59,6 @@ const getStoredTokens = (oauthProfile) => {
         refreshToken: oauthProfile.refreshToken || null,
     }
 }
-
-const isStrongPassword = (password) => (
-    typeof password === 'string' &&
-    password.length >= 8 &&
-    password.length <= 16 &&
-    /[A-Z]/.test(password) &&
-    /[a-z]/.test(password) &&
-    /[0-9]/.test(password)
-)
 
 const normalizeOAuthProfile = (provider, oauthProfile) => {
     const providerAccountId = String(oauthProfile?.providerAccountId || '').trim()
@@ -240,4 +236,11 @@ export const setInitialPasswordService = async ({ userId, nextPassword }) => {
     })
 
     return await getUserService(userId)
+}
+
+export {
+    getConnectionsService as getConnections,
+    handleOAuthLoginService as handleOAuthLogin,
+    setInitialPasswordService as setInitialPassword,
+    unlinkConnectionService as unlinkConnection,
 }

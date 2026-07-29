@@ -17,13 +17,17 @@
 | 1. Защитная сетка и инвентаризация | Завершена | Зафиксированы внешние контракты и legacy import graph |
 | 2. Новый bootstrap и composition root | Завершена | Сервер запускается через `src/main.js`, legacy API подключён адаптерами |
 | 3. Shared foundation | Завершена | Добавлены config validation, request context, application errors, database adapter, structured logger и import boundaries |
-| 4. Модуль `identity` | Следующая | Ещё не начата |
+| 4. Модуль `identity` | Завершена | Password auth, verification/reset, OAuth accounts и session policies перенесены за единый module API |
+| 5. Модуль `users` | Следующая | Ещё не начата |
 
 Подробный отчёт по фазе 2 находится в
 `docs/backend-phase-2-bootstrap-ru.md`.
 
 Подробный отчёт по фазе 3 находится в
 `docs/backend-phase-3-shared-foundation-ru.md`.
+
+Подробный отчёт по фазе 4 находится в
+`docs/backend-phase-4-identity-ru.md`.
 
 Принятое архитектурное решение:
 
@@ -869,7 +873,8 @@ pool напрямую.
 - Перенести email verification и password reset.
 - Перенести OAuth login/linking и auth accounts.
 - Перенести auth cookie/session policies.
-- Оставить старые `/api/authentication` URL без изменения.
+- Перевести согласованные с frontend identity URL на `/api/identity`.
+- Оставить `/api/authentication/:provider/callback` без изменения для внешних OAuth providers.
 
 Результат: вся идентификация имеет один application API и покрыта тестами.
 

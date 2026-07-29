@@ -219,7 +219,8 @@ donations, audit и migrations.
 | `passport.initialize()` | OAuth providers |
 | `logger` | Логирование запросов |
 | `/uploads` | Статика и fallback для загруженных ассетов |
-| `/api/authentication` | Auth/password/OAuth routes |
+| `/api/identity` | Identity, password и OAuth start routes |
+| `/api/authentication` | Только стабильный callback внешних OAuth providers |
 | `/api/settings` | Настройки аккаунта и OAuth connections |
 | `/api/users` | HTTP capabilities для действий с пользователями |
 | `/api/matches` | Match routes |
@@ -236,24 +237,24 @@ donations, audit и migrations.
 
 | Method | URL | Auth | Что делает |
 | --- | --- | --- | --- |
-| `POST` | `/api/authentication/register` | Guest only + Turnstile | Создаёт пользователя и email verification |
-| `POST` | `/api/authentication/login` | Guest only | Password login |
-| `POST` | `/api/authentication/password/login` | Guest only | Alias password login |
-| `GET` | `/api/authentication/me` | Optional | Возвращает пользователя или guest session |
-| `PATCH` | `/api/authentication/me` | Required | Обновляет профиль |
-| `PATCH` | `/api/authentication/me/password` | Required | Меняет пароль |
-| `POST` | `/api/authentication/password/set` | Required | Задаёт пароль OAuth-only аккаунту |
-| `PUT` | `/api/authentication/me/avatar` | Required | Загружает avatar/media в `server/uploads` |
-| `POST` | `/api/authentication/logout` | Optional | Чистит cookie |
-| `GET` | `/api/authentication/:provider` | Guest | Старт OAuth |
+| `POST` | `/api/identity/register` | Guest only + Turnstile | Создаёт пользователя и email verification |
+| `POST` | `/api/identity/login` | Guest only | Password login |
+| `POST` | `/api/identity/password/login` | Guest only | Alias password login |
+| `GET` | `/api/identity/me` | Optional | Возвращает пользователя или guest session |
+| `PATCH` | `/api/identity/me` | Required | Обновляет профиль |
+| `PATCH` | `/api/identity/me/password` | Required | Меняет пароль |
+| `POST` | `/api/identity/password/set` | Required | Задаёт пароль OAuth-only аккаунту |
+| `PUT` | `/api/identity/me/avatar` | Required | Загружает avatar/media в `server/uploads` |
+| `POST` | `/api/identity/logout` | Optional | Чистит cookie |
+| `GET` | `/api/identity/oauth/:provider` | Guest | Старт OAuth |
 | `GET` | `/api/authentication/:provider/callback` | Guest | OAuth callback |
-| `POST` | `/api/authentication/verify-email/:email` | Guest only | Проверяет код |
-| `POST` | `/api/authentication/change-unverified-email` | Guest only | Меняет email до подтверждения |
-| `POST` | `/api/authentication/resend-verification-email` | Guest only | Отправляет новый код |
-| `GET` | `/api/authentication/verification-time/:email` | Guest only | Возвращает meta по verification |
-| `POST` | `/api/authentication/password-reset` | Guest only | Запрашивает сброс пароля |
-| `GET` | `/api/authentication/password-reset/verification-time/:email` | Guest only | Meta по сбросу пароля |
-| `POST` | `/api/authentication/password-reset/verify/:email` | Guest only | Завершает сброс пароля |
+| `POST` | `/api/identity/verify-email/:email` | Guest only | Проверяет код |
+| `POST` | `/api/identity/change-unverified-email` | Guest only | Меняет email до подтверждения |
+| `POST` | `/api/identity/resend-verification-email` | Guest only | Отправляет новый код |
+| `GET` | `/api/identity/verification-time/:email` | Guest only | Возвращает meta по verification |
+| `POST` | `/api/identity/password-reset` | Guest only | Запрашивает сброс пароля |
+| `GET` | `/api/identity/password-reset/verification-time/:email` | Guest only | Meta по сбросу пароля |
+| `POST` | `/api/identity/password-reset/verify/:email` | Guest only | Завершает сброс пароля |
 
 OAuth подробно описан в [`oauth-auth.md`](oauth-auth.md).
 
@@ -270,11 +271,11 @@ OAuth подробно описан в [`oauth-auth.md`](oauth-auth.md).
 
 | Method | URL | Auth | Что делает |
 | --- | --- | --- | --- |
-| `GET` | `/api/settings/connections` | Required | Список OAuth connections пользователя |
-| `POST` | `/api/settings/connections/:provider/link` | Required | Старт привязки OAuth provider |
-| `DELETE` | `/api/settings/connections/:provider/unlink` | Required | Отвязка provider, если остаётся другой способ входа |
-| `PATCH` | `/api/settings/account/email` | Required | Запрос смены email |
-| `GET` | `/api/settings/account/login-history` | Required | История входов аккаунта |
+| `GET` | `/api/identity/connections` | Required | Список OAuth connections пользователя |
+| `POST` | `/api/identity/connections/:provider/link` | Required | Старт привязки OAuth provider |
+| `DELETE` | `/api/identity/connections/:provider/unlink` | Required | Отвязка provider, если остаётся другой способ входа |
+| `PATCH` | `/api/identity/account/email` | Required | Запрос смены email |
+| `GET` | `/api/identity/account/login-history` | Required | История входов аккаунта |
 | `GET` | `/api/settings/privacy` | Required | Настройки приватности пользователя |
 | `PATCH` | `/api/settings/privacy` | Required | Частичное обновление настроек приватности |
 | `GET` | `/api/users/:userId/actions` | Optional | Доступные действия без раскрытия настроек другого пользователя |
@@ -396,7 +397,7 @@ handshake.
 
 ### OAuth login
 
-1. Клиент открывает `/api/authentication/:provider`.
+1. Клиент открывает `/api/identity/oauth/:provider`.
 2. Сервер создаёт signed OAuth state и редиректит к provider.
 3. Callback ищет `accounts` по `provider + provider_account_id`.
 4. Если связи нет, сервер может привязать verified email к существующему

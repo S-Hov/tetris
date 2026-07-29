@@ -30,7 +30,7 @@ import {
     restoreDatabaseBackupRepo,
 } from '../repositories/adminRepository.js'
 import { badRequest } from '../helpers/error.helper.js'
-import { updateUserAvatarService } from '../services/authService.js'
+import { identityApplication } from '../src/modules/identity/index.js'
 import {
     getSupportRequestByIdRepo,
     getSupportRequestMessagesRepo,
@@ -522,7 +522,7 @@ export const manageUser = asyncHandler(async (req, res) => {
 })
 
 export const updateUserAvatar = asyncHandler(async (req, res) => {
-    const user = await updateUserAvatarService({
+        const user = await identityApplication.updateAvatar({
         userId: req.params.userId,
         contentType: req.get('content-type'),
         buffer: req.body,

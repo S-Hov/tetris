@@ -1,7 +1,7 @@
 import express from 'express'
 
 import { getPublicUserProfile, getUserActions } from '../controllers/usersController.js'
-import { optionalAuth } from '../middleware/checkAuth.js'
+import { optionalAuth } from '../src/modules/identity/index.js'
 
 const usersRouter = express.Router()
 

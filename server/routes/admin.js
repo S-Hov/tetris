@@ -52,7 +52,7 @@ import {
     restoreDatabaseBackup,
     runMigrations,
 } from '../controllers/adminController.js'
-import { checkAuth } from '../middleware/checkAuth.js'
+import { checkAuth } from '../src/modules/identity/index.js'
 import { checkAdmin } from '../middleware/checkAdmin.js'
 
 const adminRouter = express.Router()

@@ -1,4 +1,4 @@
-import { pool } from '../db/index.js'
+import { identityDatabase as pool } from './identityDatabase.js'
 
 export const getAccountByProviderRepo = async ({ provider, providerAccountId }) => {
     const result = await pool.query(

@@ -1,5 +1,5 @@
 import { badRequest, forbidden, notFound } from '../helpers/error.helper.js'
-import { getUserService } from './authService.js'
+import { identityApplication } from '../src/modules/identity/index.js'
 import {
     getUserActionContextRepo,
     getUserPrivacySettingsRepo,
@@ -152,7 +152,7 @@ export const getPublicUserProfileService = async ({ viewerId, targetUserId }) =>
         throw forbidden('USERS.PROFILE_PRIVATE')
     }
 
-    const user = await getUserService(actions.user.id)
+    const user = await identityApplication.getSessionUser(actions.user.id)
 
     if (!user || user.status !== 'active') {
         throw notFound('FRIENDS.USER_NOT_FOUND')

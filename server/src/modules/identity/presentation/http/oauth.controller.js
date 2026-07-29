@@ -1,23 +1,26 @@
-import passport from '../config/passport.js'
-import { badRequest } from '../helpers/error.helper.js'
-import { asyncHandler } from '../utils/asyncHandler.js'
-import { setAuthCookie } from '../utils/authCookie.js'
+import { badRequest } from '../../../../shared/responses/errors.js'
+import { asyncHandler } from '../../../../shared/presentation/http/asyncHandler.js'
+import { logger } from '../../../../shared/infrastructure/logging/logger.js'
+import { setAuthCookie } from './sessionCookies.js'
 import {
     createOAuthState,
     getOAuthStateCookieName,
     getOAuthStateCookieOptions,
     verifyOAuthState,
-} from '../utils/oauthState.js'
+} from '../../application/oauthState.js'
 import {
     OAUTH_PROVIDER_LABELS,
     isOAuthProviderEnabled,
     isSupportedOAuthProvider,
     resolveClientRedirectUrl,
-} from '../config/oauthProviders.js'
-import {
-    createAuthLogService,
-} from '../services/authService.js'
-import { handleOAuthLoginService } from '../services/oauthService.js'
+} from '../../infrastructure/oauth/oauthProviders.js'
+import { identityApplication } from '../../application/identityApplication.js'
+import { identityPresentationPorts } from '../identityPresentationPorts.js'
+
+const {
+    createAuthLog: createAuthLogService,
+    handleOAuthLogin: handleOAuthLoginService,
+} = identityApplication
 
 const getRequestMeta = (req) => ({
     ipAddress: req.ip || req.socket?.remoteAddress || null,
@@ -28,7 +31,7 @@ const safeCreateAuthLog = async (payload) => {
     try {
         await createAuthLogService(payload)
     } catch (error) {
-        console.error('OAuth auth log error:', error)
+        logger.error('identity_oauth_auth_log_failed', { error, userId: payload.userId })
     }
 }
 
@@ -84,7 +87,7 @@ const startOAuth = ({ mode = 'login' } = {}) => asyncHandler(async (req, res, ne
         getOAuthStateCookieOptions()
     )
 
-    passport.authenticate(provider, {
+    identityPresentationPorts.authenticateOAuth(provider, {
         session: false,
         state,
         ...(AUTHENTICATE_OPTIONS[provider] || {}),
@@ -125,7 +128,7 @@ export const handleOAuthCallback = asyncHandler(async (req, res, next) => {
         return redirectWithError('OAuth state is invalid or expired')
     }
 
-    passport.authenticate(provider, {
+    identityPresentationPorts.authenticateOAuth(provider, {
         session: false,
     }, async (error, oauthProfile, info) => {
         res.clearCookie(cookieName, getOAuthStateCookieOptions())

@@ -1,15 +1,16 @@
 # OAuth auth
 
-Backend OAuth support lives under `/api/authentication` and `/api/settings`.
+OAuth start and account management live under `/api/identity`. The callback stays under
+`/api/authentication` so registered provider URLs do not need to change.
 
 Providers:
 
-- Google: `/api/authentication/google`
-- Discord: `/api/authentication/discord`
-- Steam: `/api/authentication/steam`
-- Yandex: `/api/authentication/yandex`
-- VK: `/api/authentication/vk`
-- GitHub: `/api/authentication/github`
+- Google: `/api/identity/oauth/google`
+- Discord: `/api/identity/oauth/discord`
+- Steam: `/api/identity/oauth/steam`
+- Yandex: `/api/identity/oauth/yandex`
+- VK: `/api/identity/oauth/vk`
+- GitHub: `/api/identity/oauth/github`
 
 Callbacks use `/api/authentication/:provider/callback`.
 
@@ -64,21 +65,21 @@ Unverified provider emails are not used for account linking. Tokens are stored o
 
 ## Routes
 
-- `GET /api/authentication/:provider`
+- `GET /api/identity/oauth/:provider`
 - `GET /api/authentication/:provider/callback`
-- `GET /api/authentication/me`
-- `POST /api/authentication/logout`
-- `POST /api/authentication/password/login`
-- `POST /api/authentication/password/set`
-- `GET /api/settings/connections`
-- `POST /api/settings/connections/:provider/link`
-- `DELETE /api/settings/connections/:provider/unlink`
+- `GET /api/identity/me`
+- `POST /api/identity/logout`
+- `POST /api/identity/password/login`
+- `POST /api/identity/password/set`
+- `GET /api/identity/connections`
+- `POST /api/identity/connections/:provider/link`
+- `DELETE /api/identity/connections/:provider/unlink`
 
 Existing email/password routes remain available:
 
-- `POST /api/authentication/register`
-- `POST /api/authentication/login`
-- `PATCH /api/authentication/me/password`
+- `POST /api/identity/register`
+- `POST /api/identity/login`
+- `PATCH /api/identity/me/password`
 
 ## Security
 

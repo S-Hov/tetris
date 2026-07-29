@@ -44,6 +44,16 @@ const envSchema = z.object({
     LOCAL_DB_PASSWORD: optionalString,
     LOCAL_DB_SSL: optionalString,
     PGSSLMODE: optionalString,
+    JWT_SECRET: optionalString,
+    TOKEN_LIFETIME: optionalPositiveInteger,
+    COOKIE_DOMAIN: optionalString,
+    COOKIE_SAME_SITE: z.enum(['lax', 'strict', 'none']).optional(),
+    COOKIE_SECURE: z.enum(['true', 'false']).optional(),
+    EMAIL_VERIFICATION_CODE_LENGTH: z.preprocess(
+        (value) => value === undefined || value === null || value === '' ? undefined : value,
+        z.coerce.number().int().min(4).max(8).optional(),
+    ),
+    EMAIL_VERIFICATION_TTL_SECONDS: optionalPositiveInteger,
 })
 
 export class EnvironmentValidationError extends Error {
@@ -77,6 +87,19 @@ export const createConfig = (source = process.env) => {
         nodeEnv: env.NODE_ENV,
         isProduction: env.NODE_ENV === 'production',
         allowedOrigins: Object.freeze(parseAllowedOrigins(env.CORS_ORIGINS)),
+        identity: Object.freeze({
+            jwtSecret: env.JWT_SECRET,
+            tokenLifetimeDays: env.TOKEN_LIFETIME || 7,
+            cookieDomain: env.COOKIE_DOMAIN,
+            cookieSameSite: env.COOKIE_SAME_SITE || (
+                env.NODE_ENV === 'production' ? 'none' : 'lax'
+            ),
+            cookieSecure: env.COOKIE_SECURE === undefined
+                ? env.NODE_ENV === 'production'
+                : env.COOKIE_SECURE === 'true',
+            verificationCodeLength: env.EMAIL_VERIFICATION_CODE_LENGTH || 6,
+            verificationTtlSeconds: env.EMAIL_VERIFICATION_TTL_SECONDS || 180,
+        }),
         database: Object.freeze({
             mode: ['local', 'development', 'dev'].includes(env.DATABASE_MODE)
                 ? 'local'
