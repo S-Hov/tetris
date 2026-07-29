@@ -10,8 +10,16 @@ import {
 
 const TOAST_DURATION = 3500
 const TOAST_REMOVE_DELAY = 220
+const MOBILE_GAME_VIEWPORT = '(max-width: 620px)'
 const MotionDiv = motion.div
 const MotionButton = motion.button
+
+const isMobileGamePage = () => (
+    typeof window !== 'undefined' &&
+    typeof document !== 'undefined' &&
+    window.matchMedia?.(MOBILE_GAME_VIEWPORT).matches &&
+    Boolean(document.querySelector('.game-layout'))
+)
 
 const iconStyle = {
     width: '1em',
@@ -298,7 +306,7 @@ const renderToastContent = ({ toastItem, message, type, duration }) => {
 const notify = (message, type = 'success') => {
     const text = typeof message === 'string' ? message.trim() : String(message ?? '').trim()
 
-    if (!text) {
+    if (!text || isMobileGamePage()) {
         return
     }
 
