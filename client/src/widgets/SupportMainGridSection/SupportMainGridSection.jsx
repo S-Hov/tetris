@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { getLocalizedPath } from '@/i18n'
@@ -35,6 +35,7 @@ const SupportMainGridSection = () => {
     const [turnstileResetSignal, setTurnstileResetSignal] = useState(0)
     const [activeFaq, setActiveFaq] = useState(0)
     const [desktopDraftImported, setDesktopDraftImported] = useState(false)
+    const formCardRef = useRef(null)
 
     const registeredName = useMemo(() => user?.username || '', [user?.username])
     const registeredEmail = useMemo(() => user?.email || '', [user?.email])
@@ -70,6 +71,9 @@ const SupportMainGridSection = () => {
         setMessage(desktopDraft.message)
         setDesktopDraftImported(true)
         clearDesktopSupportDraftHash()
+        window.requestAnimationFrame(() => {
+            formCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        })
     }, [])
 
     const handleTurnstileTokenChange = useCallback((token) => {
@@ -173,7 +177,7 @@ const SupportMainGridSection = () => {
     return (
         <section className="support-main-grid">
             <GlowEffect>
-                <section className="glow-effect support-form-card">
+                <section className="glow-effect support-form-card" ref={formCardRef}>
                     <h2 className="support-section-title">{t('support.form.title')}</h2>
                     {desktopDraftImported ? (
                         <div className="support-desktop-import" role="status">
