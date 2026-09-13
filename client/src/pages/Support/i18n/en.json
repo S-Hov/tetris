@@ -75,6 +75,8 @@
     },
     "form": {
       "title": "Create a request",
+      "desktopImportTitle": "Draft imported from the game",
+      "desktopImportDescription": "The category and description are already filled in. Review the text, choose a reply channel and confirm submission.",
       "category": "Request topic",
       "nickname": "Your player nickname",
       "nicknamePlaceholder": "Enter your nickname",

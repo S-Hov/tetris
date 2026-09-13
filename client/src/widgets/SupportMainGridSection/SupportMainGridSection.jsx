@@ -9,6 +9,7 @@ import TurnstileWidget from '@/shared/ui/TurnstileWidget'
 import { supportAPI } from '@/shared/api/support'
 import { useAuth } from '@/shared/hooks/useAuth'
 import notify from '@/utils/Notifications'
+import { clearDesktopSupportDraftHash, readDesktopSupportDraft } from '@/shared/lib/supportDraft.js'
 
 import {
     contactItems,
@@ -33,6 +34,7 @@ const SupportMainGridSection = () => {
     const [turnstileToken, setTurnstileToken] = useState('')
     const [turnstileResetSignal, setTurnstileResetSignal] = useState(0)
     const [activeFaq, setActiveFaq] = useState(0)
+    const [desktopDraftImported, setDesktopDraftImported] = useState(false)
 
     const registeredName = useMemo(() => user?.username || '', [user?.username])
     const registeredEmail = useMemo(() => user?.email || '', [user?.email])
@@ -56,6 +58,19 @@ const SupportMainGridSection = () => {
             setEmail(registeredEmail)
         }
     }, [isAuth, registeredEmail, registeredName])
+
+    useEffect(() => {
+        const desktopDraft = readDesktopSupportDraft()
+
+        if (!desktopDraft) {
+            return
+        }
+
+        setCategory(desktopDraft.category)
+        setMessage(desktopDraft.message)
+        setDesktopDraftImported(true)
+        clearDesktopSupportDraftHash()
+    }, [])
 
     const handleTurnstileTokenChange = useCallback((token) => {
         setTurnstileToken(token)
@@ -106,6 +121,7 @@ const SupportMainGridSection = () => {
                 pageUrl: window.location.href,
                 clientContext: {
                     language: navigator.language,
+                    source: desktopDraftImported ? 'desktop' : 'web',
                     viewport: `${window.innerWidth}x${window.innerHeight}`,
                 },
                 turnstileToken,
@@ -159,6 +175,15 @@ const SupportMainGridSection = () => {
             <GlowEffect>
                 <section className="glow-effect support-form-card">
                     <h2 className="support-section-title">{t('support.form.title')}</h2>
+                    {desktopDraftImported ? (
+                        <div className="support-desktop-import" role="status">
+                            <i className="fas fa-desktop"></i>
+                            <span>
+                                <strong>{t('support.form.desktopImportTitle')}</strong>
+                                <small>{t('support.form.desktopImportDescription')}</small>
+                            </span>
+                        </div>
+                    ) : null}
                     <form className="support-form" onSubmit={handleSupportSubmit}>
                         <fieldset disabled={isSubmitting} className="support-form__fieldset">
                             <div>

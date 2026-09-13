@@ -25,6 +25,46 @@
     text-shadow: none;
 }
 
+.support-desktop-import {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+    margin: -8px 0 22px;
+    padding: 14px 16px;
+    border: 1px solid var(--turquoise-border-strong);
+    border-radius: var(--radius-card-1);
+    background: var(--turquoise-tint-soft);
+}
+
+.support-desktop-import > i {
+    display: grid;
+    width: 42px;
+    aspect-ratio: 1;
+    place-items: center;
+    border-radius: var(--radius-card-2);
+    background: var(--turquoise-tint-medium);
+    color: var(--turquoise);
+}
+
+.support-desktop-import > span {
+    display: grid;
+    gap: 4px;
+}
+
+.support-desktop-import strong {
+    color: var(--text-color-1);
+    font-family: var(--font-1);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+}
+
+.support-desktop-import small {
+    color: var(--text-muted);
+    font-weight: 700;
+    line-height: 1.45;
+}
+
 .support-form {
     display: grid;
     gap: 18px;
