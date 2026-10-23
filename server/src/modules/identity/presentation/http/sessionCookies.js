@@ -40,3 +40,13 @@ export const setAuthCookie = (res, user, env = process.env) => {
         maxAge: 1000 * 60 * 60 * 24 * lifetimeDays,
     })
 }
+
+// Desktop uses the same verified JWT over native HTTP and Socket.IO, without WebView cookies.
+export const setLoginSession = (req, res, user, env = process.env) => {
+    res.set('Cache-Control', 'no-store')
+    if (req.get('x-pvp-client') === 'desktop') {
+        return { sessionToken: createAuthToken(user, env) }
+    }
+    setAuthCookie(res, user, env)
+    return {}
+}

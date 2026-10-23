@@ -25,6 +25,10 @@ const parseCookies = (cookieHeader) => {
 }
 
 const getTokenFromHandshake = (socket) => {
+    if (socket.handshake.auth?.mode === 'guest') return null
+    if (socket.handshake.auth?.token !== undefined) {
+        return typeof socket.handshake.auth.token === 'string' ? socket.handshake.auth.token : 'invalid-token'
+    }
     const cookieHeader = socket.handshake.headers?.cookie
 
     if (!cookieHeader) {
@@ -72,13 +76,16 @@ const getGuestUserFromHandshake = (socket) => {
     }
 }
 
-export const socketAuthMiddleware = async (socket, next) => {
+export const createSocketAuthMiddleware = ({
+    getSecret = () => process.env.JWT_SECRET,
+    getSocketUser = (id) => identityApplication.getSocketUser(id),
+} = {}) => async (socket, next) => {
     const token = getTokenFromHandshake(socket)
 
     if (token) {
         try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            const user = await identityApplication.getSocketUser(decoded.userId || decoded.id)
+            const decoded = jwt.verify(token, getSecret())
+            const user = await getSocketUser(decoded.userId || decoded.id)
 
             if (!user) {
                 next(new Error('User not found'))
@@ -109,6 +116,11 @@ export const socketAuthMiddleware = async (socket, next) => {
         }
     }
 
+    if (socket.handshake.auth?.mode === 'authenticated') {
+        next(new Error('Authentication required'))
+        return
+    }
+
     const guestUser = getGuestUserFromHandshake(socket)
 
     if (!guestUser) {
@@ -119,3 +131,5 @@ export const socketAuthMiddleware = async (socket, next) => {
     socket.data.user = guestUser
     next()
 }
+
+export const socketAuthMiddleware = createSocketAuthMiddleware()

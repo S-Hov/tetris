@@ -4,7 +4,7 @@ import bcrypt from "bcrypt"
 import {
     identityPresentationPorts,
 } from '../identityPresentationPorts.js'
-import { getAuthCookieOptions, setAuthCookie } from './sessionCookies.js'
+import { getAuthCookieOptions, setLoginSession } from './sessionCookies.js'
 import { loginAttemptPolicy } from '../../application/loginAttemptPolicy.js'
 import { ok, fail } from '../../../../shared/responses/send.js'
 import { forbidden } from '../../../../shared/responses/errors.js'
@@ -171,7 +171,7 @@ export const login = asyncHandler(async (req, res) => {
         ...requestMeta,
     })
 
-    setAuthCookie(res, user)
+    const session = setLoginSession(req, res, user)
 
     return ok(res, req, 'AUTH.LOGGED_IN', {
         data: {
@@ -179,6 +179,7 @@ export const login = asyncHandler(async (req, res) => {
             username: user.username,
             email: user.email,
             status: user.status,
+            ...session,
         }
     })
 })

@@ -10,3 +10,5 @@ import './matchContracts.test.js'
 import './presenceStats.test.js'
 import './responseContracts.test.js'
 import './sharedFoundation.test.js'
+
+import './desktopSessions.test.js'

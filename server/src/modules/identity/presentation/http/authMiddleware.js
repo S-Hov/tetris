@@ -12,7 +12,14 @@ const decodeIdentity = (token, secret) => {
     }
 }
 
-const getToken = (req) => req.cookies?.token
+const getToken = (req) => {
+    const authorization = req.headers?.authorization
+    // An explicit header takes precedence; never fall back to a cookie for a bad bearer.
+    if (authorization !== undefined) {
+        return /^Bearer ([^\s]+)$/i.exec(authorization)?.[1] || 'invalid-bearer'
+    }
+    return req.cookies?.token
+}
 
 export const createAuthMiddleware = ({
     getSecret = () => process.env.JWT_SECRET,
