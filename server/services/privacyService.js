@@ -1,3 +1,4 @@
+import { steamFriendsService } from '../src/modules/identity/index.js'
 import { badRequest, forbidden, notFound } from '../helpers/error.helper.js'
 import { identityApplication } from '../src/modules/identity/index.js'
 import {
@@ -73,7 +74,7 @@ export const getUserActionsService = async ({ viewerId, targetUserId }) => {
 
     const isAuthenticated = Number.isInteger(normalizedViewerId) && normalizedViewerId > 0
     const isSelf = isAuthenticated && normalizedViewerId === normalizedTargetUserId
-    const isFriend = context.relationship_status === 'accepted'
+    const isFriend = context.relationship_status === 'accepted' || (context.relationship_status !== 'blocked' && await steamFriendsService.areFriends(normalizedViewerId, normalizedTargetUserId))
     const isBlocked = context.relationship_status === 'blocked'
     const baseContext = {
         isAuthenticated,
@@ -195,7 +196,7 @@ export const canInviteUserToRoomService = async ({ inviterId, inviteeId }) => {
 
     return isAllowed(context.room_invites_visibility, {
         isAuthenticated: true,
-        isFriend: context.relationship_status === 'accepted',
+        isFriend: context.relationship_status === 'accepted' || await steamFriendsService.areFriends(inviterId, inviteeId),
         isSelf: false,
     })
 }

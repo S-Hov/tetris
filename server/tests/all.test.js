@@ -14,3 +14,4 @@ import './sharedFoundation.test.js'
 import './desktopSessions.test.js'
 
 import './social/partyInvites.test.js'
+import './social/steamTicket.test.js'

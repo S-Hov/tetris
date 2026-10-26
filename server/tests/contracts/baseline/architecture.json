@@ -597,6 +597,27 @@
     },
     {
       "method": "GET",
+      "path": "/api/identity/steam/friends",
+      "routePath": "/steam/friends",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity/steam/link",
+      "routePath": "/steam/link",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity/steam/login",
+      "routePath": "/steam/login",
+      "mountPath": "/api/identity",
+      "source": "src/modules/identity/presentation/http/identity.routes.js"
+    },
+    {
+      "method": "GET",
       "path": "/api/identity/verification-time/:email",
       "routePath": "/verification-time/:email",
       "mountPath": "/api/identity",
@@ -2800,6 +2821,12 @@
     {
       "from": "src/modules/identity/index.js",
       "fromArea": "src",
+      "to": "src/modules/identity/infrastructure/steamFriendsService.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/index.js",
+      "fromArea": "src",
       "to": "src/modules/identity/presentation/http/authMiddleware.js",
       "toArea": "src"
     },
@@ -2835,6 +2862,18 @@
     },
     {
       "from": "src/modules/identity/infrastructure/oauthRepository.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/infrastructure/identityDatabase.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/infrastructure/steamFriendsService.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/steamFriends.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/infrastructure/steamFriendsService.js",
       "fromArea": "src",
       "to": "src/modules/identity/infrastructure/identityDatabase.js",
       "toArea": "src"
@@ -2927,6 +2966,12 @@
       "from": "src/modules/identity/presentation/http/identity.routes.js",
       "fromArea": "src",
       "to": "src/modules/identity/presentation/http/oauth.controller.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/identity.routes.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/steam.controller.js",
       "toArea": "src"
     },
     {
@@ -3030,6 +3075,42 @@
       "fromArea": "src",
       "to": "src/modules/identity/presentation/http/oauth.controller.js",
       "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/steam.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/identityApplication.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/steam.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/application/steamTicket.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/steam.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/infrastructure/steamFriendsService.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/steam.controller.js",
+      "fromArea": "src",
+      "to": "src/modules/identity/presentation/http/sessionCookies.js",
+      "toArea": "src"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/steam.controller.js",
+      "fromArea": "src",
+      "to": "src/shared/presentation/http/asyncHandler.js",
+      "toArea": "shared"
+    },
+    {
+      "from": "src/modules/identity/presentation/http/steam.controller.js",
+      "fromArea": "src",
+      "to": "src/shared/responses/errors.js",
+      "toArea": "shared"
     },
     {
       "from": "src/shared/infrastructure/database/pool.js",

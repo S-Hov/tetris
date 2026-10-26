@@ -43,3 +43,5 @@ export {
 } from './infrastructure/oauth/oauthProviders.js'
 export { identityRouter } from './presentation/http/identity.routes.js'
 export { oauthCallbackRouter } from './presentation/http/oauthCallback.routes.js'
+
+export { steamFriendsService } from './infrastructure/steamFriendsService.js'

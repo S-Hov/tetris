@@ -1,4 +1,5 @@
 import express from 'express'
+import { loginSteam, linkSteam, getSteamFriends } from './steam.controller.js'
 
 import { badRequest } from '../../../../shared/responses/errors.js'
 import { fail } from '../../../../shared/responses/send.js'
@@ -31,6 +32,9 @@ const requireTurnstile = async (req, res, next) => {
 export const identityRouter = express.Router()
 
 identityRouter.post('/register', checkNotAuth, requireTurnstile, validate(schemas.registerSchema), controller.register)
+identityRouter.get('/steam/friends', checkAuth, getSteamFriends)
+identityRouter.post('/steam/login', checkNotAuth, loginSteam)
+identityRouter.post('/steam/link', checkAuth, linkSteam)
 identityRouter.post('/login', checkNotAuth, validate(schemas.loginSchema), controller.login)
 identityRouter.post('/password/login', checkNotAuth, validate(schemas.loginSchema), controller.login)
 identityRouter.get('/me', optionalAuth, controller.getMe)

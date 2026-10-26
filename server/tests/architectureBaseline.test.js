@@ -15,7 +15,7 @@ test('REST, Socket.IO, database and import contracts match the reviewed architec
     const actual = await collectArchitectureInventory(serverRoot)
 
     assert.deepEqual(actual, expected)
-    assert.equal(actual.rest.length, 109)
+    assert.equal(actual.rest.length, 112)
     assert.equal(actual.sockets.filter((event) => event.direction === 'incoming').length, 33)
     assert.equal(actual.sockets.filter((event) => event.direction === 'outgoing').length, 35)
     assert.equal(actual.tables.length, 41)
