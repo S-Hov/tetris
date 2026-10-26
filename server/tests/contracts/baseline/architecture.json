@@ -847,6 +847,26 @@
     },
     {
       "direction": "outgoing",
+      "event": "friends:party-invite",
+      "source": "sockets/partyInvites.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "friends:party-invite:respond",
+      "source": "sockets/partyInvites.js"
+    },
+    {
+      "direction": "outgoing",
+      "event": "friends:party-invite:response",
+      "source": "sockets/partyInvites.js"
+    },
+    {
+      "direction": "incoming",
+      "event": "friends:party-invite:send",
+      "source": "sockets/partyInvites.js"
+    },
+    {
+      "direction": "outgoing",
       "event": "friends:room-invite",
       "source": "sockets/friends.socket.js"
     },
@@ -2034,6 +2054,12 @@
       "toArea": "src"
     },
     {
+      "from": "services/privacyService.js",
+      "fromArea": "services",
+      "to": "src/modules/identity/index.js",
+      "toArea": "src"
+    },
+    {
       "from": "services/publicStatsService.js",
       "fromArea": "services",
       "to": "repositories/publicStatsRepository.js",
@@ -2344,6 +2370,18 @@
       "fromArea": "sockets",
       "to": "services/matchService.js",
       "toArea": "services"
+    },
+    {
+      "from": "sockets/matchmaking.socket.js",
+      "fromArea": "sockets",
+      "to": "services/privacyService.js",
+      "toArea": "services"
+    },
+    {
+      "from": "sockets/matchmaking.socket.js",
+      "fromArea": "sockets",
+      "to": "sockets/partyInvites.js",
+      "toArea": "sockets"
     },
     {
       "from": "sockets/matchmaking.socket.js",

@@ -1,4 +1,6 @@
 import crypto from 'crypto'
+import { registerPartyInvites } from './partyInvites.js'
+import { canInviteUserToRoomService } from '../services/privacyService.js'
 import {
     getTeamIdByNumber,
     roomStore,
@@ -391,6 +393,7 @@ export const removeSocketFromParties = (io, socketId) => {
 }
 
 export const registerMatchmakingHandlers = (io, socket) => {
+    registerPartyInvites(io, socket, parties, { authorize: canInviteUserToRoomService })
     socket.on('matchmaking:join', async (payload = {}, callback) => {
         try {
             const matchType = normalizeMatchType(payload.matchType)

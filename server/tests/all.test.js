@@ -12,3 +12,5 @@ import './responseContracts.test.js'
 import './sharedFoundation.test.js'
 
 import './desktopSessions.test.js'
+
+import './social/partyInvites.test.js'
